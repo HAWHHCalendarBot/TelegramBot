@@ -1,0 +1,4 @@
+Mit diesem Bot kannst du dir deinen eigenen, auf dich abgestimmten Kalender von HAW Vorlesungen erstellen.
+
+Erstellt von @EdJoPaTo
+
