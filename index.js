@@ -225,7 +225,7 @@ function main() {
 
     var options = {};
     options[surroundWithIsEnabledIcon("StISys Änderungen", config.settings.stisysUpdate)] = toggleStISysUpdate;
-    options["⚠️ Einstellungen löschen ⚠️"] = deleteCalendarOption;
+    options["⚠️ Einstellungen und Kalender löschen ⚠️"] = deleteCalendarOption;
     options[cancelString] = cancelOption;
 
     var text = "Welche Einstellung möchtest du anpassen?";
