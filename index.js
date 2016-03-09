@@ -9,7 +9,7 @@ setInterval(updateEvents, 1000 * 60 * 60);
 updateEvents();
 
 function updateEvents() {
-  request("http://3t0.de/study/events/all.txt", function(error, response, body) {
+  request("https://3t0.de/study/events/all.txt", function(error, response, body) {
     var list = body.split("\n").filter(element => element != '');
     console.log(new Date() + " " + list.length + " Events geladen.");
     allEvents = list;
