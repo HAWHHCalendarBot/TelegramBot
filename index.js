@@ -1,6 +1,7 @@
 var ChatConfigHandler = require('telegramBotChatConfigHandler');
 var BotHandler = require('telegramBotBotHandler');
 var request = require('request');
+var hasStISysChanged = require('./hasStISysChanged.js');
 
 // Lade Events alle Stunde
 var allEvents = [];
@@ -34,6 +35,7 @@ function getFilteredEvents(filter, blacklist) {
 function main() {
   var configHandler = new ChatConfigHandler('userconfig', { events: [], settings: {} });
   var bot = new BotHandler("token.txt");
+  hasStISysChanged(notifyUsersWhenStISysHasChanged, 15 * 60 * 1000);
 
   bot.setMainMenuText(function (chat) {
     return "Was möchtest du tun?";
@@ -43,13 +45,13 @@ function main() {
     var config = configHandler.loadConfig(chat);
 
     var options = {};
-    options["Veranstaltung hinzufügen"] = addOption;
+    options["📥 Veranstaltung hinzufügen 📥"] = addOption;
     if (config.events.length > 0) {
-      options["Veranstaltung entfernen"] = removeOption;
-      options["Meine Veranstaltungen auflisten"] = eventListOption;
-      options["Kalender Url anfordern"] = calendarUrlOption;
-      options["Einstellungen löschen"] = deleteCalendarOption;
+      options["📤 Veranstaltung entfernen 📤"] = removeOption;
+      options["📜 Meine Veranstaltungen auflisten 📜"] = eventListOption;
+      options["📲 Kalender Url anfordern 📲"] = calendarUrlOption;
     }
+    options["⚒ Einstellungen 🛠"] = settingsOption;
     if (config.admin) {
       options["🙈 Broadcast 🙈"] = adminBroadcastOption;
       options["🙈 Nutzerübersicht 🙈"] = adminUserOverviewOption;
@@ -59,6 +61,8 @@ function main() {
   });
 
   bot.onCommand("start", false, menuCommand);
+  bot.onCommand("einstellungen", false, settingsOption);
+  bot.onCommand("settings", false, settingsOption);
   bot.onCommand("stop", false, deleteCalendarOption);
 
   var newSearchString = "🔎 erneut suchen 🔍";
@@ -73,7 +77,7 @@ function main() {
 
   function deleteCalendarOption (msg) {
     configHandler.removeConfig(msg.chat);
-    bot.bot.sendMessage(msg.chat, "Dein Kalender wurde zum löschen vorgemerkt. Das Löschen kann bis zu einer Stunde dauern.\nDu wirst keine Nachrichten mehr vom Bot erhalten.");
+    bot.bot.sendMessage(msg.chat, "Dein Kalender wurde zum Löschen vorgemerkt. Das Löschen kann bis zu einer Stunde dauern.\nDu wirst keine Nachrichten mehr vom Bot erhalten.");
   }
 
   function addOption (msg) {
@@ -204,6 +208,43 @@ function main() {
     bot.sendText(msg.chat, text);
   }
 
+  function getEnabledIcon (isEnabled) {
+    if (isEnabled) {
+      return "✅";
+    } else {
+      return "❎";
+    }
+  }
+
+  function surroundWithIsEnabledIcon (text, isEnabled) {
+    return getEnabledIcon(isEnabled) + " " + text + " " + getEnabledIcon(isEnabled);
+  }
+
+  function settingsOption (msg) {
+    var config = configHandler.loadConfig(msg.chat);
+
+    var options = {};
+    options[surroundWithIsEnabledIcon("StISys Änderungen", config.settings.stisysUpdate)] = toggleStISysUpdate;
+    options["⚠️ Einstellungen löschen ⚠️"] = deleteCalendarOption;
+    options[cancelString] = cancelOption;
+
+    var text = "Welche Einstellung möchtest du anpassen?";
+    bot.sendText(msg.chat, text, options);
+  }
+
+  function toggleStISysUpdate (msg) {
+    var config = configHandler.loadConfig(msg.chat);
+    config.settings.stisysUpdate = !config.settings.stisysUpdate;
+
+    configHandler.saveConfig(msg.chat, config);
+    if (config.settings.stisysUpdate) {
+      var text = getEnabledIcon(true) + " Ab jetzt wirst du über StISys Ändergungen informiert.";
+    } else {
+      var text = getEnabledIcon(false) + " Du wirst jetzt nicht mehr über StISys Änderungen informiert.";
+    }
+    bot.sendText(msg.chat, text);
+  }
+
   function adminUserOverviewOption (msg) {
     var config = configHandler.loadConfig(msg.chat);
     if (!config.admin) return;
@@ -239,12 +280,25 @@ function main() {
     var config = configHandler.loadConfig(msg.chat);
     if (!config.admin) return;
 
-    var users = configHandler.getAllConfigs();
-
-    for (var i = 0; i < users.length; i++) {
-      bot.bot.sendMessage(users[i].chat.id, msg.text);
-    }
+    broadcastMessageToUsersWithFilter(msg.text, user => true);
 
     bot.sendText(msg.chat, "Gesendet!");
+  }
+
+  function broadcastMessageToUsersWithFilter (text, filter) {
+    var users = configHandler.getAllConfigs().filter(filter);
+
+    console.log("broadcast to " + users.map(user => user.chat.first_name));
+
+    for (var i = 0; i < users.length; i++) {
+      bot.bot.sendMessage(users[i].chat.id, text, { parse_mode: "Markdown" });
+    }
+  }
+
+  function notifyUsersWhenStISysHasChanged (hasChanged) {
+    console.log(new Date() + " StISys has changed: " + hasChanged);
+    if (!hasChanged) return;
+
+    broadcastMessageToUsersWithFilter("Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.", user => user.config.settings.stisysUpdate);
   }
 }
