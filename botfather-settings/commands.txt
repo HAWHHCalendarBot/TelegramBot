@@ -1,1 +1,2 @@
 start - öffne das Menü
+settings - setzte Einstellungen des Bots
