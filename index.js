@@ -222,7 +222,7 @@ function main() {
     if (msg.text === cancelString) { cancelOption(msg); return; }
 
     var user = configHandler.getAllConfigs().filter(v => v.chat.first_name === msg.text)[0];
-    var text = "[Kalender](" + iosSubscribeLink(msg.chat) + ")\n";
+    var text = "[Kalender](" + iosSubscribeLink(user.chat) + ")\n";
     text += "```\n" + JSON.stringify(user, null, '  ') + "\n```";
 
     bot.sendText(msg.chat, text);
