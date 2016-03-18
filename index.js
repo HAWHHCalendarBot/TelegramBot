@@ -79,9 +79,22 @@ function main() {
     bot.sendText(msg.chat, "Hey " + msg.from.first_name + "!");
   }
 
+  var deleteAllString = "Ich bin mir sicher!";
+
   function deleteCalendarOption (msg) {
-    configHandler.removeConfig(msg.chat);
-    bot.bot.sendMessage(msg.chat, "Dein Kalender wurde zum Löschen vorgemerkt. Das Löschen kann bis zu einer Stunde dauern.\nDu wirst keine Nachrichten mehr vom Bot erhalten.");
+    var keyboard = [[ cancelString ]];
+
+    var text = "Bist du dir sicher das du alle deine Einstellungen und deinen Kalender löschen willst?\n\nWenn du dir wirklich sicher bist antworte manuell mit _" + deleteAllString + "_";
+    bot.sendText(msg.chat, text, deleteCalendarOptionGoForIt, keyboard);
+  }
+
+  function deleteCalendarOptionGoForIt (msg) {
+    if (msg.text !== deleteAllString) {
+      bot.sendText(msg.chat, "Es freut mich, dass du mich doch nicht löschen wolltest. 👍");
+    } else {
+      configHandler.removeConfig(msg.chat);
+      bot.bot.sendMessage(msg.chat.id, "Dein Kalender wurde zum Löschen vorgemerkt. Das Löschen kann bis zu einer Stunde dauern.\nDu wirst keine Nachrichten mehr vom Bot erhalten.", { parse_mode: "Markdown", reply_markup: JSON.stringify({ hide_keyboard: true }) });
+    }
   }
 
   function addOption (msg) {
@@ -233,7 +246,7 @@ function main() {
     options[cancelString] = cancelOption;
 
     var text = "Welche Einstellung möchtest du anpassen?";
-    bot.sendText(msg.chat, text, options);
+    bot.sendText(msg.chat, text, options, 1);
   }
 
   function toggleStISysUpdate (msg) {
