@@ -50,4 +50,4 @@ function displayStuff(hasChanged) {
 
 module.exports = function (callback, delay) {
   return setInterval(getCurrentStISys, delay, callback);
-}
+};

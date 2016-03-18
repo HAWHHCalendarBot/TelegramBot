@@ -11,7 +11,7 @@ updateEvents();
 
 function updateEvents() {
   request("https://3t0.de/study/events/all.txt", function(error, response, body) {
-    var list = body.split("\n").filter(element => element != '');
+    var list = body.split("\n").filter(element => element !== '');
     console.log(new Date() + " " + list.length + " Events geladen.");
     allEvents = list;
 
@@ -20,17 +20,17 @@ function updateEvents() {
       main();
     }
   });
-};
+}
 
 function getFilteredEvents(filter, blacklist) {
   var regex = new RegExp(filter, "i");
   if (!blacklist) blacklist = [];
 
   var filtered = allEvents.filter(event => regex.test(event) && !blacklist.some(v => v === event));
-  if (filtered.length == 0)
+  if (filtered.length === 0)
     console.log(regex);
   return filtered;
-};
+}
 
 function main() {
   var configHandler = new ChatConfigHandler('userconfig', { events: [], settings: {} });
@@ -83,7 +83,7 @@ function main() {
   function addOption (msg) {
     var text = "Gebe mir einen Teil des Veranstaltungsnamen und ich suche danach.\n\n";
     text += "Groß- und Kleinschreibung egal, RegExp funktionieren.\n";
-    text += "Um zum Menü zurückzukehren benutze /start."
+    text += "Um zum Menü zurückzukehren benutze /start.";
 
     bot.sendText(msg.chat, text, addOptionFilterReceived);
   }
@@ -92,7 +92,7 @@ function main() {
     try {
       var myEvents = configHandler.loadConfig(msg.chat).events;
       var possibleEvents = getFilteredEvents(msg.text, myEvents);
-      if (possibleEvents.length == 0) throw "length == 0";
+      if (possibleEvents.length === 0) throw "length === 0";
       var longResult = possibleEvents.length > 100;
 
       if (longResult) {
@@ -142,7 +142,7 @@ function main() {
 
   function removeOption (msg) {
     var myEvents = configHandler.loadConfig(msg.chat).events;
-    if (myEvents.length == 0) {
+    if (myEvents.length === 0) {
       bot.sendText(msg.chat, "Du hast aktuell keine Veranstaltungen in deinem Kalender.");
       return;
     }
@@ -169,7 +169,7 @@ function main() {
 
   function eventListOption (msg) {
     var myEvents = configHandler.loadConfig(msg.chat).events;
-    if (myEvents.length == 0) {
+    if (myEvents.length === 0) {
       bot.sendText(msg.chat, "Du hast aktuell keine Veranstaltungen in deinem Kalender.");
     } else {
       var text = "Du hast aktuell folgende Veranstaltungen in deinem Kalender:\n" + myEvents.map(v => "- " + v).join('\n');
