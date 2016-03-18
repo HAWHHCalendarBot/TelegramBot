@@ -65,6 +65,10 @@ function main() {
   bot.onCommand("settings", false, settingsOption);
   bot.onCommand("stop", false, deleteCalendarOption);
 
+  bot.setUnhandledMessageAnswerText(function (msg) {
+    return "Ich hab den Faden verloren… 🎈😴";
+  });
+
   var newSearchString = "🔎 erneut suchen 🔍";
   var cancelString = "⛔️ Abbrechen ⛔️";
   function cancelOption (msg) {
