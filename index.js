@@ -109,7 +109,7 @@ function main() {
     try {
       var myEvents = configHandler.loadConfig(msg.chat).events;
       var possibleEvents = getFilteredEvents(msg.text, myEvents);
-      if (possibleEvents.length === 0) throw "length === 0";
+      if (possibleEvents.length === 0) throw "Can't find an Event with name \"" + msg.text + "\".";
       var longResult = possibleEvents.length > 100;
 
       if (longResult) {
@@ -141,7 +141,7 @@ function main() {
     try {
       if (msg.text === cancelString) { cancelOption(msg); return; }
       if (msg.text === newSearchString) { addOption(msg); return; }
-      if (!allEvents.some(event => event === msg.text)) throw "length == 0";
+      if (!allEvents.some(event => event === msg.text)) throw "Can't add Event with name \"" + msg.text + "\". It does not exist.";
 
       var config = configHandler.loadConfig(msg.chat);
       config.events.push(msg.text);
