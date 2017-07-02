@@ -49,5 +49,6 @@ function displayStuff(hasChanged) {
 }
 
 module.exports = function (callback, delay) {
+  getCurrentStISys(callback);
   return setInterval(getCurrentStISys, delay, callback);
 };
