@@ -1,8 +1,8 @@
-var request = require('request');
-var fs = require('fs');
+const request = require('request');
+const fs = require('fs');
 
-var _stISysFolder = "tmp";
-var _stISysFile = "StISys.html";
+const _stISysFolder = "tmp";
+const _stISysFile = "StISys.html";
 
 function getCurrentStISys(callback) {
   request("https://stisys.haw-hamburg.de/", function(error, response, body) {
@@ -15,8 +15,8 @@ function getCurrentStISys(callback) {
       return;
     }
 
-    var match = /;jsessionid=[^"]+/.exec(body);
-    var tmp = body.replace(match[0], "");
+    const match = /;jsessionid=[^"]+/.exec(body);
+    const tmp = body.replace(match[0], "");
 
     compareToOldStISys(tmp, callback);
   });
@@ -28,7 +28,7 @@ function compareToOldStISys(currentStISys, callback) {
   } catch (e) {}
 
   try {
-    var oldStISys = fs.readFileSync(_stISysFolder + "/" + _stISysFile, 'utf8');
+    const oldStISys = fs.readFileSync(_stISysFolder + "/" + _stISysFile, 'utf8');
 
     if (currentStISys === oldStISys) {
       callback(false);
