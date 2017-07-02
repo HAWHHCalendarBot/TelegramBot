@@ -1,17 +1,17 @@
-var ChatConfigHandler = require('telegramBotChatConfigHandler');
-var BotHandler = require('telegramBotBotHandler');
-var request = require('request');
-var hasStISysChanged = require('./hasStISysChanged.js');
+const ChatConfigHandler = require('telegramBotChatConfigHandler');
+const BotHandler = require('telegramBotBotHandler');
+const request = require('request');
+const hasStISysChanged = require('./hasStISysChanged.js');
 
 // Lade Events alle Stunde
-var allEvents = [];
-var startupPhase = true;
+let allEvents = [];
+let startupPhase = true;
 setInterval(updateEvents, 1000 * 60 * 60);
 updateEvents();
 
 function updateEvents() {
   request("https://3t0.de/study/events/all.txt", function(error, response, body) {
-    var list = body.split("\n").filter(element => element !== '');
+    const list = body.split("\n").filter(element => element !== '');
     console.log(new Date() + " " + list.length + " Events geladen.");
     allEvents = list;
 
@@ -23,18 +23,18 @@ function updateEvents() {
 }
 
 function getFilteredEvents(filter, blacklist) {
-  var regex = new RegExp(filter, "i");
+  const regex = new RegExp(filter, "i");
   if (!blacklist) blacklist = [];
 
-  var filtered = allEvents.filter(event => regex.test(event) && !blacklist.some(v => v === event));
+  const filtered = allEvents.filter(event => regex.test(event) && !blacklist.some(v => v === event));
   if (filtered.length === 0)
     console.log(regex);
   return filtered;
 }
 
 function main() {
-  var configHandler = new ChatConfigHandler('userconfig', { events: [], settings: {} });
-  var bot = new BotHandler("token.txt");
+  const configHandler = new ChatConfigHandler('userconfig', { events: [], settings: {} });
+  const bot = new BotHandler("token.txt");
   hasStISysChanged(notifyUsersWhenStISysHasChanged, 15 * 60 * 1000);
 
   bot.setMainMenuText(function (chat) {
@@ -42,9 +42,9 @@ function main() {
   });
 
   bot.setMainMenuOptions(function (chat) {
-    var config = configHandler.loadConfig(chat);
+    const config = configHandler.loadConfig(chat);
 
-    var options = {};
+    const options = {};
     options["📥 Veranstaltung hinzufügen 📥"] = addOption;
     if (config.events.length > 0) {
       options["📤 Veranstaltung entfernen 📤"] = removeOption;
@@ -69,8 +69,8 @@ function main() {
     return "Ich hab den Faden verloren… 🎈😴";
   });
 
-  var newSearchString = "🔎 erneut suchen 🔍";
-  var cancelString = "⛔️ Abbrechen ⛔️";
+  const newSearchString = "🔎 erneut suchen 🔍";
+  const cancelString = "⛔️ Abbrechen ⛔️";
   function cancelOption (msg) {
     bot.sendText(msg.chat, "😔");
   }
@@ -79,12 +79,12 @@ function main() {
     bot.sendText(msg.chat, "Hey " + msg.from.first_name + "!");
   }
 
-  var deleteAllString = "Ich bin mir sicher!";
+  const deleteAllString = "Ich bin mir sicher!";
 
   function deleteCalendarOption (msg) {
-    var keyboard = [[ cancelString ]];
+    const keyboard = [[ cancelString ]];
 
-    var text = "Bist du dir sicher das du alle deine Einstellungen und deinen Kalender löschen willst?\n\nWenn du dir wirklich sicher bist antworte manuell mit _" + deleteAllString + "_";
+    const text = "Bist du dir sicher das du alle deine Einstellungen und deinen Kalender löschen willst?\n\nWenn du dir wirklich sicher bist antworte manuell mit _" + deleteAllString + "_";
     bot.sendText(msg.chat, text, deleteCalendarOptionGoForIt, keyboard);
   }
 
@@ -98,7 +98,7 @@ function main() {
   }
 
   function addOption (msg) {
-    var text = "Gebe mir einen Teil des Veranstaltungsnamen und ich suche danach.\n\n";
+    let text = "Gebe mir einen Teil des Veranstaltungsnamen und ich suche danach.\n\n";
     text += "Groß- und Kleinschreibung egal, RegExp funktionieren.\n";
     text += "Um zum Menü zurückzukehren benutze /start.";
 
@@ -107,34 +107,34 @@ function main() {
 
   function addOptionFilterReceived (msg) {
     try {
-      var myEvents = configHandler.loadConfig(msg.chat).events;
-      var possibleEvents = getFilteredEvents(msg.text, myEvents);
+      const myEvents = configHandler.loadConfig(msg.chat).events;
+      let possibleEvents = getFilteredEvents(msg.text, myEvents);
       if (possibleEvents.length === 0) throw "Can't find an Event with name \"" + msg.text + "\".";
-      var longResult = possibleEvents.length > 100;
+      const longResult = possibleEvents.length > 100;
 
       if (longResult) {
         possibleEvents = possibleEvents.slice(0, 100);
       }
 
-      var keyboard = bot.arrayToKeyboard(possibleEvents, 5, true);
+      const keyboard = bot.arrayToKeyboard(possibleEvents, 5, true);
       keyboard.unshift([newSearchString]);
       keyboard.push([cancelString]);
 
-      var text = "Ich habe diese Events gefunden. Welches möchtest du hinzufügen?";
+      let text = "Ich habe diese Events gefunden. Welches möchtest du hinzufügen?";
       if (longResult)
         text += "\nDie Suche hatte viele Treffer. Die Ergebnisse wurden gekürzt.";
 
       bot.sendText(msg.chat, text, addOptionSpecificEventName, keyboard);
     } catch (e) {
       console.log(e);
-      var text = "Damit konnte ich leider keine Veranstaltungen finden.\n";
+      let text = "Damit konnte ich leider keine Veranstaltungen finden.\n";
       text += "Gebe einen neuen Filter an oder benutze /start um zum Menü zurückzukehren.";
       bot.sendText(msg.chat, text, addOptionFilterReceived);
     }
   }
 
   function addOptionSpecificEventName (msg) {
-    var options = {};
+    const options = {};
     options[newSearchString] = addOption;
     options[cancelString] = cancelOption;
 
@@ -143,12 +143,12 @@ function main() {
       if (msg.text === newSearchString) { addOption(msg); return; }
       if (!allEvents.some(event => event === msg.text)) throw "Can't add Event with name \"" + msg.text + "\". It does not exist.";
 
-      var config = configHandler.loadConfig(msg.chat);
+      const config = configHandler.loadConfig(msg.chat);
       config.events.push(msg.text);
       config.events.sort();
       configHandler.saveConfig(msg.chat, config);
 
-      var text = msg.text + " wurde zu deinen Veranstaltungen hinzugefügt.\n";
+      let text = msg.text + " wurde zu deinen Veranstaltungen hinzugefügt.\n";
       text += "Es kann bis zu einer Stunde dauern bis dein Kalender aktualisiert wurde.";
       bot.sendText(msg.chat, text, options);
     } catch (e) {
@@ -158,19 +158,19 @@ function main() {
   }
 
   function removeOption (msg) {
-    var myEvents = configHandler.loadConfig(msg.chat).events;
+    const myEvents = configHandler.loadConfig(msg.chat).events;
     if (myEvents.length === 0) {
       bot.sendText(msg.chat, "Du hast aktuell keine Veranstaltungen in deinem Kalender.");
       return;
     }
 
-    var keyboard = bot.arrayToKeyboard(myEvents, 4, true);
+    const keyboard = bot.arrayToKeyboard(myEvents, 4, true);
     keyboard.push([cancelString]);
     bot.sendText(msg.chat, "Welche Veranstaltung möchtest du aus deinem Kalender entfernen?", removeOptionSpecificEvent, keyboard);
   }
 
   function removeOptionSpecificEvent (msg) {
-    var config = configHandler.loadConfig(msg.chat);
+    const config = configHandler.loadConfig(msg.chat);
     if (!config.events.some(event => event === msg.text)) {
       bot.sendText(msg.chat, "Du hast die Veranstaltung \"" + msg.text + "\" nicht in deinem Kalender!");
       return;
@@ -178,18 +178,18 @@ function main() {
 
     config.events = config.events.filter(event => event != msg.text);
     configHandler.saveConfig(msg.chat, config);
-    var text = "Die Veranstaltung " + msg.text + " wurde aus deinem Kalender entfernt.\n";
+    let text = "Die Veranstaltung " + msg.text + " wurde aus deinem Kalender entfernt.\n";
     text += "Es kann bis zu einer Stunde dauern bis dein Kalender aktualisiert wurde.";
 
     bot.sendText(msg.chat, text);
   }
 
   function eventListOption (msg) {
-    var myEvents = configHandler.loadConfig(msg.chat).events;
+    const myEvents = configHandler.loadConfig(msg.chat).events;
     if (myEvents.length === 0) {
       bot.sendText(msg.chat, "Du hast aktuell keine Veranstaltungen in deinem Kalender.");
     } else {
-      var text = "Du hast aktuell folgende Veranstaltungen in deinem Kalender:\n" + myEvents.map(v => "- " + v).join('\n');
+      const text = "Du hast aktuell folgende Veranstaltungen in deinem Kalender:\n" + myEvents.map(v => "- " + v).join('\n');
       bot.sendText(msg.chat, text);
     }
   }
@@ -203,13 +203,13 @@ function main() {
   }
 
   function calendarUrlOption (msg) {
-    var fs = require('fs');
-    var path = "calendar/" + msg.chat.id + ".ics";
+    const fs = require('fs');
+    const path = "calendar/" + msg.chat.id + ".ics";
 
     try {
       fs.accessSync(path);
     } catch (e) {
-      var defaultContent = "BEGIN:VCALENDAR\n";
+      let defaultContent = "BEGIN:VCALENDAR\n";
       defaultContent += "VERSION:2.0\n";
       defaultContent += "CALSCALE:GREGORIAN\n";
       defaultContent += "METHOD:PUBLISH\n";
@@ -219,7 +219,7 @@ function main() {
       fs.writeFileSync("calendar/" + msg.chat.id + ".ics", defaultContent, 'utf8');
     }
 
-    var text = "_iOS:_ [Kalender abonnieren](" + iosSubscribeLink(msg.chat) + ")\n";
+    let text = "_iOS:_ [Kalender abonnieren](" + iosSubscribeLink(msg.chat) + ")\n";
     text += "_Android:_ [Link](https://" + calendarURLFromChat(msg.chat) + ") kopieren und im Google Calendar hinzufügen (Add by URL).\n";
     text += "\nAktualisierungen können bis zu eine Stunde brauchen, bis sie im ics Kalender sind.";
     bot.sendText(msg.chat, text);
@@ -238,63 +238,63 @@ function main() {
   }
 
   function settingsOption (msg) {
-    var config = configHandler.loadConfig(msg.chat);
+    const config = configHandler.loadConfig(msg.chat);
 
-    var options = {};
+    const options = {};
     options[surroundWithIsEnabledIcon("StISys Änderungen", config.settings.stisysUpdate)] = toggleStISysUpdate;
     options["⚠️ Einstellungen und Kalender löschen ⚠️"] = deleteCalendarOption;
     options[cancelString] = cancelOption;
 
-    var text = "Welche Einstellung möchtest du anpassen?";
+    const text = "Welche Einstellung möchtest du anpassen?";
     bot.sendText(msg.chat, text, options, 1);
   }
 
   function toggleStISysUpdate (msg) {
-    var config = configHandler.loadConfig(msg.chat);
+    const config = configHandler.loadConfig(msg.chat);
     config.settings.stisysUpdate = !config.settings.stisysUpdate;
 
     configHandler.saveConfig(msg.chat, config);
     if (config.settings.stisysUpdate) {
-      var text = getEnabledIcon(true) + " Ab jetzt wirst du über StISys Ändergungen informiert.";
+      const text = getEnabledIcon(true) + " Ab jetzt wirst du über StISys Ändergungen informiert.";
     } else {
-      var text = getEnabledIcon(false) + " Du wirst jetzt nicht mehr über StISys Änderungen informiert.";
+      const text = getEnabledIcon(false) + " Du wirst jetzt nicht mehr über StISys Änderungen informiert.";
     }
     bot.sendText(msg.chat, text);
   }
 
   function adminUserOverviewOption (msg) {
-    var config = configHandler.loadConfig(msg.chat);
+    const config = configHandler.loadConfig(msg.chat);
     if (!config.admin) return;
 
-    var allFirstNames = configHandler.getAllConfigs().map(o => o.chat.first_name);
-    var keyboard = bot.arrayToKeyboard(allFirstNames);
+    const allFirstNames = configHandler.getAllConfigs().map(o => o.chat.first_name);
+    const keyboard = bot.arrayToKeyboard(allFirstNames);
     keyboard.push([cancelString]);
 
     bot.sendText(msg.chat, "Welchen Nutzer möchtest du betrachten?", adminUserInspectOption, keyboard);
   }
 
   function adminUserInspectOption (msg) {
-    var config = configHandler.loadConfig(msg.chat);
+    const config = configHandler.loadConfig(msg.chat);
     if (!config.admin) return;
 
     if (msg.text === cancelString) { cancelOption(msg); return; }
 
-    var user = configHandler.getAllConfigs().filter(v => v.chat.first_name === msg.text)[0];
-    var text = "[Kalender](" + iosSubscribeLink(user.chat) + ")\n";
+    const user = configHandler.getAllConfigs().filter(v => v.chat.first_name === msg.text)[0];
+    let text = "[Kalender](" + iosSubscribeLink(user.chat) + ")\n";
     text += "```\n" + JSON.stringify(user, null, '  ') + "\n```";
 
     bot.sendText(msg.chat, text);
   }
 
   function adminBroadcastOption (msg) {
-    var config = configHandler.loadConfig(msg.chat);
+    const config = configHandler.loadConfig(msg.chat);
     if (!config.admin) return;
 
     bot.sendText(msg.chat, "Was möchtest du allen senden?", adminBroadcastGoForIt);
   }
 
   function adminBroadcastGoForIt (msg) {
-    var config = configHandler.loadConfig(msg.chat);
+    const config = configHandler.loadConfig(msg.chat);
     if (!config.admin) return;
 
     broadcastMessageToUsersWithFilter(msg.text, user => true);
@@ -303,11 +303,11 @@ function main() {
   }
 
   function broadcastMessageToUsersWithFilter (text, filter) {
-    var users = configHandler.getAllConfigs().filter(filter);
+    const users = configHandler.getAllConfigs().filter(filter);
 
     console.log("broadcast to " + users.map(user => user.chat.first_name));
 
-    for (var i = 0; i < users.length; i++) {
+    for (let i = 0; i < users.length; i++) {
       bot.bot.sendMessage(users[i].chat.id, text, { parse_mode: "Markdown" });
     }
   }
