@@ -254,10 +254,11 @@ function main() {
     config.settings.stisysUpdate = !config.settings.stisysUpdate;
 
     configHandler.saveConfig(msg.chat, config);
+    let text;
     if (config.settings.stisysUpdate) {
-      const text = getEnabledIcon(true) + " Ab jetzt wirst du über StISys Ändergungen informiert.";
+      text = getEnabledIcon(true) + " Ab jetzt wirst du über StISys Ändergungen informiert.";
     } else {
-      const text = getEnabledIcon(false) + " Du wirst jetzt nicht mehr über StISys Änderungen informiert.";
+      text = getEnabledIcon(false) + " Du wirst jetzt nicht mehr über StISys Änderungen informiert.";
     }
     bot.sendText(msg.chat, text);
   }
