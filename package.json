@@ -2,12 +2,12 @@
   "name": "telegramHAWHHCalendarBot",
   "version": "1.0.0",
   "description": "A bot to configure your personal calender of HAW Hamburg lectures",
-  "author": "edgar@3t0.de",
+  "author": "edjopato@gmail.com",
   "main": "index.js",
   "dependencies": {
     "request": "^2.81.0",
-    "telegramBotBotHandler": "https://github.com/EdJoPaTo/telegramBotBotHandler/tarball/master",
-    "telegramBotChatConfigHandler": "https://github.com/EdJoPaTo/telegramBotChatConfigHandler/tarball/master"
+    "telegrambotbothandler": "^2.2.1",
+    "telegrambotchatconfighandler": "^1.1.1"
   },
   "devDependencies": {},
   "scripts": {
