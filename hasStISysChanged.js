@@ -29,18 +29,18 @@ function compareToOldStISys(currentStISys, callback) {
 
   try {
     var oldStISys = fs.readFileSync(_stISysFolder + "/" + _stISysFile, 'utf8');
+
+    if (currentStISys === oldStISys) {
+      callback(false);
+      return;
+    } else {
+      fs.writeFileSync(_stISysFolder + "/" + _stISysFile, currentStISys, 'utf8');
+      callback(true);
+    }
   } catch (e) {
     fs.writeFileSync(_stISysFolder + "/" + _stISysFile, currentStISys, 'utf8');
     callback();
     return;
-  }
-
-  if (currentStISys === oldStISys) {
-    callback(false);
-    return;
-  } else {
-    fs.writeFileSync(_stISysFolder + "/" + _stISysFile, currentStISys, 'utf8');
-    callback(true);
   }
 }
 
