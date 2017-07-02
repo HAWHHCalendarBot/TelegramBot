@@ -1,5 +1,5 @@
-const ChatConfigHandler = require('telegramBotChatConfigHandler');
-const BotHandler = require('telegramBotBotHandler');
+const ChatConfigHandler = require('telegrambotchatconfighandler');
+const BotHandler = require('telegrambotbothandler');
 const request = require('request');
 const hasStISysChanged = require('./hasStISysChanged.js');
 
