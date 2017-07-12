@@ -1,6 +1,6 @@
-const ChatConfigHandler = require('telegrambotchatconfighandler');
 const BotHandler = require('telegrambotbothandler');
-const request = require('request');
+const ChatConfigHandler = require('telegrambotchatconfighandler');
+
 const hasStISysChanged = require('./hasStISysChanged.js');
 
 // Lade Events alle Stunde
