@@ -1,0 +1,11 @@
+.*
+Dockerfile
+node_modules
+README.md
+
+# botfiles
+botfather-settings
+eventfiles
+tmp
+token.txt
+userconfig

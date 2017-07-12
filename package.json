@@ -14,7 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "config": {
-    "tokenpath": "token.txt"
+    "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt"
   },
   "repository": {
     "type": "git",
