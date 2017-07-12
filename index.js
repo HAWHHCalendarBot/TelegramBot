@@ -94,7 +94,7 @@ function main() {
       bot.sendText(msg.chat, "Es freut mich, dass du mich doch nicht löschen wolltest. 👍");
     } else {
       configHandler.removeConfig(msg.chat);
-      bot.bot.sendMessage(msg.chat.id, "Dein Kalender wurde zum Löschen vorgemerkt. Das Löschen kann bis zu einer Stunde dauern.\nDu wirst keine Nachrichten mehr vom Bot erhalten.", { parse_mode: "Markdown", reply_markup: JSON.stringify({ hide_keyboard: true }) });
+      bot.bot.sendMessage(msg.chat.id, "Dein Kalender wurde zum Löschen vorgemerkt.\nDu wirst keine Nachrichten mehr vom Bot erhalten.", { parse_mode: "Markdown", reply_markup: JSON.stringify({ hide_keyboard: true }) });
     }
   }
 
@@ -149,8 +149,7 @@ function main() {
       config.events.sort();
       configHandler.saveConfig(msg.chat, config);
 
-      let text = msg.text + " wurde zu deinen Veranstaltungen hinzugefügt.\n";
-      text += "Es kann bis zu einer Stunde dauern bis dein Kalender aktualisiert wurde.";
+      let text = msg.text + " wurde zu deinen Veranstaltungen hinzugefügt.";
       bot.sendText(msg.chat, text, options);
     } catch (e) {
       console.log(e);
@@ -179,8 +178,7 @@ function main() {
 
     config.events = config.events.filter(event => event != msg.text);
     configHandler.saveConfig(msg.chat, config);
-    let text = "Die Veranstaltung " + msg.text + " wurde aus deinem Kalender entfernt.\n";
-    text += "Es kann bis zu einer Stunde dauern bis dein Kalender aktualisiert wurde.";
+    let text = "Die Veranstaltung " + msg.text + " wurde aus deinem Kalender entfernt.";
 
     bot.sendText(msg.chat, text);
   }
@@ -205,8 +203,7 @@ function main() {
 
   function calendarUrlOption (msg) {
     let text = "_iOS:_ [Kalender abonnieren](" + iosSubscribeLink(msg.chat) + ")\n";
-    text += "_Android:_ [Link](https://" + calendarURLFromChat(msg.chat) + ") kopieren und im Google Calendar hinzufügen (Add by URL).\n";
-    text += "\nAktualisierungen können bis zu eine Stunde brauchen, bis sie im ics Kalender sind.";
+    text += "_Android:_ [Link](https://" + calendarURLFromChat(msg.chat) + ") kopieren und im Google Calendar hinzufügen (Add by URL).";
     bot.sendText(msg.chat, text);
   }
 
