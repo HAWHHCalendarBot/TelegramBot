@@ -194,11 +194,11 @@ function main() {
   }
 
   function calendarURLFromChat (chat) {
-    return "3t0.de/study/events/tgBot/" + chat.id + ".ics";
+    return "calendarbot.hawhh.de/tg/" + chat.id + ".ics";
   }
 
   function iosSubscribeLink (chat) {
-    return "https://3t0.de/study/ics.php?url=" + calendarURLFromChat(chat);
+    return "https://calendarbot.hawhh.de/ics.php?url=" + calendarURLFromChat(chat);
   }
 
   function calendarUrlOption (msg) {
