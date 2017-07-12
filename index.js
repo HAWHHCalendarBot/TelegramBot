@@ -34,7 +34,7 @@ function getFilteredEvents(filter, blacklist) {
 
 function main() {
   const configHandler = new ChatConfigHandler('userconfig', { events: [], settings: {} });
-  const bot = new BotHandler("token.txt");
+  const bot = new BotHandler(process.env.npm_package_config_tokenpath);
   hasStISysChanged(notifyUsersWhenStISysHasChanged, 15 * 60 * 1000);
 
   bot.setMainMenuText(function (chat) {

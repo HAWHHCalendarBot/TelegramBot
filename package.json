@@ -14,6 +14,9 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "config": {
+    "tokenpath": "token.txt"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/EdJoPaTo/telegramHAWHHCalendarBot.git"
