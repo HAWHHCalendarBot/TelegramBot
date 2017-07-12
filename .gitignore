@@ -2,7 +2,7 @@
 node_modules
 
 # botfiles
+eventfiles
+tmp
 token.txt
 userconfig
-calendar
-tmp

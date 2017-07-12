@@ -1,5 +1,6 @@
 const BotHandler = require('telegrambotbothandler');
 const ChatConfigHandler = require('telegrambotchatconfighandler');
+const fs = require('fs');
 
 const hasStISysChanged = require('./hasStISysChanged.js');
 
@@ -10,8 +11,8 @@ setInterval(updateEvents, 1000 * 60 * 60);
 updateEvents();
 
 function updateEvents() {
-  request("https://3t0.de/study/events/all.txt", function(error, response, body) {
-    const list = body.split("\n").filter(element => element !== '');
+  fs.readFile("eventfiles/all.txt", 'utf8', (err, data) => {
+    const list = data.split("\n").filter(element => element !== '');
     console.log(new Date() + " " + list.length + " Events geladen.");
     allEvents = list;
 
