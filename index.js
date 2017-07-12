@@ -204,22 +204,6 @@ function main() {
   }
 
   function calendarUrlOption (msg) {
-    const fs = require('fs');
-    const path = "calendar/" + msg.chat.id + ".ics";
-
-    try {
-      fs.accessSync(path);
-    } catch (e) {
-      let defaultContent = "BEGIN:VCALENDAR\n";
-      defaultContent += "VERSION:2.0\n";
-      defaultContent += "CALSCALE:GREGORIAN\n";
-      defaultContent += "METHOD:PUBLISH\n";
-      defaultContent += "X-WR-CALNAME:@HAWHHCalendarBot (" + msg.chat.first_name + ")\n";
-      defaultContent += "X-WR-TIMEZONE:Europe/Berlin\n";
-      defaultContent += "END:VCALENDAR";
-      fs.writeFileSync("calendar/" + msg.chat.id + ".ics", defaultContent, 'utf8');
-    }
-
     let text = "_iOS:_ [Kalender abonnieren](" + iosSubscribeLink(msg.chat) + ")\n";
     text += "_Android:_ [Link](https://" + calendarURLFromChat(msg.chat) + ") kopieren und im Google Calendar hinzufügen (Add by URL).\n";
     text += "\nAktualisierungen können bis zu eine Stunde brauchen, bis sie im ics Kalender sind.";
