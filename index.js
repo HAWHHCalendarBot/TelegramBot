@@ -111,13 +111,13 @@ function main() {
       const myEvents = configHandler.loadConfig(msg.chat).events;
       let possibleEvents = getFilteredEvents(msg.text, myEvents);
       if (possibleEvents.length === 0) throw "Can't find an Event with name \"" + msg.text + "\".";
-      const longResult = possibleEvents.length > 100;
+      const longResult = possibleEvents.length > 16;
 
       if (longResult) {
-        possibleEvents = possibleEvents.slice(0, 100);
+        possibleEvents = possibleEvents.slice(0, 16);
       }
 
-      const keyboard = bot.arrayToKeyboard(possibleEvents, 5, true);
+      const keyboard = bot.arrayToKeyboard(possibleEvents, 2);
       keyboard.unshift([newSearchString]);
       keyboard.push([cancelString]);
 
