@@ -18,11 +18,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/EdJoPaTo/telegramHAWHHCalendarBot.git"
+    "url": "https://github.com/HAWHHCalendarBot/telegrambot.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/EdJoPaTo/telegramHAWHHCalendarBot/issues"
+    "url": "https://github.com/HAWHHCalendarBot/telegrambot/issues"
   },
   "homepage": "https://calendarbot.hawhh.de"
 }
