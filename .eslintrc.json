@@ -1,0 +1,19 @@
+{
+  "env": {
+    "node": true
+  },
+  "extends": "standard",
+  "rules": {
+    "no-multiple-empty-lines": ["warn", {
+      "max": 2,
+      "maxEOF": 1
+    }],
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
+    "semi": "warn",
+    "quotes": "warn"
+  }
+}

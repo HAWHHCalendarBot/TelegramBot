@@ -4,14 +4,25 @@
   "description": "A bot to configure your personal calender of HAW Hamburg lectures",
   "author": "edjopato@gmail.com",
   "main": "index.js",
+  "engines": {
+    "node": ">=7.6"
+  },
   "dependencies": {
     "telegrambotbothandler": "^2.2.1",
     "telegrambotchatconfighandler": "^1.1.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^4.4.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
   "scripts": {
+    "eslint": "eslint .",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run eslint"
   },
   "config": {
     "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt"
