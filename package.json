@@ -1,6 +1,7 @@
 {
   "name": "telegramHAWHHCalendarBot",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "private": true,
   "description": "A bot to configure your personal calendar of HAW Hamburg lectures",
   "author": "edjopato@gmail.com",
   "main": "index.js",
@@ -9,8 +10,7 @@
   },
   "dependencies": {
     "request": "^2.81.0",
-    "telegrambotbothandler": "^2.2.1",
-    "telegrambotchatconfighandler": "^1.1.1"
+    "telegraf": "^3.9.0"
   },
   "devDependencies": {
     "eslint": "^4.4.1",
