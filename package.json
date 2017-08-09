@@ -8,6 +8,7 @@
     "node": ">=7.6"
   },
   "dependencies": {
+    "request": "^2.81.0",
     "telegrambotbothandler": "^2.2.1",
     "telegrambotchatconfighandler": "^1.1.1"
   },
