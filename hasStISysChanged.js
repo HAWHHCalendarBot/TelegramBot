@@ -10,7 +10,7 @@ function getCurrentStISys(callback) {
       console.log(error);
       return;
     }
-    if (response.statusCode != 200) {
+    if (response.statusCode !== 200) {
       console.log("StISys down: " + response.statusCode + " " + response.statusMessage);
       return;
     }
