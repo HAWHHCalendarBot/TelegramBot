@@ -12,8 +12,6 @@ const events = require('./parts/events.js').middleware()
 const settings = require('./parts/settings.js').middleware()
 const start = require('./parts/start.js').middleware()
 
-hasStISysChanged(notifyUsersWhenStISysHasChanged, 15 * 60 * 1000)
-
 const token = fs.readFileSync(process.env.npm_package_config_tokenpath, 'utf8').trim()
 const bot = new Telegraf(token)
 
@@ -37,7 +35,11 @@ bot.use(start)
 bot.use(addevents)
 
 
-function notifyUsersWhenStISysHasChanged(hasChanged) {
+setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
+checkStISysChangeAndNotify()
+
+async function checkStISysChangeAndNotify() {
+  const hasChanged = await hasStISysChanged()
   console.log(new Date(), 'StISys has changed:', hasChanged)
   if (!hasChanged) return
 

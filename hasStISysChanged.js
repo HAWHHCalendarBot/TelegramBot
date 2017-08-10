@@ -1,28 +1,29 @@
-const request = require('request')
 const fs = require('fs')
+const request = require('request-promise-native')
 
 const _stISysFolder = 'tmp'
 const _stISysFile = 'StISys.html'
 
-function getCurrentStISys(callback) {
-  request('https://stisys.haw-hamburg.de/', function(error, response, body) {
-    if (error) {
-      console.log(error)
-      return
-    }
-    if (response.statusCode !== 200) {
-      console.log('StISys down: ' + response.statusCode + ' ' + response.statusMessage)
-      return
-    }
-
-    const match = /;jsessionid=[^"]+/.exec(body)
-    const tmp = body.replace(match[0], '')
-
-    compareToOldStISys(tmp, callback)
+async function getCurrentStISys() {
+  const response = await request({
+    encoding: 'latin1',
+    resolveWithFullResponse: true,
+    simple: false,
+    uri: 'https://stisys.haw-hamburg.de/'
   })
+
+  if (response.statusCode !== 200) {
+    console.log(Date.now(), 'StISys down', response.statusCode, response.statusMessage)
+    return
+  }
+
+  const match = /;jsessionid=[^"]+/.exec(response.body)
+  const tmp = response.body.replace(match[0], '')
+
+  return tmp
 }
 
-function compareToOldStISys(currentStISys, callback) {
+function compareToOldStISys(currentStISys) {
   try {
     fs.mkdirSync(_stISysFolder, '0755')
   } catch (e) {}
@@ -31,19 +32,18 @@ function compareToOldStISys(currentStISys, callback) {
     const oldStISys = fs.readFileSync(_stISysFolder + '/' + _stISysFile, 'utf8')
 
     if (currentStISys === oldStISys) {
-      callback(false)
-      return
+      return false
     } else {
       fs.writeFileSync(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
-      callback(true)
+      return true
     }
   } catch (e) {
     fs.writeFileSync(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
-    callback()
+    return undefined
   }
 }
 
-module.exports = function(callback, delay) {
-  getCurrentStISys(callback)
-  return setInterval(getCurrentStISys, delay, callback)
+module.exports = async function() {
+  const currentStISys = await getCurrentStISys()
+  return compareToOldStISys(currentStISys)
 }
