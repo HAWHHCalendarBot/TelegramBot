@@ -3,4 +3,4 @@ add - Füge weitere Veranstaltungen zu deinem Kalender hinzu
 list - Liste alle Veranstaltungen in meinem Kalender auf
 remove - Entferne Veranstaltungen aus deinem Kalender
 about - zeige Informationen über diesen Bot
-settings - setzte Einstellungen des Bots
+settings - setze Einstellungen des Bots
