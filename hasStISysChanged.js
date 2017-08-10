@@ -1,54 +1,53 @@
-const request = require('request');
-const fs = require('fs');
+const request = require('request')
+const fs = require('fs')
 
-const _stISysFolder = "tmp";
-const _stISysFile = "StISys.html";
+const _stISysFolder = 'tmp'
+const _stISysFile = 'StISys.html'
 
 function getCurrentStISys(callback) {
-  request("https://stisys.haw-hamburg.de/", function(error, response, body) {
+  request('https://stisys.haw-hamburg.de/', function(error, response, body) {
     if (error) {
-      console.log(error);
-      return;
+      console.log(error)
+      return
     }
     if (response.statusCode !== 200) {
-      console.log("StISys down: " + response.statusCode + " " + response.statusMessage);
-      return;
+      console.log('StISys down: ' + response.statusCode + ' ' + response.statusMessage)
+      return
     }
 
-    const match = /;jsessionid=[^"]+/.exec(body);
-    const tmp = body.replace(match[0], "");
+    const match = /;jsessionid=[^"]+/.exec(body)
+    const tmp = body.replace(match[0], '')
 
-    compareToOldStISys(tmp, callback);
-  });
+    compareToOldStISys(tmp, callback)
+  })
 }
 
 function compareToOldStISys(currentStISys, callback) {
   try {
-    fs.mkdirSync(_stISysFolder, '0755');
+    fs.mkdirSync(_stISysFolder, '0755')
   } catch (e) {}
 
   try {
-    const oldStISys = fs.readFileSync(_stISysFolder + "/" + _stISysFile, 'utf8');
+    const oldStISys = fs.readFileSync(_stISysFolder + '/' + _stISysFile, 'utf8')
 
     if (currentStISys === oldStISys) {
-      callback(false);
-      return;
+      callback(false)
+      return
     } else {
-      fs.writeFileSync(_stISysFolder + "/" + _stISysFile, currentStISys, 'utf8');
-      callback(true);
+      fs.writeFileSync(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
+      callback(true)
     }
   } catch (e) {
-    fs.writeFileSync(_stISysFolder + "/" + _stISysFile, currentStISys, 'utf8');
-    callback();
-    return;
+    fs.writeFileSync(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
+    callback()
   }
 }
 
 function displayStuff(hasChanged) {
-  console.log("StISys has changed: " + hasChanged);
+  console.log('StISys has changed: ' + hasChanged)
 }
 
 module.exports = function(callback, delay) {
-  getCurrentStISys(callback);
-  return setInterval(getCurrentStISys, delay, callback);
-};
+  getCurrentStISys(callback)
+  return setInterval(getCurrentStISys, delay, callback)
+}
