@@ -16,7 +16,7 @@ updateEvents()
 function updateEvents() {
   const data = fs.readFileSync('eventfiles/all.txt', 'utf8')
   const list = data.split('\n').filter(element => element !== '')
-  console.log(new Date() + ' ' + list.length + ' Events geladen.')
+  console.log(new Date(), list.length, 'Events geladen.')
   allEvents = list
 }
 
