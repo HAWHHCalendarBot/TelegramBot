@@ -1,5 +1,11 @@
 const fs = require('fs')
 const request = require('request-promise-native')
+const util = require('util')
+
+// Promisify the fs.writeFile and fs.readFile
+const mkdir = util.promisify(fs.mkdir)
+const readFile = util.promisify(fs.readFile)
+const writeFile = util.promisify(fs.writeFile)
 
 const _stISysFolder = 'tmp'
 const _stISysFile = 'StISys.html'
@@ -23,22 +29,22 @@ async function getCurrentStISys() {
   return tmp
 }
 
-function compareToOldStISys(currentStISys) {
+async function compareToOldStISys(currentStISys) {
   try {
-    fs.mkdirSync(_stISysFolder, '0755')
+    await mkdir(_stISysFolder, '0755')
   } catch (e) {}
 
   try {
-    const oldStISys = fs.readFileSync(_stISysFolder + '/' + _stISysFile, 'utf8')
+    const oldStISys = await readFile(_stISysFolder + '/' + _stISysFile, 'utf8')
 
     if (currentStISys === oldStISys) {
       return false
     } else {
-      fs.writeFileSync(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
+      await writeFile(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
       return true
     }
   } catch (e) {
-    fs.writeFileSync(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
+    await writeFile(_stISysFolder + '/' + _stISysFile, currentStISys, 'utf8')
     return undefined
   }
 }
