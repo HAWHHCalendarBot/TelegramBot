@@ -43,10 +43,6 @@ function compareToOldStISys(currentStISys, callback) {
   }
 }
 
-function displayStuff(hasChanged) {
-  console.log('StISys has changed: ' + hasChanged)
-}
-
 module.exports = function(callback, delay) {
   getCurrentStISys(callback)
   return setInterval(getCurrentStISys, delay, callback)
