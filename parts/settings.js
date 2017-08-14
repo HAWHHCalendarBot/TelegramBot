@@ -73,7 +73,7 @@ bot.action('s:del', ctx => {
 })
 
 bot.hears('Ja, ich will!', (ctx, next) => {
-  if (!ctx.message || !ctx.message.reply_to_message || ctx.message.reply_to_message.text !== deleteQuestion) {
+  if (!(ctx.message && !ctx.message.reply_to_message && ctx.message.reply_to_message.text === deleteQuestion)) {
     return next()
   }
 

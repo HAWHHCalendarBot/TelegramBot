@@ -26,7 +26,7 @@ bot.on('text', (ctx, next) => {
     return next()
   }
 
-  if (!ctx.message || !ctx.message.reply_to_message || ctx.message.reply_to_message.text !== broadcastQuestion) {
+  if (!(ctx.message && !ctx.message.reply_to_message && ctx.message.reply_to_message.text === broadcastQuestion)) {
     return next()
   }
 

@@ -51,7 +51,7 @@ function replyTextFromResults(results) {
 }
 
 bot.hears(/.+/, (ctx, next) => {
-  if (!ctx.message || !ctx.message.reply_to_message || ctx.message.reply_to_message.text !== addQuestion) {
+  if (!(ctx.message && !ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion)) {
     return next()
   }
 
