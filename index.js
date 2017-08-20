@@ -27,7 +27,7 @@ const chatconfig = new Chatconfig('userconfig', {
 })
 bot.use(chatconfig.middleware())
 
-bot.use(admin)
+bot.use(Telegraf.optional(ctx => ctx.state.userconfig.admin, admin))
 bot.use(events)
 bot.use(settings)
 bot.use(start)

@@ -7,25 +7,13 @@ const Markup = Telegraf.Markup
 const bot = new Telegraf.Composer()
 module.exports = bot
 
-function isAdmin(ctx) {
-  return ctx.state.userconfig.admin
-}
-
 const broadcastQuestion = 'Hey admin!\nWas möchtest du senden?'
 
-bot.command('broadcast', (ctx, next) => {
-  if (!isAdmin(ctx)) {
-    return next()
-  }
-
+bot.command('broadcast', ctx => {
   return ctx.reply(broadcastQuestion, Markup.forceReply().extra())
 })
 
 bot.on('text', (ctx, next) => {
-  if (!isAdmin(ctx)) {
-    return next()
-  }
-
   if (!(ctx.message && !ctx.message.reply_to_message && ctx.message.reply_to_message.text === broadcastQuestion)) {
     return next()
   }
@@ -39,11 +27,7 @@ bot.on('text', (ctx, next) => {
   )
 })
 
-bot.action('broadcast!', (ctx, next) => {
-  if (!isAdmin(ctx)) {
-    return next()
-  }
-
+bot.action('broadcast!', ctx => {
   return Promise.all([
     ctx.userconfig.broadcast(ctx.callbackQuery.message.text, Extra.markdown()),
     ctx.editMessageReplyMarkup(Markup.inlineKeyboard([])),
