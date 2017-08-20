@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Telegraf = require('telegraf')
 
-const generateInlineKeyboardMarkup = require('../helper.js').generateInlineKeyboardMarkup
+const { generateInlineKeyboardMarkup } = require('../helper.js')
 
 const Extra = Telegraf.Extra
 const Markup = Telegraf.Markup
@@ -50,22 +50,29 @@ function replyTextFromResults(results) {
   return text
 }
 
+function replyKeyboardFromResults(results) {
+  if (results.length > resultLimit) {
+    results = results.slice(0, resultLimit)
+  }
+  const eventKeys = generateInlineKeyboardMarkup('a', results, 1)
+
+  return eventKeys
+}
+
 bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion, ctx => {
   const pattern = ctx.match[0]
-  let results = findEventsByPatternForUser(ctx, pattern)
+  const results = findEventsByPatternForUser(ctx, pattern)
 
   if (results.length === 0) {
     return ctx.reply('Ich konnte leider keine Veranstaltungen für deine Suche finden. 😬')
   }
 
   const text = replyTextFromResults(results)
-  if (results.length > resultLimit) {
-    results = results.slice(0, resultLimit)
-  }
+  const keyboard = replyKeyboardFromResults(results)
 
   return ctx.replyWithMarkdown(text, Extra
     .inReplyTo(ctx.message.message_id)
-    .markup(generateInlineKeyboardMarkup('a', results, 1))
+    .markup(keyboard)
   )
 }))
 
@@ -83,17 +90,15 @@ bot.action(/a:(.+)/, async ctx => {
 
   // Update message
   const pattern = ctx.update.callback_query.message.reply_to_message.text
-  let results = findEventsByPatternForUser(ctx, pattern)
+  const results = findEventsByPatternForUser(ctx, pattern)
 
   if (results.length === 0) {
     ctx.editMessageText('Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.\nMit /list kannst du dir die Liste deiner Veranstaltungen ansehen oder mit /remove Veranstaltungen aus deinem Kalender entfernen.', Markup.inlineKeyboard([]).extra())
   } else {
     const text = replyTextFromResults(results)
-    if (results.length > resultLimit) {
-      results = results.slice(0, resultLimit)
-    }
+    const keyboard = replyKeyboardFromResults(results)
 
-    ctx.editMessageText(text, generateInlineKeyboardMarkup('a', results, 1).extra())
+    ctx.editMessageText(text, Extra.markup(keyboard))
   }
 
 
