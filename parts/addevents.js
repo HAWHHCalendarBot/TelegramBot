@@ -59,6 +59,23 @@ function replyKeyboardFromResults(results) {
   return eventKeys
 }
 
+function updateMessage(ctx) {
+  const pattern = ctx.message.reply_to_message.text
+  const results = findEventsByPatternForUser(ctx, pattern)
+
+  let text
+  if (results.length === 0) {
+    text = 'Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.'
+  } else {
+    text = replyTextFromResults(results)
+  }
+  text += '\n\nMit /start kannst du das Hauptmenü erneut aufrufen.'
+  const keyboard = replyKeyboardFromResults(results)
+
+  ctx.editMessageText(text, Extra.markup(keyboard))
+}
+
+
 bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion, ctx => {
   const pattern = ctx.match[0]
   const results = findEventsByPatternForUser(ctx, pattern)
@@ -87,20 +104,7 @@ bot.action(/a:(.+)/, async ctx => {
     await ctx.userconfig.save()
   }
 
-
-  // Update message
-  const pattern = ctx.update.callback_query.message.reply_to_message.text
-  const results = findEventsByPatternForUser(ctx, pattern)
-
-  if (results.length === 0) {
-    ctx.editMessageText('Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.\nMit /list kannst du dir die Liste deiner Veranstaltungen ansehen oder mit /remove Veranstaltungen aus deinem Kalender entfernen.', Markup.inlineKeyboard([]).extra())
-  } else {
-    const text = replyTextFromResults(results)
-    const keyboard = replyKeyboardFromResults(results)
-
-    ctx.editMessageText(text, Extra.markup(keyboard))
-  }
-
+  updateMessage(ctx)
 
   // answerCallbackQuery
   if (!isExisting) {
