@@ -72,11 +72,7 @@ bot.action('s:del', ctx => {
   ])
 })
 
-bot.hears('Ja, ich will!', (ctx, next) => {
-  if (!(ctx.message && !ctx.message.reply_to_message && ctx.message.reply_to_message.text === deleteQuestion)) {
-    return next()
-  }
-
+bot.hears('Ja, ich will!', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === deleteQuestion, ctx => {
   ctx.userconfig.remove()
   return ctx.reply('Deine Daten werden gelöscht…')
-})
+}))

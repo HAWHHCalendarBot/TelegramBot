@@ -50,11 +50,7 @@ function replyTextFromResults(results) {
   return text
 }
 
-bot.hears(/.+/, (ctx, next) => {
-  if (!(ctx.message && !ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion)) {
-    return next()
-  }
-
+bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion, ctx => {
   const pattern = ctx.match[0]
   let results = findEventsByPatternForUser(ctx, pattern)
 
@@ -71,7 +67,7 @@ bot.hears(/.+/, (ctx, next) => {
     .inReplyTo(ctx.message.message_id)
     .markup(generateInlineKeyboardMarkup('a', results, 1))
   )
-})
+}))
 
 bot.action(/a:(.+)/, async ctx => {
   const event = ctx.match[1]
