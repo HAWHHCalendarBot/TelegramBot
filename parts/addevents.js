@@ -1,14 +1,14 @@
 const fs = require('fs')
 const Telegraf = require('telegraf')
 
-const { generateInlineKeyboardMarkup } = require('../helper.js')
+const { generateCallbackButtons } = require('../helper.js')
 
 const Extra = Telegraf.Extra
 const Markup = Telegraf.Markup
 
 
 let allEvents = ['MINF-MD', 'MINF-TTI', 'BTI-SE2']
-const resultLimit = 10
+const resultLimit = 5
 
 setInterval(updateEvents, 1000 * 60 * 60)
 updateEvents()
@@ -41,38 +41,48 @@ function addHandler(ctx) {
   return ctx.reply(addQuestion, Extra.markup(Markup.forceReply()))
 }
 
-function replyTextFromResults(results) {
-  let text = 'Ich habe diese Veranstaltungen gefunden. Welche möchtest du hinzufügen?'
+function replyKeyboardFromResults(results, page = 0) {
+  const pages = Math.ceil(results.length / resultLimit)
+  page = Math.max(0, Math.min(page, pages - 1))
 
   if (results.length > resultLimit) {
-    text += `\nDie Suche hatte ${results.length} Treffer. Die Ergebnisse wurden auf ${resultLimit} gekürzt.`
+    results = results.slice(page * resultLimit)
   }
-  return text
-}
-
-function replyKeyboardFromResults(results) {
   if (results.length > resultLimit) {
     results = results.slice(0, resultLimit)
   }
-  const eventKeys = generateInlineKeyboardMarkup('a', results, 1)
+  const eventKeys = generateCallbackButtons('a', results)
 
-  return eventKeys
+  const paginationKeys = []
+  for (let i = 0; i < pages; i++) {
+    if (i === page) {
+      paginationKeys.push(Markup.callbackButton(`▶️ ${i + 1}`, `p:${i}`))
+    } else {
+      paginationKeys.push(Markup.callbackButton(`${i + 1}`, `p:${i}`))
+    }
+  }
+
+  const keyboard = []
+  for (const key of eventKeys) {
+    keyboard.push([key])
+  }
+  keyboard.push(paginationKeys)
+
+  return Markup.inlineKeyboard(keyboard)
 }
 
 function updateMessage(ctx) {
   const pattern = ctx.callbackQuery.message.reply_to_message.text
   const results = findEventsByPatternForUser(ctx, pattern)
 
-  let text
-  if (results.length === 0) {
-    text = 'Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.'
-  } else {
-    text = replyTextFromResults(results)
-  }
-  text += '\n\nMit /start kannst du das Hauptmenü erneut aufrufen.'
-  const keyboard = replyKeyboardFromResults(results)
+  const keyboard = replyKeyboardFromResults(results, ctx.session.page)
 
-  ctx.editMessageText(text, Extra.markup(keyboard))
+  if (results.length === 0) {
+    const text = 'Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.\nMit /start kannst du zurück zum Hauptmenü gehen oder mit /add weitere Veranstaltungen hinzufügen.'
+    return ctx.editMessageText(text, Extra.markup(keyboard))
+  } else {
+    return ctx.editMessageReplyMarkup(keyboard)
+  }
 }
 
 
@@ -84,7 +94,7 @@ bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_mes
     return ctx.reply('Ich konnte leider keine Veranstaltungen für deine Suche finden. 😬')
   }
 
-  const text = replyTextFromResults(results)
+  const text = 'Ich habe diese Veranstaltungen gefunden. Welche möchtest du hinzufügen?\n\nMit /start kannst du das Hauptmenü erneut aufrufen.'
   const keyboard = replyKeyboardFromResults(results)
 
   return ctx.replyWithMarkdown(text, Extra
@@ -92,6 +102,14 @@ bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_mes
     .markup(keyboard)
   )
 }))
+
+bot.action(/p:(\d+)/, ctx => {
+  ctx.session.page = Number(ctx.match[1])
+  return Promise.all([
+    updateMessage(ctx),
+    ctx.answerCallbackQuery('')
+  ])
+})
 
 bot.action(/a:(.+)/, async ctx => {
   const event = ctx.match[1]
