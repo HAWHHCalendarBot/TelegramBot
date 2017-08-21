@@ -66,7 +66,9 @@ function replyKeyboardFromResults(results, page = 0) {
   for (const key of eventKeys) {
     keyboard.push([key])
   }
-  keyboard.push(paginationKeys)
+  if (pages > 1) {
+    keyboard.push(paginationKeys)
+  }
 
   return Markup.inlineKeyboard(keyboard)
 }
