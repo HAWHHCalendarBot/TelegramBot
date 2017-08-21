@@ -60,7 +60,7 @@ function replyKeyboardFromResults(results) {
 }
 
 function updateMessage(ctx) {
-  const pattern = ctx.message.reply_to_message.text
+  const pattern = ctx.callbackQuery.message.reply_to_message.text
   const results = findEventsByPatternForUser(ctx, pattern)
 
   let text
