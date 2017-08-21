@@ -8,6 +8,7 @@ const Chatconfig = require('./lib/chatconfig.js')
 
 const addevents = require('./parts/addevents.js').middleware()
 const admin = require('./parts/admin.js').middleware()
+const easterEggs = require('./parts/easterEggs.js').middleware()
 const events = require('./parts/events.js').middleware()
 const settings = require('./parts/settings.js').middleware()
 const start = require('./parts/start.js').middleware()
@@ -27,7 +28,9 @@ const chatconfig = new Chatconfig('userconfig', {
 })
 bot.use(chatconfig.middleware())
 
+bot.use(easterEggs)
 bot.use(Telegraf.optional(ctx => ctx.state.userconfig.admin, admin))
+
 bot.use(events)
 bot.use(settings)
 bot.use(start)
