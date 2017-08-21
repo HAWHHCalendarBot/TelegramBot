@@ -7,6 +7,13 @@ const Markup = Telegraf.Markup
 const bot = new Telegraf.Composer()
 module.exports = bot
 
+bot.command('start', (ctx, next) => {
+  return Promise.all([
+    ctx.replyWithMarkdown('Hey admin!\n\n*Commands*\n/broadcast'),
+    next()
+  ])
+})
+
 const broadcastQuestion = 'Hey admin!\nWas möchtest du senden?'
 
 bot.command('broadcast', ctx => {
