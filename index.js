@@ -51,4 +51,9 @@ async function checkStISysChangeAndNotify() {
   chatconfig.broadcast(bot.telegram, text, Extra.markdown(), user => user.config.settings.stisysUpdate)
 }
 
+bot.catch(err => {
+  if (err.description === 'Bad Request: message is not modified') return
+  console.error(err)
+})
+
 bot.startPolling()
