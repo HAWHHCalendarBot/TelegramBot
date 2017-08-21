@@ -63,7 +63,9 @@ bot.action('s:stisys:off', async ctx => {
   return stisysUpdate(ctx, 'StISys Update wurde ausgeschaltet.')
 })
 
-const deleteQuestion = 'Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "Ja, ich will!"'
+const deleteConfirmString = 'Ja, ich will!'
+
+const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "${deleteConfirmString}"`
 
 bot.action('s:del', ctx => {
   return Promise.all([
@@ -72,7 +74,11 @@ bot.action('s:del', ctx => {
   ])
 })
 
-bot.hears('Ja, ich will!', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === deleteQuestion, ctx => {
-  ctx.userconfig.remove()
-  return ctx.reply('Deine Daten werden gelöscht…')
+bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === deleteQuestion, ctx => {
+  if (ctx.match[0] === deleteConfirmString) {
+    ctx.userconfig.remove()
+    return ctx.reply('Deine Daten werden gelöscht…')
+  } else {
+    return ctx.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')
+  }
 }))
