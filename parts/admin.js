@@ -25,7 +25,7 @@ bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_mess
 
 bot.action('broadcast!', ctx => {
   return Promise.all([
-    ctx.userconfig.broadcast(ctx.callbackQuery.message.text, Extra.markdown()),
+    ctx.userconfig.broadcast(ctx.callbackQuery.message.text, Extra.markdown().markup(Markup.removeKeyboard())),
     ctx.editMessageReplyMarkup(Markup.inlineKeyboard([])),
     ctx.answerCallbackQuery('Broadcast wird versendet…')
   ])
