@@ -18,7 +18,7 @@ bot.command(['start', 'url'], ctx => {
     keyboardKeys.push(Markup.urlButton('Kalender abonnieren', `https://calendarbot.hawhh.de/ics.php?url=${url}`))
     keyboardKeys.push(Markup.urlButton('Kalender URL', `https://${url}`))
   }
-  text += 'Mit /about kannst du mehr über diesen Bot erfahren.'
+  text += '\nMit /about kannst du mehr über diesen Bot erfahren.'
   text += '\nUnter /settings gibt es genauere Einstellungen zu deinem Kalender oder diesem Bot.'
 
   ctx.reply(text, Markup.inlineKeyboard(keyboardKeys, {
