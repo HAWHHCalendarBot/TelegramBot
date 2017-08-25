@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Telegraf = require('telegraf')
 
-const Extra = Telegraf.Extra
+const { Extra, Markup } = Telegraf
 
 const hasStISysChanged = require('./hasStISysChanged.js')
 const Chatconfig = require('./lib/chatconfig.js')
@@ -48,7 +48,7 @@ async function checkStISysChangeAndNotify() {
 
   const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
 
-  chatconfig.broadcast(bot.telegram, text, Extra.markdown(), user => user.config.settings.stisysUpdate)
+  chatconfig.broadcast(bot.telegram, text, Extra.markdown().markup(Markup.removeKeyboard()), user => user.config.settings.stisysUpdate)
 }
 
 bot.catch(err => {
