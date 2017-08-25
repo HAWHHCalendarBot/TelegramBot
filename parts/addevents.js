@@ -7,7 +7,7 @@ const Extra = Telegraf.Extra
 const Markup = Telegraf.Markup
 
 
-let allEvents = ['MINF-MD', 'MINF-TTI', 'BTI-SE2']
+let allEvents = []
 const resultLimit = 5
 
 setInterval(updateEvents, 1000 * 60 * 60)
