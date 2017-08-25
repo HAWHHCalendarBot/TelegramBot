@@ -16,7 +16,7 @@ updateEvents()
 function updateEvents() {
   const data = fs.readFileSync('eventfiles/all.txt', 'utf8')
   const list = data.split('\n').filter(element => element !== '')
-  console.log(new Date(), list.length, 'Events geladen.')
+  console.log(new Date(), list.length, 'Veranstaltungen geladen.')
   allEvents = list
 }
 
@@ -35,7 +35,7 @@ module.exports = bot
 
 bot.command('add', addHandler)
 
-const addQuestion = 'Welches Event möchtest du hinzufügen? Gebe mir einen Teil des Namens, dann suche ich danach.'
+const addQuestion = 'Welche Veranstaltung möchtest du hinzufügen? Gebe mir einen Teil des Namens, dann suche ich danach.'
 
 function addHandler(ctx) {
   return ctx.reply(addQuestion, Extra.markup(Markup.forceReply()))
