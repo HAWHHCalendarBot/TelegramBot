@@ -23,16 +23,19 @@ bot.command('broadcast', ctx => {
 bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === broadcastQuestion, ctx => {
   return ctx.replyWithMarkdown(
     ctx.message.text,
-    Markup.inlineKeyboard([
-      Markup.callbackButton('Broadcast!', 'broadcast!'),
-      Markup.callbackButton('Clear Broadcast', 'clearinline')
-    ]).extra()
+    Extra.inReplyTo(ctx.message.message_id)
+      .markup(
+        Markup.inlineKeyboard([
+          Markup.callbackButton('Broadcast!', 'broadcast!'),
+          Markup.callbackButton('Clear Broadcast', 'clearinline')
+        ])
+      )
   )
 }))
 
 bot.action('broadcast!', ctx => {
   return Promise.all([
-    ctx.userconfig.broadcast(ctx.callbackQuery.message.text, Extra.markdown().markup(Markup.removeKeyboard())),
+    ctx.userconfig.broadcast(ctx.callbackQuery.message.reply_to_message.text, Extra.markdown().markup(Markup.removeKeyboard())),
     ctx.editMessageReplyMarkup(Markup.inlineKeyboard([])),
     ctx.answerCallbackQuery('Broadcast wird versendet…')
   ])
