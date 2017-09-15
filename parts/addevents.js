@@ -121,6 +121,7 @@ bot.action(/a:(.+)/, async ctx => {
 
   if (isExisting && !isAlreadyInCalendar) {
     ctx.state.userconfig.events.push(event)
+    ctx.state.userconfig.events.sort()
     await ctx.userconfig.save()
   }
 
