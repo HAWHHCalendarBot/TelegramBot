@@ -2,5 +2,6 @@ start - öffne das Menü
 add - füge weitere Veranstaltungen zu deinem Kalender hinzu
 list - liste alle Veranstaltungen in meinem Kalender auf
 remove - entferne Veranstaltungen aus deinem Kalender
+stats - zeige Statistiken der Nutzung dieses Bots
 about - zeige Informationen über diesen Bot
 settings - setze Einstellungen des Bots
