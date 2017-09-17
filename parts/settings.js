@@ -29,7 +29,7 @@ function stisysUpdate(ctx, callbackQueryText) {
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('StISys Update aktivieren', 's:stisys:on', active),
     Markup.callbackButton('StISys Update deaktivieren', 's:stisys:off', !active),
-    Markup.callbackButton('🔙 zurück zu den Settings', 's:main')
+    Markup.callbackButton('🔙 zurück zu den Settings', 's')
   ], {
     columns: 1
   })
@@ -43,7 +43,7 @@ function stisysUpdate(ctx, callbackQueryText) {
 
 bot.command('settings', ctx => ctx.replyWithMarkdown('*Einstellungen*', baseSettingsKeyboard(ctx).extra()))
 
-bot.action('s:main', ctx => {
+bot.action('s', ctx => {
   ctx.editMessageText('*Einstellungen*', Extra.markdown().markup(baseSettingsKeyboard(ctx)))
 })
 
