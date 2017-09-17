@@ -5,6 +5,7 @@ node_modules
 
 # botfiles
 eventfiles
+meals
 tmp
 token.txt
 userconfig

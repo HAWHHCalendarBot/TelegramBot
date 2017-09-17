@@ -13,6 +13,7 @@ module.exports = bot
 function baseSettingsKeyboard(ctx) {
   return Markup.inlineKeyboard([
     Markup.callbackButton(enabledEmoji(ctx.state.userconfig.settings.stisysUpdate) + ' StISysUpdate', 's:stisys'),
+    Markup.callbackButton('🍽 Mensa', 's:m'),
     Markup.callbackButton('⚠️ Alles löschen ⚠️', 's:del')
   ], {
     columns: 1

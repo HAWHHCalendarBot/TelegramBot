@@ -10,6 +10,7 @@ const addevents = require('./parts/addevents.js')
 const admin = require('./parts/admin.js')
 const easterEggs = require('./parts/easterEggs.js')
 const events = require('./parts/events.js')
+const mensa = require('./parts/mensa.js')
 const settings = require('./parts/settings.js')
 const start = require('./parts/start.js')
 
@@ -32,6 +33,7 @@ bot.use(easterEggs)
 bot.use(Telegraf.optional(ctx => ctx.state.userconfig.admin, admin))
 
 bot.use(events)
+bot.use(mensa)
 bot.use(settings)
 bot.use(start)
 

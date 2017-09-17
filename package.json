@@ -14,6 +14,7 @@
     "telegraf": "^3.10.1"
   },
   "devDependencies": {
+    "ava": "^0.22.0",
     "eslint": "^4.4.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
@@ -22,9 +23,11 @@
     "eslint-plugin-standard": "^3.0.1"
   },
   "scripts": {
+    "ava": "ava",
     "eslint": "eslint .",
     "start": "node index.js",
-    "test": "npm run eslint"
+    "pretest": "npm run eslint",
+    "test": "npm run ava"
   },
   "config": {
     "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt"

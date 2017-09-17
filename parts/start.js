@@ -20,6 +20,9 @@ bot.command(['start', 'url'], ctx => {
   text += '\nMit /about kannst du mehr über diesen Bot erfahren.'
   text += '\nUnter /settings gibt es genauere Einstellungen zu deinem Kalender oder diesem Bot.'
 
+  text += '\n'
+  text += '\nDas Mensaangebot erreichst du mit /mensa.'
+
   if (ctx.state.userconfig.events.length > 0) {
     text += `\n\nKalender URL zum kopieren:\nhttps://${url}`
   }
