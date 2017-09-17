@@ -105,7 +105,7 @@ bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_mes
   )
 }))
 
-bot.action(/p:(\d+)/, ctx => {
+bot.action(/^p:(\d+)$/, ctx => {
   ctx.session.page = Number(ctx.match[1])
   return Promise.all([
     updateMessage(ctx),
@@ -113,7 +113,7 @@ bot.action(/p:(\d+)/, ctx => {
   ])
 })
 
-bot.action(/a:(.+)/, async ctx => {
+bot.action(/^a:(.+)$/, async ctx => {
   const event = ctx.match[1]
 
   const isExisting = allEvents.indexOf(event) >= 0

@@ -40,7 +40,7 @@ function removeHandler(ctx) {
   return ctx.reply('Welche Veranstaltung möchtest du aus deinem Kalender entfernen?', generateRemoveKeyboard(ctx).extra())
 }
 
-bot.action(/r:(.+)/, async ctx => {
+bot.action(/^r:(.+)$/, async ctx => {
   const event = ctx.match[1]
 
   ctx.state.userconfig.events = ctx.state.userconfig.events.filter(e => e !== event)
