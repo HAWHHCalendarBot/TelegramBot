@@ -24,7 +24,7 @@ bot.command(['start', 'url'], ctx => {
   text += '\nDas Mensaangebot erreichst du mit /mensa.'
 
   if (ctx.state.userconfig.events.length > 0) {
-    text += `\n\nKalender URL zum kopieren:\nhttps://${url}`
+    text += `\n\nKalender URL zum Kopieren:\nhttps://${url}`
   }
 
   ctx.reply(text, Markup.inlineKeyboard(keyboardKeys, {
