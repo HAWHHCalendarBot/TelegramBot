@@ -97,6 +97,46 @@ async function mensaText(mensa, year, month, day, mensaSettings) {
   }
 }
 
+function dateCallbackButtonData(mensa, date) {
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+
+  return `m:${mensa}:${year}:${month}:${day}`
+}
+
+function generateMensaButtons(mensa, year, month, day, mensaSettings) {
+  const timeButtons = generateTimeButtons(mensa, year, month, day)
+  const mensaButtons = generateSwitchMensaButtons(mensa, year, month, day, mensaSettings)
+
+  const buttons = []
+  buttons.push(timeButtons)
+  for (const b of mensaButtons) {
+    buttons.push([ b ])
+  }
+  return buttons
+}
+
+function generateSwitchMensaButtons(mensa, year, month, day, mensaSettings) {
+  if (!mensa || mensa === 'undefined') { return [] }
+  const more = mensaSettings.more || []
+  more.unshift(mensaSettings.main)
+  return more.map(m => Markup.callbackButton(`🍽 ${m}`, `m:${m}:${year}:${month}:${day}`, m === mensa))
+}
+
+function generateTimeButtons(mensa, year, month, day) {
+  const currentCallbackData = `m:${mensa}:${year}:${month}:${day}`
+  const today = dateCallbackButtonData(mensa, new Date(Date.now() + 1000 * 60 * 60 * 24 * 0))
+  const tomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + 1000 * 60 * 60 * 24 * 1))
+  const afterTomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + 1000 * 60 * 60 * 24 * 2))
+
+  const timeButtons = []
+  timeButtons.push(Markup.callbackButton('🕚 heute', today, today === currentCallbackData))
+  timeButtons.push(Markup.callbackButton('🕚 morgen', tomorrow, tomorrow === currentCallbackData))
+  timeButtons.push(Markup.callbackButton('🕚 übermorgen', afterTomorrow, afterTomorrow === currentCallbackData))
+  return timeButtons
+}
+
 
 bot.command('mensa', async ctx => {
   const date = new Date()
@@ -105,16 +145,9 @@ bot.command('mensa', async ctx => {
   const day = date.getDate()
 
   const text = await mensaText(ctx.state.mensaSettings.main, year, month, day, ctx.state.mensaSettings)
+  const buttons = generateMensaButtons(ctx.state.mensaSettings.main, year, month, day, ctx.state.mensaSettings)
 
-  const tomorrow = new Date(Date.now() + 1000 * 60 * 60 * 24)
-  const tYear = tomorrow.getFullYear()
-  const tMonth = tomorrow.getMonth() + 1
-  const tDay = tomorrow.getDate()
-
-  const keyboardMarkup = Markup.inlineKeyboard([
-    Markup.callbackButton('Mensaangebot morgen', `m:${ctx.state.mensaSettings.main}:${tYear}:${tMonth}:${tDay}`)
-  ], { columns: 1 })
-
+  const keyboardMarkup = Markup.inlineKeyboard(buttons)
   return ctx.replyWithMarkdown(text, Extra.markup(keyboardMarkup))
 })
 
@@ -125,9 +158,9 @@ bot.action(/^m:([^:]+):(\d+):(\d+):(\d+)$/, async ctx => {
   const day = Number(ctx.match[4])
 
   const text = await mensaText(mensa, year, month, day, ctx.state.mensaSettings)
+  const buttons = generateMensaButtons(mensa, year, month, day, ctx.state.mensaSettings)
 
-  const keyboardMarkup = Markup.inlineKeyboard([
-  ], { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons)
 
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })

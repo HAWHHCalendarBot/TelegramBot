@@ -29,9 +29,12 @@ function mensaSettingsMainmenu(ctx) {
   const text = '*Mensa Einstellungen*'
   const mainMensa = ctx.state.mensaSettings.main || 'Berliner-Tor'
   const mainUnset = !ctx.state.mensaSettings.main
+  const moreCount = (ctx.state.mensaSettings.more || []).length
+  const moreCountText = moreCount ? ' (' + moreCount + ' gewählt)' : ''
 
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton(`${mainUnset ? '⚠️ ' : ''}Hauptmensa: ${mainMensa}${mainUnset ? ' ❓' : ''}`, 's:m:main'),
+    Markup.callbackButton('weitere Mensen' + moreCountText, 's:m:more', mainUnset),
     Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.student) + ' Studentenpreis', 's:m:student'),
     Markup.callbackButton('Extrawünsche Essen', 's:m:s'),
     Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.showAdditives) + ' zeige Inhaltsstoffe', 's:m:showAdditives'),
@@ -84,6 +87,55 @@ bot.action(/^s:m:main:(.+)$/, async ctx => {
     ctx.answerCallbackQuery(`${ctx.state.mensaSettings.main} wurde als deine neue Hauptmensa ausgewählt.`)
   ])
 })
+
+function moreMenu(ctx) {
+  const selected = ctx.state.mensaSettings.more || []
+  const buttons = allCanteens.map(m => {
+    const data = `s:m:more:${m}`
+    if (m === ctx.state.mensaSettings.main) {
+      return Markup.callbackButton(`🍽 ${m}`, data)
+    } else {
+      const isSelected = selected.indexOf(m) >= 0
+      return Markup.callbackButton(enabledEmoji(isSelected) + ` ${m}`, data)
+    }
+  })
+  buttons.push(Markup.callbackButton('🔙 zurück zu den Mensa Einstellungen', 's:m'))
+  buttons.push(Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's'))
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+
+  return ctx.editMessageText('*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist', Extra.markdown().markup(keyboardMarkup))
+}
+
+bot.action('s:m:more', ctx => Promise.all([
+  moreMenu(ctx),
+  ctx.answerCallbackQuery()
+]))
+
+bot.action(/^s:m:more:(.+)$/, async ctx => {
+  const mensa = ctx.match[1]
+  if (mensa === ctx.state.mensaSettings.main) {
+    return ctx.answerCallbackQuery(`${mensa} ist bereits deine Hauptmensa.`)
+  }
+
+  ctx.state.mensaSettings.more = ctx.state.mensaSettings.more || []
+  const wasSelected = ctx.state.mensaSettings.more.indexOf(mensa) >= 0
+
+  if (wasSelected) {
+    ctx.state.mensaSettings.more = ctx.state.mensaSettings.more.filter(o => o !== mensa)
+  } else {
+    ctx.state.mensaSettings.more.push(mensa)
+    ctx.state.mensaSettings.more.sort()
+  }
+
+  const text = wasSelected ? `${mensa} wurde entfernt` : `${mensa} wurde hinzugefügt`
+
+  await ctx.userconfig.save()
+  return Promise.all([
+    moreMenu(ctx),
+    ctx.answerCallbackQuery(text)
+  ])
+})
+
 
 function mensaSettingsSpecialWishesMenu(ctx) {
   const possibleSettings = mensaSpecialWishesButtons(ctx.state.mensaSettings)
