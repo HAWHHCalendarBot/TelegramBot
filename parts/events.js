@@ -24,7 +24,7 @@ bot.command('list', ctx => {
   } else {
     text = events
     hint += ' oder /remove um Veranstaltungen aus deinem Kalender zu entfernen.'
-    hint += ' Unter /start findest du den Link zu deinem Kalender.'
+    hint += ' Mit /subscribe bekommst du deinen Kalender auf dein bevorzugtes Gerät.'
   }
   return ctx.replyWithMarkdown(text + hint, Extra.markup(Markup.removeKeyboard()))
 })

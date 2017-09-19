@@ -13,6 +13,7 @@ const events = require('./parts/events.js')
 const mensa = require('./parts/mensa.js')
 const settings = require('./parts/settings.js')
 const start = require('./parts/start.js')
+const subscribe = require('./parts/subscribe.js')
 
 const token = fs.readFileSync(process.env.npm_package_config_tokenpath, 'utf8').trim()
 const bot = new Telegraf(token)
@@ -36,6 +37,7 @@ bot.use(events)
 bot.use(mensa)
 bot.use(settings)
 bot.use(start)
+bot.use(subscribe)
 
 bot.use(addevents)
 

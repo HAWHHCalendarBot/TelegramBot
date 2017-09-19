@@ -80,7 +80,7 @@ function updateMessage(ctx) {
   const keyboard = replyKeyboardFromResults(results, ctx.session.page)
 
   if (results.length === 0) {
-    const text = 'Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.\nMit /start kannst du zurück zum Hauptmenü gehen oder mit /add weitere Veranstaltungen hinzufügen.'
+    const text = 'Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.\nMit /start kannst du zurück zum Hauptmenü gehen oder mit /add weitere Veranstaltungen hinzufügen. Mit /subscribe bekommst du deinen Kalender auf dein bevorzugtes Gerät.'
     return ctx.editMessageText(text, Extra.markup(keyboard))
   } else {
     return ctx.editMessageReplyMarkup(keyboard)
@@ -96,7 +96,7 @@ bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_mes
     return ctx.reply('Ich konnte leider keine Veranstaltungen für deine Suche finden. 😬')
   }
 
-  const text = 'Ich habe diese Veranstaltungen gefunden. Welche möchtest du hinzufügen?\n\nMit /start kannst du das Hauptmenü erneut aufrufen.'
+  const text = 'Ich habe diese Veranstaltungen gefunden. Welche möchtest du hinzufügen?\n\nMit /start kannst du das Hauptmenü erneut aufrufen und mit /subscribe bekommst du deinen Kalender auf dein bevorzugtes Gerät.'
   const keyboard = replyKeyboardFromResults(results)
 
   return ctx.replyWithMarkdown(text, Extra
