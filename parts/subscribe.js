@@ -62,7 +62,8 @@ bot.action('url:exchange', ctx => {
   text += `\nDer Name des Kalenders (\`${ctx.from.id}\`) ist übrigens deine Telegram Nutzer ID, mit der dich Bots zuordnen 😉. Ohne das du jedoch einen Bot zuerst anschreibst, können Bots dich aber nicht anschreiben, also keine Angst vor Bot-Spam. Fühl dich frei den Kalender für dich umzubennen.`
 
   const buttons = [
-    Markup.urlButton('HAW-Mailer', 'https://www.haw-hamburg.de/online-services/haw-mailer.html')
+    Markup.urlButton('HAW-Mailer', 'https://www.haw-hamburg.de/online-services/haw-mailer.html'),
+    Markup.urlButton('Anleitung Einrichten des HAW-Mailers auf Android, iOS und Co.', 'https://www.haw-hamburg.de/online-services/haw-mailer/faqs.html#c73012')
   ]
   return ctx.fastEdit(text, buttons)
 })
