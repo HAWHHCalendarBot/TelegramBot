@@ -72,9 +72,13 @@ function mealToMarkdown(meal, isStudent, showAdditives) {
   return text
 }
 
+const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
 async function mensaText(mensa, year, month, day, mensaSettings) {
   if (!mensa || mensa === 'undefined') { mensa = 'Berliner-Tor' }
-  let prefix = `Mensa *${mensa}* ${day}.${month}.${year}\n`
+  const date = new Date(Date.parse(`${year}-${month}-${day}`))
+  const weekday = weekdays[date.getDay()]
+
+  let prefix = `Mensa *${mensa}*\n${weekday} ${day}.${month}.${year}\n`
   if (!mensaSettings.main) {
     prefix += `⚠️ Da du noch keine Einstellungen zur Mensa hast, nehme ich die Mensa '${mensa}' an. In den /settings findest du die Mensa Einstellungen.\n`
   }
