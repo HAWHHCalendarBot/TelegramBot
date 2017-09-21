@@ -1,8 +1,9 @@
 FROM node:8-alpine
 WORKDIR /app
 VOLUME /app/eventfiles
-VOLUME /app/userconfig
+VOLUME /app/meals
 VOLUME /app/tmp
+VOLUME /app/userconfig
 
 ENV NODE_ENV=production
 ADD package.json /app
