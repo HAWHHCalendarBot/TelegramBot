@@ -68,9 +68,9 @@ async function handleList(ctx) {
   text += '\nWelche Änderung möchtest du betrachten?'
 
   const buttons = []
-  for (const changeName of changes) {
-    const change = await loadChange(changeName)
-    buttons.push(Markup.callbackButton(generateShortChangeText(change), 'c:d:' + changeName))
+  for (const filename of changes) {
+    const change = await loadChange(filename)
+    buttons.push(Markup.callbackButton(generateShortChangeText(change), 'c:d:' + filename))
   }
   buttons.push(backToMainButton)
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
