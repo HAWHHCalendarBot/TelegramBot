@@ -39,7 +39,7 @@ function mainMarkup(ctx) {
   const changes = ctx.state.userconfig.changes || []
   return Markup.inlineKeyboard([
     Markup.callbackButton('Änderung hinzufügen', 'c:g', events.length === 0),
-    Markup.callbackButton('Änderungen auflisten', 'c:list', events.length === 0 || changes.length === 0)
+    Markup.callbackButton('Meine Änderungen', 'c:list', events.length === 0 || changes.length === 0)
   ], { columns: 1 })
 }
 
