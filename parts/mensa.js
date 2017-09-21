@@ -27,10 +27,10 @@ const bot = new Telegraf.Composer()
 module.exports = bot
 
 bot.use((ctx, next) => {
-  if (!ctx.state.userconfig.settings.mensa) {
-    ctx.state.userconfig.settings.mensa = {}
+  if (!ctx.state.userconfig.mensa) {
+    ctx.state.userconfig.mensa = {}
   }
-  ctx.state.mensaSettings = ctx.state.userconfig.settings.mensa
+  ctx.state.mensaSettings = ctx.state.userconfig.mensa
   return next()
 })
 bot.use(mensaSettings)

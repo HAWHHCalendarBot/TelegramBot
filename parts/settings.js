@@ -12,7 +12,7 @@ module.exports = bot
 
 function baseSettingsKeyboard(ctx) {
   return Markup.inlineKeyboard([
-    Markup.callbackButton(enabledEmoji(ctx.state.userconfig.settings.stisysUpdate) + ' StISysUpdate', 's:stisys'),
+    Markup.callbackButton(enabledEmoji(ctx.state.userconfig.stisysUpdate) + ' StISysUpdate', 's:stisys'),
     Markup.callbackButton('🍽 Mensa', 's:m'),
     Markup.callbackButton('⚠️ Alles löschen ⚠️', 's:del')
   ], {
@@ -21,7 +21,7 @@ function baseSettingsKeyboard(ctx) {
 }
 
 function stisysUpdate(ctx, callbackQueryText) {
-  const active = ctx.state.userconfig.settings.stisysUpdate
+  const active = ctx.state.userconfig.stisysUpdate
 
   let text = '*Einstellungen*\n\n'
   text += 'Das StISys Update prüft alle 15 Minuten, ob sich etwas auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) geändert hat. Ist dies der Fall, kannst du vom Bot benachrichtigt werden.\n\n'
@@ -51,14 +51,14 @@ bot.action('s', ctx => {
 bot.action('s:stisys', ctx => stisysUpdate(ctx))
 
 bot.action('s:stisys:on', async ctx => {
-  ctx.state.userconfig.settings.stisysUpdate = true
+  ctx.state.userconfig.stisysUpdate = true
   await ctx.userconfig.save()
 
   return stisysUpdate(ctx, 'StISys Update wurde eingeschaltet.')
 })
 
 bot.action('s:stisys:off', async ctx => {
-  ctx.state.userconfig.settings.stisysUpdate = false
+  ctx.state.userconfig.stisysUpdate = false
   await ctx.userconfig.save()
 
   return stisysUpdate(ctx, 'StISys Update wurde ausgeschaltet.')
