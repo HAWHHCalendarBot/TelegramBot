@@ -16,6 +16,7 @@ bot.command('start', ctx => {
     text += '\nMit /remove kannst du Veranstaltungen entfernen.'
     text += '\nMit /list kannst du die Liste deiner Veranstaltungen einsehen.'
     text += '\nUnter /subscribe findest du Tipps, wie du den Kalender immer up to date auf dein bevorzugtes Gerät bekommst.'
+    text += '\nMit /changes kannst du Änderungen an einem Veranstaltungskalender erstellen, die in deinen Kalender synchronisiert werden.'
   }
 
   text += '\n'
