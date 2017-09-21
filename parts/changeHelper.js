@@ -39,7 +39,8 @@ function generateChangeDescription(change) {
 }
 
 function generateChangeText(change) {
-  let text = `*${change.name}*`
+  let text = '*Veranstaltungsänderung*\n'
+  text += `*${change.name}*`
   if (change.date) {
     text += ` ${change.date}`
   }
