@@ -28,7 +28,7 @@ const chatconfig = new Chatconfig('userconfig', {
   events: [],
   settings: {}
 })
-bot.use(chatconfig.middleware())
+bot.use(chatconfig)
 
 bot.use(easterEggs)
 bot.use(Telegraf.optional(ctx => ctx.state.userconfig.admin, admin))
