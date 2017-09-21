@@ -24,7 +24,7 @@ module.exports = {
 
 function filenameChange(from, change) {
   const changeNameFilename = change.name.replace('/', '-')
-  const filename = `${changeNameFilename}-${from.id}-${change.date}`
+  const filename = `${changeNameFilename}-${change.date}-${from.id}`
   return filename
 }
 
