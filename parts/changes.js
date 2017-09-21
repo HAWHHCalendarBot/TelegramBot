@@ -2,6 +2,7 @@ const Telegraf = require('telegraf')
 
 const { Extra, Markup } = Telegraf
 const { generateCallbackButtons } = require('../helper')
+const changesInline = require('./changesInline')
 const {
   filenameChange,
   generateChangeText,
@@ -12,6 +13,7 @@ const {
 } = require('./changeHelper')
 
 const bot = new Telegraf.Composer()
+bot.use(changesInline)
 module.exports = bot
 
 
@@ -28,8 +30,7 @@ function mainText(ctx) {
   text += '\nWenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen.'
   text += '\nDein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.'
 
-  // TODO: Teilen Button
-  // text += '\nAußerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.'
+  text += '\nAußerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.'
 
   return text
 }
@@ -80,8 +81,9 @@ async function handleList(ctx) {
 function handleDetails(ctx, change) {
   const text = generateChangeText(change)
   const filename = filenameChange(change, ctx.from)
+  const title = generateShortChangeText(change)
   const buttons = [
-    // TODO: Teilen Button
+    Markup.switchToChatButton('Teilen…', title),
     Markup.callbackButton('⚠️ Änderung entfernen', 'c:r:' + filename),
     Markup.callbackButton('🔙 zur Änderungsliste', 'c:list'),
     backToMainButton
