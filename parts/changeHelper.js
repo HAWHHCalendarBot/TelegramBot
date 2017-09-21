@@ -14,6 +14,7 @@ function parseDateTimeToDate(dateTime) {
 
 module.exports = {
   filenameChange: filenameChange,
+  generateChangeDescription: generateChangeDescription,
   generateChangeText: generateChangeText,
   generateShortChangeText: generateShortChangeText,
   loadChange: loadChange,
@@ -28,6 +29,15 @@ function filenameChange(from, change) {
   return filename
 }
 
+function generateChangeDescription(change) {
+  let text = ''
+  if (change.remove) {
+    text += '🚫 Entfällt\n'
+  }
+
+  return text
+}
+
 function generateChangeText(change) {
   let text = `*${change.name}*`
   if (change.date) {
@@ -35,9 +45,7 @@ function generateChangeText(change) {
   }
   text += '\n'
 
-  if (change.remove) {
-    text += '🚫 Entfällt\n'
-  }
+  text += generateChangeDescription(change)
 
   return text
 }
