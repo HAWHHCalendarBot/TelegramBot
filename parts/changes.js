@@ -98,6 +98,7 @@ async function handleFinishGeneration(ctx) {
     ctx.state.userconfig.changes = []
   }
   ctx.state.userconfig.changes.push(filename)
+  ctx.state.userconfig.changes.sort()
   await ctx.userconfig.save()
 
   return Promise.all([
