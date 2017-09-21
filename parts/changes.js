@@ -79,7 +79,7 @@ async function handleList(ctx) {
 
 function handleDetails(ctx, change) {
   const text = generateChangeText(change)
-  const filename = filenameChange(ctx.from, change)
+  const filename = filenameChange(change, ctx.from)
   const buttons = [
     // TODO: Teilen Button
     Markup.callbackButton('⚠️ Änderung entfernen', 'c:r:' + filename),

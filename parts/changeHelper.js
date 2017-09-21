@@ -23,9 +23,10 @@ module.exports = {
 }
 
 
-function filenameChange(from, change) {
+function filenameChange(change, from) {
+  const fromId = (from && from.id) || change.from.id
   const changeNameFilename = change.name.replace('/', '-')
-  const filename = `${changeNameFilename}-${change.date}-${from.id}`
+  const filename = `${changeNameFilename}-${change.date}-${fromId}`
   return filename
 }
 
@@ -74,7 +75,7 @@ async function loadChange(filename) {
 
 async function saveChange(from, change) {
   change.from = from
-  const filename = filenameChange(from, change)
+  const filename = filenameChange(change)
   await writeFile(`changes/${filename}.json`, JSON.stringify(change), 'utf8')
   return filename
 }
