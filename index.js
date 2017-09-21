@@ -3,7 +3,7 @@ const Telegraf = require('telegraf')
 
 const { Extra, Markup } = Telegraf
 
-const hasStISysChanged = require('./hasStISysChanged.js')
+const hasStISysChanged = require('./lib/hasStISysChanged.js')
 const Chatconfig = require('./lib/chatconfig.js')
 
 const addevents = require('./parts/addevents.js')
