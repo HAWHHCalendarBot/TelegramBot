@@ -57,7 +57,6 @@ async function checkStISysChangeAndNotify() {
 }
 
 bot.catch(err => {
-  if (err.description === 'Bad Request: message is not modified') return
   console.error('Telegraf Error', err.response || err)
 })
 
