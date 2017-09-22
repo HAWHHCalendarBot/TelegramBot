@@ -30,7 +30,8 @@
     "test": "npm run ava"
   },
   "config": {
-    "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt"
+    "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt",
+    "tokenpathdebug": "token.txt"
   },
   "repository": {
     "type": "git",

@@ -15,7 +15,8 @@ const settings = require('./parts/settings.js')
 const start = require('./parts/start.js')
 const subscribe = require('./parts/subscribe.js')
 
-const token = fs.readFileSync(process.env.npm_package_config_tokenpath, 'utf8').trim()
+const tokenFilePath = process.env.NODE_ENV === 'production' ? process.env.npm_package_config_tokenpath : process.env.npm_package_config_tokenpathdebug
+const token = fs.readFileSync(tokenFilePath, 'utf8').trim()
 const bot = new Telegraf(token)
 
 // For handling group/supergroup commands (/start@your_bot) you need to provide bot username.
