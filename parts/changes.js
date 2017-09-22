@@ -79,9 +79,9 @@ async function handleList(ctx) {
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 }
 
-function handleDetails(ctx, change) {
+async function handleDetails(ctx, filename, change = null) {
+  if (!change) { change = await loadChange(filename) }
   const text = generateChangeText(change)
-  const filename = filenameChange(change, ctx.from)
   const title = generateShortChangeText(change)
   const buttons = [
     Markup.switchToChatButton('Teilen…', title),
@@ -106,7 +106,7 @@ async function handleFinishGeneration(ctx) {
 
   return Promise.all([
     ctx.answerCallbackQuery('Die Änderung wurde deinem Kalender hinzugefügt.'),
-    handleDetails(ctx, change)
+    handleDetails(ctx, filename, change)
   ])
 }
 
@@ -116,7 +116,7 @@ bot.action('c', handleMainmenu)
 
 bot.action('c:list', handleList)
 
-bot.action(/^c:d:(.+)$/, async ctx => handleDetails(ctx, await loadChange(ctx.match[1])))
+bot.action(/^c:d:(.+)$/, ctx => handleDetails(ctx, ctx.match[1]))
 
 bot.action(/^c:r:(.+)$/, async ctx => {
   const currentChanges = ctx.state.userconfig.changes || []
