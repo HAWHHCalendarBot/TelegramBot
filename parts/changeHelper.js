@@ -20,6 +20,7 @@ module.exports = {
   filenameChange: filenameChange,
   generateChangeDescription: generateChangeDescription,
   generateChangeText: generateChangeText,
+  generateChangeTextHeader: generateChangeTextHeader,
   generateShortChangeText: generateShortChangeText,
   loadChange: loadChange,
   loadEvents: loadEvents,
@@ -44,15 +45,19 @@ function generateChangeDescription(change) {
 }
 
 function generateChangeText(change) {
+  let text = generateChangeTextHeader(change)
+  text += generateChangeDescription(change)
+
+  return text
+}
+
+function generateChangeTextHeader(change) {
   let text = '*Veranstaltungsänderung*\n'
   text += `*${change.name}*`
   if (change.date) {
     text += ` ${change.date}`
   }
   text += '\n'
-
-  text += generateChangeDescription(change)
-
   return text
 }
 
