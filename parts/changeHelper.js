@@ -22,6 +22,8 @@ module.exports = {
   generateChangeText: generateChangeText,
   generateChangeTextHeader: generateChangeTextHeader,
   generateShortChangeText: generateShortChangeText,
+  hasAlreadyChangeOfThatEvent: hasAlreadyChangeOfThatEvent,
+  hasAlreadyChangeOfThatKind: hasAlreadyChangeOfThatKind,
   loadChange: loadChange,
   loadEvents: loadEvents,
   saveChange: saveChange
@@ -63,6 +65,17 @@ function generateChangeTextHeader(change) {
 
 function generateShortChangeText(change) {
   return `${change.name} ${change.date}`
+}
+
+function hasAlreadyChangeOfThatEvent(filenameList, newChangeFilename) {
+  const match = /(.+)-(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})-(\d+)/.exec(newChangeFilename)
+  return hasAlreadyChangeOfThatKind(filenameList, match[1], match[2])
+}
+
+function hasAlreadyChangeOfThatKind(filenameList, name, date) {
+  const futureName = `${filenamePartOfName(name)}-${date}`
+  const filtered = filenameList.filter(o => o.indexOf(futureName) >= 0)
+  return filtered.length > 0 ? filtered[0] : null
 }
 
 async function loadEvents(eventname) {

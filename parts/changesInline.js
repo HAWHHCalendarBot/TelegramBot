@@ -1,11 +1,13 @@
 const Telegraf = require('telegraf')
-const { Markup } = Telegraf
+const { Extra, Markup } = Telegraf
 
 const {
   filenameChange,
   generateChangeDescription,
   generateChangeText,
+  generateChangeTextHeader,
   generateShortChangeText,
+  hasAlreadyChangeOfThatEvent,
   loadChange
 } = require('./changeHelper')
 
@@ -48,7 +50,7 @@ bot.on('inline_query', async ctx => {
 async function precheckAddMiddleware(ctx, next) {
   const filename = ctx.match[1]
   try {
-    await loadChange(filename)
+    ctx.state.addChange = await loadChange(filename)
     if (!ctx.state.userconfig.changes) {
       ctx.state.userconfig.changes = []
     }
@@ -66,11 +68,54 @@ bot.action(/^c:a:(.+)$/, precheckAddMiddleware, async ctx => {
     return ctx.answerCallbackQuery('Du hast diese Änderung bereits in deinem Kalender 👍')
   }
 
-  // TODO: prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
+  // prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
+  const myCurrentChangeFilename = hasAlreadyChangeOfThatEvent(myChangeFilenames, filename)
+  if (myCurrentChangeFilename) {
+    const warning = '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.'
+    ctx.answerCallbackQuery(warning)
+
+    const currentChange = await loadChange(myCurrentChangeFilename)
+
+    let text = warning + '\n'
+    text += generateChangeTextHeader(currentChange)
+
+    text += '\nDiese Veränderung ist bereits in deinem Kalender:'
+    text += '\n' + generateChangeDescription(currentChange)
+
+    text += '\nDiese Veränderung wolltest du hinzufügen:'
+    text += '\n' + generateChangeDescription(ctx.state.addChange)
+
+    const keyboardMarkup = Markup.inlineKeyboard([
+      Markup.callbackButton('Überschreiben', 'c:af:' + filename),
+      Markup.callbackButton('Abbrechen', 'c:cancel')
+    ])
+
+    return ctx.telegram.sendMessage(ctx.from.id, text, Extra.markdown().markup(keyboardMarkup))
+  }
 
   ctx.state.userconfig.changes.push(filename)
   ctx.state.userconfig.changes.sort()
   await ctx.userconfig.save()
 
   return ctx.answerCallbackQuery('Die Änderung wurde hinzugefügt')
+})
+
+bot.action('c:cancel', ctx => ctx.editMessageText('Ich habe nichts verändert. 🙂'))
+
+bot.action(/^c:af:(.+)$/, precheckAddMiddleware, async ctx => { // change add force
+  const filename = ctx.match[1]
+  let myChangeFilenames = ctx.state.userconfig.changes
+
+  if (myChangeFilenames.indexOf(filename) >= 0) {
+    return ctx.editMessageText('Du hast diese Änderung bereits in deinem Kalender 👍')
+  }
+
+  const myCurrentChangeFilename = hasAlreadyChangeOfThatEvent(myChangeFilenames, filename)
+  myChangeFilenames = myChangeFilenames.filter(o => o !== myCurrentChangeFilename)
+  myChangeFilenames.push(filename)
+  myChangeFilenames.sort()
+  ctx.state.userconfig.changes = myChangeFilenames
+  await ctx.userconfig.save()
+
+  return ctx.editMessageText('Die Änderung wurde hinzugefügt.')
 })

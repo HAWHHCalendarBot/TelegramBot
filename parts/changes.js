@@ -7,6 +7,7 @@ const {
   filenameChange,
   generateChangeText,
   generateShortChangeText,
+  hasAlreadyChangeOfThatKind,
   loadChange,
   loadEvents,
   saveChange
@@ -143,8 +144,17 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
   const dates = events
     .map(o => o.StartTime)
     .map(o => o.toISOString().replace(':00.000Z', ''))
-  // TODO: prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
-  const buttons = generateCallbackButtons('c:g:d', dates)
+
+  // prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
+  const buttons = dates.map(date => {
+    const existingChange = hasAlreadyChangeOfThatKind(ctx.state.userconfig.changes, ctx.session.generateChange.name, date)
+    if (existingChange) {
+      return Markup.callbackButton('✏️ ' + date, 'c:d:' + existingChange)
+    } else {
+      return Markup.callbackButton('➕ ' + date, 'c:g:d:' + date)
+    }
+  })
+
   buttons.push(Markup.callbackButton('🔙 zurück zur Veranstaltungswahl', 'c:g'))
   buttons.push(backToMainButton)
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
