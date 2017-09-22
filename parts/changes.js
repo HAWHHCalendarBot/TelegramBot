@@ -132,7 +132,7 @@ bot.action('c:g', ctx => { // change generate
   const buttons = generateCallbackButtons('c:g:n', events)
   buttons.push(backToMainButton)
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
-  return ctx.editMessageText('*Veranstaltungsänderungen*\n\nWelche Veranstaltung betrifft diese Veränderung?', Extra.markdown().markup(keyboardMarkup))
+  return ctx.editMessageText('*Veranstaltungsänderung*\n\nWelche Veranstaltung betrifft diese Veränderung?', Extra.markdown().markup(keyboardMarkup))
 })
 
 bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
