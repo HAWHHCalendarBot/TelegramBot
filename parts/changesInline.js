@@ -45,17 +45,21 @@ bot.on('inline_query', async ctx => {
   })
 })
 
-bot.action(/^c:a:(.+)$/, async ctx => {
+async function precheckAddMiddleware(ctx, next) {
   const filename = ctx.match[1]
   try {
     await loadChange(filename)
+    if (!ctx.state.userconfig.changes) {
+      ctx.state.userconfig.changes = []
+    }
+    return next()
   } catch (err) {
     return ctx.editMessageText('Die Veranstaltungsänderung existiert nicht mehr. 😔')
   }
+}
 
-  if (!ctx.state.userconfig.changes) {
-    ctx.state.userconfig.changes = []
-  }
+bot.action(/^c:a:(.+)$/, precheckAddMiddleware, async ctx => {
+  const filename = ctx.match[1]
   const myChangeFilenames = ctx.state.userconfig.changes
 
   if (myChangeFilenames.indexOf(filename) >= 0) {
