@@ -5,6 +5,10 @@ const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 
+function filenamePartOfName(name) {
+  return name.replace('/', '-')
+}
+
 function parseDateTimeToDate(dateTime) {
   const unixTime = Number(/(\d+)\+/.exec(dateTime)[1])
   const date = new Date(unixTime)
@@ -25,7 +29,7 @@ module.exports = {
 
 function filenameChange(change, from) {
   const fromId = (from && from.id) || change.from.id
-  const changeNameFilename = change.name.replace('/', '-')
+  const changeNameFilename = filenamePartOfName(change.name)
   const filename = `${changeNameFilename}-${change.date}-${fromId}`
   return filename
 }
