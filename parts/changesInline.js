@@ -26,8 +26,16 @@ function generateInlineQueryResultFromChange(change, from) {
   }
 }
 
+function escapeRegexSpecificChars(input) {
+  return input
+    .replace('[', '\\[')
+    .replace(']', '\\]')
+    .replace('(', '\\(')
+    .replace(')', '\\)')
+}
+
 bot.on('inline_query', ctx => {
-  const regex = new RegExp(ctx.inlineQuery.query, 'i')
+  const regex = new RegExp(escapeRegexSpecificChars(ctx.inlineQuery.query), 'i')
 
   const changes = ctx.state.userconfig.changes || []
   const filtered = changes
