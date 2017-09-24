@@ -173,7 +173,7 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
   const buttons = dates.map(date => {
     const existingChange = onlyChangesOfThisEvent.filter(o => o.date === date)
     if (existingChange.length) {
-      return Markup.callbackButton('✏️ ' + date, 'c:d:' + existingChange)
+      return Markup.callbackButton('✏️ ' + date, 'c:d:' + ctx.session.generateChange.name + '#' + date)
     } else {
       return Markup.callbackButton('➕ ' + date, 'c:g:d:' + date)
     }
