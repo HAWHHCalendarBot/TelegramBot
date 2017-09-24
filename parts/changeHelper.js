@@ -30,6 +30,7 @@ function generateChangeDescription(change) {
 
 function generateChangeText(change) {
   let text = generateChangeTextHeader(change)
+  text += '\nÄnderungen:\n'
   text += generateChangeDescription(change)
 
   return text
