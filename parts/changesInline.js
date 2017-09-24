@@ -68,6 +68,10 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
   const fromId = ctx.match[3]
   const myChanges = ctx.state.userconfig.changes || []
 
+  if (ctx.from.id === Number(fromId)) {
+    return ctx.answerCallbackQuery('Das ist deine eigene Änderung 😉')
+  }
+
   // prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
   const myChangeToThisEvent = myChanges
     .filter(o => o.name === name && o.date === date)
