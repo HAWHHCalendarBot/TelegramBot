@@ -74,7 +74,7 @@ bot.action('url:google', ctx => {
   text += '\n🔅 Alternativvorschlag: Kannst du vielleicht auch über den HAW-Mailer synchronisieren? Dann hast du auch gleich deine HAW E-Mails ;)'
 
   text += '\n'
-  text += '\nIn der linken Seitenleiste im [Google Kalender](https://google.com/calendar/) gibt es den Eintrag "Weitere Kalender". Dort auf das kleine Dropdown Dreieck klicken und den Menüpunkt "Über URL hinzufügen" auswählen. Hier muss die folgende URL hinein kopiert werden.'
+  text += '\nIn der linken Seitenleiste im [Google Kalender](https://calendar.google.com/) gibt es den Eintrag "Weitere Kalender". Dort auf das kleine Dropdown Dreieck klicken und den Menüpunkt "Über URL hinzufügen" auswählen. Hier muss die folgende URL hinein kopiert werden.'
   text += `\nhttps://${ctx.state.url}`
   text += '\nNach dem Bestätigen einen Moment warten, bis der Kalender im Google Kalender erschienen ist.'
 
@@ -87,7 +87,7 @@ bot.action('url:google', ctx => {
   text += '\n⚠️ In der Vergangenheit hat der Google Kalender jeweils zwischen 30 Minuten und 40 Stunden gebraucht, um einen Kalender zu aktualisieren. Außerdem cacht Google (meiner Meinung nach) ein wenig zu viel, was für teilweise interessantes/sonderbares Verhalten gesorgt hat.'
 
   const buttons = [
-    Markup.urlButton('Google Calendar', 'https://google.com/calendar/'),
+    Markup.urlButton('Google Calendar', 'https://calendar.google.com/'),
     Markup.callbackButton('abonnieren mit dem HAW-Mailer (Exchange)', 'url:exchange')
   ]
 

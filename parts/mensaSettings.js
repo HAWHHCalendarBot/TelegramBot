@@ -157,8 +157,10 @@ bot.action('s:m:s', ctx => Promise.all([ // settings:mensa:specialWishes
 
 const settingName = {
   lactoseFree: 'laktosefrei',
+  noBeef: 'kein Rindfleisch',
   noFish: 'kein Fisch',
   noPig: 'kein Schweinefleisch',
+  noPoultry: 'kein Geflügel',
   vegan: 'vegan',
   vegetarian: 'vegetarisch'
 }
@@ -169,8 +171,10 @@ function toggleSettingText(setting, enabled) {
     case 'student': return enabled ? 'Du hast nun Studentenpreise' : 'Du hast nun Angestelltenpreise'
 
     case 'lactoseFree': return enabled ? 'Du bekommst nun nur noch laktosefreies Essen' : 'Du bekommst wieder jedes Essen'
+    case 'noBeef': return enabled ? 'Du bekommst nun kein Essen mehr mit Rindfleisch' : 'Du bekommst wieder Rindfleisch'
     case 'noFish': return enabled ? 'Du bekommst nun kein Essen mehr mit Fisch' : 'Du bekommst wieder Fisch'
     case 'noPig': return enabled ? 'Du bekommst nun kein Essen mehr mit Schweinefleisch' : 'Du bekommst wieder Schweinefleisch'
+    case 'noPoultry': return enabled ? 'Du bekommst nun kein Essen mehr mit Geflügel' : 'Du bekommst wieder Geflügel'
     case 'vegan': return enabled ? 'Du bekommst nun nur noch veganes Essen' : 'Du bekommst wieder jedes Essen'
     case 'vegetarian': return enabled ? 'Du bekommst nun nur noch vegetarisches Essen' : 'Du bekommst wieder jedes Essen'
     default:

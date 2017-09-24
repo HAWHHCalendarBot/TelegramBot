@@ -89,6 +89,29 @@ test('ohne Schwein', t => {
   ])
 })
 
+test('ohne Rind', t => {
+  const filtered = filterMeals(testMeals, { noBeef: true })
+  t.deepEqual(filtered.map(o => o.Name), [
+    'Fisch',
+    'Pasta Sahne',
+    'Pasta Speck',
+    'Pasta'
+  ])
+})
+
+
+test('ohne Geflügel', t => {
+  const filtered = filterMeals(testMeals, { noPoultry: true })
+  t.deepEqual(filtered.map(o => o.Name), [
+    'Fisch',
+    'Pasta Sahne',
+    'Pasta Speck',
+    'Pasta',
+    'Rindstuff'
+  ])
+})
+
+
 test('ohne Fisch', t => {
   const filtered = filterMeals(testMeals, { noFish: true })
   t.deepEqual(filtered.map(o => o.Name), [
