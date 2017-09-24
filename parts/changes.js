@@ -89,6 +89,30 @@ function handleDetails(ctx, name, date) {
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 }
 
+function handleGenerationInProgress(ctx) {
+  let text = generateChangeText(ctx.session.generateChange)
+  text += '\nWelche Art von Änderung möchtest du vornehmen?'
+
+  // TODO: remove on finish
+  text += '\n\n_WIP: Mehr als das kann ich noch nicht._'
+
+  const currentKeys = Object.keys(ctx.session.generateChange)
+
+  // TODO: add more types of changes
+  const buttons = [
+    [
+      Markup.callbackButton('🚫 Entfällt', 'c:g:remove', currentKeys.length > 2)
+    ], [
+      Markup.callbackButton('🔙 zurück zur Terminwahl', 'c:g:n:' + ctx.session.generateChange.name, currentKeys.length > 2)
+    ], [
+      Markup.callbackButton('✅ Fertig stellen', 'c:g:finish', currentKeys.length <= 2),
+      Markup.callbackButton('🛑 Abbrechen', 'c')
+    ]
+  ]
+  const keyboardMarkup = Markup.inlineKeyboard(buttons)
+  return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
+}
+
 async function handleFinishGeneration(ctx) {
   const change = ctx.session.generateChange
 
@@ -160,21 +184,13 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
 
 bot.action(/^c:g:d:(.+)$/, stopGenerationAfterBotRestartMiddleware, ctx => { // change generate date
   ctx.session.generateChange.date = ctx.match[1]
-
-  let text = generateChangeText(ctx.session.generateChange)
-  text += '\nWelche Art von Änderung möchtest du vornehmen?'
-
-  // TODO: remove on finish
-  text += '\n\n_WIP: Mehr als das kann ich noch nicht._'
-
-  const buttons = [
-    Markup.callbackButton('🚫 Entfällt', 'c:g:remove')
-  ]
-  buttons.push(Markup.callbackButton('🔙 zurück zur Terminwahl', 'c:g:n:' + ctx.session.generateChange.name))
-  buttons.push(backToMainButton)
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
-  return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
+  return handleGenerationInProgress(ctx)
 })
+
+// useful for cancel actions -> cancel button refer to this one
+bot.action('c:g:possibility-picker', stopGenerationAfterBotRestartMiddleware, ctx => handleGenerationInProgress(ctx))
+
+bot.action('c:g:finish', stopGenerationAfterBotRestartMiddleware, ctx => handleFinishGeneration(ctx))
 
 bot.action('c:g:remove', stopGenerationAfterBotRestartMiddleware, ctx => { // change generate remove
   ctx.session.generateChange.remove = true
