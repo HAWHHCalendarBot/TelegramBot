@@ -103,6 +103,9 @@ function handleGenerationInProgress(ctx) {
     [
       Markup.callbackButton('🚫 Entfällt', 'c:g:remove', currentKeys.length > 2)
     ], [
+      Markup.callbackButton('🕗 Startzeit', 'c:g:starttime'),
+      Markup.callbackButton('🕓 Endzeit', 'c:g:endtime')
+    ], [
       Markup.callbackButton('🔙 zurück zur Terminwahl', 'c:g:n:' + ctx.session.generateChange.name, currentKeys.length > 2)
     ], [
       Markup.callbackButton('✅ Fertig stellen', 'c:g:finish', currentKeys.length <= 2),
@@ -195,6 +198,29 @@ bot.action('c:g:finish', stopGenerationAfterBotRestartMiddleware, ctx => handleF
 bot.action('c:g:remove', stopGenerationAfterBotRestartMiddleware, ctx => { // change generate remove
   ctx.session.generateChange.remove = true
   return handleFinishGeneration(ctx)
+})
+
+bot.action(/^c:g:s:([^:]+):(.+)/, stopGenerationAfterBotRestartMiddleware, ctx => { // simple set: match[1] is param, match[2] is value
+  ctx.session.generateChange[ctx.match[1]] = ctx.match[2]
+  return handleGenerationInProgress(ctx)
+})
+
+bot.action(/^c:g:(.+time)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
+  let text = generateChangeText(ctx.session.generateChange)
+  text += `\nAuf welche Zeit möchtest du die ${ctx.match[1] === 'starttime' ? 'Startzeit' : 'Endzeit'} setzen?`
+
+  const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  const minutes = ['00', 15, 30, 45]
+
+  const buttons = hours.map(h => {
+    const times = minutes.map(m => `${h}:${m}`)
+    return generateCallbackButtons('c:g:s:' + ctx.match[1], times)
+  })
+  buttons.push([ Markup.callbackButton('🔝 zurück zur Änderungsauswahl', 'c:g:possibility-picker') ])
+  buttons.push([ Markup.callbackButton('🛑 Abbrechen', 'c') ])
+
+  const keyboardMarkup = Markup.inlineKeyboard(buttons)
+  return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
 
 // TODO: add more types

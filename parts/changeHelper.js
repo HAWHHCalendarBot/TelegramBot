@@ -21,9 +21,9 @@ module.exports = {
 
 function generateChangeDescription(change) {
   let text = ''
-  if (change.remove) {
-    text += '🚫 Entfällt\n'
-  }
+  if (change.remove) { text += '🚫 Entfällt\n' }
+  if (change.starttime) { text += `🕗 Startzeit: ${change.starttime}\n` }
+  if (change.endtime) { text += `🕓 Endzeit: ${change.endtime}\n` }
 
   return text
 }
