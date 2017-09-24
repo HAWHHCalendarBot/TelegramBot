@@ -46,6 +46,12 @@ async function preAddMiddleware(ctx, next) {
   const name = ctx.match[1]
   const date = ctx.match[2]
   const fromId = ctx.match[3]
+
+  const myEvents = ctx.state.userconfig.events
+  if (!myEvents.some(o => o === name)) {
+    return ctx.answerCallbackQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
+  }
+
   try {
     const fromconfig = await ctx.userconfig.loadSpecific(fromId)
     const changesOfFrom = fromconfig.changes || []
