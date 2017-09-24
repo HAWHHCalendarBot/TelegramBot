@@ -11,17 +11,17 @@ function filterMeals(meals, specialWishes) {
 
 function mensaSpecialWishesButtons(specialWishes) {
   const possibleSettings = []
+  possibleSettings.push('vegan')
   if (!specialWishes.vegan) {
+    possibleSettings.push('vegetarian')
+    possibleSettings.push('lactoseFree')
     if (!specialWishes.vegetarian) {
       possibleSettings.push('noPig')
       possibleSettings.push('noBeef')
       possibleSettings.push('noPoultry')
       possibleSettings.push('noFish')
     }
-    possibleSettings.push('lactoseFree')
-    possibleSettings.push('vegetarian')
   }
-  possibleSettings.push('vegan')
   return possibleSettings
 }
 
