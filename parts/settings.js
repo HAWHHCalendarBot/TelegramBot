@@ -12,6 +12,7 @@ module.exports = bot
 
 function baseSettingsKeyboard(ctx) {
   return Markup.inlineKeyboard([
+    Markup.callbackButton(enabledEmoji(ctx.state.userconfig.showRemovedEvents) + ' Entfernte Veranstaltungen anzeigen', 's:showRemovedEvents'),
     Markup.callbackButton(enabledEmoji(ctx.state.userconfig.stisysUpdate) + ' StISysUpdate', 's:stisys'),
     Markup.callbackButton('🍽 Mensa', 's:m'),
     Markup.callbackButton('⚠️ Alles löschen ⚠️', 's:del')
@@ -30,6 +31,27 @@ function stisysUpdate(ctx, callbackQueryText) {
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('StISys Update aktivieren', 's:stisys:on', active),
     Markup.callbackButton('StISys Update deaktivieren', 's:stisys:off', !active),
+    Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's')
+  ], {
+    columns: 1
+  })
+
+  return Promise.all([
+    ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup)),
+    ctx.answerCallbackQuery(callbackQueryText)
+  ])
+}
+
+function showRemovedEventsUpdate(ctx, callbackQueryText) {
+  const active = ctx.state.userconfig.showRemovedEvents
+
+  let text = '*Einstellungen*\n\n'
+  text += 'Mit dem /changes Feature kannst du Änderungen an Veranstaltungen hinzufügen. Möglicherweise fallen auch Vorlesungen aus. Mit dieser Option kann eingestellt werden, ob ausfallende Veranstaltungen (mit einem Hinweis) trotzdem im Kalender erscheinen sollen.\n\n'
+  text += 'Entfernte Veranstaltungen werden für dich aktuell ' + (active ? 'angezeigt' : 'ausgeblendet') + '.'
+
+  const keyboardMarkup = Markup.inlineKeyboard([
+    Markup.callbackButton('Entfernte Veranstaltungen anzeigen', 's:showRemovedEvents:toggle', active),
+    Markup.callbackButton('Entfernte Veranstaltungen ausblenden', 's:showRemovedEvents:toggle', !active),
     Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's')
   ], {
     columns: 1
@@ -62,6 +84,15 @@ bot.action('s:stisys:off', async ctx => {
   await ctx.userconfig.save()
 
   return stisysUpdate(ctx, 'StISys Update wurde ausgeschaltet.')
+})
+
+bot.action('s:showRemovedEvents', ctx => showRemovedEventsUpdate(ctx))
+
+bot.action('s:showRemovedEvents:toggle', async ctx => {
+  ctx.state.userconfig.showRemovedEvents = !ctx.state.userconfig.showRemovedEvents
+  await ctx.userconfig.save()
+
+  return showRemovedEventsUpdate(ctx, ctx.state.userconfig.showRemovedEvents ? 'Entfernte Veranstaltungen werden nun angezeigt' : 'Entfernte Veranstaltungen werden nicht mehr angezeigt')
 })
 
 const deleteConfirmString = 'Ja, ich will!'
