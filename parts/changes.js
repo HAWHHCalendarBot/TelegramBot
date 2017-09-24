@@ -29,6 +29,9 @@ function mainText(ctx) {
 
   text += '\nAußerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.'
 
+  // TODO: remove on finish
+  text += '\n\n⚠️ _Beta Feature!_\nBei Fehlern oder Ideen zur Verbesserung, @EdJoPaTo sagen.'
+
   return text
 }
 
@@ -94,7 +97,7 @@ function handleGenerationInProgress(ctx) {
   text += '\nWelche Art von Änderung möchtest du vornehmen?'
 
   // TODO: remove on finish
-  text += '\n\n_WIP: Mehr als das kann ich noch nicht._'
+  text += '\n\n⚠️ _Beta Feature: Mehr Änderungsmöglichkeiten sind in Arbeit._'
 
   const currentKeys = Object.keys(ctx.session.generateChange)
 
