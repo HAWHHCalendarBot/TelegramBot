@@ -10,8 +10,14 @@ function parseDateTimeToDate(dateTime) {
   return date
 }
 
+function formatDateToHumanReadable(isoDateString) {
+  const match = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(isoDateString)
+  return `${Number(match[3])}.${match[2]}.${match[1]} ${Number(match[4])}:${match[5]}`
+}
+
 
 module.exports = {
+  formatDateToHumanReadable: formatDateToHumanReadable,
   generateChangeDescription: generateChangeDescription,
   generateChangeText: generateChangeText,
   generateChangeTextHeader: generateChangeTextHeader,
@@ -43,14 +49,14 @@ function generateChangeTextHeader(change) {
   let text = '*Veranstaltungsänderung*\n'
   text += `*${change.name}*`
   if (change.date) {
-    text += ` ${change.date}`
+    text += ` ${formatDateToHumanReadable(change.date)}`
   }
   text += '\n'
   return text
 }
 
 function generateShortChangeText(change) {
-  return `${change.name} ${change.date}`
+  return `${change.name} ${formatDateToHumanReadable(change.date)}`
 }
 
 async function loadEvents(eventname) {

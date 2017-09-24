@@ -4,6 +4,7 @@ const { Extra, Markup } = Telegraf
 const { generateCallbackButtons } = require('../helper')
 const changesInline = require('./changesInline')
 const {
+  formatDateToHumanReadable,
   generateChangeText,
   generateShortChangeText,
   loadEvents
@@ -176,9 +177,9 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
   const buttons = dates.map(date => {
     const existingChange = onlyChangesOfThisEvent.filter(o => o.date === date)
     if (existingChange.length) {
-      return Markup.callbackButton('✏️ ' + date, 'c:d:' + ctx.session.generateChange.name + '#' + date)
+      return Markup.callbackButton('✏️ ' + formatDateToHumanReadable(date), 'c:d:' + ctx.session.generateChange.name + '#' + date)
     } else {
-      return Markup.callbackButton('➕ ' + date, 'c:g:d:' + date)
+      return Markup.callbackButton('➕ ' + formatDateToHumanReadable(date), 'c:g:d:' + date)
     }
   })
 
