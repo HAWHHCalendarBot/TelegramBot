@@ -2,12 +2,7 @@ const fs = require('fs')
 const util = require('util')
 
 const readFile = util.promisify(fs.readFile)
-const writeFile = util.promisify(fs.writeFile)
 
-
-function filenamePartOfName(name) {
-  return name.replace('/', '-')
-}
 
 function parseDateTimeToDate(dateTime) {
   const unixTime = Number(/(\d+)\+/.exec(dateTime)[1])
@@ -17,24 +12,11 @@ function parseDateTimeToDate(dateTime) {
 
 
 module.exports = {
-  filenameChange: filenameChange,
   generateChangeDescription: generateChangeDescription,
   generateChangeText: generateChangeText,
   generateChangeTextHeader: generateChangeTextHeader,
   generateShortChangeText: generateShortChangeText,
-  hasAlreadyChangeOfThatEvent: hasAlreadyChangeOfThatEvent,
-  hasAlreadyChangeOfThatKind: hasAlreadyChangeOfThatKind,
-  loadChange: loadChange,
-  loadEvents: loadEvents,
-  saveChange: saveChange
-}
-
-
-function filenameChange(change, from) {
-  const fromId = (from && from.id) || change.from.id
-  const changeNameFilename = filenamePartOfName(change.name)
-  const filename = `${changeNameFilename}-${change.date}-${fromId}`
-  return filename
+  loadEvents: loadEvents
 }
 
 function generateChangeDescription(change) {
@@ -67,17 +49,6 @@ function generateShortChangeText(change) {
   return `${change.name} ${change.date}`
 }
 
-function hasAlreadyChangeOfThatEvent(filenameList, newChangeFilename) {
-  const match = /(.+)-(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})-(\d+)/.exec(newChangeFilename)
-  return hasAlreadyChangeOfThatKind(filenameList, match[1], match[2])
-}
-
-function hasAlreadyChangeOfThatKind(filenameList, name, date) {
-  const futureName = `${filenamePartOfName(name)}-${date}`
-  const filtered = filenameList.filter(o => o.indexOf(futureName) >= 0)
-  return filtered.length > 0 ? filtered[0] : null
-}
-
 async function loadEvents(eventname) {
   const filename = eventname.replace('/', '-')
   const content = await readFile(`eventfiles/${filename}.json`, 'utf8')
@@ -88,16 +59,4 @@ async function loadEvents(eventname) {
     return o
   })
   return parsed
-}
-
-async function loadChange(filename) {
-  const content = await readFile(`changes/${filename}.json`, 'utf8')
-  return JSON.parse(content)
-}
-
-async function saveChange(from, change) {
-  change.from = from
-  const filename = filenameChange(change)
-  await writeFile(`changes/${filename}.json`, JSON.stringify(change), 'utf8')
-  return filename
 }

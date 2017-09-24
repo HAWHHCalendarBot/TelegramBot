@@ -4,13 +4,9 @@ const { Extra, Markup } = Telegraf
 const { generateCallbackButtons } = require('../helper')
 const changesInline = require('./changesInline')
 const {
-  filenameChange,
   generateChangeText,
   generateShortChangeText,
-  hasAlreadyChangeOfThatKind,
-  loadChange,
-  loadEvents,
-  saveChange
+  loadEvents
 } = require('./changeHelper')
 
 const bot = new Telegraf.Composer()
@@ -60,7 +56,7 @@ function stopGenerationAfterBotRestartMiddleware(ctx, next) {
   ])
 }
 
-async function handleList(ctx) {
+function handleList(ctx) {
   const changes = ctx.state.userconfig.changes || []
   if (changes.length === 0) {
     return handleMainmenu(ctx)
@@ -70,22 +66,22 @@ async function handleList(ctx) {
   text += '\nWelche Änderung möchtest du betrachten?'
 
   const buttons = []
-  for (const filename of changes) {
-    const change = await loadChange(filename)
-    buttons.push(Markup.callbackButton(generateShortChangeText(change), 'c:d:' + filename))
+  for (const change of changes) {
+    buttons.push(Markup.callbackButton(generateShortChangeText(change), 'c:d:' + change.name + '#' + change.date))
   }
   buttons.push(backToMainButton)
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 }
 
-async function handleDetails(ctx, filename, change = null) {
-  if (!change) { change = await loadChange(filename) }
+function handleDetails(ctx, name, date) {
+  const changes = ctx.state.userconfig.changes || []
+  const change = changes.filter(c => c.name === name && c.date === date)[0]
   const text = generateChangeText(change)
   const title = generateShortChangeText(change)
   const buttons = [
     Markup.switchToChatButton('Teilen…', title),
-    Markup.callbackButton('⚠️ Änderung entfernen', 'c:r:' + filename),
+    Markup.callbackButton('⚠️ Änderung entfernen', 'c:r:' + change.name + '#' + change.date),
     Markup.callbackButton('🔙 zur Änderungsliste', 'c:list'),
     backToMainButton
   ]
@@ -95,18 +91,17 @@ async function handleDetails(ctx, filename, change = null) {
 
 async function handleFinishGeneration(ctx) {
   const change = ctx.session.generateChange
-  const filename = await saveChange(ctx.from, change)
 
   if (!ctx.state.userconfig.changes) {
     ctx.state.userconfig.changes = []
   }
-  ctx.state.userconfig.changes.push(filename)
+  ctx.state.userconfig.changes.push(change)
   ctx.state.userconfig.changes.sort()
   await ctx.userconfig.save()
 
   return Promise.all([
     ctx.answerCallbackQuery('Die Änderung wurde deinem Kalender hinzugefügt.'),
-    handleDetails(ctx, filename, change)
+    handleDetails(ctx, ctx.session.generateChange.name, ctx.session.generateChange.date)
   ])
 }
 
@@ -116,11 +111,11 @@ bot.action('c', handleMainmenu)
 
 bot.action('c:list', handleList)
 
-bot.action(/^c:d:(.+)$/, ctx => handleDetails(ctx, ctx.match[1]))
+bot.action(/^c:d:(.+)#(.+)$/, ctx => handleDetails(ctx, ctx.match[1], ctx.match[2]))
 
-bot.action(/^c:r:(.+)$/, async ctx => {
+bot.action(/^c:r:(.+)#(.+)$/, async ctx => {
   const currentChanges = ctx.state.userconfig.changes || []
-  ctx.state.userconfig.changes = currentChanges.filter(o => o !== ctx.match[1])
+  ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== ctx.match[1] || o.date !== ctx.match[2])
   await ctx.userconfig.save()
   return Promise.all([
     handleList(ctx),
@@ -146,9 +141,11 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
     .map(o => o.toISOString().replace(':00.000Z', ''))
 
   // prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
+  const allChanges = ctx.state.userconfig.changes || []
+  const onlyChangesOfThisEvent = allChanges.filter(o => o.name === ctx.session.generateChange.name)
   const buttons = dates.map(date => {
-    const existingChange = hasAlreadyChangeOfThatKind(ctx.state.userconfig.changes, ctx.session.generateChange.name, date)
-    if (existingChange) {
+    const existingChange = onlyChangesOfThisEvent.filter(o => o.date === date)
+    if (existingChange.length) {
       return Markup.callbackButton('✏️ ' + date, 'c:d:' + existingChange)
     } else {
       return Markup.callbackButton('➕ ' + date, 'c:g:d:' + date)
@@ -158,7 +155,7 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
   buttons.push(Markup.callbackButton('🔙 zurück zur Veranstaltungswahl', 'c:g'))
   buttons.push(backToMainButton)
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
-  return ctx.editMessageText(generateChangeText(ctx.session.generateChange) + `\nWelchen Termin betrifft diese Veränderung?`, Extra.markdown().markup(keyboardMarkup))
+  return ctx.editMessageText(generateChangeText(ctx.session.generateChange) + `\nZu welchem Termin möchtest du die Veränderung hinzufügen?`, Extra.markdown().markup(keyboardMarkup))
 })
 
 bot.action(/^c:g:d:(.+)$/, stopGenerationAfterBotRestartMiddleware, ctx => { // change generate date
