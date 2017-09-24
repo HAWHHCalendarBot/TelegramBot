@@ -30,8 +30,11 @@ function generateChangeDescription(change) {
 
 function generateChangeText(change) {
   let text = generateChangeTextHeader(change)
-  text += '\nÄnderungen:\n'
-  text += generateChangeDescription(change)
+
+  if (Object.keys(change).length > 2) {
+    text += '\nÄnderungen:\n'
+    text += generateChangeDescription(change)
+  }
 
   return text
 }
