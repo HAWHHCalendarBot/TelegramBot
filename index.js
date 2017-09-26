@@ -3,18 +3,18 @@ const Telegraf = require('telegraf')
 
 const { Extra, Markup } = Telegraf
 
-const hasStISysChanged = require('./lib/hasStISysChanged.js')
-const Chatconfig = require('./lib/chatconfig.js')
+const hasStISysChanged = require('./lib/hasStISysChanged')
+const Chatconfig = require('./lib/chatconfig')
 
-const addevents = require('./parts/addevents.js')
-const admin = require('./parts/admin.js')
-const changes = require('./parts/changes.js')
-const easterEggs = require('./parts/easterEggs.js')
-const events = require('./parts/events.js')
-const mensa = require('./parts/mensa.js')
-const settings = require('./parts/settings.js')
-const start = require('./parts/start.js')
-const subscribe = require('./parts/subscribe.js')
+const addevents = require('./parts/addevents')
+const admin = require('./parts/admin')
+const changes = require('./parts/changes')
+const easterEggs = require('./parts/easterEggs')
+const events = require('./parts/events')
+const mensa = require('./parts/mensa')
+const settings = require('./parts/settings')
+const start = require('./parts/start')
+const subscribe = require('./parts/subscribe')
 
 const tokenFilePath = process.env.NODE_ENV === 'production' ? process.env.npm_package_config_tokenpath : process.env.npm_package_config_tokenpathdebug
 const token = fs.readFileSync(tokenFilePath, 'utf8').trim()
