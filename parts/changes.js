@@ -10,6 +10,7 @@ const {
 
 const {
   formatDateToHumanReadable,
+  generateTimeSectionButtons,
   loadEvents
 } = require('../lib/calendarHelper')
 
@@ -216,13 +217,9 @@ bot.action(/^c:g:(.+time)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
   let text = generateChangeText(ctx.session.generateChange)
   text += `\nAuf welche Zeit möchtest du die ${ctx.match[1] === 'starttime' ? 'Startzeit' : 'Endzeit'} setzen?`
 
-  const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-  const minutes = ['00', 15, 30, 45]
+  const callbackDataPrefix = 'c:g:s:' + ctx.match[1]
+  const buttons = generateTimeSectionButtons(callbackDataPrefix)
 
-  const buttons = hours.map(h => {
-    const times = minutes.map(m => `${h}:${m}`)
-    return generateCallbackButtons('c:g:s:' + ctx.match[1], times)
-  })
   buttons.push([ Markup.callbackButton('🔝 zurück zur Änderungsauswahl', 'c:g:possibility-picker') ])
   buttons.push([ Markup.callbackButton('🛑 Abbrechen', 'c') ])
 
