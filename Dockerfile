@@ -1,5 +1,6 @@
 FROM node:8-alpine
 WORKDIR /app
+VOLUME /app/additionalEvents
 VOLUME /app/eventfiles
 VOLUME /app/meals
 VOLUME /app/tmp

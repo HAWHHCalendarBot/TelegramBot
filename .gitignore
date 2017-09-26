@@ -4,6 +4,7 @@ botfather-settings/userpic.png
 node_modules
 
 # botfiles
+additionalEvents
 eventfiles
 meals
 tmp
