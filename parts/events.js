@@ -1,6 +1,6 @@
 const Telegraf = require('telegraf')
 
-const generateInlineKeyboardMarkup = require('../helper.js').generateInlineKeyboardMarkup
+const generateInlineKeyboardMarkup = require('../lib/telegrafHelper').generateInlineKeyboardMarkup
 
 const { Extra, Markup } = Telegraf
 
