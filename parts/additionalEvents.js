@@ -106,13 +106,18 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   ])
 })
 
-bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
-  let eventsAvailableToRemove = []
+async function getEventsButtons(ctx) {
+  let eventsAvailable = []
   try {
-    eventsAvailableToRemove = await readJsonFile(`additionalEvents/${ctx.session.additionalEvents.name}.json`)
+    eventsAvailable = await readJsonFile(`additionalEvents/${ctx.session.additionalEvents.name}.json`)
   } catch (err) {}
 
-  const buttons = eventsAvailableToRemove.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:r:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
+  const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:d:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
+  return buttons
+}
+
+bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
+  const buttons = await getEventsButtons(ctx)
 
   buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
