@@ -97,18 +97,18 @@ bot.action('aE:add:room', somethingStrangeMiddleware, ctx => {
   ])
 })
 
-function isRoomAnswerMiddleware(ctx, next) {
+function isRoomAnswer(ctx) {
   if (!ctx.session.additionalEvents) { return }
-  if (ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion) { return next() }
+  return ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion
 }
-bot.hears(/.+/, isRoomAnswerMiddleware, ctx => {
+bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {
   ctx.session.additionalEvents.room = ctx.message.text
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('Ja!', 'aE:add'),
     Markup.callbackButton('Nein.', 'aE:add:room')
   ])
   ctx.reply(`Ist '${ctx.session.additionalEvents.room}' korrekt?`, Extra.markup(keyboardMarkup))
-})
+}))
 
 bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   const data = ctx.session.additionalEvents
