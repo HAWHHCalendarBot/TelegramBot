@@ -44,7 +44,7 @@ function handleAddEvent(ctx) {
   const allNeededDataAvailable = data.date &&
     data.endtime &&
     data.month &&
-    // data.room && // TODO
+    data.room &&
     data.starttime &&
     data.year
 
@@ -89,8 +89,26 @@ bot.action(/^aE:add:t:([^:]+):(.+)$/, somethingStrangeMiddleware, ctx => {
   return handleAddEvent(ctx)
 })
 
-bot.action('aE:add:room', somethingStrangeMiddleware, ctx => ctx.answerCallbackQuery('Not jet implemented')) // TODO
+const roomQuestion = 'In welchem Raum findet der Termin statt?'
+bot.action('aE:add:room', somethingStrangeMiddleware, ctx => {
+  return Promise.all([
+    ctx.editMessageText('⬇️'),
+    ctx.reply(roomQuestion, Extra.markup(Markup.forceReply()))
+  ])
+})
 
+function isRoomAnswerMiddleware(ctx, next) {
+  if (!ctx.session.additionalEvents) { return }
+  if (ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion) { return next() }
+}
+bot.hears(/.+/, isRoomAnswerMiddleware, ctx => {
+  ctx.session.additionalEvents.room = ctx.message.text
+  const keyboardMarkup = Markup.inlineKeyboard([
+    Markup.callbackButton('Ja!', 'aE:add'),
+    Markup.callbackButton('Nein.', 'aE:add:room')
+  ])
+  ctx.reply(`Ist '${ctx.session.additionalEvents.room}' korrekt?`, Extra.markup(keyboardMarkup))
+})
 
 bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   const data = ctx.session.additionalEvents
