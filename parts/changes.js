@@ -5,13 +5,13 @@ const { generateCallbackButtons } = require('../lib/telegrafHelper')
 const changesInline = require('./changesInline')
 const {
   generateChangeText,
-  generateShortChangeText
+  generateShortChangeText,
+  loadEvents
 } = require('./changeHelper')
 
 const {
   formatDateToHumanReadable,
-  generateTimeSectionButtons,
-  loadEvents
+  generateTimeSectionButtons
 } = require('../lib/calendarHelper')
 
 const bot = new Telegraf.Composer()
