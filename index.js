@@ -35,8 +35,8 @@ bot.use(chatconfig)
 
 bot.use(easterEggs)
 bot.use(Telegraf.optional(ctx => ctx.state.userconfig.admin, admin))
+bot.use(Telegraf.optional(ctx => (ctx.state.userconfig.additionalEvents || []).length > 0, additionalEvents))
 
-bot.use(additionalEvents)
 bot.use(changes)
 bot.use(events)
 bot.use(mensa)

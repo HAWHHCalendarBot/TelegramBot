@@ -23,15 +23,6 @@ const { Extra, Markup } = Telegraf
 const bot = new Telegraf.Composer()
 module.exports = bot
 
-function isEventMasterMiddleware(ctx, next) {
-  const additionalEvents = ctx.state.userconfig.additionalEvents || []
-  if (additionalEvents.length === 0) {
-    return
-  }
-
-  return next()
-}
-
 function somethingStrangeMiddleware(ctx, next) {
   if (!ctx.session.additionalEvents) {
     return ctx.editMessageText('Ich hab den Faden verloren 🎈😴')
@@ -65,7 +56,7 @@ function handleAddEvent(ctx) {
   return ctx.editMessageText('Bestimme die Details des Termins', Extra.markup(Markup.inlineKeyboard(buttons)))
 }
 
-bot.command('additionalEvents', isEventMasterMiddleware, ctx => {
+bot.command('additionalEvents', ctx => {
   let text = 'Hier kannst du bei deiner / deinen Veranstaltungen Termine hinzufügen oder entfernen. Diese erscheinen für alle unter den möglichen, hinzufügbaren Veranstaltungen. Du hast diese automatisch im Kalender.'
 
   text += '\n\n⚠️ Der geringste Teil der Nutzer ist Veranstalter. Daher ist diese Funktionalität etwas spartanisch gestaltet. Denke bitte selbst ein bisschen mit, was du tust. Zum Beispiel hat nicht jeder Monat 31 Tage 😉'
@@ -75,7 +66,7 @@ bot.command('additionalEvents', isEventMasterMiddleware, ctx => {
   return ctx.replyWithMarkdown(text, Extra.markup(keyboardMarkup))
 })
 
-bot.action(/^aE:event:(.+)$/, isEventMasterMiddleware, ctx => {
+bot.action(/^aE:event:(.+)$/, ctx => {
   ctx.session.additionalEvents = {
     name: ctx.match[1],
     year: new Date(Date.now()).getFullYear()
