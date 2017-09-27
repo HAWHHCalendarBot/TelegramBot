@@ -98,11 +98,20 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   try {
     current = await readJsonFile(filename)
   } catch (err) {}
-  current.push(data)
-  await writeJsonFile(filename, current)
+
+  // remove events at the same time
+  const future = current.filter(o => Number(o.year) !== Number(data.year) ||
+    Number(o.month) !== Number(data.month) ||
+    Number(o.date) !== Number(data.date) ||
+    o.starttime !== data.starttime)
+
+  future.push(data)
+  await writeJsonFile(filename, future)
+
+  const outputText = future.length === current.length ? 'Geändert.' : 'Hinzugefügt.'
   return Promise.all([
-    ctx.answerCallbackQuery('Hinzugefügt.'),
-    ctx.editMessageText('Hinzugefügt.')
+    ctx.answerCallbackQuery(outputText),
+    ctx.editMessageText(outputText)
   ])
 })
 
