@@ -101,12 +101,10 @@ function handleGenerationInProgress(ctx) {
   let text = generateChangeText(ctx.session.generateChange)
   text += '\nWelche Art von Änderung möchtest du vornehmen?'
 
-  // TODO: remove on finish
-  text += '\n\n⚠️ _Beta Feature: Mehr Änderungsmöglichkeiten sind in Arbeit._'
+  text += '\n\nWeitere Änderungsmöglichkeiten sind aktuell nicht in Planung. Wenn du etwas hast, was dir fehlt, schreib einfach_ @EdJoPaTo'
 
   const currentKeys = Object.keys(ctx.session.generateChange)
 
-  // TODO: add more types of changes
   const buttons = [
     [
       Markup.callbackButton('🚫 Entfällt', 'c:g:remove', currentKeys.length > 2)
@@ -226,5 +224,3 @@ bot.action(/^c:g:(.+time)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
   const keyboardMarkup = Markup.inlineKeyboard(buttons)
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
-
-// TODO: add more types
