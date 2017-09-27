@@ -33,6 +33,7 @@ function somethingStrangeMiddleware(ctx, next) {
 function handleEventOverview(ctx) {
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('Termin hinzufügen', 'aE:add'),
+    Markup.callbackButton('Termin duplizieren / anpassen', 'aE:duplicate'),
     Markup.callbackButton('Termin entfernen', 'aE:remove')
   ], { columns: 1 })
   return ctx.editMessageText(`*${ctx.session.additionalEvents.name}*`, Extra.markdown().markup(keyboardMarkup))
@@ -124,6 +125,30 @@ async function getEventsButtons(ctx) {
   const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:d:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
   return buttons
 }
+
+bot.action('aE:duplicate', somethingStrangeMiddleware, async ctx => {
+  let text = 'Welchen Termin möchtest du duplizieren / anpassen?'
+  text += '\n'
+  text += '\nBeim Speichern des neuen Termins wird ein zeitgleich startender Termin überschrieben -> quasi bearbeitet.'
+
+  const buttons = await getEventsButtons(ctx)
+
+  buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
+})
+
+bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d{2}:\d{2})$/, async ctx => {
+  const filename = `additionalEvents/${ctx.match[1]}.json`
+  const current = await readJsonFile(filename)
+  const searched = current.filter(o => Number(o.year) === Number(ctx.match[2]) &&
+    Number(o.month) === Number(ctx.match[3]) &&
+    Number(o.date) === Number(ctx.match[4]) &&
+    o.starttime === ctx.match[5])
+  ctx.session.additionalEvents = searched[0]
+  return handleAddEvent(ctx)
+})
+
 
 bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
   const buttons = await getEventsButtons(ctx)
