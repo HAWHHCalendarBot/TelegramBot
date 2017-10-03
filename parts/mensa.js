@@ -74,15 +74,13 @@ function mealToMarkdown(meal, isStudent, showAdditives) {
 
 const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
 async function mensaText(mensa, year, month, day, mensaSettings) {
-  if (!mensa || mensa === 'undefined') { mensa = 'Berliner-Tor' }
+  if (!mensa || mensa === 'undefined') {
+    return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. In den /settings findest du die Mensa Einstellungen.'
+  }
   const date = new Date(Date.parse(`${year}-${month}-${day}`))
   const weekday = weekdays[date.getDay()]
 
-  let prefix = `Mensa *${mensa}*\n${weekday} ${day}.${month}.${year}\n`
-  if (!mensaSettings.main) {
-    prefix += `⚠️ Da du noch keine Einstellungen zur Mensa hast, nehme ich die Mensa '${mensa}' an. In den /settings findest du die Mensa Einstellungen.\n`
-  }
-
+  const prefix = `Mensa *${mensa}*\n${weekday} ${day}.${month}.${year}\n`
   let hints = ''
   if (mensaSettings.noPig || mensaSettings.noFish || mensaSettings.lactoseFree || mensaSettings.vegetarian || mensaSettings.vegan) {
     hints += '⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.\n'
@@ -110,6 +108,9 @@ function dateCallbackButtonData(mensa, date) {
 }
 
 function generateMensaButtons(mensa, year, month, day, mensaSettings) {
+  if (!mensa || mensa === 'undefined') {
+    return []
+  }
   const timeButtons = generateTimeButtons(mensa, year, month, day)
   const mensaButtons = generateSwitchMensaButtons(mensa, year, month, day, mensaSettings)
 

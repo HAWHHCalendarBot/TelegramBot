@@ -33,11 +33,11 @@ function mensaSettingsMainmenu(ctx) {
   const moreCountText = moreCount ? ' (' + moreCount + ' gewählt)' : ''
 
   const keyboardMarkup = Markup.inlineKeyboard([
-    Markup.callbackButton(`${mainUnset ? '⚠️ ' : ''}Hauptmensa: ${mainMensa}${mainUnset ? ' ❓' : ''}`, 's:m:main'),
+    Markup.callbackButton(`Hauptmensa${mainUnset ? '' : ': ' + mainMensa}`, 's:m:main'),
     Markup.callbackButton('weitere Mensen' + moreCountText, 's:m:more', mainUnset),
-    Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.student) + ' Studentenpreis', 's:m:student'),
-    Markup.callbackButton('Extrawünsche Essen', 's:m:s'),
-    Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.showAdditives) + ' zeige Inhaltsstoffe', 's:m:showAdditives'),
+    Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.student) + ' Studentenpreis', 's:m:student', mainUnset),
+    Markup.callbackButton('Extrawünsche Essen', 's:m:s', mainUnset),
+    Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.showAdditives) + ' zeige Inhaltsstoffe', 's:m:showAdditives', mainUnset),
     Markup.callbackButton('🔙 zurück zur Einstellungsübersicht', 's')
   ], { columns: 1 })
 
