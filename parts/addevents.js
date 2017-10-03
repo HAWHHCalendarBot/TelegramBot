@@ -24,6 +24,7 @@ function updateEvents() {
 function findEventsByPatternForUser(ctx, pattern) {
   const regex = new RegExp(pattern, 'i')
   const blacklist = ctx.state.userconfig.events
+    .concat(ctx.state.userconfig.additionalEvents || [])
 
   const filtered = allEvents.filter(event => regex.test(event) && !blacklist.some(v => v === event))
   return filtered
@@ -117,7 +118,9 @@ bot.action(/^a:(.+)$/, async ctx => {
   const event = ctx.match[1]
 
   const isExisting = allEvents.indexOf(event) >= 0
-  const isAlreadyInCalendar = ctx.state.userconfig.events.indexOf(event) >= 0
+  const isAlreadyInCalendar = ctx.state.userconfig.events
+    .concat(ctx.state.userconfig.additionalEvents || [])
+    .indexOf(event) >= 0
 
   if (isExisting && !isAlreadyInCalendar) {
     ctx.state.userconfig.events.push(event)
