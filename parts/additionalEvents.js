@@ -134,13 +134,13 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   ])
 })
 
-async function getEventsButtons(ctx) {
+async function getEventsButtons(ctx, type) {
   let eventsAvailable = []
   try {
     eventsAvailable = await readJsonFile(`additionalEvents/${ctx.session.additionalEvents.name}.json`)
   } catch (err) {}
 
-  const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:d:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
+  const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:${type}:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
   return buttons
 }
 
@@ -149,7 +149,7 @@ bot.action('aE:duplicate', somethingStrangeMiddleware, async ctx => {
   text += '\n'
   text += '\nBeim Speichern des neuen Termins wird ein zeitgleich startender Termin überschrieben -> quasi bearbeitet.'
 
-  const buttons = await getEventsButtons(ctx)
+  const buttons = await getEventsButtons(ctx, 'd')
 
   buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
@@ -169,7 +169,7 @@ bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d{2}:\d{2})$/, async ctx => {
 
 
 bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
-  const buttons = await getEventsButtons(ctx)
+  const buttons = await getEventsButtons(ctx, 'r')
 
   buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
   const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
