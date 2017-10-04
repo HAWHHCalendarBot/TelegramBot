@@ -12,13 +12,18 @@ const bot = new Telegraf.Composer()
 module.exports = bot
 
 bot.command('list', ctx => {
-  const events = 'Du hast aktuell folgende *Veranstaltungen* in deinem Kalender:\n' + ctx.state.userconfig.events.map(s => '- ' + s).join('\n')
+  const eventList = ctx.state.userconfig.events
+    .concat(ctx.state.userconfig.additionalEvents || [])
+  let events = 'Du hast aktuell folgende *Veranstaltungen* in deinem Kalender:\n' + ctx.state.userconfig.events.map(s => '- ' + s).join('\n')
+  if ((ctx.state.userconfig.additionalEvents || []).length > 0) {
+    events += '\n\nAußerdem bist du Veranstalter:\n' + ctx.state.userconfig.additionalEvents.map(s => '- ' + s).join('\n')
+  }
   const noEvents = 'Du hast aktuell keine Veranstaltungen in deinem Kalender. 😔'
 
   let text
   let hint = '\n\nNutze /add um Veranstaltungen hinzuzufügen'
 
-  if (ctx.state.userconfig.events.length === 0) {
+  if (eventList.length === 0) {
     text = noEvents
     hint += '.'
   } else {
