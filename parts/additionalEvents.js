@@ -156,7 +156,7 @@ bot.action('aE:duplicate', somethingStrangeMiddleware, async ctx => {
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
 
-bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d{2}:\d{2})$/, async ctx => {
+bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
   const filename = `additionalEvents/${ctx.match[1]}.json`
   const current = await readJsonFile(filename)
   const searched = current.filter(o => Number(o.year) === Number(ctx.match[2]) &&
@@ -176,7 +176,7 @@ bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
   return ctx.editMessageText('Welchen Termin möchtest du entfernen?', Extra.markdown().markup(keyboardMarkup))
 })
 
-bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d{2}:\d{2})$/, async ctx => {
+bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
   const filename = `additionalEvents/${ctx.match[1]}.json`
   const current = await readJsonFile(filename)
   const future = current.filter(o => Number(o.year) !== Number(ctx.match[2]) ||
