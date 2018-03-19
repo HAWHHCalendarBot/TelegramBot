@@ -38,7 +38,7 @@ function stisysUpdate(ctx, callbackQueryText) {
 
   return Promise.all([
     ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup)),
-    ctx.answerCallbackQuery(callbackQueryText)
+    ctx.answerCbQuery(callbackQueryText)
   ])
 }
 
@@ -59,7 +59,7 @@ function showRemovedEventsUpdate(ctx, callbackQueryText) {
 
   return Promise.all([
     ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup)),
-    ctx.answerCallbackQuery(callbackQueryText)
+    ctx.answerCbQuery(callbackQueryText)
   ])
 }
 
@@ -101,7 +101,7 @@ const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Eins
 
 bot.action('s:del', ctx => {
   return Promise.all([
-    ctx.answerCallbackQuery(),
+    ctx.answerCbQuery(),
     ctx.reply(deleteQuestion, Markup.forceReply().extra())
   ])
 })

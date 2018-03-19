@@ -37,13 +37,13 @@ bot.action('broadcast!', ctx => {
   return Promise.all([
     ctx.userconfig.broadcast(ctx.callbackQuery.message.reply_to_message.text, Extra.markdown().markup(Markup.removeKeyboard())),
     ctx.editMessageReplyMarkup(Markup.inlineKeyboard([])),
-    ctx.answerCallbackQuery('Broadcast wird versendet…')
+    ctx.answerCbQuery('Broadcast wird versendet…')
   ])
 })
 
 bot.action('clearinline', ctx => {
   return Promise.all([
     ctx.editMessageReplyMarkup(Markup.inlineKeyboard([])),
-    ctx.answerCallbackQuery('Inline Keyboard entfernt…')
+    ctx.answerCbQuery('Inline Keyboard entfernt…')
   ])
 })

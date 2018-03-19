@@ -57,7 +57,7 @@ async function preAddMiddleware(ctx, next) {
 
   const myEvents = ctx.state.userconfig.events
   if (!myEvents.some(o => o === name)) {
-    return ctx.answerCallbackQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
+    return ctx.answerCbQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
   }
 
   try {
@@ -83,7 +83,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
   const myChanges = ctx.state.userconfig.changes || []
 
   if (ctx.from.id === Number(fromId)) {
-    return ctx.answerCallbackQuery('Das ist deine eigene Änderung 😉')
+    return ctx.answerCbQuery('Das ist deine eigene Änderung 😉')
   }
 
   // prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
@@ -92,7 +92,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
 
   if (myChangeToThisEvent.length) {
     const warning = '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.'
-    ctx.answerCallbackQuery(warning)
+    ctx.answerCbQuery(warning)
 
     const currentChange = myChangeToThisEvent[0]
 
@@ -117,7 +117,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
   ctx.state.userconfig.changes = myChanges
   await ctx.userconfig.save()
 
-  return ctx.answerCallbackQuery('Die Änderung wurde hinzugefügt')
+  return ctx.answerCbQuery('Die Änderung wurde hinzugefügt')
 })
 
 bot.action('c:cancel', ctx => ctx.editMessageText('Ich habe nichts verändert. 🙂'))

@@ -61,5 +61,5 @@ bot.action(/^r:(.+)$/, async ctx => {
 
 
   // answerCallbackQuery
-  return ctx.answerCallbackQuery(`${event} wurde aus deinem Kalender entfernt.`)
+  return ctx.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
 })

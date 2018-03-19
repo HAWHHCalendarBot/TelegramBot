@@ -110,7 +110,7 @@ bot.action(/^p:(\d+)$/, ctx => {
   ctx.session.page = Number(ctx.match[1])
   return Promise.all([
     updateMessage(ctx),
-    ctx.answerCallbackQuery('')
+    ctx.answerCbQuery('')
   ])
 })
 
@@ -132,14 +132,14 @@ bot.action(/^a:(.+)$/, async ctx => {
 
   // answerCallbackQuery
   if (!isExisting) {
-    return ctx.answerCallbackQuery(`${event} existiert nicht!`)
+    return ctx.answerCbQuery(`${event} existiert nicht!`)
   }
 
   if (isAlreadyInCalendar) {
-    return ctx.answerCallbackQuery(`${event} ist bereits in deinem Kalender!`)
+    return ctx.answerCbQuery(`${event} ist bereits in deinem Kalender!`)
   }
 
-  return ctx.answerCallbackQuery(`${event} wurde zu deinem Kalender hinzugefügt.`)
+  return ctx.answerCbQuery(`${event} wurde zu deinem Kalender hinzugefügt.`)
 })
 
 bot.command('stats', async ctx => {

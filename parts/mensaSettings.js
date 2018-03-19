@@ -46,7 +46,7 @@ function mensaSettingsMainmenu(ctx) {
 
 bot.action('s:m', ctx => Promise.all([
   mensaSettingsMainmenu(ctx),
-  ctx.answerCallbackQuery()
+  ctx.answerCbQuery()
 ]))
 
 bot.action('s:m:student', async ctx => {
@@ -75,7 +75,7 @@ bot.action('s:m:main', ctx => {
 
   return Promise.all([
     ctx.editMessageText('*Mensa Einstellungen*\nWähle die Mensa, in den du am häufigsten bist', Extra.markdown().markup(keyboardMarkup)),
-    ctx.answerCallbackQuery()
+    ctx.answerCbQuery()
   ])
 })
 
@@ -84,7 +84,7 @@ bot.action(/^s:m:main:(.+)$/, async ctx => {
   await ctx.userconfig.save()
   return Promise.all([
     mensaSettingsMainmenu(ctx),
-    ctx.answerCallbackQuery(`${ctx.state.mensaSettings.main} wurde als deine neue Hauptmensa ausgewählt.`)
+    ctx.answerCbQuery(`${ctx.state.mensaSettings.main} wurde als deine neue Hauptmensa ausgewählt.`)
   ])
 })
 
@@ -108,13 +108,13 @@ function moreMenu(ctx) {
 
 bot.action('s:m:more', ctx => Promise.all([
   moreMenu(ctx),
-  ctx.answerCallbackQuery()
+  ctx.answerCbQuery()
 ]))
 
 bot.action(/^s:m:more:(.+)$/, async ctx => {
   const mensa = ctx.match[1]
   if (mensa === ctx.state.mensaSettings.main) {
-    return ctx.answerCallbackQuery(`${mensa} ist bereits deine Hauptmensa.`)
+    return ctx.answerCbQuery(`${mensa} ist bereits deine Hauptmensa.`)
   }
 
   ctx.state.mensaSettings.more = ctx.state.mensaSettings.more || []
@@ -132,7 +132,7 @@ bot.action(/^s:m:more:(.+)$/, async ctx => {
   await ctx.userconfig.save()
   return Promise.all([
     moreMenu(ctx),
-    ctx.answerCallbackQuery(text)
+    ctx.answerCbQuery(text)
   ])
 })
 
@@ -152,7 +152,7 @@ function mensaSettingsSpecialWishesMenu(ctx) {
 
 bot.action('s:m:s', ctx => Promise.all([ // settings:mensa:specialWishes
   mensaSettingsSpecialWishesMenu(ctx),
-  ctx.answerCallbackQuery()
+  ctx.answerCbQuery()
 ]))
 
 const settingName = {
@@ -185,7 +185,7 @@ function toggleSettingText(setting, enabled) {
 async function toggleSetting(ctx, settingName) {
   ctx.state.mensaSettings[settingName] = !ctx.state.mensaSettings[settingName]
   await ctx.userconfig.save()
-  return ctx.answerCallbackQuery(toggleSettingText(settingName, ctx.state.mensaSettings[settingName]))
+  return ctx.answerCbQuery(toggleSettingText(settingName, ctx.state.mensaSettings[settingName]))
 }
 
 bot.action(/^s:m:s:(.+)$/, async ctx => {

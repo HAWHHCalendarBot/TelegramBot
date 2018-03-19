@@ -129,7 +129,7 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
 
   const outputText = future.length === current.length ? 'Geändert.' : 'Hinzugefügt.'
   return Promise.all([
-    ctx.answerCallbackQuery(outputText),
+    ctx.answerCbQuery(outputText),
     ctx.editMessageText(outputText)
   ])
 })
@@ -185,7 +185,7 @@ bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
     o.starttime !== ctx.match[5])
   await writeJsonFile(filename, future)
   return Promise.all([
-    ctx.answerCallbackQuery('Entfernt.'),
+    ctx.answerCbQuery('Entfernt.'),
     ctx.editMessageText('Entfernt.')
   ])
 })

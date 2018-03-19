@@ -60,7 +60,7 @@ function stopGenerationAfterBotRestartMiddleware(ctx, next) {
 
   return Promise.all([
     handleMainmenu(ctx),
-    ctx.answerCallbackQuery('Ich hab den Faden verloren 🎈😴')
+    ctx.answerCbQuery('Ich hab den Faden verloren 🎈😴')
   ])
 }
 
@@ -133,7 +133,7 @@ async function handleFinishGeneration(ctx) {
   await ctx.userconfig.save()
 
   return Promise.all([
-    ctx.answerCallbackQuery('Die Änderung wurde deinem Kalender hinzugefügt.'),
+    ctx.answerCbQuery('Die Änderung wurde deinem Kalender hinzugefügt.'),
     handleDetails(ctx, ctx.session.generateChange.name, ctx.session.generateChange.date)
   ])
 }
@@ -152,7 +152,7 @@ bot.action(/^c:r:(.+)#(.+)$/, async ctx => {
   await ctx.userconfig.save()
   return Promise.all([
     handleList(ctx),
-    ctx.answerCallbackQuery('Änderung wurde entfernt.')
+    ctx.answerCbQuery('Änderung wurde entfernt.')
   ])
 })
 

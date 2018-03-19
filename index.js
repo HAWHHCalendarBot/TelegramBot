@@ -1,5 +1,6 @@
 const fs = require('fs')
 const Telegraf = require('telegraf')
+const session = require('telegraf/session')
 
 const { Extra, Markup } = Telegraf
 
@@ -26,7 +27,7 @@ bot.telegram.getMe().then((botInfo) => {
   bot.options.username = botInfo.username
 })
 
-bot.use(Telegraf.memorySession())
+bot.use(session())
 const chatconfig = new Chatconfig('userconfig', {
   events: [],
   settings: {}
