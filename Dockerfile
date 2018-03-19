@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:9-alpine
 WORKDIR /app
 VOLUME /app/additionalEvents
 VOLUME /app/eventfiles
