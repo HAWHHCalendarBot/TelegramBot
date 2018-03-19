@@ -49,6 +49,12 @@ bot.action(/^r:(.+)$/, async ctx => {
   const event = ctx.match[1]
 
   ctx.state.userconfig.events = ctx.state.userconfig.events.filter(e => e !== event)
+
+  // remove changes to that event too
+  const currentChanges = ctx.state.userconfig.changes || []
+  ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== event)
+
+  // save config
   await ctx.userconfig.save()
 
 
