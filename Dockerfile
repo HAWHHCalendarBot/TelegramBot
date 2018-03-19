@@ -7,8 +7,8 @@ VOLUME /app/tmp
 VOLUME /app/userconfig
 
 ENV NODE_ENV=production
-ADD package.json /app
+COPY package.json package-lock.json ./
 RUN npm install
 
-ADD . /app
+COPY . ./
 CMD ["npm", "start"]
