@@ -112,7 +112,7 @@ bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {
 
 bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   const data = ctx.session.additionalEvents
-  const filename = `additionalEvents/${data.name}.json`
+  const filename = `additionalEvents/${data.name.replace('/', '-')}.json`
   let current = []
   try {
     current = await readJsonFile(filename)
@@ -137,7 +137,7 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
 async function getEventsButtons(ctx, type) {
   let eventsAvailable = []
   try {
-    eventsAvailable = await readJsonFile(`additionalEvents/${ctx.session.additionalEvents.name}.json`)
+    eventsAvailable = await readJsonFile(`additionalEvents/${ctx.session.additionalEvents.name.replace('/', '-')}.json`)
   } catch (err) {}
 
   const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:${type}:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
@@ -157,7 +157,7 @@ bot.action('aE:duplicate', somethingStrangeMiddleware, async ctx => {
 })
 
 bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
-  const filename = `additionalEvents/${ctx.match[1]}.json`
+  const filename = `additionalEvents/${ctx.match[1].replace('/', '-')}.json`
   const current = await readJsonFile(filename)
   const searched = current.filter(o => Number(o.year) === Number(ctx.match[2]) &&
     Number(o.month) === Number(ctx.match[3]) &&
@@ -177,7 +177,7 @@ bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
 })
 
 bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
-  const filename = `additionalEvents/${ctx.match[1]}.json`
+  const filename = `additionalEvents/${ctx.match[1].replace('/', '-')}.json`
   const current = await readJsonFile(filename)
   const future = current.filter(o => Number(o.year) !== Number(ctx.match[2]) ||
     Number(o.month) !== Number(ctx.match[3]) ||
