@@ -101,7 +101,7 @@ function handleGenerationInProgress(ctx) {
   let text = generateChangeText(ctx.session.generateChange)
   text += '\nWelche Art von Änderung möchtest du vornehmen?'
 
-  text += '\n\n_Weitere Änderungsmöglichkeiten sind aktuell nicht in Planung. Wenn du etwas hast, was dir fehlt, schreib einfach_ @EdJoPaTo'
+  text += '\n\n_Dir fehlt eine Änderungsmöglichkeit? Schreib einfach_ @EdJoPaTo'
 
   const currentKeys = Object.keys(ctx.session.generateChange)
 
