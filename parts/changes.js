@@ -112,6 +112,8 @@ function handleGenerationInProgress(ctx) {
       Markup.callbackButton('🕗 Startzeit', 'c:g:starttime'),
       Markup.callbackButton('🕓 Endzeit', 'c:g:endtime')
     ], [
+      Markup.callbackButton('📍 Raum', 'c:g:room')
+    ], [
       Markup.callbackButton('🔙 zurück zur Terminwahl', 'c:g:n:' + ctx.session.generateChange.name, currentKeys.length > 2)
     ], [
       Markup.callbackButton('✅ Fertig stellen', 'c:g:finish', currentKeys.length <= 2),
@@ -224,3 +226,24 @@ bot.action(/^c:g:(.+time)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
   const keyboardMarkup = Markup.inlineKeyboard(buttons)
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
+
+const roomQuestion = 'In welchen Raum wurde der Termin gewechselt?'
+bot.action('c:g:room', stopGenerationAfterBotRestartMiddleware, ctx => {
+  return Promise.all([
+    ctx.editMessageText('⬇️'),
+    ctx.reply(roomQuestion, Extra.markup(Markup.forceReply()))
+  ])
+})
+
+function isRoomAnswer(ctx) {
+  if (!ctx.session.generateChange) { return }
+  return ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion
+}
+bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {
+  ctx.session.generateChange.room = ctx.message.text
+  const keyboardMarkup = Markup.inlineKeyboard([
+    Markup.callbackButton('Ja!', 'c:g:possibility-picker'),
+    Markup.callbackButton('Nein.', 'c:g:room')
+  ])
+  ctx.reply(`Ist '${ctx.session.generateChange.room}' korrekt?`, Extra.markup(keyboardMarkup))
+}))

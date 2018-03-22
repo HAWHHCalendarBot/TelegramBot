@@ -21,6 +21,7 @@ function generateChangeDescription(change) {
   if (change.remove) { text += '🚫 Entfällt\n' }
   if (change.starttime) { text += `🕗 Startzeit: ${change.starttime}\n` }
   if (change.endtime) { text += `🕓 Endzeit: ${change.endtime}\n` }
+  if (change.room) { text += `📍 Raum: ${change.room}\n` }
 
   return text
 }
