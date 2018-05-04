@@ -41,7 +41,7 @@ function mealToMarkdown(meal, isStudent, showAdditives) {
       .replace(/ \(/g, '* (')
       .replace(/\), /g, '), *')
       .replace(/([^)])$/, '$1*')
-    : meal.Name.replace(/\s*\([\d, ]+\)\s*/g, '') + '*'
+    : meal.Name.replace(/\s*\([^)]+\)\s*/g, '') + '*'
   const price = isStudent ? meal.PriceStudent : meal.PriceAttendant
   const priceStr = price.toLocaleString('de-DE', { minimumFractionDigits: 2 })
 
