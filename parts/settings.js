@@ -15,6 +15,7 @@ function baseSettingsKeyboard(ctx) {
     Markup.callbackButton(enabledEmoji(ctx.state.userconfig.showRemovedEvents) + ' Entfernte Veranstaltungen anzeigen', 's:showRemovedEvents'),
     Markup.callbackButton(enabledEmoji(ctx.state.userconfig.stisysUpdate) + ' StISysUpdate', 's:stisys'),
     Markup.callbackButton('🍽 Mensa', 's:m'),
+    Markup.callbackButton('💾 Gespeicherte Daten anzeigen', 's:data'),
     Markup.callbackButton('⚠️ Alles löschen ⚠️', 's:del')
   ], {
     columns: 1
@@ -93,6 +94,24 @@ bot.action('s:showRemovedEvents:toggle', async ctx => {
   await ctx.userconfig.save()
 
   return showRemovedEventsUpdate(ctx, ctx.state.userconfig.showRemovedEvents ? 'Entfernte Veranstaltungen werden nun angezeigt' : 'Entfernte Veranstaltungen werden nicht mehr angezeigt')
+})
+
+bot.action('s:data', ctx => {
+  let infotext = 'Die folgenden Daten werden auf dem Server über dich gespeichert. Wenn du alle Daten über dich löschen lassen möchtest, wähle in den /settings "Alles löschen".'
+  infotext += '\nAußerdem wird geloggt, wenn Änderungen von Nutzern zu einem neu bauen von Kalendern führt. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.'
+  infotext += '\nDer Quellcode dieses Bots ist auf [GitHub](https://github.com/HAWHHCalendarBot) verfügbar.'
+
+  const userconfig = ctx.state.userconfig
+  const user = ctx.from
+
+  let dataText = '*Telegram User Info*\n```\n' + JSON.stringify(user, null, 2) + '\n```'
+  dataText += '\n*Einstellungen im Bot*\n```\n' + JSON.stringify(userconfig, null, 2) + '\n```'
+
+  console.log(userconfig, dataText)
+  return Promise.all([
+    ctx.answerCbQuery(),
+    ctx.reply(infotext + '\n\n' + dataText, Extra.markdown())
+  ])
 })
 
 const deleteConfirmString = 'Ja, ich will!'
