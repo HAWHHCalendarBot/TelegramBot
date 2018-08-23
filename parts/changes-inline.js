@@ -91,7 +91,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
   const myChangeToThisEvent = myChanges
     .filter(o => o.name === name && o.date === date)
 
-  if (myChangeToThisEvent.length) {
+  if (myChangeToThisEvent.length > 0) {
     const warning = '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.'
     ctx.answerCbQuery(warning)
 
