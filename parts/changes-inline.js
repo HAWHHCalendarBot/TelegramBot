@@ -16,7 +16,7 @@ function generateInlineQueryResultFromChange(change, from) {
   const id = `${change.name}#${change.date}#${from.id}`
   return {
     description: generateChangeDescription(change),
-    id: id,
+    id,
     input_message_content: {
       message_text: generateChangeText(change),
       parse_mode: 'markdown'
