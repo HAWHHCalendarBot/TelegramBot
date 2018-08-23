@@ -1,9 +1,11 @@
 const fs = require('fs')
-const Telegraf = require('telegraf')
 const util = require('util')
 
-const {mensaSpecialWishesButtons} = require('./mensa-helper')
+const Telegraf = require('telegraf')
+
 const {generateCallbackButton} = require('../lib/telegraf-helper')
+
+const {mensaSpecialWishesButtons} = require('./mensa-helper')
 
 const {Extra, Markup} = Telegraf
 const readdir = util.promisify(fs.readdir)

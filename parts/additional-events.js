@@ -1,6 +1,7 @@
 const fs = require('fs')
-const Telegraf = require('telegraf')
 const util = require('util')
+
+const Telegraf = require('telegraf')
 
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
