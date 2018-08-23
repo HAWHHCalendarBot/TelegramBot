@@ -15,23 +15,25 @@
   },
   "devDependencies": {
     "ava": "^0.25.0",
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.1.0"
+    "xo": "^0.22.0"
   },
   "scripts": {
     "ava": "ava",
-    "eslint": "eslint .",
     "start": "node index.js",
-    "pretest": "npm run eslint",
-    "test": "npm run ava"
+    "pretest": "xo",
+    "test": "ava",
+    "xo": "xo"
   },
   "config": {
     "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt",
     "tokenpathdebug": "token.txt"
+  },
+  "xo": {
+    "space": true,
+    "semicolon": false,
+    "rules": {
+      "require-await": "error"
+    }
   },
   "repository": {
     "type": "git",
