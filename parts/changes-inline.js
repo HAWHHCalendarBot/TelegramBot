@@ -67,7 +67,7 @@ async function preAddMiddleware(ctx, next) {
     const searchedChange = changesOfFrom.filter(o => o.name === name && o.date === date)
 
     if (searchedChange.length !== 1) {
-      throw Error('User does not have this change')
+      throw new Error('User does not have this change')
     }
 
     ctx.state.addChange = searchedChange[0]
