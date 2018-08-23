@@ -105,13 +105,14 @@ async function mensaText(mensa, year, month, day, mensaSettings) {
   const filtered = filterMeals(meals, mensaSettings)
   const mealTexts = filtered.map(m => mealToMarkdown(m, mensaSettings.student, mensaSettings.showAdditives))
 
-  if (mealTexts.length) {
-    return prefix + hints + '\n' + mealTexts.join('\n\n')
-  } else if (meals.length === 0) {
+  if (meals.length === 0) {
     return prefix + '\nDie Mensa bietet heute nichts an.'
-  } else {
+  }
+
+  if (mealTexts.length === 0) {
     return prefix + hints + '\nDie Mensa hat heute nichts für dich.'
   }
+  return prefix + hints + '\n' + mealTexts.join('\n\n')
 }
 
 function dateCallbackButtonData(mensa, date) {

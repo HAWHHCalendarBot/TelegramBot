@@ -124,10 +124,9 @@ bot.action('s:del', ctx => {
 })
 
 bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === deleteQuestion, ctx => {
-  if (ctx.message.text === deleteConfirmString) {
-    ctx.userconfig.remove()
-    return ctx.reply('Deine Daten werden gelöscht…')
-  } else {
+  if (ctx.message.text !== deleteConfirmString) {
     return ctx.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')
   }
+  ctx.userconfig.remove()
+  return ctx.reply('Deine Daten werden gelöscht…')
 }))

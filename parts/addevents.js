@@ -79,9 +79,9 @@ function updateMessage(ctx) {
   if (results.length === 0) {
     const text = 'Du hast alle Veranstaltungen hinzugefügt, die ich finden konnte.\nMit /start kannst du zurück zum Hauptmenü gehen oder mit /add weitere Veranstaltungen hinzufügen. Mit /subscribe bekommst du deinen Kalender auf dein bevorzugtes Gerät.'
     return ctx.editMessageText(text, Extra.markup(keyboard))
-  } else {
-    return ctx.editMessageReplyMarkup(keyboard)
   }
+
+  return ctx.editMessageReplyMarkup(keyboard)
 }
 
 bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion, ctx => {

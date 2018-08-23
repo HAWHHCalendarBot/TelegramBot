@@ -66,9 +66,8 @@ bot.action('s:m:main', ctx => {
   const mensaButtons = allCanteens.map(mensa => {
     if (mensa === mainMensa) {
       return Markup.callbackButton(`▶️ ${mensa}`, `s:m:main:${mensa}`)
-    } else {
-      return generateCallbackButton('s:m:main', mensa)
     }
+    return generateCallbackButton('s:m:main', mensa)
   })
 
   mensaButtons.push(Markup.callbackButton('🔙 zurück zu den Mensa Einstellungen', 's:m'))
@@ -96,10 +95,9 @@ function moreMenu(ctx) {
     const data = `s:m:more:${m}`
     if (m === ctx.state.mensaSettings.main) {
       return Markup.callbackButton(`🍽 ${m}`, data)
-    } else {
-      const isSelected = selected.indexOf(m) >= 0
-      return Markup.callbackButton(enabledEmoji(isSelected) + ` ${m}`, data)
     }
+    const isSelected = selected.indexOf(m) >= 0
+    return Markup.callbackButton(enabledEmoji(isSelected) + ` ${m}`, data)
   })
   buttons.push(Markup.callbackButton('🔙 zurück zu den Mensa Einstellungen', 's:m'))
   buttons.push(Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's'))

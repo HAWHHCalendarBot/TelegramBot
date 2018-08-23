@@ -178,11 +178,11 @@ bot.action(/^c:g:n:(.+)$/, async ctx => {
   const onlyChangesOfThisEvent = allChanges.filter(o => o.name === ctx.session.generateChange.name)
   const buttons = dates.map(date => {
     const existingChange = onlyChangesOfThisEvent.filter(o => o.date === date)
-    if (existingChange.length) {
+    if (existingChange.length > 0) {
+      // There already is a change, so it can be edited
       return Markup.callbackButton('✏️ ' + formatDateToHumanReadable(date), 'c:d:' + ctx.session.generateChange.name + '#' + date)
-    } else {
-      return Markup.callbackButton('➕ ' + formatDateToHumanReadable(date), 'c:g:d:' + date)
     }
+    return Markup.callbackButton('➕ ' + formatDateToHumanReadable(date), 'c:g:d:' + date)
   })
 
   buttons.push(Markup.callbackButton('🔙 zurück zur Veranstaltungswahl', 'c:g'))
