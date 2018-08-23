@@ -2,6 +2,7 @@
 Dockerfile
 node_modules
 README.md
+pull-debug-environment.sh
 
 # botfiles
 additionalEvents
