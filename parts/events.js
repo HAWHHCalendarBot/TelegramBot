@@ -49,11 +49,10 @@ bot.action(/^r:(.+)$/, async ctx => {
 
   ctx.state.userconfig.events = ctx.state.userconfig.events.filter(e => e !== event)
 
-  // remove changes to that event too
+  // Remove changes to that event too
   const currentChanges = ctx.state.userconfig.changes || []
   ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== event)
 
-  // save config
   await ctx.userconfig.save()
 
   // Update message
@@ -63,6 +62,5 @@ bot.action(/^r:(.+)$/, async ctx => {
     ctx.editMessageReplyMarkup(generateRemoveKeyboard(ctx))
   }
 
-  // answerCallbackQuery
   return ctx.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
 })

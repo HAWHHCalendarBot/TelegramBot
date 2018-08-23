@@ -156,7 +156,8 @@ bot.action(/^c:r:(.+)#(.+)$/, async ctx => {
   ])
 })
 
-bot.action('c:g', ctx => { // change generate
+// Action: change generate
+bot.action('c:g', ctx => {
   const events = ctx.state.userconfig.events || []
   const buttons = generateCallbackButtons('c:g:n', events)
   buttons.push(backToMainButton)
@@ -164,7 +165,8 @@ bot.action('c:g', ctx => { // change generate
   return ctx.editMessageText('*Veranstaltungsänderung*\n\nWelche Veranstaltung betrifft diese Veränderung?', Extra.markdown().markup(keyboardMarkup))
 })
 
-bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
+// Action: change generate name
+bot.action(/^c:g:n:(.+)$/, async ctx => {
   ctx.session.generateChange = {
     name: ctx.match[1]
   }
@@ -173,7 +175,7 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
     .map(o => o.StartTime)
     .map(o => o.toISOString().replace(':00.000Z', ''))
 
-  // prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
+  // Prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
   const allChanges = ctx.state.userconfig.changes || []
   const onlyChangesOfThisEvent = allChanges.filter(o => o.name === ctx.session.generateChange.name)
   const buttons = dates.map(date => {
@@ -191,22 +193,25 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
   return ctx.editMessageText(generateChangeText(ctx.session.generateChange) + `\nZu welchem Termin möchtest du die Veränderung hinzufügen?`, Extra.markdown().markup(keyboardMarkup))
 })
 
-bot.action(/^c:g:d:(.+)$/, stopGenerationAfterBotRestartMiddleware, ctx => { // change generate date
+// Action: change generate date
+bot.action(/^c:g:d:(.+)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
   ctx.session.generateChange.date = ctx.match[1]
   return handleGenerationInProgress(ctx)
 })
 
-// useful for cancel actions -> cancel button refer to this one
+// Useful for cancel actions -> cancel button refer to this one
 bot.action('c:g:possibility-picker', stopGenerationAfterBotRestartMiddleware, ctx => handleGenerationInProgress(ctx))
 
 bot.action('c:g:finish', stopGenerationAfterBotRestartMiddleware, ctx => handleFinishGeneration(ctx))
 
-bot.action('c:g:remove', stopGenerationAfterBotRestartMiddleware, ctx => { // change generate remove
+// Action: change generate remove
+bot.action('c:g:remove', stopGenerationAfterBotRestartMiddleware, ctx => {
   ctx.session.generateChange.remove = true
   return handleFinishGeneration(ctx)
 })
 
-bot.action(/^c:g:s:([^:]+):(.+)/, stopGenerationAfterBotRestartMiddleware, ctx => { // simple set: match[1] is param, match[2] is value
+// Action: simple set: match[1] is param, match[2] is value
+bot.action(/^c:g:s:([^:]+):(.+)/, stopGenerationAfterBotRestartMiddleware, ctx => {
   ctx.session.generateChange[ctx.match[1]] = ctx.match[2]
   return handleGenerationInProgress(ctx)
 })

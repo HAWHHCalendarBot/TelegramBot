@@ -123,7 +123,7 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
     current = await readJsonFile(filename)
   } catch (err) {}
 
-  // remove events at the same time
+  // Remove events at the same time
   const future = current.filter(o => Number(o.year) !== Number(data.year) ||
     Number(o.month) !== Number(data.month) ||
     Number(o.date) !== Number(data.date) ||

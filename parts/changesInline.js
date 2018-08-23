@@ -87,7 +87,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
     return ctx.answerCbQuery('Das ist deine eigene Änderung 😉')
   }
 
-  // prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
+  // Prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
   const myChangeToThisEvent = myChanges
     .filter(o => o.name === name && o.date === date)
 
@@ -123,7 +123,8 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
 
 bot.action('c:cancel', ctx => ctx.editMessageText('Ich habe nichts verändert. 🙂'))
 
-bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => { // change add force
+// Action: change add force
+bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
   const name = ctx.match[1]
   const date = ctx.match[2]
   let myChanges = ctx.state.userconfig.changes || []

@@ -126,7 +126,6 @@ bot.action(/^a:(.+)$/, async ctx => {
 
   updateMessage(ctx)
 
-  // answerCallbackQuery
   if (!isExisting) {
     return ctx.answerCbQuery(`${event} existiert nicht!`)
   }

@@ -14,7 +14,7 @@ function enabledEmoji(truthy) {
 
 let allCanteens = []
 
-setInterval(updateCanteens, 1000 * 60 * 60 * 6) // every 6 hours
+setInterval(updateCanteens, 1000 * 60 * 60 * 6) // Every 6 hours
 updateCanteens()
 
 async function updateCanteens() {
@@ -149,7 +149,7 @@ function mensaSettingsSpecialWishesMenu(ctx) {
   return ctx.editMessageText('*Mensa Einstellungen*\nWelche Sonderwünsche hast du zu deinem Essen?', Extra.markdown().markup(keyboardMarkup))
 }
 
-// settings:mensa:specialWishes
+// Action: settings:mensa:specialWishes
 bot.action('s:m:s', ctx => Promise.all([
   mensaSettingsSpecialWishesMenu(ctx),
   ctx.answerCbQuery()
