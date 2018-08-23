@@ -1,7 +1,4 @@
-const fs = require('fs')
-const util = require('util')
-
-const readFile = util.promisify(fs.readFile)
+const fsPromises = require('fs').promises
 
 const {
   formatDateToHumanReadable,
@@ -61,7 +58,7 @@ function generateShortChangeText(change) {
 
 async function loadEvents(eventname) {
   const filename = eventname.replace('/', '-')
-  const content = await readFile(`eventfiles/${filename}.json`, 'utf8')
+  const content = await fsPromises.readFile(`eventfiles/${filename}.json`, 'utf8')
   const arr = JSON.parse(content)
   const parsed = arr.map(o => {
     o.StartTime = parseDateTimeToDate(o.StartTime)

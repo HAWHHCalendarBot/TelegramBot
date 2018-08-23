@@ -6,7 +6,7 @@
   "author": "edjopato@gmail.com",
   "main": "index.js",
   "engines": {
-    "node": ">=7.6"
+    "node": ">=10"
   },
   "dependencies": {
     "request": "^2.85.0",

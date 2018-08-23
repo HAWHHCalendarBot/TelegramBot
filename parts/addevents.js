@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fsPromises = require('fs').promises
 const Telegraf = require('telegraf')
 
 const {generateCallbackButtons} = require('../lib/telegraf-helper')
@@ -11,8 +11,8 @@ const resultLimit = 5
 setInterval(updateEvents, 1000 * 60 * 60)
 updateEvents()
 
-function updateEvents() {
-  const data = fs.readFileSync('eventfiles/all.txt', 'utf8')
+async function updateEvents() {
+  const data = await fsPromises.readFile('eventfiles/all.txt', 'utf8')
   const list = data.split('\n').filter(element => element !== '')
   console.log(new Date(), list.length, 'Veranstaltungen geladen.')
   allEvents = list

@@ -1,5 +1,4 @@
-const fs = require('fs')
-const util = require('util')
+const fsPromises = require('fs').promises
 
 const Telegraf = require('telegraf')
 
@@ -7,7 +6,6 @@ const {filterMeals} = require('./mensa-helper')
 const mensaSettings = require('./mensa-settings')
 
 const {Extra, Markup} = Telegraf
-const readFile = util.promisify(fs.readFile)
 
 async function getMealsOfDay(mensa, year, month, day) {
   try {
@@ -17,7 +15,7 @@ async function getMealsOfDay(mensa, year, month, day) {
     filename += day.toLocaleString(undefined, {minimumIntegerDigits: 2})
     filename += '.json'
 
-    const content = await readFile(filename, 'utf8')
+    const content = await fsPromises.readFile(filename, 'utf8')
     return JSON.parse(content)
   } catch (err) {
     return []

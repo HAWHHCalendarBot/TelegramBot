@@ -1,16 +1,12 @@
-const fs = require('fs')
-const util = require('util')
+const fsPromises = require('fs').promises
 
 const Telegraf = require('telegraf')
 
-const readFile = util.promisify(fs.readFile)
-const writeFile = util.promisify(fs.writeFile)
-
 async function readJsonFile(file) {
-  return JSON.parse(await readFile(file, 'utf8'))
+  return JSON.parse(await fsPromises.readFile(file, 'utf8'))
 }
 function writeJsonFile(file, data) {
-  return writeFile(file, JSON.stringify(data), 'utf8')
+  return fsPromises.writeFile(file, JSON.stringify(data), 'utf8')
 }
 
 const {

@@ -1,5 +1,4 @@
-const fs = require('fs')
-const util = require('util')
+const fsPromises = require('fs').promises
 
 const Telegraf = require('telegraf')
 
@@ -8,7 +7,6 @@ const {generateCallbackButton} = require('../lib/telegraf-helper')
 const {mensaSpecialWishesButtons} = require('./mensa-helper')
 
 const {Extra, Markup} = Telegraf
-const readdir = util.promisify(fs.readdir)
 
 function enabledEmoji(truthy) {
   return truthy ? '✅' : '🚫'
@@ -30,7 +28,7 @@ setInterval(updateCanteens, 1000 * 60 * 60 * 6) // Every 6 hours
 updateCanteens()
 
 async function updateCanteens() {
-  allCanteens = await readdir('meals')
+  allCanteens = await fsPromises.readdir('meals')
   console.log(new Date(), allCanteens.length, 'Mensen geladen.')
 }
 
