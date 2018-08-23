@@ -178,7 +178,7 @@ function toggleSettingText(setting, enabled) {
     case 'vegan': return enabled ? 'Du bekommst nun nur noch veganes Essen' : 'Du bekommst wieder jedes Essen'
     case 'vegetarian': return enabled ? 'Du bekommst nun nur noch vegetarisches Essen' : 'Du bekommst wieder jedes Essen'
     default:
-      throw new Error()
+      throw new Error('unknown setting text')
   }
 }
 
