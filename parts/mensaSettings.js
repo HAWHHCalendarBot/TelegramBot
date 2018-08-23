@@ -2,10 +2,10 @@ const fs = require('fs')
 const Telegraf = require('telegraf')
 const util = require('util')
 
-const { mensaSpecialWishesButtons } = require('./mensaHelper')
-const { generateCallbackButton } = require('../lib/telegrafHelper')
+const {mensaSpecialWishesButtons} = require('./mensaHelper')
+const {generateCallbackButton} = require('../lib/telegrafHelper')
 
-const { Extra, Markup } = Telegraf
+const {Extra, Markup} = Telegraf
 const readdir = util.promisify(fs.readdir)
 
 function enabledEmoji(truthy) {
@@ -39,7 +39,7 @@ function mensaSettingsMainmenu(ctx) {
     Markup.callbackButton('Extrawünsche Essen', 's:m:s', mainUnset),
     Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.showAdditives) + ' zeige Inhaltsstoffe', 's:m:showAdditives', mainUnset),
     Markup.callbackButton('🔙 zurück zur Einstellungsübersicht', 's')
-  ], { columns: 1 })
+  ], {columns: 1})
 
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 }
@@ -71,7 +71,7 @@ bot.action('s:m:main', ctx => {
 
   mensaButtons.push(Markup.callbackButton('🔙 zurück zu den Mensa Einstellungen', 's:m'))
   mensaButtons.push(Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's'))
-  const keyboardMarkup = Markup.inlineKeyboard(mensaButtons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(mensaButtons, {columns: 1})
 
   return Promise.all([
     ctx.editMessageText('*Mensa Einstellungen*\nWähle die Mensa, in den du am häufigsten bist', Extra.markdown().markup(keyboardMarkup)),
@@ -101,7 +101,7 @@ function moreMenu(ctx) {
   })
   buttons.push(Markup.callbackButton('🔙 zurück zu den Mensa Einstellungen', 's:m'))
   buttons.push(Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's'))
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
 
   return ctx.editMessageText('*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist', Extra.markdown().markup(keyboardMarkup))
 }
@@ -136,7 +136,6 @@ bot.action(/^s:m:more:(.+)$/, async ctx => {
   ])
 })
 
-
 function mensaSettingsSpecialWishesMenu(ctx) {
   const possibleSettings = mensaSpecialWishesButtons(ctx.state.mensaSettings)
 
@@ -145,12 +144,13 @@ function mensaSettingsSpecialWishesMenu(ctx) {
   buttons.push(Markup.callbackButton('🔙 zurück zu den Mensa Einstellungen', 's:m'))
   buttons.push(Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's'))
 
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
 
   return ctx.editMessageText('*Mensa Einstellungen*\nWelche Sonderwünsche hast du zu deinem Essen?', Extra.markdown().markup(keyboardMarkup))
 }
 
-bot.action('s:m:s', ctx => Promise.all([ // settings:mensa:specialWishes
+// settings:mensa:specialWishes
+bot.action('s:m:s', ctx => Promise.all([
   mensaSettingsSpecialWishesMenu(ctx),
   ctx.answerCbQuery()
 ]))

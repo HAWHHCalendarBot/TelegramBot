@@ -2,18 +2,18 @@ const fs = require('fs')
 const Telegraf = require('telegraf')
 const util = require('util')
 
-const { filterMeals } = require('./mensaHelper')
+const {filterMeals} = require('./mensaHelper')
 const mensaSettings = require('./mensaSettings')
 
-const { Extra, Markup } = Telegraf
+const {Extra, Markup} = Telegraf
 const readFile = util.promisify(fs.readFile)
 
 async function getMealsOfDay(mensa, year, month, day) {
   try {
     let filename = `meals/${mensa}/`
-    filename += year.toLocaleString(undefined, { minimumIntegerDigits: 4, useGrouping: false })
-    filename += month.toLocaleString(undefined, { minimumIntegerDigits: 2 })
-    filename += day.toLocaleString(undefined, { minimumIntegerDigits: 2 })
+    filename += year.toLocaleString(undefined, {minimumIntegerDigits: 4, useGrouping: false})
+    filename += month.toLocaleString(undefined, {minimumIntegerDigits: 2})
+    filename += day.toLocaleString(undefined, {minimumIntegerDigits: 2})
     filename += '.json'
 
     const content = await readFile(filename, 'utf8')
@@ -36,28 +36,42 @@ bot.use((ctx, next) => {
 bot.use(mensaSettings)
 
 function mealToMarkdown(meal, isStudent, showAdditives) {
-  const parsedName = showAdditives
-    ? meal.Name
+  const parsedName = showAdditives ?
+    meal.Name
       .replace(/ \(/g, '* (')
       .replace(/\), /g, '), *')
-      .replace(/([^)])$/, '$1*')
-    : meal.Name.replace(/\s*\([^)]+\)\s*/g, '') + '*'
+      .replace(/([^)])$/, '$1*') :
+    meal.Name.replace(/\s*\([^)]+\)\s*/g, '') + '*'
   const price = isStudent ? meal.PriceStudent : meal.PriceAttendant
-  const priceStr = price.toLocaleString('de-DE', { minimumFractionDigits: 2 })
+  const priceStr = price.toLocaleString('de-DE', {minimumFractionDigits: 2})
 
   let text = `*${parsedName}\n`
   text += `${priceStr} €`
 
   const infos = []
 
-  if (meal.Pig) { infos.push('🐷') }
-  if (meal.Beef) { infos.push('🐮') }
-  if (meal.Poultry) { infos.push('🐔') }
-  if (meal.Fish) { infos.push('🐟') }
+  if (meal.Pig) {
+    infos.push('🐷')
+  }
+  if (meal.Beef) {
+    infos.push('🐮')
+  }
+  if (meal.Poultry) {
+    infos.push('🐔')
+  }
+  if (meal.Fish) {
+    infos.push('🐟')
+  }
 
-  if (meal.LactoseFree) { infos.push('laktosefrei') }
-  if (meal.Vegan) { infos.push('vegan') }
-  if (meal.Vegetarian) { infos.push('vegetarisch') }
+  if (meal.LactoseFree) {
+    infos.push('laktosefrei')
+  }
+  if (meal.Vegan) {
+    infos.push('vegan')
+  }
+  if (meal.Vegetarian) {
+    infos.push('vegetarisch')
+  }
 
   if (infos.length > 0) {
     text += ' ' + infos.join(' ')
@@ -117,13 +131,15 @@ function generateMensaButtons(mensa, year, month, day, mensaSettings) {
   const buttons = []
   buttons.push(timeButtons)
   for (const b of mensaButtons) {
-    buttons.push([ b ])
+    buttons.push([b])
   }
   return buttons
 }
 
 function generateSwitchMensaButtons(mensa, year, month, day, mensaSettings) {
-  if (!mensa || mensa === 'undefined') { return [] }
+  if (!mensa || mensa === 'undefined') {
+    return []
+  }
   const more = mensaSettings.more || []
   more.unshift(mensaSettings.main)
   return more.map(m => Markup.callbackButton(`🍽 ${m}`, `m:${m}:${year}:${month}:${day}`, m === mensa))
@@ -131,9 +147,9 @@ function generateSwitchMensaButtons(mensa, year, month, day, mensaSettings) {
 
 function generateTimeButtons(mensa, year, month, day) {
   const currentCallbackData = `m:${mensa}:${year}:${month}:${day}`
-  const today = dateCallbackButtonData(mensa, new Date(Date.now() + 1000 * 60 * 60 * 24 * 0))
-  const tomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + 1000 * 60 * 60 * 24 * 1))
-  const afterTomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + 1000 * 60 * 60 * 24 * 2))
+  const today = dateCallbackButtonData(mensa, new Date(Date.now() + (1000 * 60 * 60 * 24 * 0)))
+  const tomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + (1000 * 60 * 60 * 24 * 1)))
+  const afterTomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + (1000 * 60 * 60 * 24 * 2)))
 
   const timeButtons = []
   timeButtons.push(Markup.callbackButton('🕚 heute', today, today === currentCallbackData))
@@ -141,7 +157,6 @@ function generateTimeButtons(mensa, year, month, day) {
   timeButtons.push(Markup.callbackButton('🕚 übermorgen', afterTomorrow, afterTomorrow === currentCallbackData))
   return timeButtons
 }
-
 
 bot.command('mensa', async ctx => {
   const date = new Date()

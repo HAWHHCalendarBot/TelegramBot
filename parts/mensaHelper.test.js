@@ -1,6 +1,6 @@
 import test from 'ava'
 
-const { filterMeals } = require('./mensaHelper')
+const {filterMeals} = require('./mensaHelper')
 
 const testMeals = [
   {
@@ -51,21 +51,20 @@ const testMeals = [
   }
 ]
 
-
 test('filterfrei', t => {
   const filtered = filterMeals(testMeals, {})
   t.is(filtered.length, testMeals.length)
 })
 
 test('vegan', t => {
-  const filtered = filterMeals(testMeals, { vegan: true })
+  const filtered = filterMeals(testMeals, {vegan: true})
   t.deepEqual(filtered.map(o => o.Name), [
     'Pasta'
   ])
 })
 
 test('vegetarisch', t => {
-  const filtered = filterMeals(testMeals, { vegetarian: true })
+  const filtered = filterMeals(testMeals, {vegetarian: true})
   t.deepEqual(filtered.map(o => o.Name), [
     'Pasta Sahne',
     'Pasta'
@@ -73,14 +72,14 @@ test('vegetarisch', t => {
 })
 
 test('laktosefrei', t => {
-  const filtered = filterMeals(testMeals, { lactoseFree: true })
+  const filtered = filterMeals(testMeals, {lactoseFree: true})
   t.deepEqual(filtered.map(o => o.Name), [
     'Pasta'
   ])
 })
 
 test('ohne Schwein', t => {
-  const filtered = filterMeals(testMeals, { noPig: true })
+  const filtered = filterMeals(testMeals, {noPig: true})
   t.deepEqual(filtered.map(o => o.Name), [
     'Fisch',
     'Pasta Sahne',
@@ -90,7 +89,7 @@ test('ohne Schwein', t => {
 })
 
 test('ohne Rind', t => {
-  const filtered = filterMeals(testMeals, { noBeef: true })
+  const filtered = filterMeals(testMeals, {noBeef: true})
   t.deepEqual(filtered.map(o => o.Name), [
     'Fisch',
     'Pasta Sahne',
@@ -99,9 +98,8 @@ test('ohne Rind', t => {
   ])
 })
 
-
 test('ohne Geflügel', t => {
-  const filtered = filterMeals(testMeals, { noPoultry: true })
+  const filtered = filterMeals(testMeals, {noPoultry: true})
   t.deepEqual(filtered.map(o => o.Name), [
     'Fisch',
     'Pasta Sahne',
@@ -111,9 +109,8 @@ test('ohne Geflügel', t => {
   ])
 })
 
-
 test('ohne Fisch', t => {
-  const filtered = filterMeals(testMeals, { noFish: true })
+  const filtered = filterMeals(testMeals, {noFish: true})
   t.deepEqual(filtered.map(o => o.Name), [
     'Pasta Sahne',
     'Pasta Speck',

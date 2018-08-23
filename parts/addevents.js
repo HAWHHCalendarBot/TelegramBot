@@ -1,11 +1,10 @@
 const fs = require('fs')
 const Telegraf = require('telegraf')
 
-const { generateCallbackButtons } = require('../lib/telegrafHelper')
+const {generateCallbackButtons} = require('../lib/telegrafHelper')
 
 const Extra = Telegraf.Extra
 const Markup = Telegraf.Markup
-
 
 let allEvents = []
 const resultLimit = 5
@@ -20,7 +19,6 @@ function updateEvents() {
   allEvents = list
 }
 
-
 function findEventsByPatternForUser(ctx, pattern) {
   const regex = new RegExp(pattern, 'i')
   const blacklist = ctx.state.userconfig.events
@@ -32,7 +30,6 @@ function findEventsByPatternForUser(ctx, pattern) {
 
 const bot = new Telegraf.Composer()
 module.exports = bot
-
 
 bot.command('add', addHandler)
 
@@ -87,7 +84,6 @@ function updateMessage(ctx) {
     return ctx.editMessageReplyMarkup(keyboard)
   }
 }
-
 
 bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion, ctx => {
   const pattern = ctx.match[0]

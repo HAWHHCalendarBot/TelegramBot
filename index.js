@@ -2,7 +2,7 @@ const fs = require('fs')
 const Telegraf = require('telegraf')
 const session = require('telegraf/session')
 
-const { Extra, Markup } = Telegraf
+const {Extra, Markup} = Telegraf
 
 const hasStISysChanged = require('./lib/hasStISysChanged')
 const Chatconfig = require('./lib/chatconfig')
@@ -23,7 +23,7 @@ const token = fs.readFileSync(tokenFilePath, 'utf8').trim()
 const bot = new Telegraf(token)
 
 // For handling group/supergroup commands (/start@your_bot) you need to provide bot username.
-bot.telegram.getMe().then((botInfo) => {
+bot.telegram.getMe().then(botInfo => {
   bot.options.username = botInfo.username
 })
 
@@ -47,14 +47,15 @@ bot.use(subscribe)
 
 bot.use(addevents)
 
-
 setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 checkStISysChangeAndNotify()
 
 async function checkStISysChangeAndNotify() {
   const hasChanged = await hasStISysChanged()
   console.log(new Date(), 'StISys has changed:', hasChanged)
-  if (!hasChanged) return
+  if (!hasChanged) {
+    return
+  }
 
   const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
 

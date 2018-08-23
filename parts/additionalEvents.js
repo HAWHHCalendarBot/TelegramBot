@@ -5,8 +5,12 @@ const util = require('util')
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
-async function readJsonFile(file) { return JSON.parse(await readFile(file, 'utf8')) }
-function writeJsonFile(file, data) { return writeFile(file, JSON.stringify(data), 'utf8') }
+async function readJsonFile(file) {
+  return JSON.parse(await readFile(file, 'utf8'))
+}
+function writeJsonFile(file, data) {
+  return writeFile(file, JSON.stringify(data), 'utf8')
+}
 
 const {
   generateDateTimePickerButtons,
@@ -15,10 +19,9 @@ const {
   generateSpartaYearButtons,
   generateTimeSectionButtons
 } = require('../lib/calendarHelper')
-const { generateCallbackButtons } = require('../lib/telegrafHelper')
+const {generateCallbackButtons} = require('../lib/telegrafHelper')
 
-const { Extra, Markup } = Telegraf
-
+const {Extra, Markup} = Telegraf
 
 const bot = new Telegraf.Composer()
 module.exports = bot
@@ -35,7 +38,7 @@ function handleEventOverview(ctx) {
     Markup.callbackButton('Termin hinzufügen', 'aE:add'),
     Markup.callbackButton('Termin duplizieren / anpassen', 'aE:duplicate'),
     Markup.callbackButton('Termin entfernen', 'aE:remove')
-  ], { columns: 1 })
+  ], {columns: 1})
   return ctx.editMessageText(`*${ctx.session.additionalEvents.name}*`, Extra.markdown().markup(keyboardMarkup))
 }
 
@@ -49,7 +52,7 @@ function handleAddEvent(ctx) {
     data.year
 
   const buttons = generateDateTimePickerButtons('aE:add:t', data.year, data.month, data.date, data.starttime, data.endtime)
-  buttons.push([ Markup.callbackButton(`📍 ${data.room || 'Raum'}`, 'aE:add:room') ])
+  buttons.push([Markup.callbackButton(`📍 ${data.room || 'Raum'}`, 'aE:add:room')])
   buttons.push([
     Markup.callbackButton('✅ Fertig stellen', 'aE:add:finish', !allNeededDataAvailable),
     Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + data.name)
@@ -63,7 +66,7 @@ bot.command('additionalEvents', ctx => {
   text += '\n\n⚠️ Der geringste Teil der Nutzer ist Veranstalter. Daher ist diese Funktionalität etwas spartanisch gestaltet. Denke bitte selbst ein bisschen mit, was du tust. Zum Beispiel hat nicht jeder Monat 31 Tage 😉'
 
   const buttons = generateCallbackButtons('aE:event', ctx.state.userconfig.additionalEvents || [])
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.replyWithMarkdown(text, Extra.markup(keyboardMarkup))
 })
 
@@ -98,7 +101,9 @@ bot.action('aE:add:room', somethingStrangeMiddleware, ctx => {
 })
 
 function isRoomAnswer(ctx) {
-  if (!ctx.session.additionalEvents) { return }
+  if (!ctx.session.additionalEvents) {
+    return
+  }
   return ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion
 }
 bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {
@@ -152,7 +157,7 @@ bot.action('aE:duplicate', somethingStrangeMiddleware, async ctx => {
   const buttons = await getEventsButtons(ctx, 'd')
 
   buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
 
@@ -167,12 +172,11 @@ bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
   return handleAddEvent(ctx)
 })
 
-
 bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
   const buttons = await getEventsButtons(ctx, 'r')
 
   buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText('Welchen Termin möchtest du entfernen?', Extra.markdown().markup(keyboardMarkup))
 })
 

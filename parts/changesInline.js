@@ -1,5 +1,6 @@
 const Telegraf = require('telegraf')
-const { Extra, Markup } = Telegraf
+
+const {Extra, Markup} = Telegraf
 
 const {
   generateChangeDescription,
@@ -20,7 +21,7 @@ function generateInlineQueryResultFromChange(change, from) {
       message_text: generateChangeText(change),
       parse_mode: 'markdown'
     },
-    reply_markup: Markup.inlineKeyboard([ Markup.callbackButton('zu meinem Kalender hinzufügen', 'c:a:' + id) ]),
+    reply_markup: Markup.inlineKeyboard([Markup.callbackButton('zu meinem Kalender hinzufügen', 'c:a:' + id)]),
     title: generateShortChangeText(change),
     type: 'article'
   }

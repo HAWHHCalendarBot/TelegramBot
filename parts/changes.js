@@ -1,7 +1,7 @@
 const Telegraf = require('telegraf')
 
-const { Extra, Markup } = Telegraf
-const { generateCallbackButtons } = require('../lib/telegrafHelper')
+const {Extra, Markup} = Telegraf
+const {generateCallbackButtons} = require('../lib/telegrafHelper')
 const changesInline = require('./changesInline')
 const {
   generateChangeText,
@@ -17,7 +17,6 @@ const {
 const bot = new Telegraf.Composer()
 bot.use(changesInline)
 module.exports = bot
-
 
 const backToMainButton = Markup.callbackButton('🔝 zurück zur Auswahl', 'c')
 
@@ -46,7 +45,7 @@ function mainMarkup(ctx) {
   return Markup.inlineKeyboard([
     Markup.callbackButton('Änderung hinzufügen', 'c:g', events.length === 0),
     Markup.callbackButton('Meine Änderungen', 'c:list', events.length === 0 || changes.length === 0)
-  ], { columns: 1 })
+  ], {columns: 1})
 }
 
 function handleMainmenu(ctx) {
@@ -78,7 +77,7 @@ function handleList(ctx) {
     buttons.push(Markup.callbackButton(generateShortChangeText(change), 'c:d:' + change.name + '#' + change.date))
   }
   buttons.push(backToMainButton)
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 }
 
@@ -93,7 +92,7 @@ function handleDetails(ctx, name, date) {
     Markup.callbackButton('🔙 zur Änderungsliste', 'c:list'),
     backToMainButton
   ]
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 }
 
@@ -140,7 +139,6 @@ async function handleFinishGeneration(ctx) {
   ])
 }
 
-
 bot.command('changes', ctx => ctx.replyWithMarkdown(mainText(ctx), Extra.markup(mainMarkup(ctx))))
 bot.action('c', handleMainmenu)
 
@@ -162,7 +160,7 @@ bot.action('c:g', ctx => { // change generate
   const events = ctx.state.userconfig.events || []
   const buttons = generateCallbackButtons('c:g:n', events)
   buttons.push(backToMainButton)
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText('*Veranstaltungsänderung*\n\nWelche Veranstaltung betrifft diese Veränderung?', Extra.markdown().markup(keyboardMarkup))
 })
 
@@ -189,7 +187,7 @@ bot.action(/^c:g:n:(.+)$/, async ctx => { // change generate name
 
   buttons.push(Markup.callbackButton('🔙 zurück zur Veranstaltungswahl', 'c:g'))
   buttons.push(backToMainButton)
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, { columns: 1 })
+  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText(generateChangeText(ctx.session.generateChange) + `\nZu welchem Termin möchtest du die Veränderung hinzufügen?`, Extra.markdown().markup(keyboardMarkup))
 })
 
@@ -220,8 +218,8 @@ bot.action(/^c:g:(.+time)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
   const callbackDataPrefix = 'c:g:s:' + ctx.match[1]
   const buttons = generateTimeSectionButtons(callbackDataPrefix)
 
-  buttons.push([ Markup.callbackButton('🔝 zurück zur Änderungsauswahl', 'c:g:possibility-picker') ])
-  buttons.push([ Markup.callbackButton('🛑 Abbrechen', 'c') ])
+  buttons.push([Markup.callbackButton('🔝 zurück zur Änderungsauswahl', 'c:g:possibility-picker')])
+  buttons.push([Markup.callbackButton('🛑 Abbrechen', 'c')])
 
   const keyboardMarkup = Markup.inlineKeyboard(buttons)
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
@@ -236,7 +234,9 @@ bot.action('c:g:room', stopGenerationAfterBotRestartMiddleware, ctx => {
 })
 
 function isRoomAnswer(ctx) {
-  if (!ctx.session.generateChange) { return }
+  if (!ctx.session.generateChange) {
+    return
+  }
   return ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion
 }
 bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {

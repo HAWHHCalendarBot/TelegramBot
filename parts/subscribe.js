@@ -1,6 +1,6 @@
 const Telegraf = require('telegraf')
 
-const { Extra, Markup } = Telegraf
+const {Extra, Markup} = Telegraf
 
 const bot = new Telegraf.Composer()
 module.exports = bot
@@ -11,22 +11,21 @@ const chooseKeyboardMarkup = Markup.inlineKeyboard([
   Markup.callbackButton('HAW-Mailer (Exchange)', 'url:exchange'),
   Markup.callbackButton('Google Kalender (Android Default Kalender)', 'url:google'),
   Markup.callbackButton('Freestyle 😎', 'url:freestyle')
-], { columns: 1 })
+], {columns: 1})
 const backToChooseKeyboardButton = Markup.callbackButton('🔙 zurück zur Übersicht', 'url')
 
 bot.use((ctx, next) => {
   ctx.state.url = `calendarbot.hawhh.de/tg/${ctx.from.id}.ics`
 
-  ctx.fastEdit = function(text, keyboardButtons = []) {
+  ctx.fastEdit = function (text, keyboardButtons = []) {
     keyboardButtons.push(backToChooseKeyboardButton)
-    const keyboardMarkup = Markup.inlineKeyboard(keyboardButtons, { columns: 1 })
+    const keyboardMarkup = Markup.inlineKeyboard(keyboardButtons, {columns: 1})
 
     return this.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
   }
 
   return next()
 })
-
 
 bot.command(['subscribe', 'url'], ctx => {
   const eventCount = ctx.state.userconfig.events.length
