@@ -1,7 +1,6 @@
 const Telegraf = require('telegraf')
 
-const Extra = Telegraf.Extra
-const Markup = Telegraf.Markup
+const {Extra, Markup} = Telegraf
 
 const bot = new Telegraf.Composer()
 module.exports = bot

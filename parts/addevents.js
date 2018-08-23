@@ -3,8 +3,7 @@ const Telegraf = require('telegraf')
 
 const {generateCallbackButtons} = require('../lib/telegraf-helper')
 
-const Extra = Telegraf.Extra
-const Markup = Telegraf.Markup
+const {Extra, Markup} = Telegraf
 
 let allEvents = []
 const resultLimit = 5

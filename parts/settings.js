@@ -1,7 +1,6 @@
 const Telegraf = require('telegraf')
 
-const Extra = Telegraf.Extra
-const Markup = Telegraf.Markup
+const {Extra, Markup} = Telegraf
 
 function enabledEmoji(truthy) {
   return truthy ? '✅' : '❎'
@@ -100,7 +99,7 @@ bot.action('s:data', ctx => {
   infotext += '\nAußerdem wird geloggt, wenn Änderungen von Nutzern zu einem neu bauen von Kalendern führt. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.'
   infotext += '\nDer Quellcode dieses Bots ist auf [GitHub](https://github.com/HAWHHCalendarBot) verfügbar.'
 
-  const userconfig = ctx.state.userconfig
+  const {userconfig} = ctx.state
   const user = ctx.from
 
   let dataText = '*Telegram User Info*\n```\n' + JSON.stringify(user, null, 2) + '\n```'
