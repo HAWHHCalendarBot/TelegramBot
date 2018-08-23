@@ -6,7 +6,7 @@ const readFile = util.promisify(fs.readFile)
 const {
   formatDateToHumanReadable,
   parseDateTimeToDate
-} = require('../lib/calendarHelper')
+} = require('../lib/calendar-helper')
 
 module.exports = {
   generateChangeDescription: generateChangeDescription,

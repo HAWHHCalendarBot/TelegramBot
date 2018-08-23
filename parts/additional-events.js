@@ -18,8 +18,8 @@ const {
   generateSpartaDayButtons,
   generateSpartaYearButtons,
   generateTimeSectionButtons
-} = require('../lib/calendarHelper')
-const {generateCallbackButtons} = require('../lib/telegrafHelper')
+} = require('../lib/calendar-helper')
+const {generateCallbackButtons} = require('../lib/telegraf-helper')
 
 const {Extra, Markup} = Telegraf
 

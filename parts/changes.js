@@ -1,18 +1,18 @@
 const Telegraf = require('telegraf')
 
 const {Extra, Markup} = Telegraf
-const {generateCallbackButtons} = require('../lib/telegrafHelper')
-const changesInline = require('./changesInline')
+const {generateCallbackButtons} = require('../lib/telegraf-helper')
+const changesInline = require('./changes-inline')
 const {
   generateChangeText,
   generateShortChangeText,
   loadEvents
-} = require('./changeHelper')
+} = require('./change-helper')
 
 const {
   formatDateToHumanReadable,
   generateTimeSectionButtons
-} = require('../lib/calendarHelper')
+} = require('../lib/calendar-helper')
 
 const bot = new Telegraf.Composer()
 bot.use(changesInline)

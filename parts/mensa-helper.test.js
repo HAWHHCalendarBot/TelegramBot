@@ -1,6 +1,6 @@
 import test from 'ava'
 
-const {filterMeals} = require('./mensaHelper')
+const {filterMeals} = require('./mensa-helper')
 
 const testMeals = [
   {

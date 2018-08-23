@@ -4,14 +4,14 @@ const session = require('telegraf/session')
 
 const {Extra, Markup} = Telegraf
 
-const hasStISysChanged = require('./lib/hasStISysChanged')
+const hasStISysChanged = require('./lib/has-stisys-changed')
 const Chatconfig = require('./lib/chatconfig')
 
 const addevents = require('./parts/addevents')
-const additionalEvents = require('./parts/additionalEvents')
+const additionalEvents = require('./parts/additional-events')
 const admin = require('./parts/admin')
 const changes = require('./parts/changes')
-const easterEggs = require('./parts/easterEggs')
+const easterEggs = require('./parts/easter-eggs')
 const events = require('./parts/events')
 const mensa = require('./parts/mensa')
 const settings = require('./parts/settings')

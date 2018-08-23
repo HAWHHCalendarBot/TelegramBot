@@ -7,7 +7,7 @@ const {
   generateChangeText,
   generateChangeTextHeader,
   generateShortChangeText
-} = require('./changeHelper')
+} = require('./change-helper')
 
 const bot = new Telegraf.Composer()
 module.exports = bot

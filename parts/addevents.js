@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Telegraf = require('telegraf')
 
-const {generateCallbackButtons} = require('../lib/telegrafHelper')
+const {generateCallbackButtons} = require('../lib/telegraf-helper')
 
 const Extra = Telegraf.Extra
 const Markup = Telegraf.Markup

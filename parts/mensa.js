@@ -2,8 +2,8 @@ const fs = require('fs')
 const Telegraf = require('telegraf')
 const util = require('util')
 
-const {filterMeals} = require('./mensaHelper')
-const mensaSettings = require('./mensaSettings')
+const {filterMeals} = require('./mensa-helper')
+const mensaSettings = require('./mensa-settings')
 
 const {Extra, Markup} = Telegraf
 const readFile = util.promisify(fs.readFile)
