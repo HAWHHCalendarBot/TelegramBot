@@ -77,7 +77,7 @@ async function preAddMiddleware(ctx, next) {
   }
 }
 
-bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
+bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, ctx => {
   const name = ctx.match[1]
   const date = ctx.match[2]
   const fromId = ctx.match[3]
@@ -116,15 +116,13 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
 
   myChanges.push(ctx.state.addChange)
   ctx.state.userconfig.changes = myChanges
-  await ctx.userconfig.save()
-
   return ctx.answerCbQuery('Die Änderung wurde hinzugefügt')
 })
 
 bot.action('c:cancel', ctx => ctx.editMessageText('Ich habe nichts verändert. 🙂'))
 
 // Action: change add force
-bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
+bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, ctx => {
   const name = ctx.match[1]
   const date = ctx.match[2]
   let myChanges = ctx.state.userconfig.changes || []
@@ -132,7 +130,5 @@ bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, async ctx => {
   myChanges = myChanges.filter(o => o.name !== name || o.date !== date)
   myChanges.push(ctx.state.addChange)
   ctx.state.userconfig.changes = myChanges
-  await ctx.userconfig.save()
-
   return ctx.editMessageText('Die Änderung wurde hinzugefügt.')
 })

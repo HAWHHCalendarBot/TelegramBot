@@ -59,13 +59,13 @@ bot.action('s:m', ctx => Promise.all([
   ctx.answerCbQuery()
 ]))
 
-bot.action('s:m:student', async ctx => {
-  await toggleSetting(ctx, 'student')
+bot.action('s:m:student', ctx => {
+  toggleSetting(ctx, 'student')
   return mensaSettingsMainmenu(ctx)
 })
 
-bot.action('s:m:showAdditives', async ctx => {
-  await toggleSetting(ctx, 'showAdditives')
+bot.action('s:m:showAdditives', ctx => {
+  toggleSetting(ctx, 'showAdditives')
   return mensaSettingsMainmenu(ctx)
 })
 
@@ -88,9 +88,8 @@ bot.action('s:m:main', ctx => {
   ])
 })
 
-bot.action(/^s:m:main:(.+)$/, async ctx => {
+bot.action(/^s:m:main:(.+)$/, ctx => {
   ctx.state.mensaSettings.main = ctx.match[1]
-  await ctx.userconfig.save()
   return Promise.all([
     mensaSettingsMainmenu(ctx),
     ctx.answerCbQuery(`${ctx.state.mensaSettings.main} wurde als deine neue Hauptmensa ausgewählt.`)
@@ -119,7 +118,7 @@ bot.action('s:m:more', ctx => Promise.all([
   ctx.answerCbQuery()
 ]))
 
-bot.action(/^s:m:more:(.+)$/, async ctx => {
+bot.action(/^s:m:more:(.+)$/, ctx => {
   const mensa = ctx.match[1]
   if (mensa === ctx.state.mensaSettings.main) {
     return ctx.answerCbQuery(`${mensa} ist bereits deine Hauptmensa.`)
@@ -136,8 +135,6 @@ bot.action(/^s:m:more:(.+)$/, async ctx => {
   }
 
   const text = wasSelected ? `${mensa} wurde entfernt` : `${mensa} wurde hinzugefügt`
-
-  await ctx.userconfig.save()
   return Promise.all([
     moreMenu(ctx),
     ctx.answerCbQuery(text)
@@ -180,13 +177,12 @@ function toggleSettingText(setting, enabled) {
   }
 }
 
-async function toggleSetting(ctx, settingName) {
+function toggleSetting(ctx, settingName) {
   ctx.state.mensaSettings[settingName] = !ctx.state.mensaSettings[settingName]
-  await ctx.userconfig.save()
   return ctx.answerCbQuery(toggleSettingText(settingName, ctx.state.mensaSettings[settingName]))
 }
 
-bot.action(/^s:m:s:(.+)$/, async ctx => {
-  await toggleSetting(ctx, ctx.match[1])
+bot.action(/^s:m:s:(.+)$/, ctx => {
+  toggleSetting(ctx, ctx.match[1])
   return mensaSettingsSpecialWishesMenu(ctx)
 })

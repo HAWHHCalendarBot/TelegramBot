@@ -121,7 +121,7 @@ function handleGenerationInProgress(ctx) {
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 }
 
-async function handleFinishGeneration(ctx) {
+function handleFinishGeneration(ctx) {
   const change = ctx.session.generateChange
 
   if (!ctx.state.userconfig.changes) {
@@ -129,7 +129,6 @@ async function handleFinishGeneration(ctx) {
   }
   ctx.state.userconfig.changes.push(change)
   ctx.state.userconfig.changes.sort()
-  await ctx.userconfig.save()
 
   return Promise.all([
     ctx.answerCbQuery('Die Änderung wurde deinem Kalender hinzugefügt.'),
@@ -144,10 +143,9 @@ bot.action('c:list', handleList)
 
 bot.action(/^c:d:(.+)#(.+)$/, ctx => handleDetails(ctx, ctx.match[1], ctx.match[2]))
 
-bot.action(/^c:r:(.+)#(.+)$/, async ctx => {
+bot.action(/^c:r:(.+)#(.+)$/, ctx => {
   const currentChanges = ctx.state.userconfig.changes || []
   ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== ctx.match[1] || o.date !== ctx.match[2])
-  await ctx.userconfig.save()
   return Promise.all([
     handleList(ctx),
     ctx.answerCbQuery('Änderung wurde entfernt.')

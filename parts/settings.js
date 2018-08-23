@@ -71,26 +71,20 @@ bot.action('s', ctx => {
 
 bot.action('s:stisys', ctx => stisysUpdate(ctx))
 
-bot.action('s:stisys:on', async ctx => {
+bot.action('s:stisys:on', ctx => {
   ctx.state.userconfig.stisysUpdate = true
-  await ctx.userconfig.save()
-
   return stisysUpdate(ctx, 'StISys Update wurde eingeschaltet.')
 })
 
-bot.action('s:stisys:off', async ctx => {
+bot.action('s:stisys:off', ctx => {
   ctx.state.userconfig.stisysUpdate = false
-  await ctx.userconfig.save()
-
   return stisysUpdate(ctx, 'StISys Update wurde ausgeschaltet.')
 })
 
 bot.action('s:showRemovedEvents', ctx => showRemovedEventsUpdate(ctx))
 
-bot.action('s:showRemovedEvents:toggle', async ctx => {
+bot.action('s:showRemovedEvents:toggle', ctx => {
   ctx.state.userconfig.showRemovedEvents = !ctx.state.userconfig.showRemovedEvents
-  await ctx.userconfig.save()
-
   return showRemovedEventsUpdate(ctx, ctx.state.userconfig.showRemovedEvents ? 'Entfernte Veranstaltungen werden nun angezeigt' : 'Entfernte Veranstaltungen werden nicht mehr angezeigt')
 })
 
@@ -127,6 +121,6 @@ bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_mess
   if (ctx.message.text !== deleteConfirmString) {
     return ctx.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')
   }
-  ctx.userconfig.remove()
+  delete ctx.state.userconfig
   return ctx.reply('Deine Daten werden gelöscht…')
 }))

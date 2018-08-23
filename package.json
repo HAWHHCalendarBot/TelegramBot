@@ -9,6 +9,7 @@
     "node": ">=10"
   },
   "dependencies": {
+    "json-stable-stringify": "^1.0.1",
     "request": "^2.85.0",
     "request-promise-native": "^1.0.5",
     "telegraf": "^3.20.0"

@@ -109,7 +109,7 @@ bot.action(/^p:(\d+)$/, ctx => {
   ])
 })
 
-bot.action(/^a:(.+)$/, async ctx => {
+bot.action(/^a:(.+)$/, ctx => {
   const event = ctx.match[1]
 
   const isExisting = allEvents.indexOf(event) >= 0
@@ -120,7 +120,6 @@ bot.action(/^a:(.+)$/, async ctx => {
   if (isExisting && !isAlreadyInCalendar) {
     ctx.state.userconfig.events.push(event)
     ctx.state.userconfig.events.sort()
-    await ctx.userconfig.save()
   }
 
   updateMessage(ctx)
