@@ -33,9 +33,6 @@ function mainText(ctx) {
 
   text += '\nAußerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.'
 
-  // TODO: remove on finish
-  text += '\n\n⚠️ _Beta Feature!_\nBei Fehlern oder Ideen zur Verbesserung, @EdJoPaTo sagen.'
-
   return text
 }
 
