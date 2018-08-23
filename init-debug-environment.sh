@@ -7,3 +7,6 @@ function pull {
 
 pull eventfiles
 pull meals
+
+mkdir -p tmp
+mkdir -p userconfig
