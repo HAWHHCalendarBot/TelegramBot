@@ -99,7 +99,6 @@ bot.action('s:data', ctx => {
   let dataText = '*Telegram User Info*\n```\n' + JSON.stringify(user, null, 2) + '\n```'
   dataText += '\n*Einstellungen im Bot*\n```\n' + JSON.stringify(userconfig, null, 2) + '\n```'
 
-  console.log(userconfig, dataText)
   return Promise.all([
     ctx.answerCbQuery(),
     ctx.reply(infotext + '\n\n' + dataText, Extra.markdown())
