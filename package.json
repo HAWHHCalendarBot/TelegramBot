@@ -33,7 +33,22 @@
     "semicolon": false,
     "rules": {
       "require-await": "error"
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "parts/changes-inline.js"
+        ],
+        "rules": {
+          "camelcase": [
+            "warn",
+            {
+              "properties": "never"
+            }
+          ]
+        }
+      }
+    ]
   },
   "repository": {
     "type": "git",
