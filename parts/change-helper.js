@@ -9,11 +9,11 @@ const {
 } = require('../lib/calendar-helper')
 
 module.exports = {
-  generateChangeDescription: generateChangeDescription,
-  generateChangeText: generateChangeText,
-  generateChangeTextHeader: generateChangeTextHeader,
-  generateShortChangeText: generateShortChangeText,
-  loadEvents: loadEvents
+  generateChangeDescription,
+  generateChangeText,
+  generateChangeTextHeader,
+  generateShortChangeText,
+  loadEvents
 }
 
 function generateChangeDescription(change) {

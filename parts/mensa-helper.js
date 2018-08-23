@@ -26,6 +26,6 @@ function mensaSpecialWishesButtons(specialWishes) {
 }
 
 module.exports = {
-  filterMeals: filterMeals,
-  mensaSpecialWishesButtons: mensaSpecialWishesButtons
+  filterMeals,
+  mensaSpecialWishesButtons
 }
