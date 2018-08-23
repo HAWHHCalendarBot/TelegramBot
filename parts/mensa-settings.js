@@ -14,6 +14,16 @@ function enabledEmoji(truthy) {
   return truthy ? '✅' : '🚫'
 }
 
+const settingName = {
+  lactoseFree: 'laktosefrei',
+  noBeef: 'kein Rindfleisch',
+  noFish: 'kein Fisch',
+  noPig: 'kein Schweinefleisch',
+  noPoultry: 'kein Geflügel',
+  vegan: 'vegan',
+  vegetarian: 'vegetarisch'
+}
+
 let allCanteens = []
 
 setInterval(updateCanteens, 1000 * 60 * 60 * 6) // Every 6 hours
@@ -154,16 +164,6 @@ bot.action('s:m:s', ctx => Promise.all([
   mensaSettingsSpecialWishesMenu(ctx),
   ctx.answerCbQuery()
 ]))
-
-const settingName = {
-  lactoseFree: 'laktosefrei',
-  noBeef: 'kein Rindfleisch',
-  noFish: 'kein Fisch',
-  noPig: 'kein Schweinefleisch',
-  noPoultry: 'kein Geflügel',
-  vegan: 'vegan',
-  vegetarian: 'vegetarisch'
-}
 
 function toggleSettingText(setting, enabled) {
   switch (setting) {
