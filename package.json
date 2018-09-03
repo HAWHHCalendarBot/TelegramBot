@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "ava": "^0.25.0",
-    "xo": "^0.22.0"
+    "xo": "^0.23.0"
   },
   "scripts": {
     "ava": "ava",
@@ -32,9 +32,6 @@
   "xo": {
     "space": true,
     "semicolon": false,
-    "rules": {
-      "require-await": "error"
-    },
     "overrides": [
       {
         "files": [
