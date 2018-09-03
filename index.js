@@ -62,8 +62,8 @@ async function checkStISysChangeAndNotify() {
   chatconfig.broadcast(bot.telegram, text, Extra.markdown().markup(Markup.removeKeyboard()), user => user.config.stisysUpdate)
 }
 
-bot.catch(err => {
-  console.error(new Date(), 'Telegraf Error', err.response || err)
+bot.catch(error => {
+  console.error(new Date(), 'Telegraf Error', error.response || error)
 })
 
 bot.startPolling()

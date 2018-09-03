@@ -118,7 +118,7 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   let current = []
   try {
     current = await readJsonFile(filename)
-  } catch (err) {}
+  } catch (error) {}
 
   // Remove events at the same time
   const future = current.filter(o => Number(o.year) !== Number(data.year) ||
@@ -140,7 +140,7 @@ async function getEventsButtons(ctx, type) {
   let eventsAvailable = []
   try {
     eventsAvailable = await readJsonFile(`additionalEvents/${ctx.session.additionalEvents.name.replace('/', '-')}.json`)
-  } catch (err) {}
+  } catch (error) {}
 
   const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:${type}:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
   return buttons

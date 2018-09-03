@@ -5,7 +5,7 @@ const {Extra, Markup} = Telegraf
 const bot = new Telegraf.Composer()
 module.exports = bot
 
-const chooseText = `*Kalender abonnieren*\nBitte wähle die Art aus, mit der du den Kalender abonnieren willst.\n\nIch empfehle über iOS / macOS Boardmittel oder über den HAW-Mailer.`
+const chooseText = '*Kalender abonnieren*\nBitte wähle die Art aus, mit der du den Kalender abonnieren willst.\n\nIch empfehle über iOS / macOS Boardmittel oder über den HAW-Mailer.'
 const chooseKeyboardMarkup = Markup.inlineKeyboard([
   Markup.callbackButton('iOS / macOS', 'url:apple'),
   Markup.callbackButton('HAW-Mailer (Exchange)', 'url:exchange'),

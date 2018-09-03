@@ -186,7 +186,7 @@ bot.action(/^c:g:n:(.+)$/, async ctx => {
   buttons.push(Markup.callbackButton('🔙 zurück zur Veranstaltungswahl', 'c:g'))
   buttons.push(backToMainButton)
   const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
-  return ctx.editMessageText(generateChangeText(ctx.session.generateChange) + `\nZu welchem Termin möchtest du die Veränderung hinzufügen?`, Extra.markdown().markup(keyboardMarkup))
+  return ctx.editMessageText(generateChangeText(ctx.session.generateChange) + '\nZu welchem Termin möchtest du die Veränderung hinzufügen?', Extra.markdown().markup(keyboardMarkup))
 })
 
 // Action: change generate date
