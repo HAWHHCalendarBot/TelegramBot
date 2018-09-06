@@ -3,8 +3,7 @@ const fsPromises = require('fs').promises
 const Telegraf = require('telegraf')
 
 const {generateCallbackButton} = require('../lib/telegraf-helper')
-
-const {mensaSpecialWishesButtons} = require('./mensa-helper')
+const {mensaSpecialWishesButtons} = require('../lib/mensa-helper')
 
 const {Extra, Markup} = Telegraf
 

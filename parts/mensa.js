@@ -2,7 +2,7 @@ const fsPromises = require('fs').promises
 
 const Telegraf = require('telegraf')
 
-const {filterMeals} = require('./mensa-helper')
+const {filterMeals} = require('../lib/mensa-helper')
 
 const {Extra, Markup} = Telegraf
 

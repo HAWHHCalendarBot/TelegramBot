@@ -11,7 +11,7 @@ const {
   generateChangeText,
   generateShortChangeText,
   loadEvents
-} = require('./change-helper')
+} = require('../lib/change-helper')
 
 const bot = new Telegraf.Composer()
 
