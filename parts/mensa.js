@@ -27,7 +27,6 @@ bot.use((ctx, next) => {
   if (!ctx.state.userconfig.mensa) {
     ctx.state.userconfig.mensa = {}
   }
-  ctx.state.mensaSettings = ctx.state.userconfig.mensa
   return next()
 })
 
@@ -161,8 +160,8 @@ bot.command('mensa', async ctx => {
   const month = date.getMonth() + 1
   const day = date.getDate()
 
-  const text = await mensaText(ctx.state.mensaSettings.main, year, month, day, ctx.state.mensaSettings)
-  const buttons = generateMensaButtons(ctx.state.mensaSettings.main, year, month, day, ctx.state.mensaSettings)
+  const text = await mensaText(ctx.state.userconfig.mensa.main, year, month, day, ctx.state.userconfig.mensa)
+  const buttons = generateMensaButtons(ctx.state.userconfig.mensa.main, year, month, day, ctx.state.userconfig.mensa)
 
   const keyboardMarkup = Markup.inlineKeyboard(buttons)
   return ctx.replyWithMarkdown(text, Extra.markup(keyboardMarkup))
@@ -174,8 +173,8 @@ bot.action(/^m:([^:]+):(\d+):(\d+):(\d+)$/, async ctx => {
   const month = Number(ctx.match[3])
   const day = Number(ctx.match[4])
 
-  const text = await mensaText(mensa, year, month, day, ctx.state.mensaSettings)
-  const buttons = generateMensaButtons(mensa, year, month, day, ctx.state.mensaSettings)
+  const text = await mensaText(mensa, year, month, day, ctx.state.userconfig.mensa)
+  const buttons = generateMensaButtons(mensa, year, month, day, ctx.state.userconfig.mensa)
 
   const keyboardMarkup = Markup.inlineKeyboard(buttons)
 
