@@ -18,6 +18,7 @@ const mensa = require('./parts/mensa')
 const mensaSettings = require('./parts/mensa-settings')
 const settings = require('./parts/settings')
 const start = require('./parts/start')
+const stats = require('./parts/stats')
 const subscribe = require('./parts/subscribe')
 
 const tokenFilePath = process.env.NODE_ENV === 'production' ? process.env.npm_package_config_tokenpath : process.env.npm_package_config_tokenpathdebug
@@ -47,6 +48,7 @@ bot.use(mensa.bot)
 bot.use(mensaSettings.bot)
 bot.use(settings.bot)
 bot.use(start.bot)
+bot.use(stats.bot)
 bot.use(subscribe.bot)
 
 bot.use(addevents.bot)
