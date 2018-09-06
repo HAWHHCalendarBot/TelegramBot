@@ -1,7 +1,7 @@
 const fsPromises = require('fs').promises
 const Telegraf = require('telegraf')
 
-const {generateCallbackButtons} = require('../lib/telegraf-helper')
+const {generateCallbackButtons, question} = require('../lib/telegraf-helper')
 
 const {Extra, Markup} = Telegraf
 
@@ -28,14 +28,6 @@ function findEventsByPatternForUser(ctx, pattern) {
 }
 
 const bot = new Telegraf.Composer()
-
-bot.command('add', addHandler)
-
-const addQuestion = 'Welche Veranstaltung möchtest du hinzufügen? Gebe mir einen Teil des Namens, dann suche ich danach.'
-
-function addHandler(ctx) {
-  return ctx.reply(addQuestion, Extra.markup(Markup.forceReply()))
-}
 
 function replyKeyboardFromResults(results, page = 0) {
   const pages = Math.ceil(results.length / resultLimit)
@@ -83,7 +75,7 @@ function updateMessage(ctx) {
   return ctx.editMessageReplyMarkup(keyboard)
 }
 
-bot.hears(/.+/, Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === addQuestion, ctx => {
+bot.command('add', question(bot, 'Welche Veranstaltung möchtest du hinzufügen? Gebe mir einen Teil des Namens, dann suche ich danach.', ctx => {
   const pattern = ctx.match[0]
   const results = findEventsByPatternForUser(ctx, pattern)
 

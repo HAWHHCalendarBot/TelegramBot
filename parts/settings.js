@@ -1,5 +1,7 @@
 const Telegraf = require('telegraf')
 
+const {question} = require('../lib/telegraf-helper')
+
 const {Extra, Markup} = Telegraf
 
 function enabledEmoji(truthy) {
@@ -108,14 +110,7 @@ const deleteConfirmString = 'Ja, ich will!'
 
 const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "${deleteConfirmString}"`
 
-bot.action('s:del', ctx => {
-  return Promise.all([
-    ctx.answerCbQuery(),
-    ctx.reply(deleteQuestion, Markup.forceReply().extra())
-  ])
-})
-
-bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === deleteQuestion, ctx => {
+bot.action('s:del', question(bot, deleteQuestion, ctx => {
   if (ctx.message.text !== deleteConfirmString) {
     return ctx.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')
   }

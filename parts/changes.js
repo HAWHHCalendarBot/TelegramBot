@@ -2,7 +2,7 @@ const Telegraf = require('telegraf')
 
 const {Extra, Markup} = Telegraf
 
-const {generateCallbackButtons} = require('../lib/telegraf-helper')
+const {generateCallbackButtons, question} = require('../lib/telegraf-helper')
 const {
   formatDateToHumanReadable,
   generateTimeSectionButtons
@@ -222,21 +222,7 @@ bot.action(/^c:g:(.+time)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
 
-const roomQuestion = 'In welchen Raum wurde der Termin gewechselt?'
-bot.action('c:g:room', stopGenerationAfterBotRestartMiddleware, ctx => {
-  return Promise.all([
-    ctx.editMessageText('⬇️'),
-    ctx.reply(roomQuestion, Extra.markup(Markup.forceReply()))
-  ])
-})
-
-function isRoomAnswer(ctx) {
-  if (!ctx.session.generateChange) {
-    return
-  }
-  return ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion
-}
-bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {
+bot.action('c:g:room', stopGenerationAfterBotRestartMiddleware, question(bot, 'In welchen Raum wurde der Termin gewechselt?', stopGenerationAfterBotRestartMiddleware, ctx => {
   ctx.session.generateChange.room = ctx.message.text
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('Ja!', 'c:g:possibility-picker'),

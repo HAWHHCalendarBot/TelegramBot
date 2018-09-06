@@ -2,6 +2,8 @@ const Telegraf = require('telegraf')
 
 const {Extra, Markup} = Telegraf
 
+const {question} = require('../lib/telegraf-helper')
+
 const bot = new Telegraf.Composer()
 
 function predicate(ctx) {
@@ -15,13 +17,7 @@ bot.command('start', (ctx, next) => {
   ])
 })
 
-const broadcastQuestion = 'Hey admin!\nWas möchtest du senden?'
-
-bot.command('broadcast', ctx => {
-  return ctx.reply(broadcastQuestion, Markup.forceReply().extra())
-})
-
-bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === broadcastQuestion, ctx => {
+bot.command('broadcast', question(bot, 'Hey admin!\nWas möchtest du senden?', ctx => {
   return ctx.replyWithMarkdown(
     ctx.message.text,
     Extra.inReplyTo(ctx.message.message_id)

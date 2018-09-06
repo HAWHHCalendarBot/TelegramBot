@@ -2,6 +2,8 @@ const fsPromises = require('fs').promises
 
 const Telegraf = require('telegraf')
 
+const {question} = require('../lib/telegraf-helper')
+
 async function readJsonFile(file) {
   return JSON.parse(await fsPromises.readFile(file, 'utf8'))
 }
@@ -92,21 +94,7 @@ bot.action(/^aE:add:t:([^:]+):(.+)$/, somethingStrangeMiddleware, ctx => {
   return handleAddEvent(ctx)
 })
 
-const roomQuestion = 'In welchem Raum findet der Termin statt?'
-bot.action('aE:add:room', somethingStrangeMiddleware, ctx => {
-  return Promise.all([
-    ctx.editMessageText('⬇️'),
-    ctx.reply(roomQuestion, Extra.markup(Markup.forceReply()))
-  ])
-})
-
-function isRoomAnswer(ctx) {
-  if (!ctx.session.additionalEvents) {
-    return
-  }
-  return ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === roomQuestion
-}
-bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {
+bot.action('aE:add:room', somethingStrangeMiddleware, question(bot, 'In welchem Raum findet der Termin statt?', somethingStrangeMiddleware, ctx => {
   ctx.session.additionalEvents.room = ctx.message.text
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('Ja!', 'aE:add'),
