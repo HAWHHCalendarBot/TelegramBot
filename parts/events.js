@@ -2,7 +2,7 @@ const Telegraf = require('telegraf')
 
 const {generateInlineKeyboardMarkup} = require('../lib/telegraf-helper')
 
-const {Extra, Markup} = Telegraf
+const {Markup} = Telegraf
 
 function generateRemoveKeyboard(ctx) {
   return generateInlineKeyboardMarkup('r', ctx.state.userconfig.events, 1)
@@ -30,7 +30,7 @@ bot.command('list', ctx => {
     hint += ' oder /remove um Veranstaltungen aus deinem Kalender zu entfernen.'
     hint += ' Mit /subscribe bekommst du deinen Kalender auf dein bevorzugtes Gerät.'
   }
-  return ctx.replyWithMarkdown(text + hint, Extra.markup(Markup.removeKeyboard()))
+  return ctx.replyWithMarkdown(text + hint)
 })
 
 bot.command('remove', removeHandler)
