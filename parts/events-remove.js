@@ -2,7 +2,7 @@ const Telegraf = require('telegraf')
 
 const {generateInlineKeyboardMarkup} = require('../lib/telegraf-helper')
 
-const {Markup} = Telegraf
+const {Extra, Markup} = Telegraf
 
 function generateRemoveKeyboard(ctx) {
   return generateInlineKeyboardMarkup('r', ctx.state.userconfig.events, 1)
@@ -17,7 +17,7 @@ function removeHandler(ctx) {
     return ctx.reply('Du hast keine Veranstaltungen mehr im Kalender, die man entfernen könnte. 🤔')
   }
 
-  return ctx.reply('Welche Veranstaltung möchtest du aus deinem Kalender entfernen?', generateRemoveKeyboard(ctx).extra())
+  return ctx.reply('Welche Veranstaltung möchtest du aus deinem Kalender entfernen?', Extra.markup(generateRemoveKeyboard(ctx)))
 }
 
 bot.action(/^r:(.+)$/, ctx => {
@@ -31,7 +31,7 @@ bot.action(/^r:(.+)$/, ctx => {
 
   // Update message
   if (ctx.state.userconfig.events.length === 0) {
-    ctx.editMessageText('Alle deine Veranstaltungen wurden bereits aus dem Kalender entfernt. 😳', Markup.inlineKeyboard([]).extra())
+    ctx.editMessageText('Alle deine Veranstaltungen wurden bereits aus dem Kalender entfernt. 😳', Extra.markup(Markup.inlineKeyboard([])))
   } else {
     ctx.editMessageReplyMarkup(generateRemoveKeyboard(ctx))
   }

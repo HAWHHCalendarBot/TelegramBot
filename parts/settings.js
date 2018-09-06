@@ -64,7 +64,7 @@ function showRemovedEventsUpdate(ctx, callbackQueryText) {
   ])
 }
 
-bot.command('settings', ctx => ctx.replyWithMarkdown('*Einstellungen*', baseSettingsKeyboard(ctx).extra()))
+bot.command('settings', ctx => ctx.replyWithMarkdown('*Einstellungen*', Extra.markup(baseSettingsKeyboard(ctx))))
 
 bot.action('s', ctx => {
   ctx.editMessageText('*Einstellungen*', Extra.markdown().markup(baseSettingsKeyboard(ctx)))
