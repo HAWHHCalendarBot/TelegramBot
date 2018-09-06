@@ -28,7 +28,6 @@ function findEventsByPatternForUser(ctx, pattern) {
 }
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 bot.command('add', addHandler)
 
@@ -146,3 +145,7 @@ bot.command('stats', async ctx => {
 
   return ctx.replyWithMarkdown(text)
 })
+
+module.exports = {
+  bot
+}

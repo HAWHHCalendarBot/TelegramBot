@@ -5,14 +5,6 @@ const {
   parseDateTimeToDate
 } = require('../lib/calendar-helper')
 
-module.exports = {
-  generateChangeDescription,
-  generateChangeText,
-  generateChangeTextHeader,
-  generateShortChangeText,
-  loadEvents
-}
-
 function generateChangeDescription(change) {
   let text = ''
   if (change.remove) {
@@ -66,4 +58,12 @@ async function loadEvents(eventname) {
     return o
   })
   return parsed
+}
+
+module.exports = {
+  generateChangeDescription,
+  generateChangeText,
+  generateChangeTextHeader,
+  generateShortChangeText,
+  loadEvents
 }

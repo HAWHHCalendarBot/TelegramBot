@@ -3,7 +3,6 @@ const Telegraf = require('telegraf')
 const {Extra, Markup} = Telegraf
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 bot.command('start', ctx => {
   let text = `Hey ${ctx.from.first_name}!`
@@ -40,3 +39,7 @@ bot.command('start', ctx => {
 })
 
 bot.command('about', ctx => ctx.replyWithMarkdown('Die Funktionsweise dieses Bots wird auf [calendarbot.hawhh.de](https://calendarbot.hawhh.de) genauer beschrieben.\n\nWenn dir der Bot gefällt, dann empfehle ihn gern weiter!\n\nDu hast Probleme, Ideen oder Vorschläge, was der Bot können sollte? Dann wende dich an @EdJoPaTo oder erstelle ein Issue auf [GitHub](https://github.com/HAWHHCalendarBot/telegrambot/issues).', Extra.markup(Markup.removeKeyboard())))
+
+module.exports = {
+  bot
+}

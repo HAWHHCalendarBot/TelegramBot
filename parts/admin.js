@@ -3,7 +3,10 @@ const Telegraf = require('telegraf')
 const {Extra, Markup} = Telegraf
 
 const bot = new Telegraf.Composer()
-module.exports = bot
+
+function predicate(ctx) {
+  return ctx.state.userconfig.admin
+}
 
 bot.command('start', (ctx, next) => {
   return Promise.all([
@@ -45,3 +48,8 @@ bot.action('clearinline', ctx => {
     ctx.answerCbQuery('Inline Keyboard entfernt…')
   ])
 })
+
+module.exports = {
+  bot: Telegraf.optional(predicate, bot),
+  predicate
+}

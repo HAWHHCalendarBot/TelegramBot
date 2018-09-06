@@ -10,7 +10,6 @@ const {
 } = require('./change-helper')
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 function generateInlineQueryResultFromChange(change, from) {
   const id = `${change.name}#${change.date}#${from.id}`
@@ -132,3 +131,7 @@ bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, ctx => {
   ctx.state.userconfig.changes = myChanges
   return ctx.editMessageText('Die Änderung wurde hinzugefügt.')
 })
+
+module.exports = {
+  bot
+}

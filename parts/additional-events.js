@@ -21,7 +21,10 @@ const {generateCallbackButtons} = require('../lib/telegraf-helper')
 const {Extra, Markup} = Telegraf
 
 const bot = new Telegraf.Composer()
-module.exports = bot
+
+function predicate(ctx) {
+  return (ctx.state.userconfig.additionalEvents || []).length > 0
+}
 
 function somethingStrangeMiddleware(ctx, next) {
   if (!ctx.session.additionalEvents) {
@@ -190,3 +193,8 @@ bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
     ctx.editMessageText('Entfernt.')
   ])
 })
+
+module.exports = {
+  bot: Telegraf.optional(predicate, bot),
+  predicate
+}

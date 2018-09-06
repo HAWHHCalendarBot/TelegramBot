@@ -9,7 +9,6 @@ function generateRemoveKeyboard(ctx) {
 }
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 bot.command('list', ctx => {
   const eventList = ctx.state.userconfig.events
@@ -62,3 +61,7 @@ bot.action(/^r:(.+)$/, ctx => {
 
   return ctx.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
 })
+
+module.exports = {
+  bot
+}

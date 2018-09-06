@@ -7,7 +7,6 @@ function enabledEmoji(truthy) {
 }
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 function baseSettingsKeyboard(ctx) {
   return Markup.inlineKeyboard([
@@ -123,3 +122,7 @@ bot.on('text', Telegraf.optional(ctx => ctx.message && ctx.message.reply_to_mess
   delete ctx.state.userconfig
   return ctx.reply('Deine Daten werden gelöscht…')
 }))
+
+module.exports = {
+  bot
+}

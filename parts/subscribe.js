@@ -3,7 +3,6 @@ const Telegraf = require('telegraf')
 const {Extra, Markup} = Telegraf
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 const chooseText = '*Kalender abonnieren*\nBitte wähle die Art aus, mit der du den Kalender abonnieren willst.\n\nIch empfehle über iOS / macOS Boardmittel oder über den HAW-Mailer.'
 const chooseKeyboardMarkup = Markup.inlineKeyboard([
@@ -110,3 +109,7 @@ bot.action('url:freestyle', ctx => {
 
   return ctx.fastEdit(text, buttons)
 })
+
+module.exports = {
+  bot
+}

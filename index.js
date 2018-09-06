@@ -34,18 +34,18 @@ const chatconfig = new Chatconfig('userconfig', {
 })
 bot.use(chatconfig)
 
-bot.use(easterEggs)
-bot.use(Telegraf.optional(ctx => ctx.state.userconfig.admin, admin))
-bot.use(Telegraf.optional(ctx => (ctx.state.userconfig.additionalEvents || []).length > 0, additionalEvents))
+bot.use(easterEggs.bot)
+bot.use(admin.bot)
+bot.use(additionalEvents.bot)
 
-bot.use(changes)
-bot.use(events)
-bot.use(mensa)
-bot.use(settings)
-bot.use(start)
-bot.use(subscribe)
+bot.use(changes.bot)
+bot.use(events.bot)
+bot.use(mensa.bot)
+bot.use(settings.bot)
+bot.use(start.bot)
+bot.use(subscribe.bot)
 
-bot.use(addevents)
+bot.use(addevents.bot)
 
 setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 checkStISysChangeAndNotify()

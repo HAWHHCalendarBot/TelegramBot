@@ -33,7 +33,6 @@ async function updateCanteens() {
 }
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 function mensaSettingsMainmenu(ctx) {
   const text = '*Mensa Einstellungen*'
@@ -186,3 +185,7 @@ bot.action(/^s:m:s:(.+)$/, ctx => {
   toggleSetting(ctx, ctx.match[1])
   return mensaSettingsSpecialWishesMenu(ctx)
 })
+
+module.exports = {
+  bot
+}

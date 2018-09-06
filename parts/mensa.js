@@ -23,7 +23,6 @@ async function getMealsOfDay(mensa, year, month, day) {
 }
 
 const bot = new Telegraf.Composer()
-module.exports = bot
 
 bot.use((ctx, next) => {
   if (!ctx.state.userconfig.mensa) {
@@ -184,3 +183,7 @@ bot.action(/^m:([^:]+):(\d+):(\d+):(\d+)$/, async ctx => {
 
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
+
+module.exports = {
+  bot
+}

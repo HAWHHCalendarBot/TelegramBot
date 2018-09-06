@@ -17,7 +17,6 @@ const {
 
 const bot = new Telegraf.Composer()
 bot.use(changesInline)
-module.exports = bot
 
 const backToMainButton = Markup.callbackButton('🔝 zurück zur Auswahl', 'c')
 
@@ -248,3 +247,7 @@ bot.hears(/.+/, Telegraf.optional(isRoomAnswer, ctx => {
   ])
   ctx.reply(`Ist '${ctx.session.generateChange.room}' korrekt?`, Extra.markup(keyboardMarkup))
 }))
+
+module.exports = {
+  bot
+}
