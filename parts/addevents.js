@@ -1,30 +1,17 @@
-const fsPromises = require('fs').promises
 const Telegraf = require('telegraf')
 
+const allEvents = require('../lib/all-events')
 const {generateCallbackButtons, question} = require('../lib/telegraf-helper')
 
 const {Extra, Markup} = Telegraf
 
-let allEvents = []
 const resultLimit = 5
 
-setInterval(updateEvents, 1000 * 60 * 60)
-updateEvents()
-
-async function updateEvents() {
-  const data = await fsPromises.readFile('eventfiles/all.txt', 'utf8')
-  const list = data.split('\n').filter(element => element !== '')
-  console.log(new Date(), list.length, 'Veranstaltungen geladen.')
-  allEvents = list
-}
-
 function findEventsByPatternForUser(ctx, pattern) {
-  const regex = new RegExp(pattern, 'i')
   const blacklist = ctx.state.userconfig.events
     .concat(ctx.state.userconfig.additionalEvents || [])
 
-  const filtered = allEvents.filter(event => regex.test(event) && !blacklist.some(v => v === event))
-  return filtered
+  return allEvents.find(pattern, blacklist)
 }
 
 const bot = new Telegraf.Composer()
@@ -103,7 +90,7 @@ bot.action(/^p:(\d+)$/, ctx => {
 bot.action(/^a:(.+)$/, ctx => {
   const event = ctx.match[1]
 
-  const isExisting = allEvents.indexOf(event) >= 0
+  const isExisting = allEvents.exists(event)
   const isAlreadyInCalendar = ctx.state.userconfig.events
     .concat(ctx.state.userconfig.additionalEvents || [])
     .indexOf(event) >= 0
@@ -129,7 +116,7 @@ bot.action(/^a:(.+)$/, ctx => {
 bot.command('stats', async ctx => {
   const userIds = await ctx.userconfig.allIds()
   const userCount = userIds.length
-  const eventCount = allEvents.length
+  const eventCount = allEvents.count()
 
   let text = `Ich habe aktuell ${eventCount} Veranstaltungen, die ich ${userCount} begeisterten Nutzern 😍 zur Verfügung stelle. Die letzte Nachricht habe ich gerade eben von dir erhalten.`
   text += '\nWenn ich für dich hilfreich bin, dann erzähl gern anderen von mir, denn ich will gern allen helfen, denen noch zu helfen ist. ☺️'
