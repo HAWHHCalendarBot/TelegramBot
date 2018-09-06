@@ -7,8 +7,6 @@ const {
   formatDateToHumanReadable,
   generateTimeSectionButtons
 } = require('../lib/calendar-helper')
-
-const changesInline = require('./changes-inline')
 const {
   generateChangeText,
   generateShortChangeText,
@@ -16,7 +14,6 @@ const {
 } = require('./change-helper')
 
 const bot = new Telegraf.Composer()
-bot.use(changesInline)
 
 const backToMainButton = Markup.callbackButton('🔝 zurück zur Auswahl', 'c')
 

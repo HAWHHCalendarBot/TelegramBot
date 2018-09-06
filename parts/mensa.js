@@ -3,7 +3,6 @@ const fsPromises = require('fs').promises
 const Telegraf = require('telegraf')
 
 const {filterMeals} = require('./mensa-helper')
-const mensaSettings = require('./mensa-settings')
 
 const {Extra, Markup} = Telegraf
 
@@ -31,7 +30,6 @@ bot.use((ctx, next) => {
   ctx.state.mensaSettings = ctx.state.userconfig.mensa
   return next()
 })
-bot.use(mensaSettings)
 
 function mealToMarkdown(meal, isStudent, showAdditives) {
   const parsedName = showAdditives ?
