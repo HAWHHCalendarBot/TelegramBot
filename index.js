@@ -41,6 +41,7 @@ bot.use(easterEggs.bot)
 bot.use(admin.bot)
 bot.use(additionalEvents.bot)
 
+bot.use(addevents.bot)
 bot.use(changes.bot)
 bot.use(changesInline.bot)
 bot.use(events.bot)
@@ -50,8 +51,6 @@ bot.use(settings.bot)
 bot.use(start.bot)
 bot.use(stats.bot)
 bot.use(subscribe.bot)
-
-bot.use(addevents.bot)
 
 setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 checkStISysChangeAndNotify()
