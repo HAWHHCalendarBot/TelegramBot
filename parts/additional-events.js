@@ -15,6 +15,10 @@ function writeJsonFile(file, data) {
   return fsPromises.writeFile(file, JSON.stringify(data), 'utf8')
 }
 
+function filenameFromEventName(name) {
+  return `additionalEvents/${name.replace('/', '-')}.json`
+}
+
 const bot = new Telegraf.Composer()
 
 function predicate(ctx) {
@@ -69,7 +73,7 @@ bot.action(/^aE:add:(.+)$/, ctx => {
 
 bot.action('aE:finish', generateEventDate.somethingStrangeMiddleware, async ctx => {
   const data = ctx.session.generateEventDate.event
-  const filename = `additionalEvents/${data.name.replace('/', '-')}.json`
+  const filename = filenameFromEventName(data.name)
   let current = []
   try {
     current = await readJsonFile(filename)
@@ -94,7 +98,7 @@ bot.action('aE:finish', generateEventDate.somethingStrangeMiddleware, async ctx 
 async function getEventsButtons(ctx, name, type) {
   let eventsAvailable = []
   try {
-    eventsAvailable = await readJsonFile(`additionalEvents/${name.replace('/', '-')}.json`)
+    eventsAvailable = await readJsonFile(filenameFromEventName(name))
   } catch (error) {}
 
   const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:${type}:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
@@ -116,7 +120,7 @@ bot.action(/^aE:duplicate:(.+)/, async ctx => {
 
 bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
   const name = ctx.match[1]
-  const filename = `additionalEvents/${name.replace('/', '-')}.json`
+  const filename = filenameFromEventName(name)
   const current = await readJsonFile(filename)
   const searched = current.filter(o => Number(o.year) === Number(ctx.match[2]) &&
     Number(o.month) === Number(ctx.match[3]) &&
@@ -137,7 +141,7 @@ bot.action(/^aE:remove:(.+)$/, async ctx => {
 
 bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
   const name = ctx.match[1]
-  const filename = `additionalEvents/${name.replace('/', '-')}.json`
+  const filename = filenameFromEventName(name)
   const current = await readJsonFile(filename)
   const future = current.filter(o => Number(o.year) !== Number(ctx.match[2]) ||
     Number(o.month) !== Number(ctx.match[3]) ||
