@@ -12,7 +12,7 @@ async function readJsonFile(file) {
   return JSON.parse(await fsPromises.readFile(file, 'utf8'))
 }
 function writeJsonFile(file, data) {
-  return fsPromises.writeFile(file, JSON.stringify(data), 'utf8')
+  return fsPromises.writeFile(file, JSON.stringify(data, null, 2), 'utf8')
 }
 
 function filenameFromEventName(name) {
