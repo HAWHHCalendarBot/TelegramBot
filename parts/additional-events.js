@@ -2,7 +2,11 @@ const fsPromises = require('fs').promises
 
 const Telegraf = require('telegraf')
 
-const {question} = require('../lib/telegraf-helper')
+const {generateCallbackButtons} = require('../lib/telegraf-helper')
+
+const generateEventDate = require('./generate-event-date')
+
+const {Extra, Markup} = Telegraf
 
 async function readJsonFile(file) {
   return JSON.parse(await fsPromises.readFile(file, 'utf8'))
@@ -11,100 +15,60 @@ function writeJsonFile(file, data) {
   return fsPromises.writeFile(file, JSON.stringify(data), 'utf8')
 }
 
-const {
-  generateDateTimePickerButtons,
-  generateMonthButtons,
-  generateSpartaDayButtons,
-  generateSpartaYearButtons,
-  generateTimeSectionButtons
-} = require('../lib/calendar-helper')
-const {generateCallbackButtons} = require('../lib/telegraf-helper')
-
-const {Extra, Markup} = Telegraf
-
 const bot = new Telegraf.Composer()
 
 function predicate(ctx) {
   return (ctx.state.userconfig.additionalEvents || []).length > 0
 }
 
-function somethingStrangeMiddleware(ctx, next) {
-  if (!ctx.session.additionalEvents) {
-    return ctx.editMessageText('Ich hab den Faden verloren 🎈😴')
-  }
-  return next()
-}
-
-function handleEventOverview(ctx) {
-  const keyboardMarkup = Markup.inlineKeyboard([
-    Markup.callbackButton('Termin hinzufügen', 'aE:add'),
-    Markup.callbackButton('Termin duplizieren / anpassen', 'aE:duplicate'),
-    Markup.callbackButton('Termin entfernen', 'aE:remove')
-  ], {columns: 1})
-  return ctx.editMessageText(`*${ctx.session.additionalEvents.name}*`, Extra.markdown().markup(keyboardMarkup))
-}
-
-function handleAddEvent(ctx) {
-  const data = ctx.session.additionalEvents || {}
-  const allNeededDataAvailable = data.date &&
-    data.endtime &&
-    data.month &&
-    data.room &&
-    data.starttime &&
-    data.year
-
-  const buttons = generateDateTimePickerButtons('aE:add:t', data.year, data.month, data.date, data.starttime, data.endtime)
-  buttons.push([Markup.callbackButton(`📍 ${data.room || 'Raum'}`, 'aE:add:room')])
-  buttons.push([
-    Markup.callbackButton('✅ Fertig stellen', 'aE:add:finish', !allNeededDataAvailable),
-    Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + data.name)
-  ])
-  return ctx.editMessageText('Bestimme die Details des Termins', Extra.markup(Markup.inlineKeyboard(buttons)))
-}
-
 bot.command('additionalEvents', ctx => {
+  const {text, extra} = main(ctx)
+  return ctx.reply(text, extra)
+})
+
+bot.action('aE', ctx => {
+  const {text, extra} = main(ctx)
+  return ctx.editMessageText(text, extra)
+})
+
+function main(ctx) {
   let text = 'Hier kannst du bei deiner / deinen Veranstaltungen Termine hinzufügen oder entfernen. Diese erscheinen für alle unter den möglichen, hinzufügbaren Veranstaltungen. Du hast diese automatisch im Kalender.'
 
   text += '\n\n⚠️ Der geringste Teil der Nutzer ist Veranstalter. Daher ist diese Funktionalität etwas spartanisch gestaltet. Denke bitte selbst ein bisschen mit, was du tust. Zum Beispiel hat nicht jeder Monat 31 Tage 😉'
 
   const buttons = generateCallbackButtons('aE:event', ctx.state.userconfig.additionalEvents || [])
   const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
-  return ctx.replyWithMarkdown(text, Extra.markup(keyboardMarkup))
-})
+  const extra = Extra.markdown().markup(keyboardMarkup)
+  return {text, extra}
+}
 
 bot.action(/^aE:event:(.+)$/, ctx => {
-  ctx.session.additionalEvents = {
-    name: ctx.match[1],
-    year: new Date(Date.now()).getFullYear()
-  }
-  return handleEventOverview(ctx)
-})
-
-bot.action('aE:add', ctx => handleAddEvent(ctx))
-
-const timePickText = 'Wähle den Zeitpunkt des Termins'
-bot.action('aE:add:t:date', somethingStrangeMiddleware, ctx => ctx.editMessageText(timePickText, Extra.markup(Markup.inlineKeyboard(generateSpartaDayButtons(ctx.match)))))
-bot.action('aE:add:t:month', somethingStrangeMiddleware, ctx => ctx.editMessageText(timePickText, Extra.markup(Markup.inlineKeyboard(generateMonthButtons(ctx.match)))))
-bot.action('aE:add:t:year', somethingStrangeMiddleware, ctx => ctx.editMessageText(timePickText, Extra.markup(Markup.inlineKeyboard(generateSpartaYearButtons(ctx.match)))))
-bot.action('aE:add:t:starttime', somethingStrangeMiddleware, ctx => ctx.editMessageText(timePickText, Extra.markup(Markup.inlineKeyboard(generateTimeSectionButtons(ctx.match)))))
-bot.action('aE:add:t:endtime', somethingStrangeMiddleware, ctx => ctx.editMessageText(timePickText, Extra.markup(Markup.inlineKeyboard(generateTimeSectionButtons(ctx.match)))))
-
-bot.action(/^aE:add:t:([^:]+):(.+)$/, somethingStrangeMiddleware, ctx => {
-  ctx.session.additionalEvents[ctx.match[1]] = ctx.match[2]
-  return handleAddEvent(ctx)
-})
-
-bot.action('aE:add:room', somethingStrangeMiddleware, question(bot, 'In welchem Raum findet der Termin statt?', somethingStrangeMiddleware, ctx => {
-  ctx.session.additionalEvents.room = ctx.message.text
+  const name = ctx.match[1]
   const keyboardMarkup = Markup.inlineKeyboard([
-    Markup.callbackButton('Ja!', 'aE:add'),
-    Markup.callbackButton('Nein.', 'aE:add:room')
-  ])
-  ctx.reply(`Ist '${ctx.session.additionalEvents.room}' korrekt?`, Extra.markup(keyboardMarkup))
-}))
+    Markup.callbackButton('Termin hinzufügen', 'aE:add:' + name),
+    Markup.callbackButton('Termin duplizieren / anpassen', 'aE:duplicate:' + name),
+    Markup.callbackButton('Termin entfernen', 'aE:remove:' + name),
+    Markup.callbackButton('Zurück…', 'aE')
+  ], {columns: 1})
+  return ctx.editMessageText(`*${name}*`, Extra.markdown().markup(keyboardMarkup))
+})
 
-bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
-  const data = ctx.session.additionalEvents
+function beginEventDateGeneration(ctx, name, event) {
+  return generateEventDate.start(ctx, {
+    text: 'Bestimme die Details des Termins',
+    finishActionCode: 'aE:finish',
+    abortActionCode: 'aE:event:' + name,
+    event
+  })
+}
+
+bot.action(/^aE:add:(.+)$/, ctx => {
+  const name = ctx.match[1]
+  return beginEventDateGeneration(ctx, name, {name})
+})
+
+bot.action('aE:finish', generateEventDate.somethingStrangeMiddleware, async ctx => {
+  const data = ctx.session.generateEventDate.event
   const filename = `additionalEvents/${data.name.replace('/', '-')}.json`
   let current = []
   try {
@@ -127,49 +91,53 @@ bot.action('aE:add:finish', somethingStrangeMiddleware, async ctx => {
   ])
 })
 
-async function getEventsButtons(ctx, type) {
+async function getEventsButtons(ctx, name, type) {
   let eventsAvailable = []
   try {
-    eventsAvailable = await readJsonFile(`additionalEvents/${ctx.session.additionalEvents.name.replace('/', '-')}.json`)
+    eventsAvailable = await readJsonFile(`additionalEvents/${name.replace('/', '-')}.json`)
   } catch (error) {}
 
   const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:${type}:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
   return buttons
 }
 
-bot.action('aE:duplicate', somethingStrangeMiddleware, async ctx => {
+bot.action(/^aE:duplicate:(.+)/, async ctx => {
+  const name = ctx.match[1]
   let text = 'Welchen Termin möchtest du duplizieren / anpassen?'
   text += '\n'
   text += '\nBeim Speichern des neuen Termins wird ein zeitgleich startender Termin überschrieben -> quasi bearbeitet.'
 
-  const buttons = await getEventsButtons(ctx, 'd')
+  const buttons = await getEventsButtons(ctx, name, 'd')
 
-  buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
+  buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + name))
   const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
 })
 
 bot.action(/^aE:d:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
-  const filename = `additionalEvents/${ctx.match[1].replace('/', '-')}.json`
+  const name = ctx.match[1]
+  const filename = `additionalEvents/${name.replace('/', '-')}.json`
   const current = await readJsonFile(filename)
   const searched = current.filter(o => Number(o.year) === Number(ctx.match[2]) &&
     Number(o.month) === Number(ctx.match[3]) &&
     Number(o.date) === Number(ctx.match[4]) &&
     o.starttime === ctx.match[5])
-  ctx.session.additionalEvents = searched[0]
-  return handleAddEvent(ctx)
+
+  return beginEventDateGeneration(ctx, name, searched[0])
 })
 
-bot.action('aE:remove', somethingStrangeMiddleware, async ctx => {
-  const buttons = await getEventsButtons(ctx, 'r')
+bot.action(/^aE:remove:(.+)$/, async ctx => {
+  const name = ctx.match[1]
+  const buttons = await getEventsButtons(ctx, name, 'r')
 
-  buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + ctx.session.additionalEvents.name))
+  buttons.push(Markup.callbackButton('🛑 Abbrechen', 'aE:event:' + name))
   const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
   return ctx.editMessageText('Welchen Termin möchtest du entfernen?', Extra.markdown().markup(keyboardMarkup))
 })
 
 bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
-  const filename = `additionalEvents/${ctx.match[1].replace('/', '-')}.json`
+  const name = ctx.match[1]
+  const filename = `additionalEvents/${name.replace('/', '-')}.json`
   const current = await readJsonFile(filename)
   const future = current.filter(o => Number(o.year) !== Number(ctx.match[2]) ||
     Number(o.month) !== Number(ctx.match[3]) ||
