@@ -46,8 +46,7 @@ function main(ctx) {
   return {text, extra}
 }
 
-bot.action(/^aE:event:(.+)$/, ctx => {
-  const name = ctx.match[1]
+function eventMenu(ctx, name) {
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('Termin hinzufügen', 'aE:add:' + name),
     Markup.callbackButton('Termin duplizieren / anpassen', 'aE:duplicate:' + name),
@@ -56,6 +55,8 @@ bot.action(/^aE:event:(.+)$/, ctx => {
   ], {columns: 1})
   return ctx.editMessageText(`*${name}*`, Extra.markdown().markup(keyboardMarkup))
 })
+
+bot.action(/^aE:event:(.+)$/, ctx => eventMenu(ctx, ctx.match[1]))
 
 function beginEventDateGeneration(ctx, name, event) {
   return generateEventDate.start(ctx, {
@@ -91,7 +92,7 @@ bot.action('aE:finish', generateEventDate.somethingStrangeMiddleware, async ctx 
   const outputText = future.length === current.length ? 'Geändert.' : 'Hinzugefügt.'
   return Promise.all([
     ctx.answerCbQuery(outputText),
-    ctx.editMessageText(outputText)
+    eventMenu(ctx, data.name)
   ])
 })
 
@@ -150,7 +151,7 @@ bot.action(/^aE:r:(.+):(\d+)-(\d+)-(\d+)T(\d?\d:\d{2})$/, async ctx => {
   await writeJsonFile(filename, future)
   return Promise.all([
     ctx.answerCbQuery('Entfernt.'),
-    ctx.editMessageText('Entfernt.')
+    eventMenu(ctx, name)
   ])
 })
 
