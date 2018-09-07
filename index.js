@@ -38,12 +38,11 @@ const chatconfig = new Chatconfig('userconfig', {
 })
 bot.use(chatconfig)
 
-bot.use(easterEggs.bot)
-bot.use(admin.bot)
 bot.use(additionalEvents.bot)
-
+bot.use(admin.bot)
 bot.use(changes.bot)
 bot.use(changesInline.bot)
+bot.use(easterEggs.bot)
 bot.use(eventsAdd.bot)
 bot.use(eventsList.bot)
 bot.use(eventsRemove.bot)
