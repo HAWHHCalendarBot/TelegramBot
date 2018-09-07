@@ -25,6 +25,14 @@ function predicate(ctx) {
   return (ctx.state.userconfig.additionalEvents || []).length > 0
 }
 
+function getEvents(name) {
+  try {
+    return readJsonFile(filenameFromEventName(name))
+  } catch (error) {
+    return []
+  }
+}
+
 bot.command('additionalEvents', ctx => {
   const {text, extra} = main(ctx)
   return ctx.reply(text, extra)
@@ -46,15 +54,20 @@ function main(ctx) {
   return {text, extra}
 }
 
-function eventMenu(ctx, name) {
+async function eventMenu(ctx, name) {
+  const events = await getEvents(name)
+
+  let text = `*${name}*\n`
+  text += 'Veranstaltungen: ' + events.length
+
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton('Termin hinzufügen', 'aE:add:' + name),
-    Markup.callbackButton('Termin duplizieren / anpassen', 'aE:duplicate:' + name),
-    Markup.callbackButton('Termin entfernen', 'aE:remove:' + name),
+    Markup.callbackButton('Termin duplizieren / anpassen', 'aE:duplicate:' + name, events.length === 0),
+    Markup.callbackButton('Termin entfernen', 'aE:remove:' + name, events.length === 0),
     Markup.callbackButton('Zurück…', 'aE')
   ], {columns: 1})
-  return ctx.editMessageText(`*${name}*`, Extra.markdown().markup(keyboardMarkup))
-})
+  return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
+}
 
 bot.action(/^aE:event:(.+)$/, ctx => eventMenu(ctx, ctx.match[1]))
 
@@ -97,10 +110,7 @@ bot.action('aE:finish', generateEventDate.somethingStrangeMiddleware, async ctx 
 })
 
 async function getEventsButtons(ctx, name, type) {
-  let eventsAvailable = []
-  try {
-    eventsAvailable = await readJsonFile(filenameFromEventName(name))
-  } catch (error) {}
+  const eventsAvailable = await getEvents(name)
 
   const buttons = eventsAvailable.map(e => Markup.callbackButton(`${e.name} ${e.date}.${e.month}.${e.year} ${e.starttime}`, `aE:${type}:${e.name}:${e.year}-${e.month}-${e.date}T${e.starttime}`))
   return buttons
