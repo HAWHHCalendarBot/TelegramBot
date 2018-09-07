@@ -35,17 +35,17 @@ const bot = new Telegraf.Composer()
 
 function mensaSettingsMainmenu(ctx) {
   const text = '*Mensa Einstellungen*'
-  const mainMensa = ctx.state.mensaSettings.main || 'Berliner-Tor'
-  const mainUnset = !ctx.state.mensaSettings.main
-  const moreCount = (ctx.state.mensaSettings.more || []).length
+  const mainMensa = ctx.state.userconfig.mensa.main || 'Berliner-Tor'
+  const mainUnset = !ctx.state.userconfig.mensa.main
+  const moreCount = (ctx.state.userconfig.mensa.more || []).length
   const moreCountText = moreCount ? ' (' + moreCount + ' gewählt)' : ''
 
   const keyboardMarkup = Markup.inlineKeyboard([
     Markup.callbackButton(`Hauptmensa${mainUnset ? '' : ': ' + mainMensa}`, 's:m:main'),
     Markup.callbackButton('weitere Mensen' + moreCountText, 's:m:more', mainUnset),
-    Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.student) + ' Studentenpreis', 's:m:student', mainUnset),
+    Markup.callbackButton(enabledEmoji(ctx.state.userconfig.mensa.student) + ' Studentenpreis', 's:m:student', mainUnset),
     Markup.callbackButton('Extrawünsche Essen', 's:m:s', mainUnset),
-    Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings.showAdditives) + ' zeige Inhaltsstoffe', 's:m:showAdditives', mainUnset),
+    Markup.callbackButton(enabledEmoji(ctx.state.userconfig.mensa.showAdditives) + ' zeige Inhaltsstoffe', 's:m:showAdditives', mainUnset),
     Markup.callbackButton('🔙 zurück zur Einstellungsübersicht', 's')
   ], {columns: 1})
 
@@ -68,7 +68,7 @@ bot.action('s:m:showAdditives', ctx => {
 })
 
 bot.action('s:m:main', ctx => {
-  const mainMensa = ctx.state.mensaSettings.main
+  const mainMensa = ctx.state.userconfig.mensa.main
   const mensaButtons = allCanteens.map(mensa => {
     if (mensa === mainMensa) {
       return Markup.callbackButton(`▶️ ${mensa}`, `s:m:main:${mensa}`)
@@ -87,18 +87,18 @@ bot.action('s:m:main', ctx => {
 })
 
 bot.action(/^s:m:main:(.+)$/, ctx => {
-  ctx.state.mensaSettings.main = ctx.match[1]
+  ctx.state.userconfig.mensa.main = ctx.match[1]
   return Promise.all([
     mensaSettingsMainmenu(ctx),
-    ctx.answerCbQuery(`${ctx.state.mensaSettings.main} wurde als deine neue Hauptmensa ausgewählt.`)
+    ctx.answerCbQuery(`${ctx.state.userconfig.mensa.main} wurde als deine neue Hauptmensa ausgewählt.`)
   ])
 })
 
 function moreMenu(ctx) {
-  const selected = ctx.state.mensaSettings.more || []
+  const selected = ctx.state.userconfig.mensa.more || []
   const buttons = allCanteens.map(m => {
     const data = `s:m:more:${m}`
-    if (m === ctx.state.mensaSettings.main) {
+    if (m === ctx.state.userconfig.mensa.main) {
       return Markup.callbackButton(`🍽 ${m}`, data)
     }
     const isSelected = selected.indexOf(m) >= 0
@@ -118,18 +118,18 @@ bot.action('s:m:more', ctx => Promise.all([
 
 bot.action(/^s:m:more:(.+)$/, ctx => {
   const mensa = ctx.match[1]
-  if (mensa === ctx.state.mensaSettings.main) {
+  if (mensa === ctx.state.userconfig.mensa.main) {
     return ctx.answerCbQuery(`${mensa} ist bereits deine Hauptmensa.`)
   }
 
-  ctx.state.mensaSettings.more = ctx.state.mensaSettings.more || []
-  const wasSelected = ctx.state.mensaSettings.more.indexOf(mensa) >= 0
+  ctx.state.userconfig.mensa.more = ctx.state.userconfig.mensa.more || []
+  const wasSelected = ctx.state.userconfig.mensa.more.indexOf(mensa) >= 0
 
   if (wasSelected) {
-    ctx.state.mensaSettings.more = ctx.state.mensaSettings.more.filter(o => o !== mensa)
+    ctx.state.userconfig.mensa.more = ctx.state.userconfig.mensa.more.filter(o => o !== mensa)
   } else {
-    ctx.state.mensaSettings.more.push(mensa)
-    ctx.state.mensaSettings.more.sort()
+    ctx.state.userconfig.mensa.more.push(mensa)
+    ctx.state.userconfig.mensa.more.sort()
   }
 
   const text = wasSelected ? `${mensa} wurde entfernt` : `${mensa} wurde hinzugefügt`
@@ -140,9 +140,9 @@ bot.action(/^s:m:more:(.+)$/, ctx => {
 })
 
 function mensaSettingsSpecialWishesMenu(ctx) {
-  const possibleSettings = mensaSpecialWishesButtons(ctx.state.mensaSettings)
+  const possibleSettings = mensaSpecialWishesButtons(ctx.state.userconfig.mensa)
 
-  const buttons = possibleSettings.map(o => Markup.callbackButton(enabledEmoji(ctx.state.mensaSettings[o]) + ' ' + settingName[o], 's:m:s:' + o))
+  const buttons = possibleSettings.map(o => Markup.callbackButton(enabledEmoji(ctx.state.userconfig.mensa[o]) + ' ' + settingName[o], 's:m:s:' + o))
 
   buttons.push(Markup.callbackButton('🔙 zurück zu den Mensa Einstellungen', 's:m'))
   buttons.push(Markup.callbackButton('🔙 zurück zur Einstellungensübersicht', 's'))
@@ -176,8 +176,8 @@ function toggleSettingText(setting, enabled) {
 }
 
 function toggleSetting(ctx, settingName) {
-  ctx.state.mensaSettings[settingName] = !ctx.state.mensaSettings[settingName]
-  return ctx.answerCbQuery(toggleSettingText(settingName, ctx.state.mensaSettings[settingName]))
+  ctx.state.userconfig.mensa[settingName] = !ctx.state.userconfig.mensa[settingName]
+  return ctx.answerCbQuery(toggleSettingText(settingName, ctx.state.userconfig.mensa[settingName]))
 }
 
 bot.action(/^s:m:s:(.+)$/, ctx => {
