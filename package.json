@@ -20,10 +20,11 @@
   },
   "scripts": {
     "ava": "ava",
+    "ava:watch": "ava -w",
+    "xo": "xo",
     "start": "node index.js",
     "pretest": "xo",
-    "test": "ava",
-    "xo": "xo"
+    "test": "ava"
   },
   "config": {
     "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt",
