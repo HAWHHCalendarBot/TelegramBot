@@ -10,6 +10,7 @@ const Chatconfig = require('./lib/chatconfig')
 
 const migrateStuff = require('./migrate-stuff')
 
+const about = require('./parts/about')
 const additionalEvents = require('./parts/additional-events')
 const admin = require('./parts/admin')
 const changes = require('./parts/changes')
@@ -50,7 +51,6 @@ bot.use(generateEventDate.bot)
 bot.use(mensa.bot)
 bot.use(settings.bot)
 bot.use(start.bot)
-bot.use(stats.bot)
 bot.use(subscribe.bot)
 
 const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`, '🔙 zurück…', '🔝 zum Hauptmenü')
@@ -58,6 +58,9 @@ const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`
 menu.submenu('Veranstaltungen', events.menu)
 
 menu.submenu('Einstellungen', settings.menu)
+
+menu.submenu('Statistiken', stats.menu)
+menu.submenu('Über den Bot', about.menu, {joinLastRow: true})
 
 bot.use(menu)
 bot.start(ctx => menu.replyMenuNow(ctx))
