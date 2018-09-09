@@ -17,15 +17,17 @@
   },
   "devDependencies": {
     "ava": "^0.25.0",
+    "nyc": "^13.0.1",
     "xo": "^0.23.0"
   },
   "scripts": {
     "ava": "ava",
     "ava:watch": "ava -w",
+    "nyc": "nyc",
     "xo": "xo",
     "start": "node index.js",
     "pretest": "xo",
-    "test": "ava"
+    "test": "nyc ava"
   },
   "config": {
     "tokenpath": "/run/secrets/hawhhcalendarbot-token.txt",
