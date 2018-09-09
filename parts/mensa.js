@@ -1,25 +1,9 @@
-const fsPromises = require('fs').promises
-
 const Telegraf = require('telegraf')
 
 const {filterMeals, mealToMarkdown} = require('../lib/mensa-helper')
+const {getMealsOfDay} = require('../lib/mensa-meals')
 
 const {Extra, Markup} = Telegraf
-
-async function getMealsOfDay(mensa, year, month, day) {
-  try {
-    let filename = `meals/${mensa}/`
-    filename += year.toLocaleString(undefined, {minimumIntegerDigits: 4, useGrouping: false})
-    filename += month.toLocaleString(undefined, {minimumIntegerDigits: 2})
-    filename += day.toLocaleString(undefined, {minimumIntegerDigits: 2})
-    filename += '.json'
-
-    const content = await fsPromises.readFile(filename, 'utf8')
-    return JSON.parse(content)
-  } catch (error) {
-    return []
-  }
-}
 
 const bot = new Telegraf.Composer()
 
