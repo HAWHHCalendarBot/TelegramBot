@@ -2,8 +2,8 @@ const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const allEvents = require('../lib/all-events')
 
-const MAX_RESULT_ROWS = 10
-const RESULT_COLUMNS = 3
+const MAX_RESULT_ROWS = 15
+const RESULT_COLUMNS = 2
 
 const menu = new TelegrafInlineMenu('e:a', 'Welche Events möchtest du hinzufügen?')
 function filterText(ctx) {
