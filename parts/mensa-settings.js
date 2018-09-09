@@ -19,7 +19,7 @@ const settingName = {
 const menu = new TelegrafInlineMenu('s:m', '*Mensa Einstellungen*', 'zurück…')
 
 function getMainMensa(ctx) {
-  return ctx.state.userconfig.mensa.main
+  return ctx.state.userconfig.mensa && ctx.state.userconfig.mensa.main
 }
 
 function mainMensaText(ctx) {
@@ -33,10 +33,18 @@ function mainMensaText(ctx) {
 }
 
 function setMainMensa(ctx, mensa) {
+  if (!ctx.state.userconfig.mensa) {
+    ctx.state.userconfig.mensa = {}
+  }
   const oldMain = ctx.state.userconfig.mensa.main
   ctx.state.userconfig.mensa.main = mensa
-  ctx.state.userconfig.mensa.more = ctx.state.userconfig.mensa.more.filter(o => o !== mensa)
+  if (ctx.state.userconfig.mensa.more) {
+    ctx.state.userconfig.mensa.more = ctx.state.userconfig.mensa.more.filter(o => o !== mensa)
+  }
   if (oldMain) {
+    if (!ctx.state.userconfig.mensa.more) {
+      ctx.state.userconfig.mensa.more = []
+    }
     ctx.state.userconfig.mensa.more.push(oldMain)
   }
 }
@@ -143,7 +151,9 @@ specialWishesMenu.list('w', settingName, toggleSpecialWish, {
   columns: 1
 })
 
-menu.submenu('Extrawünsche Essen', specialWishesMenu)
+menu.submenu('Extrawünsche Essen', specialWishesMenu, {
+  hide: ctx => !getMainMensa(ctx)
+})
 
 menu.toggle('showAdditives', 'zeige Inhaltsstoffe', (ctx, newState) => {
   ctx.state.userconfig.mensa.showAdditives = newState

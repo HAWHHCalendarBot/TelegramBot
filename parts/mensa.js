@@ -14,19 +14,23 @@ function getYearMonthDay(date) {
   return {year, month, day}
 }
 
-function stringifyEqual(date, other) {
-  if (!date || !other) {
+function stringifyEqual(first, second) {
+  if (!first || !second) {
     return false
   }
-  if (date === other) {
+  if (first === second) {
     return true
   }
-  return JSON.stringify(date) === JSON.stringify(other)
+  return JSON.stringify(first) === JSON.stringify(second)
+}
+
+function dateEqual(first, second) {
+  return stringifyEqual(getYearMonthDay(first), getYearMonthDay(second))
 }
 
 const menu = new TelegrafInlineMenu('mensa', currentMensaText)
 
-function currentMensaText(ctx) {
+function getCurrentSettings(ctx) {
   let {mensa, date} = ctx.session.mensa || {}
   if (!mensa) {
     mensa = (ctx.state.userconfig.mensa || {}).main
@@ -42,6 +46,11 @@ function currentMensaText(ctx) {
     mensa = (ctx.state.userconfig.mensa || {}).main
   }
 
+  return {mensa, date}
+}
+
+function currentMensaText(ctx) {
+  const {mensa, date} = getCurrentSettings(ctx)
   const mensaSettings = ctx.state.userconfig.mensa
   return generateMensaTextOfDate(mensa, date, mensaSettings)
 }
@@ -66,32 +75,33 @@ function setFunc(ctx, selected) {
   if (!ctx.session.mensa) {
     ctx.session.mensa = {}
   }
+  if (mensa === 'undefined') {
+    return
+  }
   ctx.session.mensa.mensa = mensa
   ctx.session.mensa.date = date
 }
 
 function timePrefixFunc(ctx, key) {
-  if (!ctx.session.mensa) {
-    return ''
-  }
-  const {mensa, date} = parseActionCode(key)
-  const isSelected = ctx.session.mensa.mensa === mensa &&
-    stringifyEqual(ctx.session.mensa.date, date)
+  const action = parseActionCode(key)
+  const selected = getCurrentSettings(ctx)
+  const mensaSelected = action.mensa === selected.mensa
+  const dateSelected = dateEqual(action.date, selected.date)
+  const isSelected = mensaSelected && dateSelected
 
   return isSelected ? '🕚' : ''
 }
 
 function hideMensa(ctx, key) {
-  if (!ctx.session.mensa) {
-    return false
-  }
-  const {mensa} = parseActionCode(key)
-  return mensa === ctx.session.mensa.mensa
+  const {mensa} = getCurrentSettings(ctx)
+  return mensa === parseActionCode(key).mensa
 }
 
 function daySelectOptions(ctx) {
-  const mensa = ((ctx.session.mensa || {}).mensa ||
-        (ctx.state.userconfig.mensa || {}).main)
+  const {mensa} = getCurrentSettings(ctx)
+  if (!mensa) {
+    return {}
+  }
 
   const dateOptions = []
   const daysInFuture = 6
@@ -112,11 +122,13 @@ function daySelectOptions(ctx) {
 }
 
 function mensaSelectOption(ctx) {
-  const date = ((ctx.session.mensa || {}).date) || new Date(Date.now())
+  const {date} = getCurrentSettings(ctx)
 
-  const {main, more} = ctx.state.userconfig.mensa
+  const {main, more} = ctx.state.userconfig.mensa || {}
   const mensaOptions = [].concat(more || [])
-  mensaOptions.unshift(main)
+  if (main) {
+    mensaOptions.unshift(main)
+  }
 
   const result = {}
   mensaOptions.forEach(mensa => {
