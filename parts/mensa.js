@@ -30,14 +30,15 @@ bot.use((ctx, next) => {
   return next()
 })
 
-function mealToMarkdown(meal, isStudent, showAdditives) {
+function mealToMarkdown(meal, priceClass, showAdditives) {
   const parsedName = showAdditives ?
     meal.Name
       .replace(/ \(/g, '* (')
       .replace(/\), /g, '), *')
       .replace(/([^)])$/, '$1*') :
     meal.Name.replace(/\s*\([^)]+\)\s*/g, '') + '*'
-  const price = isStudent ? meal.PriceStudent : meal.PriceAttendant
+
+  const price = priceClass === 'student' ? meal.PriceStudent : priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest
   const priceStr = price.toLocaleString('de-DE', {minimumFractionDigits: 2})
 
   let text = `*${parsedName}\n`
@@ -97,7 +98,7 @@ async function mensaText(mensa, year, month, day, mensaSettings) {
 
   const meals = await getMealsOfDay(mensa, year, month, day)
   const filtered = filterMeals(meals, mensaSettings)
-  const mealTexts = filtered.map(m => mealToMarkdown(m, mensaSettings.student, mensaSettings.showAdditives))
+  const mealTexts = filtered.map(m => mealToMarkdown(m, mensaSettings.price, mensaSettings.showAdditives))
 
   if (meals.length === 0) {
     return prefix + '\nDie Mensa bietet heute nichts an.'
@@ -136,7 +137,7 @@ function generateSwitchMensaButtons(mensa, year, month, day, mensaSettings) {
   if (!mensa || mensa === 'undefined') {
     return []
   }
-  const more = mensaSettings.more || []
+  const more = [...mensaSettings.more]
   more.unshift(mensaSettings.main)
   return more.map(m => Markup.callbackButton(`🍽 ${m}`, `m:${m}:${year}:${month}:${day}`, m === mensa))
 }

@@ -7,6 +7,8 @@ const {Extra, Markup} = Telegraf
 const hasStISysChanged = require('./lib/has-stisys-changed')
 const Chatconfig = require('./lib/chatconfig')
 
+const migrateStuff = require('./migrate-stuff')
+
 const additionalEvents = require('./parts/additional-events')
 const admin = require('./parts/admin')
 const changes = require('./parts/changes')
@@ -38,6 +40,8 @@ const chatconfig = new Chatconfig('userconfig', {
   settings: {}
 })
 bot.use(chatconfig)
+
+bot.use(migrateStuff.bot)
 
 bot.use(additionalEvents.bot)
 bot.use(admin.bot)
