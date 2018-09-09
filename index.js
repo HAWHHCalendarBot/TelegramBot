@@ -18,7 +18,6 @@ const easterEggs = require('./parts/easter-eggs')
 const events = require('./parts/events')
 const generateEventDate = require('./parts/generate-event-date')
 const mensa = require('./parts/mensa')
-const mensaSettings = require('./parts/mensa-settings')
 const settings = require('./parts/settings')
 const start = require('./parts/start')
 const stats = require('./parts/stats')
@@ -58,9 +57,7 @@ const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`
 
 menu.submenu('Veranstaltungen', events.menu)
 
-const settingsMenu = new TelegrafInlineMenu('s', '*Einstellungen*')
-settingsMenu.submenu('🍽 Mensa', mensaSettings.menu)
-menu.submenu('Einstellungen', settingsMenu)
+menu.submenu('Einstellungen', settings.menu)
 
 bot.use(menu)
 bot.start(ctx => menu.replyMenuNow(ctx))
