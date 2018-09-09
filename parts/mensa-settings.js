@@ -155,11 +155,9 @@ specialWishesMenu.list('w', settingName, toggleSpecialWish, {
 
 menu.submenu('Extrawünsche Essen', specialWishesMenu)
 
-function toggleAdditives(ctx) {
-  ctx.state.userconfig.mensa.showAdditives = !ctx.state.userconfig.mensa.showAdditives
-}
-
-menu.toggle('showAdditives', 'zeige Inhaltsstoffe', ctx => toggleAdditives(ctx), {
+menu.toggle('showAdditives', 'zeige Inhaltsstoffe', (ctx, newState) => {
+  ctx.state.userconfig.mensa.showAdditives = newState
+}, {
   isSetFunc: ctx => ctx.state.userconfig.mensa.showAdditives,
   hide: ctx => !getMainMensa(ctx)
 })
