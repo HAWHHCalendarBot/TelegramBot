@@ -3,7 +3,7 @@ const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const mensaSettings = require('./mensa-settings')
 
-const menu = new TelegrafInlineMenu('s', '*Settings*')
+const menu = new TelegrafInlineMenu('s', '*Einstellungen*')
 
 function stisysText(ctx) {
   const active = ctx.state.userconfig.stisysUpdate
