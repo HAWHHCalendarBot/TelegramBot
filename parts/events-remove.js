@@ -1,28 +1,38 @@
 const Telegraf = require('telegraf')
+const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const {generateInlineKeyboardMarkup} = require('../lib/telegraf-helper')
 
 const {Extra, Markup} = Telegraf
 
+function overviewText(ctx) {
+  const {events} = ctx.state.userconfig
+  if (events.length === 0) {
+    return 'Du hast keine Veranstaltungen mehr in deinem Kalender, die ich entfernen könnte. 😔'
+  }
+  return 'Welche Veranstaltungen möchtest du aus deinem Kalender entfernen?'
+}
+
+const menu = new TelegrafInlineMenu('e:r', overviewText)
+
+function deleteDict(ctx) {
+  const {events} = ctx.state.userconfig
+  const entries = {}
+  events.forEach(event => {
+    entries[event] = '🗑 ' + event
+  })
+  return entries
+}
+
+menu.list('r', deleteDict, remove, {
+  columns: 2
+})
+
 function generateRemoveKeyboard(ctx) {
   return generateInlineKeyboardMarkup('r', ctx.state.userconfig.events, 1)
 }
 
-const bot = new Telegraf.Composer()
-
-bot.command('remove', removeHandler)
-
-function removeHandler(ctx) {
-  if (ctx.state.userconfig.events.length === 0) {
-    return ctx.reply('Du hast keine Veranstaltungen mehr im Kalender, die man entfernen könnte. 🤔')
-  }
-
-  return ctx.reply('Welche Veranstaltung möchtest du aus deinem Kalender entfernen?', Extra.markup(generateRemoveKeyboard(ctx)))
-}
-
-bot.action(/^r:(.+)$/, ctx => {
-  const event = ctx.match[1]
-
+function remove(ctx, event) {
   ctx.state.userconfig.events = ctx.state.userconfig.events.filter(e => e !== event)
 
   // Remove changes to that event too
@@ -37,8 +47,8 @@ bot.action(/^r:(.+)$/, ctx => {
   }
 
   return ctx.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
-})
+}
 
 module.exports = {
-  bot
+  menu
 }

@@ -1,6 +1,7 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const addMenu = require('./events-add')
+const removeMenu = require('./events-remove')
 
 function overviewText(ctx) {
   let text = 'Hier hast du einen Überblick über deine Veranstaltungen'
@@ -25,7 +26,10 @@ function overviewText(ctx) {
 
 const menu = new TelegrafInlineMenu('e', overviewText)
 
-menu.submenu('Hinzufügen…', addMenu.menu)
+menu.submenu('➕ Hinzufügen', addMenu.menu)
+menu.submenu('🗑 Entfernen', removeMenu.menu, {
+  hide: ctx => ctx.state.userconfig.events.length === 0
+})
 
 module.exports = {
   menu
