@@ -1,10 +1,5 @@
 start - öffne das Menü
-add - füge weitere Veranstaltungen zu deinem Kalender hinzu
-remove - entferne Veranstaltungen aus deinem Kalender
-list - liste alle Veranstaltungen in meinem Kalender auf
 subscribe - abonniere deinen Kalender mit deinem bevorzugten Gerät
 changes - füge Änderungen an den Veranstaltungsplänen hinzu
 mensa - zeige das heutige Mensaessen deiner Mensa
-stats - zeige Statistiken der Nutzung dieses Bots
-about - zeige Informationen über diesen Bot
 settings - setze Einstellungen des Bots
