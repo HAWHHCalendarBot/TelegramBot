@@ -55,12 +55,12 @@ bot.use(subscribe.bot)
 
 const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`, '🔙 zurück…', '🔝 zum Hauptmenü')
 
-menu.submenu('Veranstaltungen', events.menu)
+menu.submenu('🏢 Veranstaltungen', events.menu)
 
-menu.submenu('Einstellungen', settings.menu)
+menu.submenu('⚙️ Einstellungen', settings.menu)
 
-menu.submenu('Statistiken', stats.menu)
-menu.submenu('Über den Bot', about.menu, {joinLastRow: true})
+menu.submenu('📈 Statistiken', stats.menu)
+menu.submenu('ℹ️ Über den Bot', about.menu, {joinLastRow: true})
 
 bot.use(menu)
 bot.start(ctx => menu.replyMenuNow(ctx))
