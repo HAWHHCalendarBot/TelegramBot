@@ -94,7 +94,7 @@ menu.submenu(moreMensaText, moreMensaMenu, {
 
 const priceOptions = {
   student: 'Student',
-  attendent: 'Angestellt',
+  attendant: 'Angestellt',
   guest: 'Gast'
 }
 
