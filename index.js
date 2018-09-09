@@ -1,6 +1,7 @@
 const fs = require('fs')
 const Telegraf = require('telegraf')
 const session = require('telegraf/session')
+const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const {Extra, Markup} = Telegraf
 
@@ -14,6 +15,7 @@ const admin = require('./parts/admin')
 const changes = require('./parts/changes')
 const changesInline = require('./parts/changes-inline')
 const easterEggs = require('./parts/easter-eggs')
+const events = require('./parts/events')
 const eventsAdd = require('./parts/events-add')
 const eventsList = require('./parts/events-list')
 const eventsRemove = require('./parts/events-remove')
@@ -48,16 +50,27 @@ bot.use(admin.bot)
 bot.use(changes.bot)
 bot.use(changesInline.bot)
 bot.use(easterEggs.bot)
-bot.use(eventsAdd.bot)
+// bot.use(eventsAdd.bot)
 bot.use(eventsList.bot)
 bot.use(eventsRemove.bot)
 bot.use(generateEventDate.bot)
 bot.use(mensa.bot)
-bot.use(mensaSettings.bot)
+// bot.use(mensaSettings.bot)
 bot.use(settings.bot)
 bot.use(start.bot)
 bot.use(stats.bot)
 bot.use(subscribe.bot)
+
+const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`, '🔙 zurück…', '🔝 zum Hauptmenü')
+
+menu.submenu('Veranstaltungen', events.menu)
+
+const settingsMenu = new TelegrafInlineMenu('s', '*Einstellungen*')
+settingsMenu.submenu('🍽 Mensa', mensaSettings.menu)
+menu.submenu('Einstellungen', settingsMenu)
+
+bot.use(menu)
+bot.start(ctx => menu.replyMenuNow(ctx))
 
 setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 checkStISysChangeAndNotify()
