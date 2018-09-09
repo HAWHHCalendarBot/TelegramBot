@@ -1,6 +1,6 @@
-const fsPromises = require('fs').promises
-
 const TelegrafInlineMenu = require('telegraf-inline-menu')
+
+const {getCanteenList} = require('../lib/mensa-meals')
 
 function enabledEmoji(truthy) {
   return truthy ? '✅' : '🚫'
@@ -14,16 +14,6 @@ const settingName = {
   noBeef: 'kein Rindfleisch',
   noPoultry: 'kein Geflügel',
   noFish: 'kein Fisch'
-}
-
-let allCanteens = []
-
-setInterval(updateCanteens, 1000 * 60 * 60 * 6) // Every 6 hours
-updateCanteens()
-
-async function updateCanteens() {
-  allCanteens = await fsPromises.readdir('meals')
-  console.log(new Date(), allCanteens.length, 'Mensen geladen.')
 }
 
 const menu = new TelegrafInlineMenu('s:m', '*Mensa Einstellungen*', 'zurück…')
@@ -52,7 +42,7 @@ function setMainMensa(ctx, mensa) {
 }
 
 const mainMensaMenu = new TelegrafInlineMenu('s:m:main', '*Mensa Einstellungen*')
-mainMensaMenu.list('set', () => allCanteens, setMainMensa, {
+mainMensaMenu.list('set', getCanteenList, setMainMensa, {
   isSetFunc: (ctx, mensa) => mensa === getMainMensa(ctx),
   columns: 2
 })
@@ -94,7 +84,7 @@ function moreMensaText(ctx) {
 }
 
 const moreMensaMenu = new TelegrafInlineMenu('s:m:more', '*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist')
-moreMensaMenu.list('more', () => allCanteens, toggleAdditionalMensa, {
+moreMensaMenu.list('more', getCanteenList, toggleAdditionalMensa, {
   prefixFunc: moreMensaEmoji,
   columns: 2
 })
