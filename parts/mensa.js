@@ -1,6 +1,6 @@
 const Telegraf = require('telegraf')
 
-const {filterMeals, mealToMarkdown} = require('../lib/mensa-helper')
+const {generateMealText} = require('../lib/mensa-helper')
 const {getMealsOfDay} = require('../lib/mensa-meals')
 
 const {Extra, Markup} = Telegraf
@@ -25,23 +25,10 @@ async function mensaText(mensa, year, month, day, mensaSettings) {
   const weekday = weekdays[date.getDay()]
 
   const prefix = `Mensa *${mensa}*\n${weekday} ${day}.${month}.${year}\n`
-  let hints = ''
-  if (mensaSettings.noPig || mensaSettings.noFish || mensaSettings.lactoseFree || mensaSettings.vegetarian || mensaSettings.vegan) {
-    hints += '⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.\n'
-  }
 
   const meals = await getMealsOfDay(mensa, year, month, day)
-  const filtered = filterMeals(meals, mensaSettings)
-  const mealTexts = filtered.map(m => mealToMarkdown(m, mensaSettings.price, mensaSettings.showAdditives))
-
-  if (meals.length === 0) {
-    return prefix + '\nDie Mensa bietet heute nichts an.'
-  }
-
-  if (mealTexts.length === 0) {
-    return prefix + hints + '\nDie Mensa hat heute nichts für dich.'
-  }
-  return prefix + hints + '\n' + mealTexts.join('\n\n')
+  const text = generateMealText(meals, mensaSettings)
+  return prefix + text
 }
 
 function dateCallbackButtonData(mensa, date) {
