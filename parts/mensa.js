@@ -1,9 +1,11 @@
 const Telegraf = require('telegraf')
+const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const {generateMealText} = require('../lib/mensa-helper')
 const {getMealsOfDay} = require('../lib/mensa-meals')
 
-const {Extra, Markup} = Telegraf
+const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
+const DAY_IN_MS = 1000 * 60 * 60 * 24
 
 function getYearMonthDay(date) {
   const year = date.getFullYear()
@@ -12,19 +14,131 @@ function getYearMonthDay(date) {
   return {year, month, day}
 }
 
-const bot = new Telegraf.Composer()
-
-bot.use((ctx, next) => {
-  if (!ctx.state.userconfig.mensa) {
-    ctx.state.userconfig.mensa = {}
+function stringifyEqual(date, other) {
+  if (!date || !other) {
+    return false
   }
-  return next()
+  if (date === other) {
+    return true
+  }
+  return JSON.stringify(date) === JSON.stringify(other)
+}
+
+const menu = new TelegrafInlineMenu('mensa', currentMensaText)
+
+function currentMensaText(ctx) {
+  let {mensa, date} = ctx.session.mensa || {}
+  if (!mensa) {
+    mensa = (ctx.state.userconfig.mensa || {}).main
+  }
+  if (!date) {
+    date = new Date(Date.now())
+  }
+
+  const now = new Date(Date.now())
+  // When that date is more than a day ago, update it
+  if ((now - date) > DAY_IN_MS) {
+    date = new Date(Date.now())
+    mensa = (ctx.state.userconfig.mensa || {}).main
+  }
+
+  const mensaSettings = ctx.state.userconfig.mensa
+  return generateMensaTextOfDate(mensa, date, mensaSettings)
+}
+
+function parseActionCode(actionCode) {
+  const result = actionCode.match(/^([^:]+):(\d+):(\d+):(\d+)/)
+  const mensa = result[1]
+  const year = Number(result[2])
+  const month = Number(result[3])
+  const day = Number(result[4])
+  const date = new Date(Date.parse(`${year}-${month}-${day}`))
+  return {mensa, date}
+}
+
+function generateActionCode(mensa, date) {
+  const {year, month, day} = getYearMonthDay(date)
+  return `${mensa}:${year}:${month}:${day}`
+}
+
+function setFunc(ctx, selected) {
+  const {mensa, date} = parseActionCode(selected)
+  if (!ctx.session.mensa) {
+    ctx.session.mensa = {}
+  }
+  ctx.session.mensa.mensa = mensa
+  ctx.session.mensa.date = date
+}
+
+function timePrefixFunc(ctx, key) {
+  if (!ctx.session.mensa) {
+    return ''
+  }
+  const {mensa, date} = parseActionCode(key)
+  const isSelected = ctx.session.mensa.mensa === mensa &&
+    stringifyEqual(ctx.session.mensa.date, date)
+
+  return isSelected ? '🕚' : ''
+}
+
+function hideMensa(ctx, key) {
+  if (!ctx.session.mensa) {
+    return false
+  }
+  const {mensa} = parseActionCode(key)
+  return mensa === ctx.session.mensa.mensa
+}
+
+function daySelectOptions(ctx) {
+  const mensa = ((ctx.session.mensa || {}).mensa ||
+        (ctx.state.userconfig.mensa || {}).main)
+
+  const dateOptions = []
+  const daysInFuture = 6
+
+  for (let i = 0; i < daysInFuture; i++) {
+    dateOptions.push(new Date(Date.now() + (DAY_IN_MS * i)))
+  }
+
+  const result = {}
+  dateOptions.forEach(date => {
+    const weekday = weekdays[date.getDay()]
+      .slice(0, 2)
+    const day = date.getDate()
+    const key = generateActionCode(mensa, date)
+    result[key] = `${weekday} ${day}.`
+  })
+  return result
+}
+
+function mensaSelectOption(ctx) {
+  const date = ((ctx.session.mensa || {}).date) || new Date(Date.now())
+
+  const {main, more} = ctx.state.userconfig.mensa
+  const mensaOptions = [].concat(more || [])
+  mensaOptions.unshift(main)
+
+  const result = {}
+  mensaOptions.forEach(mensa => {
+    const key = generateActionCode(mensa, date)
+    result[key] = '🍽 ' + mensa
+  })
+  return result
+}
+
+menu.select('t', daySelectOptions, setFunc, {
+  columns: 3,
+  prefixFunc: timePrefixFunc
 })
 
-const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
+menu.select('m', mensaSelectOption, setFunc, {
+  columns: 1,
+  hide: hideMensa
+})
+
 async function generateMensaTextOfDate(mensa, date, mensaSettings) {
   if (!mensa || mensa === 'undefined') {
-    return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen'
+    return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.'
   }
   const weekday = weekdays[date.getDay()]
   const {year, month, day} = getYearMonthDay(date)
@@ -35,76 +149,10 @@ async function generateMensaTextOfDate(mensa, date, mensaSettings) {
   return prefix + text
 }
 
-function dateCallbackButtonData(mensa, date) {
-  const {year, month, day} = getYearMonthDay(date)
-
-  return `m:${mensa}:${year}:${month}:${day}`
-}
-
-function generateMensaButtons(mensa, date, mensaSettings) {
-  if (!mensa || mensa === 'undefined') {
-    return []
-  }
-  const timeButtons = generateTimeButtons(mensa, date)
-  const mensaButtons = generateSwitchMensaButtons(mensa, date, mensaSettings)
-
-  const buttons = []
-  buttons.push(timeButtons)
-  for (const b of mensaButtons) {
-    buttons.push([b])
-  }
-  return buttons
-}
-
-function generateSwitchMensaButtons(mensa, date, mensaSettings) {
-  if (!mensa || mensa === 'undefined') {
-    return []
-  }
-  const {year, month, day} = getYearMonthDay(date)
-  const more = [...mensaSettings.more]
-  more.unshift(mensaSettings.main)
-  return more.map(m => Markup.callbackButton(`🍽 ${m}`, `m:${m}:${year}:${month}:${day}`, m === mensa))
-}
-
-function generateTimeButtons(mensa, date) {
-  const {year, month, day} = getYearMonthDay(date)
-  const currentCallbackData = `m:${mensa}:${year}:${month}:${day}`
-  const today = dateCallbackButtonData(mensa, new Date(Date.now() + (1000 * 60 * 60 * 24 * 0)))
-  const tomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + (1000 * 60 * 60 * 24 * 1)))
-  const afterTomorrow = dateCallbackButtonData(mensa, new Date(Date.now() + (1000 * 60 * 60 * 24 * 2)))
-
-  const timeButtons = []
-  timeButtons.push(Markup.callbackButton('🕚 heute', today, today === currentCallbackData))
-  timeButtons.push(Markup.callbackButton('🕚 morgen', tomorrow, tomorrow === currentCallbackData))
-  timeButtons.push(Markup.callbackButton('🕚 übermorgen', afterTomorrow, afterTomorrow === currentCallbackData))
-  return timeButtons
-}
-
-bot.command('mensa', async ctx => {
-  const date = new Date()
-
-  const text = await generateMensaTextOfDate(ctx.state.userconfig.mensa.main, date, ctx.state.userconfig.mensa)
-  const buttons = generateMensaButtons(ctx.state.userconfig.mensa.main, date, ctx.state.userconfig.mensa)
-
-  const keyboardMarkup = Markup.inlineKeyboard(buttons)
-  return ctx.replyWithMarkdown(text, Extra.markup(keyboardMarkup))
-})
-
-bot.action(/^m:([^:]+):(\d+):(\d+):(\d+)$/, async ctx => {
-  const mensa = ctx.match[1]
-  const year = Number(ctx.match[2])
-  const month = Number(ctx.match[3])
-  const day = Number(ctx.match[4])
-  const date = new Date(Date.parse(`${year}-${month}-${day}`))
-
-  const text = await generateMensaTextOfDate(mensa, date, ctx.state.userconfig.mensa)
-  const buttons = generateMensaButtons(mensa, date, ctx.state.userconfig.mensa)
-
-  const keyboardMarkup = Markup.inlineKeyboard(buttons)
-
-  return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
-})
+const bot = new Telegraf.Composer()
+bot.command('mensa', ctx => menu.replyMenuNow(ctx))
 
 module.exports = {
-  bot
+  bot,
+  menu
 }

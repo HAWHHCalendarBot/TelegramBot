@@ -57,6 +57,8 @@ const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`
 
 menu.submenu('🏢 Veranstaltungen', events.menu)
 
+menu.submenu('🍽 Mensa', mensa.menu)
+
 menu.submenu('⚙️ Einstellungen', settings.menu)
 
 menu.submenu('📈 Statistiken', stats.menu)

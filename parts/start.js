@@ -22,10 +22,6 @@ bot.command('start', async (ctx, next) => {
     text += ' Bei Fragen oder Problemen (das Feature ist sehr spartanisch) gern @EdJoPaTo anschreiben.'
   }
 
-  text += '\n'
-  text += '\n*Mensa*'
-  text += '\nDas Mensaangebot erreichst du mit /mensa.'
-
   await ctx.replyWithMarkdown(text)
   return next()
 })
