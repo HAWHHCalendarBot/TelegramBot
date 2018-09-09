@@ -26,6 +26,8 @@ bot.use((ctx, next) => {
     }
   }
 
+  delete ctx.state.userconfig.settings
+
   return next()
 })
 

@@ -35,8 +35,7 @@ bot.telegram.getMe().then(botInfo => {
 
 bot.use(session())
 const chatconfig = new Chatconfig('userconfig', {
-  events: [],
-  settings: {}
+  events: []
 })
 bot.use(chatconfig)
 
