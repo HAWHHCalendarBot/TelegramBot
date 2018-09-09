@@ -21,9 +21,10 @@ menu.question('filter', filterText,
   }
 )
 
-menu.toggle('clearfilter', 'Filter aufheben', ctx => {
+menu.button('clearfilter', 'Filter aufheben', ctx => {
   ctx.session.eventfilter = '.+'
 }, {
+  joinLastRow: true,
   hide: ctx => !ctx.session.eventfilter || ctx.session.eventfilter === '.+'
 })
 

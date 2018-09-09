@@ -13,7 +13,7 @@
     "request": "^2.85.0",
     "request-promise-native": "^1.0.5",
     "telegraf": "^3.23.0",
-    "telegraf-inline-menu": "^1.1.0"
+    "telegraf-inline-menu": "^1.2.0"
   },
   "devDependencies": {
     "ava": "^0.25.0",
