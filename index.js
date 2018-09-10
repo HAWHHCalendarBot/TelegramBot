@@ -60,6 +60,10 @@ menu.submenu('📲 Kalender abonnieren', subscribe.menu, {
 
 menu.submenu('🍽 Mensa', mensa.menu)
 
+menu.submenu('😇 Admin Area', admin.menu, {
+  hide: admin.hide
+})
+
 menu.submenu('⚙️ Einstellungen', settings.menu)
 
 menu.submenu('📈 Statistiken', stats.menu)
