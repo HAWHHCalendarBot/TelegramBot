@@ -1,14 +1,6 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
-function getUrl(ctx) {
-  let filename = `${ctx.from.id}`
-  const {calendarfileSuffix} = ctx.state.userconfig
-  if (calendarfileSuffix) {
-    filename += `-${calendarfileSuffix}`
-  }
-  const full = `calendarbot.hawhh.de/tg/${filename}.ics`
-  return full
-}
+const {getUrl} = require('../lib/calendar-helper')
 
 const menu = new TelegrafInlineMenu('url', mainText)
 
