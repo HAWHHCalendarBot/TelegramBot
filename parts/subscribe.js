@@ -1,7 +1,11 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 function getUrl(ctx) {
-  const filename = `${ctx.from.id}`
+  let filename = `${ctx.from.id}`
+  const {calendarfileSuffix} = ctx.state.userconfig
+  if (calendarfileSuffix) {
+    filename += `-${calendarfileSuffix}`
+  }
   const full = `calendarbot.hawhh.de/tg/${filename}.ics`
   return full
 }
@@ -26,11 +30,96 @@ const freestyleMenu = new TelegrafInlineMenu('url:freestyle', freestyleText)
 freestyleMenu.urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.php?url=${getUrl(ctx)}`)
 menu.submenu('Freestyle 😎', freestyleMenu)
 
-function mainText() {
+function mainText(ctx) {
   let text = '*Kalender abonnieren*'
   text += '\nBitte wähle die Art aus, mit der du den Kalender abonnieren willst.\n\nIch empfehle über iOS / macOS Boardmittel oder über den HAW-Mailer.'
+
+  const {calendarfileSuffix} = ctx.state.userconfig
+  if (!calendarfileSuffix) {
+    text += '\n\n⚠️ '
+    text += `Die Kalender liegen für jeden frei zugänglich im Internet. Jeder, der deine Telegram Nutzer ID (\`${ctx.from.id}\`) kennt, kann sich deinen Kalender ansehen.`
+    text += '\nDu kannst die URL Privacy aktivieren, musst danach jedoch die Kalender neu abonnieren.'
+  }
+
   return text
 }
+
+const suffixMenu = new TelegrafInlineMenu('url:suffix', suffixText)
+
+function suffixButtonText(ctx) {
+  const {calendarfileSuffix} = ctx.state.userconfig
+  let text = 'URL Privacy'
+  if (calendarfileSuffix) {
+    text = `✅ ${text}`
+  } else {
+    text = `⚠️ ${text} ⚠️`
+  }
+  return text
+}
+
+function suffixText(ctx) {
+  const {calendarfileSuffix} = ctx.state.userconfig
+
+  let text = 'Die Kalender liegen für jeden frei zugänglich im Internet. '
+  text += `Da die default URL nur aus deiner Telegram Nutzer ID (\`${ctx.from.id}\`) besteht, kann jeder mit dieser ID deinen Kalender einsehen.`
+  text += ' Wird der URL ein zufällig generierter String angefügt, müsste dieser erraten werden und erhöht so deine Privatsphäre.'
+  text += ' Jedoch musst du nach jedem Ändern dieser Einstellung deine Kalender neu abonnieren, da sich die URL ändert.'
+
+  text += '\n\n'
+  text += `Die Nutzer ID (\`${ctx.from.id}\`) ist nicht deine Telefonnummer oder teil deines Usernamens und innerhalb von Telegram eindeutig.`
+  text += ' Wenn man eine Nachricht von dir hat, kann man über diese die Nutzer ID erhalten.'
+
+  text += '\n\n'
+  if (calendarfileSuffix) {
+    text += '✅ Aktuell ist deine URL geschützt.'
+  } else {
+    text += '⚠️ Aktuell ist deine URL *nicht* geschützt.'
+  }
+  text += '\nDeine aktuelle URL lautet:'
+  text += `\n\`https://${getUrl(ctx)}\``
+  return text
+}
+
+const SUFFIX_MAX_LENGTH = 15
+const SUFFIX_MIN_LENGTH = 3
+
+function setSuffix(ctx, val) {
+  val = String(val)
+    .replace(/[^\w\d]/g, '')
+    .slice(0, SUFFIX_MAX_LENGTH)
+  if (val.length < SUFFIX_MIN_LENGTH) {
+    return
+  }
+  ctx.state.userconfig.calendarfileSuffix = val
+  return sendHintText(ctx)
+}
+
+function sendHintText(ctx) {
+  const hintText = '⚠️ Hinweis: Dein Kalender muss nun neu abonniert werden!'
+  if (ctx.updateType === 'callback_query') {
+    return ctx.answerCbQuery(hintText, true)
+  }
+  return ctx.reply(hintText)
+}
+
+suffixMenu.button('g', 'Generieren…', ctx => {
+  // 10^8 -> 10 ** 8
+  const fromTime = Date.now() % (10 ** 8)
+  return setSuffix(ctx, fromTime)
+})
+
+suffixMenu.question('s', 'Manuell setzen…', setSuffix, {
+  questionText: `Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeiche werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`
+})
+
+suffixMenu.button('r', '⚠️ Schutz entfernen', ctx => {
+  delete ctx.state.userconfig.calendarfileSuffix
+  return sendHintText(ctx)
+}, {
+  hide: ctx => !ctx.state.userconfig.calendarfileSuffix
+})
+
+menu.submenu(suffixButtonText, suffixMenu)
 
 function appleText() {
   let text = '*Kalender abonnieren mit iOS / macOS*'
