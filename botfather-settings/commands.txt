@@ -1,5 +1,4 @@
 start - öffne das Menü
-subscribe - abonniere deinen Kalender mit deinem bevorzugten Gerät
 changes - füge Änderungen an den Veranstaltungsplänen hinzu
 mensa - zeige das heutige Mensaessen deiner Mensa
 settings - setze Einstellungen des Bots
