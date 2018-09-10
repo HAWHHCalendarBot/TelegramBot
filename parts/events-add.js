@@ -17,12 +17,12 @@ menu.question('filter', filterText,
   (ctx, answer) => {
     ctx.session.eventfilter = answer
   }, {
-    questionText: 'Wonach möchtest du filtern?'
+    questionText: 'Wonach möchtest du die Veranstaltungen filtern?'
   }
 )
 
 menu.button('clearfilter', 'Filter aufheben', ctx => {
-  ctx.session.eventfilter = '.+'
+  delete ctx.session.eventfilter
 }, {
   joinLastRow: true,
   hide: ctx => !ctx.session.eventfilter || ctx.session.eventfilter === '.+'
