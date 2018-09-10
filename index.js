@@ -50,11 +50,13 @@ bot.use(generateEventDate.bot)
 bot.use(mensa.bot)
 bot.use(settings.bot)
 bot.use(start.bot)
-bot.use(subscribe.bot)
 
 const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`, '🔙 zurück…', '🔝 zum Hauptmenü')
 
 menu.submenu('🏢 Veranstaltungen', events.menu)
+menu.submenu('📲 Kalender abonnieren', subscribe.menu, {
+  hide: ctx => (ctx.state.userconfig.events || []).length === 0
+})
 
 menu.submenu('🍽 Mensa', mensa.menu)
 
