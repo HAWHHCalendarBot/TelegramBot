@@ -61,7 +61,7 @@ async function preAddMiddleware(ctx, next) {
   }
 
   try {
-    const fromconfig = await ctx.userconfig.loadSpecific(fromId)
+    const fromconfig = await ctx.userconfig.loadConfig(fromId)
     const changesOfFrom = fromconfig.changes || []
     const searchedChange = changesOfFrom.filter(o => o.name === name && o.date === date)
 
