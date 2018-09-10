@@ -35,6 +35,17 @@ broadcastMenu.button('send', '📤 Versende Broadcast', sendBroadcast, {
 
 menu.submenu('Broadcast', broadcastMenu)
 
+function nameOfUser({first_name: first, last_name: last, username}) {
+  let name = first
+  if (last) {
+    name += ' ' + last
+  }
+  if (username) {
+    name += ` (${username})`
+  }
+  return name
+}
+
 async function userQuicklookText(ctx) {
   if (!ctx.session.adminuserquicklook) {
     return 'Wähle einen Nutzer…'
@@ -85,13 +96,9 @@ async function userOptions(ctx) {
   const allChats = allConfigs.map(o => o.chat)
 
   allChats.sort((a, b) => {
-    if (a.first_name < b.first_name) {
-      return -1
-    }
-    if (a.first_name > b.first_name) {
-      return 1
-    }
-    return 0
+    const nameA = nameOfUser(a)
+    const nameB = nameOfUser(b)
+    return nameA > nameB ? 1 : nameA < nameB ? -1 : 0
   })
 
   if (allChats.length > 0) {
@@ -100,9 +107,9 @@ async function userOptions(ctx) {
 
   const result = {}
   allChats
-    .slice(0, 16)
+    .slice(0, 12)
     .forEach(chat => {
-      result[String(chat.id)] = chat.first_name
+      result[String(chat.id)] = nameOfUser(chat)
     })
   return result
 }
@@ -110,7 +117,7 @@ async function userOptions(ctx) {
 userMenu.select('u', userOptions, (ctx, selected) => {
   ctx.session.adminuserquicklook = selected
 }, {
-  columns: 4
+  columns: 3
 })
 
 menu.submenu('User Quicklook', userMenu)
