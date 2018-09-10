@@ -62,20 +62,19 @@ function suffixText(ctx) {
 
   let text = 'Die Kalender liegen für jeden frei zugänglich im Internet. '
   text += `Da die default URL nur aus deiner Telegram Nutzer ID (\`${ctx.from.id}\`) besteht, kann jeder mit dieser ID deinen Kalender einsehen.`
-  text += ' Wird der URL ein zufällig generierter String angefügt, müsste dieser erraten werden und erhöht so deine Privatsphäre.'
-  text += ' Jedoch musst du nach jedem Ändern dieser Einstellung deine Kalender neu abonnieren, da sich die URL ändert.'
+  text += '\nWird der URL ein zufälliger String angefügt, muss dieser erraten werden und erhöht so deine Privatsphäre.'
+  text += ' Jedoch musst du nach jedem Ändern dieser Einstellung deinen Kalender neu abonnieren, da sich die URL ändert.'
 
   text += '\n\n'
-  text += `Die Nutzer ID (\`${ctx.from.id}\`) ist nicht deine Telefonnummer oder teil deines Usernamens und innerhalb von Telegram eindeutig.`
-  text += ' Wenn man eine Nachricht von dir hat, kann man über diese die Nutzer ID erhalten.'
+  text += `Deine Nutzer ID (\`${ctx.from.id}\`) ist nicht deine Telefonnummer oder teil deines Usernamens und innerhalb von Telegram eindeutig.`
+  text += ' Wenn man eine Nachricht von dir hat oder in einer Gruppe mit dir ist, kann man deine Nutzer ID erhalten.'
 
   text += '\n\n'
   if (calendarfileSuffix) {
-    text += '✅ Aktuell ist deine URL geschützt.'
+    text += '✅ Aktuell ist deine URL geschützt und lautet:'
   } else {
-    text += '⚠️ Aktuell ist deine URL *nicht* geschützt.'
+    text += '⚠️ Aktuell ist deine URL *nicht* geschützt und lautet:'
   }
-  text += '\nDeine aktuelle URL lautet:'
   text += `\n\`https://${getUrl(ctx)}\``
   return text
 }
