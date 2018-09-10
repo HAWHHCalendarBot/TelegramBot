@@ -3,9 +3,10 @@ const Telegraf = require('telegraf')
 const bot = new Telegraf.Composer()
 
 bot.command('start', async (ctx, next) => {
-  let text = `Hey ${ctx.from.first_name}!`
-  text += '\n\nDies ist das Legacy Menü. Es enthält die Kommands, die noch nicht im neuen Hauptmenü vorhanden sind. Work in Progress… 😎'
+  let intro = `Hey ${ctx.from.first_name}!`
+  intro += '\n\nDies ist das Legacy Menü. Es enthält die Kommands, die noch nicht im neuen Hauptmenü vorhanden sind. Work in Progress… 😎'
 
+  let text = ''
   if (ctx.state.userconfig.events.length > 0) {
     text += '\n'
     text += '\n*Kalender*'
@@ -20,7 +21,9 @@ bot.command('start', async (ctx, next) => {
     text += ' Bei Fragen oder Problemen (das Feature ist sehr spartanisch) gern @EdJoPaTo anschreiben.'
   }
 
-  await ctx.replyWithMarkdown(text)
+  if (text.length > 0) {
+    await ctx.replyWithMarkdown(intro + text)
+  }
   return next()
 })
 
