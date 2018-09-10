@@ -1,5 +1,7 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
+const {getUrl} = require('../lib/calendar-helper')
+
 function hide(ctx) {
   return !ctx.state.userconfig.admin
 }
@@ -32,6 +34,86 @@ broadcastMenu.button('send', '📤 Versende Broadcast', sendBroadcast, {
 })
 
 menu.submenu('Broadcast', broadcastMenu)
+
+async function userQuicklookText(ctx) {
+  if (!ctx.session.adminuserquicklook) {
+    return 'Wähle einen Nutzer…'
+  }
+
+  const config = await ctx.userconfig.load(ctx.session.adminuserquicklook)
+
+  let text = config.chat.first_name
+  text += `\nURL: \`https://${getUrl(ctx)}\``
+  text += '\n'
+  text += '\n```\n' + JSON.stringify(config, null, 2) + '\n```'
+
+  return text
+}
+
+const userMenu = new TelegrafInlineMenu('admin:user', userQuicklookText)
+
+function filterText(ctx) {
+  let text = '🔎 Filter'
+  if (ctx.session.adminuserquicklookfilter && ctx.session.adminuserquicklookfilter !== '.+') {
+    text += ': ' + ctx.session.adminuserquicklookfilter
+  }
+  return text
+}
+userMenu.question('filter', filterText,
+  (ctx, answer) => {
+    ctx.session.adminuserquicklookfilter = answer
+    delete ctx.session.adminuserquicklook
+  }, {
+    questionText: 'Wonach möchtest du die Nutzer filtern?'
+  }
+)
+
+userMenu.button('clearfilter', 'Filter aufheben', ctx => {
+  delete ctx.session.adminuserquicklookfilter
+  delete ctx.session.adminuserquicklook
+}, {
+  joinLastRow: true,
+  hide: ctx => !ctx.session.adminuserquicklookfilter || ctx.session.adminuserquicklookfilter === '.+'
+})
+
+async function userOptions(ctx) {
+  const filter = ctx.session.adminuserquicklookfilter || '.+'
+  const filterRegex = new RegExp(filter, 'i')
+  const allConfigs = await ctx.userconfig.all(
+    config => filterRegex.test(JSON.stringify(config))
+  )
+  const allChats = allConfigs.map(o => o.chat)
+
+  allChats.sort((a, b) => {
+    if (a.first_name < b.first_name) {
+      return -1
+    }
+    if (a.first_name > b.first_name) {
+      return 1
+    }
+    return 0
+  })
+
+  if (allChats.length > 0) {
+    ctx.session.adminuserquicklook = allChats[0].id
+  }
+
+  const result = {}
+  allChats
+    .slice(0, 16)
+    .forEach(chat => {
+      result[String(chat.id)] = chat.first_name
+    })
+  return result
+}
+
+userMenu.select('u', userOptions, (ctx, selected) => {
+  ctx.session.adminuserquicklook = selected
+}, {
+  columns: 4
+})
+
+menu.submenu('User Quicklook', userMenu)
 
 module.exports = {
   menu,
