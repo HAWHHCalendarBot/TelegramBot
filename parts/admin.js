@@ -61,6 +61,11 @@ async function userQuicklookText(ctx) {
 
 const userMenu = new TelegrafInlineMenu('admin:user', userQuicklookText)
 
+userMenu.urlButton('Kalender', async ctx => {
+  const config = await ctx.userconfig.loadConfig(ctx.session.adminuserquicklook)
+  return `https://${getUrl(ctx.session.adminuserquicklook, config)}`
+})
+
 function filterText(ctx) {
   let text = '🔎 Filter'
   if (ctx.session.adminuserquicklookfilter && ctx.session.adminuserquicklookfilter !== '.+') {
