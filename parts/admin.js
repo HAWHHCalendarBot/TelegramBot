@@ -53,7 +53,7 @@ async function userQuicklookText(ctx) {
 
   const config = await ctx.userconfig.load(ctx.session.adminuserquicklook)
 
-  let text = `URL: \`https://${getUrl(ctx)}\``
+  let text = `URL: \`https://${getUrl(ctx.session.adminuserquicklook, config.config)}\``
   text += '\n```\n' + JSON.stringify(config, null, 2) + '\n```'
 
   return text

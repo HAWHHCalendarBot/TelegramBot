@@ -1,6 +1,10 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
-const {getUrl} = require('../lib/calendar-helper')
+const calendarHelper = require('../lib/calendar-helper')
+
+function getUrl(ctx) {
+  return calendarHelper.getUrl(ctx.from.id, ctx.state.userconfig)
+}
 
 const menu = new TelegrafInlineMenu('url', mainText)
 
