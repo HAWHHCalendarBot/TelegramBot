@@ -58,12 +58,12 @@ function suffixText(ctx) {
 
   let text = 'Die Kalender liegen für jeden frei zugänglich im Internet. '
   text += `Da die default URL nur aus deiner Telegram Nutzer ID (\`${ctx.from.id}\`) besteht, kann jeder mit dieser ID deinen Kalender einsehen.`
-  text += '\nWird der URL ein zufälliger String angefügt, muss dieser erraten werden und erhöht so deine Privatsphäre.'
-  text += ' Einen String, der deiner Kalender URL angefügt wird, kannst du entweder generieren lassen (_Generieren…_) oder _Manuell setzen…_.'
+  text += '\nWird der URL eine zufällige Zeichenkette angefügt, muss diese erraten werden und erhöht so deine Privatsphäre.'
+  text += ' Eine Zeichenkette, der deiner Kalender URL angefügt wird, kannst du entweder generieren lassen (_Generieren…_) oder _Manuell setzen…_.'
   text += ' Jedoch musst du nach jedem Ändern dieser Einstellung deinen Kalender neu abonnieren, da sich die URL ändert.'
 
   text += '\n\n'
-  text += `Deine Nutzer ID (\`${ctx.from.id}\`) ist nicht deine Telefonnummer oder teil deines Usernamens und innerhalb von Telegram eindeutig.`
+  text += `Deine Nutzer ID (\`${ctx.from.id}\`) ist nicht deine Telefonnummer oder Teil deines Usernamens und innerhalb von Telegram eindeutig.`
   text += ' Wenn man eine Nachricht von dir hat oder in einer Gruppe mit dir ist, kann man deine Nutzer ID erhalten.'
 
   text += '\n\n'
