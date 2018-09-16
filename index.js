@@ -88,7 +88,7 @@ async function checkStISysChangeAndNotify() {
 }
 
 bot.catch(error => {
-  console.error(new Date(), 'Telegraf Error', error.response || error)
+  console.error(new Date(), 'Telegraf Error', error.response || error, error.on)
 })
 
 bot.startPolling()
