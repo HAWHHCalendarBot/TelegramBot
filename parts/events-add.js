@@ -5,7 +5,7 @@ const allEvents = require('../lib/all-events')
 const MAX_RESULT_ROWS = 15
 const RESULT_COLUMNS = 2
 
-const menu = new TelegrafInlineMenu('e:a', 'Welche Events möchtest du hinzufügen?')
+const menu = new TelegrafInlineMenu('Welche Events möchtest du hinzufügen?')
 function filterText(ctx) {
   let text = '🔎 Filter'
   if (ctx.session.eventfilter && ctx.session.eventfilter !== '.+') {
@@ -13,17 +13,17 @@ function filterText(ctx) {
   }
   return text
 }
-menu.question('filter', filterText,
-  (ctx, answer) => {
+menu.question(filterText, 'filter', {
+  setFunc: (ctx, answer) => {
     ctx.session.eventfilter = answer
-  }, {
-    questionText: 'Wonach möchtest du die Veranstaltungen filtern?'
-  }
-)
+  },
+  questionText: 'Wonach möchtest du die Veranstaltungen filtern?'
+})
 
-menu.button('clearfilter', 'Filter aufheben', ctx => {
-  delete ctx.session.eventfilter
-}, {
+menu.button('Filter aufheben', 'clearfilter', {
+  doFunc: ctx => {
+    delete ctx.session.eventfilter
+  },
   joinLastRow: true,
   hide: ctx => !ctx.session.eventfilter || ctx.session.eventfilter === '.+'
 })
@@ -35,15 +35,14 @@ function findEvents(ctx) {
 
   const results = allEvents.find(pattern, blacklist)
 
-  return results.splice(0, RESULT_COLUMNS * MAX_RESULT_ROWS)
+  return results
 }
 
-menu.list('add',
-  findEvents,
-  addEvent, {
-    columns: RESULT_COLUMNS
-  }
-)
+menu.select('add', findEvents, {
+  setFunc: addEvent,
+  columns: RESULT_COLUMNS,
+  maxRows: MAX_RESULT_ROWS
+})
 
 function addEvent(ctx, event) {
   const isExisting = allEvents.exists(event)

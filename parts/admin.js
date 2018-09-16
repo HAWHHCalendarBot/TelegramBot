@@ -6,11 +6,11 @@ function hide(ctx) {
   return !ctx.state.userconfig.admin
 }
 
-const menu = new TelegrafInlineMenu('admin', 'Hey Admin!')
+const menu = new TelegrafInlineMenu('Hey Admin!')
 
-const broadcastMenu = new TelegrafInlineMenu('admin:broadcast', 'Broadcast')
+const broadcastMenu = menu.submenu('Broadcast', 'broadcast', new TelegrafInlineMenu('Broadcast'))
 
-function setMessageToBroadcastText(ctx) {
+function broadcastButtonText(ctx) {
   return ctx.session.adminBroadcast ?
     '✏️ Ändere Nachricht…' :
     '✏️ Setze Nachricht…'
@@ -25,15 +25,15 @@ async function sendBroadcast(ctx) {
   delete ctx.session.adminBroadcast
 }
 
-broadcastMenu.question('set', setMessageToBroadcastText, setMessageToBroadcast, {
+broadcastMenu.question(broadcastButtonText, 'set', {
+  setFunc: setMessageToBroadcast,
   questionText: 'Hey admin! Was willst du broadcasten?'
 })
 
-broadcastMenu.button('send', '📤 Versende Broadcast', sendBroadcast, {
+broadcastMenu.button('📤 Versende Broadcast', 'send', {
+  doFunc: sendBroadcast,
   hide: ctx => !ctx.session.adminBroadcast
 })
-
-menu.submenu('Broadcast', broadcastMenu)
 
 function nameOfUser({first_name: first, last_name: last, username}) {
   let name = first
@@ -59,11 +59,13 @@ async function userQuicklookText(ctx) {
   return text
 }
 
-const userMenu = new TelegrafInlineMenu('admin:user', userQuicklookText)
+const userMenu = menu.submenu('User Quicklook', 'u', new TelegrafInlineMenu(userQuicklookText))
 
 userMenu.urlButton('Kalender', async ctx => {
   const config = await ctx.userconfig.loadConfig(ctx.session.adminuserquicklook)
   return `https://${getUrl(ctx.session.adminuserquicklook, config)}`
+}, {
+  hide: ctx => !ctx.session.adminuserquicklook
 })
 
 function filterText(ctx) {
@@ -73,19 +75,19 @@ function filterText(ctx) {
   }
   return text
 }
-userMenu.question('filter', filterText,
-  (ctx, answer) => {
+userMenu.question(filterText, 'filter', {
+  setFunc: (ctx, answer) => {
     ctx.session.adminuserquicklookfilter = answer
     delete ctx.session.adminuserquicklook
-  }, {
-    questionText: 'Wonach möchtest du die Nutzer filtern?'
-  }
-)
+  },
+  questionText: 'Wonach möchtest du die Nutzer filtern?'
+})
 
-userMenu.button('clearfilter', 'Filter aufheben', ctx => {
-  delete ctx.session.adminuserquicklookfilter
-  delete ctx.session.adminuserquicklook
-}, {
+userMenu.button('Filter aufheben', 'clearfilter', {
+  doFunc: ctx => {
+    delete ctx.session.adminuserquicklookfilter
+    delete ctx.session.adminuserquicklook
+  },
   joinLastRow: true,
   hide: ctx => !ctx.session.adminuserquicklookfilter || ctx.session.adminuserquicklookfilter === '.+'
 })
@@ -117,13 +119,12 @@ async function userOptions(ctx) {
   return result
 }
 
-userMenu.select('u', userOptions, (ctx, selected) => {
-  ctx.session.adminuserquicklook = selected
-}, {
+userMenu.select('u', userOptions, {
+  setFunc: (ctx, selected) => {
+    ctx.session.adminuserquicklook = selected
+  },
   columns: 3
 })
-
-menu.submenu('User Quicklook', userMenu)
 
 module.exports = {
   menu,

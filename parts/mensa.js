@@ -1,4 +1,3 @@
-const Telegraf = require('telegraf')
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const {generateMealText} = require('../lib/mensa-helper')
@@ -28,7 +27,9 @@ function dateEqual(first, second) {
   return stringifyEqual(getYearMonthDay(first), getYearMonthDay(second))
 }
 
-const menu = new TelegrafInlineMenu('mensa', currentMensaText)
+const menu = new TelegrafInlineMenu(currentMensaText)
+
+menu.setCommand('mensa')
 
 function getCurrentSettings(ctx) {
   let {mensa, date} = ctx.session.mensa || {}
@@ -70,7 +71,7 @@ function generateActionCode(mensa, date) {
   return `${mensa}:${year}:${month}:${day}`
 }
 
-function setFunc(ctx, selected) {
+function setMensaDay(ctx, selected) {
   const {mensa, date} = parseActionCode(selected)
   if (!ctx.session.mensa) {
     ctx.session.mensa = {}
@@ -138,12 +139,14 @@ function mensaSelectOption(ctx) {
   return result
 }
 
-menu.select('t', daySelectOptions, setFunc, {
+menu.select('t', daySelectOptions, {
+  setFunc: setMensaDay,
   columns: 3,
   prefixFunc: timePrefixFunc
 })
 
-menu.select('m', mensaSelectOption, setFunc, {
+menu.select('m', mensaSelectOption, {
+  setFunc: setMensaDay,
   columns: 1,
   hide: hideMensa
 })
@@ -161,10 +164,6 @@ async function generateMensaTextOfDate(mensa, date, mensaSettings) {
   return prefix + text
 }
 
-const bot = new Telegraf.Composer()
-bot.command('mensa', ctx => menu.replyMenuNow(ctx))
-
 module.exports = {
-  bot,
   menu
 }

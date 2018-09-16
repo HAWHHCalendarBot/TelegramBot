@@ -16,7 +16,7 @@ const settingName = {
   noFish: 'kein Fisch'
 }
 
-const menu = new TelegrafInlineMenu('s:m', '*Mensa Einstellungen*', 'zurück…')
+const menu = new TelegrafInlineMenu('*Mensa Einstellungen*')
 
 function getMainMensa(ctx) {
   return ctx.state.userconfig.mensa && ctx.state.userconfig.mensa.main
@@ -49,12 +49,12 @@ function setMainMensa(ctx, mensa) {
   }
 }
 
-const mainMensaMenu = new TelegrafInlineMenu('s:m:main', '*Mensa Einstellungen*')
-mainMensaMenu.list('set', getCanteenList, setMainMensa, {
-  isSetFunc: (ctx, mensa) => mensa === getMainMensa(ctx),
-  columns: 2
-})
-menu.submenu(mainMensaText, mainMensaMenu)
+menu.submenu(mainMensaText, 'main', new TelegrafInlineMenu('*Mensa Einstellungen*\nHauptmensa'))
+  .select('set', getCanteenList, {
+    setFunc: setMainMensa,
+    isSetFunc: (ctx, mensa) => mensa === getMainMensa(ctx),
+    columns: 2
+  })
 
 function isAdditionalMensa(ctx, mensa) {
   const selected = ctx.state.userconfig.mensa.more || []
@@ -91,14 +91,16 @@ function moreMensaText(ctx) {
   return text
 }
 
-const moreMensaMenu = new TelegrafInlineMenu('s:m:more', '*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist')
-moreMensaMenu.list('more', getCanteenList, toggleAdditionalMensa, {
-  prefixFunc: moreMensaEmoji,
-  columns: 2
-})
-menu.submenu(moreMensaText, moreMensaMenu, {
+menu.submenu(moreMensaText, 'more', new TelegrafInlineMenu(
+  '*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist'
+), {
   hide: ctx => !getMainMensa(ctx)
 })
+  .select('more', getCanteenList, {
+    setFunc: toggleAdditionalMensa,
+    prefixFunc: moreMensaEmoji,
+    columns: 2
+  })
 
 const priceOptions = {
   student: 'Student',
@@ -114,7 +116,8 @@ function isPriceSelected(ctx, price) {
   return ctx.state.userconfig.mensa.price === price
 }
 
-menu.select('price', priceOptions, setPrice, {
+menu.select('price', priceOptions, {
+  setFunc: setPrice,
   isSetFunc: isPriceSelected,
   hide: ctx => !getMainMensa(ctx)
 })
@@ -144,25 +147,26 @@ function hideIrrelevantSpecialWishes(ctx, wish) {
   }
 }
 
-const specialWishesMenu = new TelegrafInlineMenu('s:m:s', '*Mensa Einstellungen*\nWelche Sonderwünsche hast du zu deinem Essen?')
-specialWishesMenu.list('w', settingName, toggleSpecialWish, {
-  prefixFunc: specialWishEmoji,
-  hide: hideIrrelevantSpecialWishes,
-  columns: 1
-})
-
-menu.submenu('Extrawünsche Essen', specialWishesMenu, {
+menu.submenu('Extrawünsche Essen', 's', new TelegrafInlineMenu(
+  '*Mensa Einstellungen*\nWelche Sonderwünsche hast du zu deinem Essen?'
+), {
   hide: ctx => !getMainMensa(ctx)
 })
+  .select('w', settingName, {
+    setFunc: toggleSpecialWish,
+    prefixFunc: specialWishEmoji,
+    hide: hideIrrelevantSpecialWishes,
+    columns: 1
+  })
 
-menu.toggle('showAdditives', 'zeige Inhaltsstoffe', (ctx, newState) => {
-  ctx.state.userconfig.mensa.showAdditives = newState
-}, {
-  isSetFunc: ctx => ctx.state.userconfig.mensa.showAdditives,
+menu.toggle('zeige Inhaltsstoffe', 'showAdditives', {
+  setFunc: (ctx, newState) => {
+    ctx.state.userconfig.mensa.showAdditives = newState
+  },
+  isSetFunc: ctx => ctx.state.userconfig.mensa.showAdditives === true,
   hide: ctx => !getMainMensa(ctx)
 })
 
 module.exports = {
-  bot: menu.middleware(),
   menu
 }

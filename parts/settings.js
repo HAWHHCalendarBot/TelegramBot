@@ -1,9 +1,10 @@
-const Telegraf = require('telegraf')
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const mensaSettings = require('./mensa-settings')
 
-const menu = new TelegrafInlineMenu('s', '*Einstellungen*')
+const menu = new TelegrafInlineMenu('*Einstellungen*')
+
+menu.setCommand('settings')
 
 function stisysText(ctx) {
   const active = ctx.state.userconfig.stisysUpdate
@@ -15,13 +16,13 @@ function stisysText(ctx) {
   return text
 }
 
-const stisysMenu = new TelegrafInlineMenu('s:stisys', stisysText)
-stisysMenu.toggle('update', 'StISys Update', (ctx, newState) => {
-  ctx.state.userconfig.stisysUpdate = newState
-}, {
-  isSetFunc: ctx => ctx.state.userconfig.stisysUpdate
-})
-menu.submenu('StISys', stisysMenu)
+menu.submenu('StISys', 'stisys', new TelegrafInlineMenu(stisysText))
+  .toggle('StISys Update', 'update', {
+    setFunc: (ctx, newState) => {
+      ctx.state.userconfig.stisysUpdate = newState
+    },
+    isSetFunc: ctx => ctx.state.userconfig.stisysUpdate
+  })
 
 function changesText(ctx) {
   const active = ctx.state.userconfig.showRemovedEvents
@@ -32,15 +33,15 @@ function changesText(ctx) {
   return text
 }
 
-const changesMenu = new TelegrafInlineMenu('s:changes', changesText)
-changesMenu.toggle('showRemoved', 'zeige ausfallende Veranstaltungen', (ctx, newState) => {
-  ctx.state.userconfig.showRemovedEvents = newState
-}, {
-  isSetFunc: ctx => ctx.state.userconfig.showRemovedEvents
-})
-menu.submenu('Veranstaltungsänderungen', changesMenu)
+menu.submenu('Veranstaltungsänderungen', 'changes', new TelegrafInlineMenu(changesText))
+  .toggle('zeige ausfallende Veranstaltungen', 'showRemoved', {
+    setFunc: (ctx, newState) => {
+      ctx.state.userconfig.showRemovedEvents = newState
+    },
+    isSetFunc: ctx => ctx.state.userconfig.showRemovedEvents
+  })
 
-menu.submenu('🍽 Mensa', mensaSettings.menu)
+menu.submenu('🍽 Mensa', 'm', mensaSettings.menu)
 
 function dataText(ctx) {
   let infotext = 'Die folgenden Daten werden auf dem Server über dich gespeichert. Wenn du alle Daten über dich löschen lassen möchtest, wähle "Alles löschen".'
@@ -68,17 +69,13 @@ function deleteEverything(ctx, answer) {
   return ctx.reply('Deine Daten werden gelöscht…')
 }
 
-const dataMenu = new TelegrafInlineMenu('s:data', dataText)
-dataMenu.question('delete-all', '⚠️ Alles löschen ⚠️', deleteEverything, {
-  questionText: deleteQuestion
-})
-menu.submenu('💾 Gespeicherte Daten über dich', dataMenu)
-
-const bot = new Telegraf.Composer()
-bot.command('settings', ctx => menu.replyMenuNow(ctx))
-bot.command('stop', ctx => dataMenu.replyMenuNow(ctx))
+menu.submenu('💾 Gespeicherte Daten über dich', 'data', new TelegrafInlineMenu(dataText))
+  .setCommand('stop')
+  .question('⚠️ Alles löschen ⚠️', 'delete-all', {
+    setFunc: deleteEverything,
+    questionText: deleteQuestion
+  })
 
 module.exports = {
-  bot,
   menu
 }

@@ -13,7 +13,7 @@ function overviewText(ctx) {
   return 'Welche Veranstaltungen möchtest du aus deinem Kalender entfernen?'
 }
 
-const menu = new TelegrafInlineMenu('e:r', overviewText)
+const menu = new TelegrafInlineMenu(overviewText)
 
 function deleteDict(ctx) {
   const {events} = ctx.state.userconfig
@@ -24,7 +24,8 @@ function deleteDict(ctx) {
   return entries
 }
 
-menu.list('r', deleteDict, remove, {
+menu.select('r', deleteDict, {
+  setFunc: remove,
   columns: 2
 })
 

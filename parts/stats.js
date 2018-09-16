@@ -3,7 +3,7 @@ const TelegrafInlineMenu = require('telegraf-inline-menu')
 const allEvents = require('../lib/all-events')
 const {getCanteenList} = require('../lib/mensa-meals')
 
-const menu = new TelegrafInlineMenu('stats', statsText)
+const menu = new TelegrafInlineMenu(statsText)
 
 async function statsText(ctx) {
   const userIds = await ctx.userconfig.allIds()

@@ -6,25 +6,21 @@ function getUrl(ctx) {
   return calendarHelper.getUrl(ctx.from.id, ctx.state.userconfig)
 }
 
-const menu = new TelegrafInlineMenu('url', mainText)
+const menu = new TelegrafInlineMenu(mainText)
 
-const appleMenu = new TelegrafInlineMenu('url:apple', appleText)
-appleMenu.urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.php?url=${getUrl(ctx)}`)
-menu.submenu('🍏 iOS / macOS', appleMenu)
+menu.submenu('🍏 iOS / macOS', 'apple', new TelegrafInlineMenu(appleText))
+  .urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.php?url=${getUrl(ctx)}`)
 
-const exchangeMenu = new TelegrafInlineMenu('url:exchange', exchangeText)
-exchangeMenu.urlButton('HAW Mailer', 'https://www.haw-hamburg.de/online-services/haw-mailer.html')
-exchangeMenu.urlButton('HAW Anleitung Einrichten des HAW-Mailers auf Android, iOS und Co.', 'https://www.haw-hamburg.de/online-services/haw-mailer/faqs.html#c73012')
-menu.submenu('🗂 HAW Mailer (Exchange)', exchangeMenu)
+menu.submenu('🗂 HAW Mailer (Exchange)', 'exchange', new TelegrafInlineMenu(exchangeText))
+  .urlButton('HAW Mailer', 'https://www.haw-hamburg.de/online-services/haw-mailer.html')
+  .urlButton('HAW Anleitung Einrichten des HAW-Mailers auf Android, iOS und Co.', 'https://www.haw-hamburg.de/online-services/haw-mailer/faqs.html#c73012')
 
-const googleMenu = new TelegrafInlineMenu('url:google', googleText)
-googleMenu.urlButton('Google Calendar', 'https://calendar.google.com/')
-googleMenu.manual('url:exchange', 'abonnieren mit dem HAW-Mailer (Exchange)', {root: true})
-menu.submenu('🍰 Google Kalender', googleMenu)
+menu.submenu('🍰 Google Kalender', 'google', new TelegrafInlineMenu(googleText))
+  .urlButton('Google Calendar', 'https://calendar.google.com/')
+  .manual('abonnieren mit dem HAW-Mailer (Exchange)', 'url:exchange', {root: true})
 
-const freestyleMenu = new TelegrafInlineMenu('url:freestyle', freestyleText)
-freestyleMenu.urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.php?url=${getUrl(ctx)}`)
-menu.submenu('Freestyle 😎', freestyleMenu)
+menu.submenu('Freestyle 😎', 'freestyle', new TelegrafInlineMenu(freestyleText))
+  .urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.php?url=${getUrl(ctx)}`)
 
 function mainText(ctx) {
   let text = '*Kalender abonnieren*'
@@ -39,8 +35,6 @@ function mainText(ctx) {
 
   return text
 }
-
-const suffixMenu = new TelegrafInlineMenu('url:suffix', suffixText)
 
 function suffixButtonText(ctx) {
   const {calendarfileSuffix} = ctx.state.userconfig
@@ -98,24 +92,29 @@ function sendHintText(ctx) {
   return ctx.reply(hintText)
 }
 
-suffixMenu.button('g', 'Generieren…', ctx => {
-  // 10^8 -> 10 ** 8
-  const fromTime = Date.now() % (10 ** 8)
-  return setSuffix(ctx, fromTime)
+const suffixMenu = new TelegrafInlineMenu(suffixText)
+menu.submenu(suffixButtonText, 'suffix', suffixMenu)
+
+suffixMenu.button('Generieren…', 'g', {
+  doFunc: ctx => {
+    // 10^8 -> 10 ** 8
+    const fromTime = Date.now() % (10 ** 8)
+    return setSuffix(ctx, fromTime)
+  }
 })
 
-suffixMenu.question('s', 'Manuell setzen…', setSuffix, {
+suffixMenu.question('Manuell setzen…', 's', {
+  setFunc: setSuffix,
   questionText: `Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeiche werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`
 })
 
-suffixMenu.button('r', '⚠️ Schutz entfernen', ctx => {
-  delete ctx.state.userconfig.calendarfileSuffix
-  return sendHintText(ctx)
-}, {
+suffixMenu.button('⚠️ Schutz entfernen', 'r', {
+  doFunc: ctx => {
+    delete ctx.state.userconfig.calendarfileSuffix
+    return sendHintText(ctx)
+  },
   hide: ctx => !ctx.state.userconfig.calendarfileSuffix
 })
-
-menu.submenu(suffixButtonText, suffixMenu)
 
 function appleText() {
   let text = '*Kalender abonnieren mit iOS / macOS*'

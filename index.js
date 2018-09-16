@@ -42,35 +42,36 @@ bot.use(chatconfig)
 bot.use(migrateStuff.bot)
 
 bot.use(additionalEvents.bot)
-bot.use(admin.bot)
 bot.use(changes.bot)
 bot.use(changesInline.bot)
 bot.use(easterEggs.bot)
 bot.use(generateEventDate.bot)
-bot.use(mensa.bot)
-bot.use(settings.bot)
 bot.use(start.bot)
 
-const menu = new TelegrafInlineMenu('main', ctx => `Hey ${ctx.from.first_name}!`, '🔙 zurück…', '🔝 zum Hauptmenü')
+const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
 
-menu.submenu('🏢 Veranstaltungen', events.menu)
-menu.submenu('📲 Kalender abonnieren', subscribe.menu, {
+menu.submenu('🏢 Veranstaltungen', 'e', events.menu)
+menu.submenu('📲 Kalender abonnieren', 'url', subscribe.menu, {
   hide: ctx => (ctx.state.userconfig.events || []).length === 0
 })
 
-menu.submenu('🍽 Mensa', mensa.menu)
+menu.submenu('🍽 Mensa', 'mensa', mensa.menu)
 
-menu.submenu('😇 Admin Area', admin.menu, {
+menu.submenu('😇 Admin Area', 'admin', admin.menu, {
   hide: admin.hide
 })
 
-menu.submenu('⚙️ Einstellungen', settings.menu)
+menu.submenu('⚙️ Einstellungen', 's', settings.menu)
 
-menu.submenu('📈 Statistiken', stats.menu)
-menu.submenu('ℹ️ Über den Bot', about.menu, {joinLastRow: true})
+menu.submenu('📈 Statistiken', 'stats', stats.menu)
+menu.submenu('ℹ️ Über den Bot', 'about', about.menu, {joinLastRow: true})
 
-bot.use(menu)
-bot.start(ctx => menu.replyMenuNow(ctx))
+menu.setCommand('start')
+
+bot.use(menu.init({
+  backButtonText: '🔙 zurück…',
+  mainMenuButtonText: '🔝 zum Hauptmenü'
+}))
 
 setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 checkStISysChangeAndNotify()

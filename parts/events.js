@@ -24,10 +24,10 @@ function overviewText(ctx) {
   return text
 }
 
-const menu = new TelegrafInlineMenu('e', overviewText)
+const menu = new TelegrafInlineMenu(overviewText)
 
-menu.submenu('➕ Hinzufügen', addMenu.menu)
-menu.submenu('🗑 Entfernen', removeMenu.menu, {
+menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
+menu.submenu('🗑 Entfernen', 'r', removeMenu.menu, {
   hide: ctx => ctx.state.userconfig.events.length === 0
 })
 
