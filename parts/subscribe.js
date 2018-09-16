@@ -142,7 +142,7 @@ function googleText(ctx) {
 
   text += '\n'
   text += '\nIn der linken Seitenleiste im [Google Kalender](https://calendar.google.com/) gibt es den Eintrag "Weitere Kalender". Dort auf das kleine Dropdown Dreieck klicken und den Menüpunkt "Über URL hinzufügen" auswählen. Hier muss die folgende URL hinein kopiert werden.'
-  text += `\nhttps://${ctx.state.url}`
+  text += `\nhttps://${getUrl(ctx)}`
   text += '\nNach dem Bestätigen einen Moment warten, bis der Kalender im Google Kalender erschienen ist.'
 
   text += '\n'
