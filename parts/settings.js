@@ -21,7 +21,7 @@ menu.submenu('StISys', 'stisys', new TelegrafInlineMenu(stisysText))
     setFunc: (ctx, newState) => {
       ctx.state.userconfig.stisysUpdate = newState
     },
-    isSetFunc: ctx => ctx.state.userconfig.stisysUpdate
+    isSetFunc: ctx => ctx.state.userconfig.stisysUpdate === true
   })
 
 function changesText(ctx) {
@@ -38,7 +38,7 @@ menu.submenu('Veranstaltungsänderungen', 'changes', new TelegrafInlineMenu(chan
     setFunc: (ctx, newState) => {
       ctx.state.userconfig.showRemovedEvents = newState
     },
-    isSetFunc: ctx => ctx.state.userconfig.showRemovedEvents
+    isSetFunc: ctx => ctx.state.userconfig.showRemovedEvents === true
   })
 
 menu.submenu('🍽 Mensa', 'm', mensaSettings.menu)
