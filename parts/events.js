@@ -10,7 +10,9 @@ function overviewText(ctx) {
   const {events, additionalEvents} = ctx.state.userconfig
   if (events.length > 0) {
     text += '\n\nDu hast folgende Veranstaltungen im Kalender:\n'
-    const eventLines = events.map(o => '- ' + o)
+    const eventLines = events
+      .map(o => o.replace('_', '\\_'))
+      .map(o => '- ' + o)
     text += eventLines.join('\n')
   } else {
     text += '\n\nDu hast aktuell keine Veranstaltungen in deinem Kalender. 😔'
