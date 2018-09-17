@@ -4,7 +4,7 @@ const addMenu = require('./events-add')
 const removeMenu = require('./events-remove')
 
 function overviewText(ctx) {
-  let text = 'Hier hast du einen Überblick über deine Veranstaltungen'
+  let text = '*Veranstaltungen*'
 
   const {events, additionalEvents} = ctx.state.userconfig
   if (events.length > 0) {

@@ -7,10 +7,11 @@ const {Extra, Markup} = Telegraf
 
 function overviewText(ctx) {
   const {events} = ctx.state.userconfig
+  const prefix = '*Veranstaltungen*\n'
   if (events.length === 0) {
-    return 'Du hast keine Veranstaltungen mehr in deinem Kalender, die ich entfernen könnte. 😔'
+    return prefix + 'Du hast keine Veranstaltungen mehr in deinem Kalender, die ich entfernen könnte. 😔'
   }
-  return 'Welche Veranstaltungen möchtest du aus deinem Kalender entfernen?'
+  return prefix + 'Welche Veranstaltungen möchtest du aus deinem Kalender entfernen?'
 }
 
 const menu = new TelegrafInlineMenu(overviewText)
