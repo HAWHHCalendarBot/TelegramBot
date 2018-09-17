@@ -6,7 +6,31 @@ const {filteredOptions} = require('../lib/inline-menu-helper')
 const MAX_RESULT_ROWS = 15
 const RESULT_COLUMNS = 2
 
-const menu = new TelegrafInlineMenu('Welche Events möchtest du hinzufügen?')
+const menu = new TelegrafInlineMenu(menuText)
+
+function menuText(ctx) {
+  const filter = ctx.session.eventfilter || '.+'
+  const filteredEvents = findEvents(ctx, filter)
+  const isFiltered = filter !== '.+'
+  const total = allEvents.count()
+  const perPage = MAX_RESULT_ROWS * RESULT_COLUMNS
+  const moreThanCurrentlyShown = filteredEvents.length > perPage
+
+  let text = '*Veranstaltungen*'
+  text += '\nWelche Events möchtest du hinzufügen?'
+  text += '\n\n'
+  if (isFiltered) {
+    text += `Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`
+  } else {
+    text += `Ich habe ${total} Veranstaltungen.`
+  }
+
+  if (moreThanCurrentlyShown) {
+    text += ` Davon werden nur die ersten ${perPage} Veranstaltungen angezeigt. Nutze den Filter um das Ergebnis zu verbessern.`
+  }
+
+  return text
+}
 
 filteredOptions(menu, {
   uniqueQuestionText: 'Wonach möchtest du die Veranstaltungen filtern?',
