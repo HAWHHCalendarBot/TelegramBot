@@ -28,7 +28,11 @@ function changesText(ctx) {
   const active = ctx.state.userconfig.showRemovedEvents
 
   let text = '*Einstellungen*\nVeranstaltungsänderungen\n\n'
-  text += 'Mit dem /changes Feature kannst du Änderungen an Veranstaltungen hinzufügen. Möglicherweise fallen auch Vorlesungen aus. Mit dieser Option kann eingestellt werden, ob ausfallende Veranstaltungen (mit einem Hinweis) trotzdem im Kalender erscheinen sollen.\n\n'
+  text += 'Mit dem /changes Feature kannst du Änderungen an Veranstaltungen hinzufügen.'
+  text += ' Möglicherweise fallen auch Vorlesungen aus.'
+  text += ' Mit dieser Option kann eingestellt werden, ob ausfallende Veranstaltungen statt ausfallend als stattfindend mit angepasstem Titel enthalten sein sollen.'
+  text += ' Dies ist nützlich, wenn das Kalender Tool keine Option zum Anzeigen von ausfallenden Veranstaltungen bietet und man sie trotzdem sehen möchte.'
+  text += '\n\n'
   text += 'Entfernte Veranstaltungen werden für dich aktuell ' + (active ? 'angezeigt' : 'ausgeblendet') + '.'
   return text
 }
