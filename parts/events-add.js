@@ -1,35 +1,26 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const allEvents = require('../lib/all-events')
+const {filteredOptions} = require('../lib/inline-menu-helper')
 
 const MAX_RESULT_ROWS = 15
 const RESULT_COLUMNS = 2
 
 const menu = new TelegrafInlineMenu('Welche Events möchtest du hinzufügen?')
-function filterText(ctx) {
-  let text = '🔎 Filter'
-  if (ctx.session.eventfilter && ctx.session.eventfilter !== '.+') {
-    text += ': ' + ctx.session.eventfilter
-  }
-  return text
-}
-menu.question(filterText, 'filter', {
-  setFunc: (ctx, answer) => {
-    ctx.session.eventfilter = answer
+
+filteredOptions(menu, {
+  uniqueQuestionText: 'Wonach möchtest du die Veranstaltungen filtern?',
+  getCurrentFilterFunc: ctx => ctx.session.eventfilter,
+  setCurrentFilterFunc: (ctx, filter) => {
+    ctx.session.eventfilter = filter
   },
-  questionText: 'Wonach möchtest du die Veranstaltungen filtern?'
+  getFilteredOptionsFunc: findEvents,
+  columns: RESULT_COLUMNS,
+  maxRows: MAX_RESULT_ROWS,
+  setFunc: addEvent
 })
 
-menu.button('Filter aufheben', 'clearfilter', {
-  doFunc: ctx => {
-    delete ctx.session.eventfilter
-  },
-  joinLastRow: true,
-  hide: ctx => !ctx.session.eventfilter || ctx.session.eventfilter === '.+'
-})
-
-function findEvents(ctx) {
-  const pattern = ctx.session.eventfilter || '.+'
+function findEvents(ctx, pattern) {
   const blacklist = ctx.state.userconfig.events
     .concat(ctx.state.userconfig.additionalEvents || [])
 
@@ -37,12 +28,6 @@ function findEvents(ctx) {
 
   return results
 }
-
-menu.select('add', findEvents, {
-  setFunc: addEvent,
-  columns: RESULT_COLUMNS,
-  maxRows: MAX_RESULT_ROWS
-})
 
 function addEvent(ctx, event) {
   const isExisting = allEvents.exists(event)
