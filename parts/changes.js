@@ -1,4 +1,5 @@
 const Telegraf = require('telegraf')
+const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const {Extra, Markup} = Telegraf
 
@@ -13,37 +14,35 @@ const {
   loadEvents
 } = require('../lib/change-helper')
 
+const menu = new TelegrafInlineMenu(mainText)
+
+// TODO: refactor menu
+// This needs to be completly done with TelegrafInlineMenu but currently it does
+// not support a .select that opens a submenu on the given key while maintaining
+// the key over subactions
+
+menu.manual('Änderung hinzufügen', 'c:g', {root: true})
+
+menu.manual('Meine Änderungen', 'c:list', {
+  root: true,
+  hide: ctx => (ctx.state.userconfig.changes || []).length === 0
+})
+
 const bot = new Telegraf.Composer()
 
-const backToMainButton = Markup.callbackButton('🔝 zurück zur Auswahl', 'c')
+const backToMainButton = Markup.callbackButton('🔝 zurück zur Auswahl', 'e:c')
 
-function mainText(ctx) {
-  const events = ctx.state.userconfig.events || []
-
+function mainText() {
   let text = '*Veranstaltungsänderungen*\n'
-  if (events.length === 0) {
-    return text + '\nWenn du keine Veranstaltungen im Kalender hast, kannst du auch keine Änderungen vornehmen.'
-  }
 
   text += '\nWenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen.'
-  text += '\nDein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.'
+  text += ' Dein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.'
 
   text += '\nAußerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.'
 
+  text += '\n\n⚠️ Das Changes Menü ist noch nicht vollständig in das neue Menü überführt. Work in Progress. Theoretisch sollte alles funktionieren… Wenn du Probleme hast, schreib gern @EdJoPaTo.'
+
   return text
-}
-
-function mainMarkup(ctx) {
-  const events = ctx.state.userconfig.events || []
-  const changes = ctx.state.userconfig.changes || []
-  return Markup.inlineKeyboard([
-    Markup.callbackButton('Änderung hinzufügen', 'c:g', events.length === 0),
-    Markup.callbackButton('Meine Änderungen', 'c:list', events.length === 0 || changes.length === 0)
-  ], {columns: 1})
-}
-
-function handleMainmenu(ctx) {
-  return ctx.editMessageText(mainText(ctx), Extra.markdown().markup(mainMarkup(ctx)))
 }
 
 function stopGenerationAfterBotRestartMiddleware(ctx, next) {
@@ -51,16 +50,18 @@ function stopGenerationAfterBotRestartMiddleware(ctx, next) {
     return next()
   }
 
+  const text = 'Ich hab den Faden verloren 🎈😴'
+
   return Promise.all([
-    handleMainmenu(ctx),
-    ctx.answerCbQuery('Ich hab den Faden verloren 🎈😴')
+    ctx.editMessageText(text),
+    ctx.answerCbQuery(text)
   ])
 }
 
-function handleList(ctx) {
+function handleList(ctx, next) {
   const changes = ctx.state.userconfig.changes || []
   if (changes.length === 0) {
-    return handleMainmenu(ctx)
+    return next(ctx)
   }
 
   let text = '*Veranstaltungsänderungen*\n'
@@ -110,7 +111,7 @@ function handleGenerationInProgress(ctx) {
       Markup.callbackButton('🔙 zurück zur Terminwahl', 'c:g:n:' + ctx.session.generateChange.name, currentKeys.length > 2)
     ], [
       Markup.callbackButton('✅ Fertig stellen', 'c:g:finish', currentKeys.length <= 2),
-      Markup.callbackButton('🛑 Abbrechen', 'c')
+      Markup.callbackButton('🛑 Abbrechen', 'e:c')
     ]
   ]
   const keyboardMarkup = Markup.inlineKeyboard(buttons)
@@ -132,18 +133,15 @@ function handleFinishGeneration(ctx) {
   ])
 }
 
-bot.command('changes', ctx => ctx.replyWithMarkdown(mainText(ctx), Extra.markup(mainMarkup(ctx))))
-bot.action('c', handleMainmenu)
-
 bot.action('c:list', handleList)
 
 bot.action(/^c:d:(.+)#(.+)$/, ctx => handleDetails(ctx, ctx.match[1], ctx.match[2]))
 
-bot.action(/^c:r:(.+)#(.+)$/, ctx => {
+bot.action(/^c:r:(.+)#(.+)$/, (ctx, next) => {
   const currentChanges = ctx.state.userconfig.changes || []
   ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== ctx.match[1] || o.date !== ctx.match[2])
   return Promise.all([
-    handleList(ctx),
+    handleList(ctx, next),
     ctx.answerCbQuery('Änderung wurde entfernt.')
   ])
 })
@@ -216,7 +214,7 @@ bot.action(/^c:g:(.+time)$/, stopGenerationAfterBotRestartMiddleware, ctx => {
   const buttons = generateTimeSectionButtons(callbackDataPrefix)
 
   buttons.push([Markup.callbackButton('🔝 zurück zur Änderungsauswahl', 'c:g:possibility-picker')])
-  buttons.push([Markup.callbackButton('🛑 Abbrechen', 'c')])
+  buttons.push([Markup.callbackButton('🛑 Abbrechen', 'e:c')])
 
   const keyboardMarkup = Markup.inlineKeyboard(buttons)
   return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
@@ -232,5 +230,6 @@ bot.action('c:g:room', stopGenerationAfterBotRestartMiddleware, question(bot, 'I
 }))
 
 module.exports = {
-  bot
+  bot,
+  menu
 }

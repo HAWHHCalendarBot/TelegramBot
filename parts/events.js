@@ -2,6 +2,7 @@ const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const addMenu = require('./events-add')
 const removeMenu = require('./events-remove')
+const changes = require('./changes')
 
 function overviewText(ctx) {
   let text = '*Veranstaltungen*'
@@ -28,6 +29,11 @@ const menu = new TelegrafInlineMenu(overviewText)
 
 menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
 menu.submenu('🗑 Entfernen', 'r', removeMenu.menu, {
+  joinLastRow: true,
+  hide: ctx => ctx.state.userconfig.events.length === 0
+})
+
+menu.submenu('✏️ Änderungen', 'c', changes.menu, {
   hide: ctx => ctx.state.userconfig.events.length === 0
 })
 

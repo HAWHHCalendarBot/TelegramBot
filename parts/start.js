@@ -4,15 +4,9 @@ const bot = new Telegraf.Composer()
 
 bot.command('start', async (ctx, next) => {
   let intro = `Hey ${ctx.from.first_name}!`
-  intro += '\n\nDies ist das Legacy Menü. Es enthält die Kommands, die noch nicht im neuen Hauptmenü vorhanden sind. Work in Progress… 😎'
+  intro += '\n\n⚠️ Dies ist das Legacy Menü. Es enthält die Kommands, die noch nicht im neuen Hauptmenü vorhanden sind. Work in Progress… 😎'
 
   let text = ''
-  if (ctx.state.userconfig.events.length > 0) {
-    text += '\n'
-    text += '\n*Kalender*'
-    text += '\nMit /changes kannst du Änderungen an einem Veranstaltungskalender erstellen, die in deinen Kalender synchronisiert werden.'
-  }
-
   const additionalEvents = ctx.state.userconfig.additionalEvents || []
   if (additionalEvents.length > 0) {
     text += '\n'
