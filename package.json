@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "json-stable-stringify": "^1.0.1",
-    "request": "^2.85.0",
+    "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "telegraf": "^3.23.1",
     "telegraf-inline-menu": "^2.0.1"
