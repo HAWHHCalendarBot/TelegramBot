@@ -18,14 +18,18 @@
   "devDependencies": {
     "ava": "^1.0.0-beta.8",
     "nyc": "^13.0.1",
+    "standard-version": "^4.4.0",
     "xo": "^0.23.0"
   },
   "scripts": {
     "ava": "ava",
     "ava:watch": "ava -w",
     "nyc": "nyc",
+    "standard-version": "standard-version",
     "xo": "xo",
     "start": "node index.js",
+    "prerelease": "npm test",
+    "release": "standard-version",
     "pretest": "xo",
     "test": "nyc ava"
   },
