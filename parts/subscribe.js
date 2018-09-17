@@ -17,6 +17,7 @@ menu.submenu('🗂 HAW Mailer (Exchange)', 'exchange', new TelegrafInlineMenu(ex
 
 menu.submenu('🍰 Google Kalender', 'google', new TelegrafInlineMenu(googleText))
   .urlButton('Google Calendar', 'https://calendar.google.com/')
+  .urlButton('Google Sync Settings', 'https://www.google.com/calendar/syncselect')
   .manual('abonnieren mit dem HAW-Mailer (Exchange)', 'url:exchange', {root: true})
 
 menu.submenu('Freestyle 😎', 'freestyle', new TelegrafInlineMenu(freestyleText))
