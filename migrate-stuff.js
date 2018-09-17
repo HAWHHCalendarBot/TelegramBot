@@ -21,7 +21,7 @@ bot.use((ctx, next) => {
       const afterCount = ctx.state.userconfig.mensa.more.length
 
       if (beforeCount !== afterCount) {
-        console.log('removed main mensa in more', ctx.from)
+        console.log('migration: removed main mensa in more', ctx.from)
       }
     }
   }
