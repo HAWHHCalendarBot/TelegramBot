@@ -127,7 +127,11 @@ function specialWishEmoji(ctx, wish) {
 }
 
 function toggleSpecialWish(ctx, wish) {
-  ctx.state.userconfig.mensa[wish] = !ctx.state.userconfig.mensa[wish]
+  if (ctx.state.userconfig.mensa[wish]) {
+    delete ctx.state.userconfig.mensa[wish]
+  } else {
+    ctx.state.userconfig.mensa[wish] = true
+  }
 }
 
 function hideIrrelevantSpecialWishes(ctx, wish) {
@@ -164,7 +168,11 @@ menu.submenu('Extrawünsche Essen', 's', new TelegrafInlineMenu(
 
 menu.toggle('zeige Inhaltsstoffe', 'showAdditives', {
   setFunc: (ctx, newState) => {
-    ctx.state.userconfig.mensa.showAdditives = newState
+    if (newState) {
+      ctx.state.userconfig.mensa.showAdditives = true
+    } else {
+      delete ctx.state.userconfig.mensa.showAdditives
+    }
   },
   isSetFunc: ctx => ctx.state.userconfig.mensa.showAdditives === true,
   hide: ctx => !getMainMensa(ctx)
