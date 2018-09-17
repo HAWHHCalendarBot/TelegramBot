@@ -158,6 +158,9 @@ menu.submenu('Extrawünsche Essen', 's', new TelegrafInlineMenu(
     hide: hideIrrelevantSpecialWishes,
     columns: 1
   })
+  .simpleButton('warm… nicht versalzen… kein Spüli…', 'warm', {
+    doFunc: ctx => ctx.answerCbQuery('das wär mal was… 😈')
+  })
 
 menu.toggle('zeige Inhaltsstoffe', 'showAdditives', {
   setFunc: (ctx, newState) => {
