@@ -122,6 +122,23 @@ menu.select('price', priceOptions, {
   hide: ctx => !getMainMensa(ctx)
 })
 
+function specialWishText(ctx) {
+  let text = '*Mensa Einstellungen*'
+  text += '\nWelche Sonderwünsche hast du zu deinem Essen?'
+  text += '\n\n'
+
+  const wishes = Object.keys(settingName)
+    .filter(o => ctx.state.userconfig.mensa[o])
+
+  if (wishes.length > 0) {
+    text += 'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.'
+  } else {
+    text += 'Aktuell siehst du alle ungefilterten Angebote.'
+  }
+
+  return text
+}
+
 function specialWishEmoji(ctx, wish) {
   return enabledEmoji(ctx.state.userconfig.mensa[wish])
 }
@@ -151,9 +168,7 @@ function hideIrrelevantSpecialWishes(ctx, wish) {
   }
 }
 
-menu.submenu('Extrawünsche Essen', 's', new TelegrafInlineMenu(
-  '*Mensa Einstellungen*\nWelche Sonderwünsche hast du zu deinem Essen?'
-), {
+menu.submenu('Extrawünsche Essen', 's', new TelegrafInlineMenu(specialWishText), {
   hide: ctx => !getMainMensa(ctx)
 })
   .select('w', settingName, {
