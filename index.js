@@ -73,6 +73,8 @@ bot.use(menu.init({
   mainMenuButtonText: '🔝 zum Hauptmenü'
 }))
 
+bot.command(ctx => ctx.reply('Den Command gibt es nicht mehr. Nutze das Hauptmenü: /start'))
+
 setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 checkStISysChangeAndNotify()
 
