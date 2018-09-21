@@ -91,7 +91,19 @@ async function checkStISysChangeAndNotify() {
 }
 
 bot.catch(error => {
-  console.error(new Date(), 'Telegraf Error', error.response || error, error.on)
+  if (error.on && error.on.payload && error.on.payload.chat_id) {
+    try {
+      let text = 'Da ist wohl ein Fehler aufgetreten… Schreib mal @EdJoPaTo dazu an. Dafür findet sich sicher eine Lösung:'
+      text += '\n```\n'
+      text += JSON.stringify(error.description || error, null, 2)
+      text += '\n```\n'
+      bot.telegram.sendMessage(error.on.payload.chat_id, text, Extra.markdown())
+    } catch (errorWhileSendError) {
+      console.error(new Date(), 'Error while sending error to user', error)
+    }
+  }
+
+  console.error(new Date(), 'Telegraf Error', error.response, error.parameters, error.on || error, error.on && error.on.payload && error.on.payload.reply_markup && error.on.payload.reply_markup.inline_keyboard)
 })
 
 bot.startPolling()
