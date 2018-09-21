@@ -47,16 +47,37 @@ menu.submenu('Veranstaltungsänderungen', 'changes', new TelegrafInlineMenu(chan
 
 menu.submenu('🍽 Mensa', 'm', mensaSettings.menu)
 
-function dataText(ctx) {
-  let infotext = 'Die folgenden Daten werden auf dem Server über dich gespeichert. Wenn du alle Daten über dich löschen lassen möchtest, wähle "Alles löschen".'
-  infotext += '\nAußerdem wird geloggt, wenn Änderungen von Nutzern zu einem neu bauen von Kalendern führt. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.'
+async function getActualUserconfigContent(ctx) {
+  if (!ctx.state.userconfig) {
+    return null
+  }
+  const userconfig = await ctx.userconfig.load(ctx.from.id)
+  return userconfig && userconfig.config
+}
+
+async function dataText(ctx) {
+  let infotext = ''
+
+  infotext += '\nAuf dem Server wird geloggt, wenn Aktionen von Nutzern zu einem neu Bauen von Kalendern oder ungewollten Fehlern führen. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.'
   infotext += '\nDer Quellcode dieses Bots ist auf [GitHub](https://github.com/HAWHHCalendarBot) verfügbar.'
+  infotext += '\n'
 
-  const {userconfig} = ctx.state
+  const userconfig = await getActualUserconfigContent(ctx)
+  if (userconfig) {
+    infotext += '\nDie folgenden Daten werden auf dem Server über dich gespeichert. Wenn du alle Daten über dich löschen lassen möchtest, wähle "Alles löschen".'
+  } else {
+    infotext += '\nAktuell speichert der Server keine Daten zu dir.'
+  }
+
   const user = ctx.from
+  let dataText = '*Telegram User Info*'
+  dataText += '\nJeder Telegram Bot kann diese User Infos abrufen, wenn du mit ihm interagierst.'
+  dataText += ' Um dies zu verhindern, blockiere den Bot.'
+  dataText += '\n```\n' + JSON.stringify(user, null, 2) + '\n```'
 
-  let dataText = '*Telegram User Info*\n```\n' + JSON.stringify(user, null, 2) + '\n```'
-  dataText += '\n*Einstellungen im Bot*\n```\n' + JSON.stringify(userconfig, null, 2) + '\n```'
+  if (userconfig) {
+    dataText += '\n*Einstellungen im Bot*\n```\n' + JSON.stringify(userconfig, null, 2) + '\n```'
+  }
 
   return infotext + '\n\n' + dataText
 }
@@ -77,6 +98,7 @@ menu.submenu('💾 Gespeicherte Daten über dich', 'data', new TelegrafInlineMen
   .setCommand('stop')
   .question('⚠️ Alles löschen ⚠️', 'delete-all', {
     setFunc: deleteEverything,
+    hide: async ctx => !(await getActualUserconfigContent(ctx)),
     questionText: deleteQuestion
   })
 
