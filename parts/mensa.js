@@ -57,18 +57,15 @@ function currentMensaText(ctx) {
 }
 
 function parseActionCode(actionCode) {
-  const result = actionCode.match(/^([^:]+):(\d+):(\d+):(\d+)/)
+  const result = actionCode.match(/^([^:]+)#(\d+-\d+-\d+)/)
   const mensa = result[1]
-  const year = Number(result[2])
-  const month = Number(result[3])
-  const day = Number(result[4])
-  const date = new Date(Date.parse(`${year}-${month}-${day}`))
+  const date = new Date(Date.parse(result[2]))
   return {mensa, date}
 }
 
 function generateActionCode(mensa, date) {
   const {year, month, day} = getYearMonthDay(date)
-  return `${mensa}:${year}:${month}:${day}`
+  return `${mensa}#${year}-${month}-${day}`
 }
 
 function setMensaDay(ctx, selected) {
