@@ -19,7 +19,7 @@ function overviewText(ctx) {
   }
 
   if ((additionalEvents || []).length > 0) {
-    text += '\n\nUnd du Veranstalter:\n'
+    text += '\n\nUnd du bist Veranstalter:\n'
     const eventLines = additionalEvents.map(o => '- ' + o)
     text += eventLines.join('\n')
   }
