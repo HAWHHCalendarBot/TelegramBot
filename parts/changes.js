@@ -80,11 +80,6 @@ function getChangeAction(change) {
   return change.name + '#' + change.date.replace(':', '.')
 }
 
-menu.manual('Meine Änderungen (legacy)', 'c:list', {
-  root: true,
-  hide: ctx => (ctx.state.userconfig.changes || []).length === 0
-})
-
 const bot = new Telegraf.Composer()
 
 const backToMainButton = Markup.callbackButton('🔝 zurück zur Auswahl', 'e:c')
@@ -122,7 +117,7 @@ function handleDetails(ctx, name, date) {
   const title = generateShortChangeText(change)
   const buttons = [
     Markup.switchToChatButton('Teilen…', title),
-    Markup.callbackButton('🔙 zur Änderungsliste', 'c:list'),
+    Markup.callbackButton('🔙 zur Änderungsliste', 'e:c'),
     backToMainButton
   ]
   const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
