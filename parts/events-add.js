@@ -47,10 +47,7 @@ filteredOptions(menu, {
 function findEvents(ctx, pattern) {
   const blacklist = ctx.state.userconfig.events
     .concat(ctx.state.userconfig.additionalEvents || [])
-
-  const results = allEvents.find(pattern, blacklist)
-
-  return results
+  return allEvents.find(pattern, blacklist)
 }
 
 function addEvent(ctx, event) {
@@ -59,19 +56,15 @@ function addEvent(ctx, event) {
     .concat(ctx.state.userconfig.additionalEvents || [])
     .indexOf(event) >= 0
 
-  if (isExisting && !isAlreadyInCalendar) {
-    ctx.state.userconfig.events.push(event)
-    ctx.state.userconfig.events.sort()
-  }
-
   if (!isExisting) {
     return ctx.answerCbQuery(`${event} existiert nicht!`)
   }
-
   if (isAlreadyInCalendar) {
     return ctx.answerCbQuery(`${event} ist bereits in deinem Kalender!`)
   }
 
+  ctx.state.userconfig.events.push(event)
+  ctx.state.userconfig.events.sort()
   return ctx.answerCbQuery(`${event} wurde zu deinem Kalender hinzugefügt.`)
 }
 
