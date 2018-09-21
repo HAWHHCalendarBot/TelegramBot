@@ -8,11 +8,11 @@ const RESULT_COLUMNS = 2
 
 const menu = new TelegrafInlineMenu(menuText)
 
-function menuText(ctx) {
+async function menuText(ctx) {
   const filter = ctx.session.eventfilter || '.+'
   const filteredEvents = findEvents(ctx, filter)
   const isFiltered = filter !== '.+'
-  const total = allEvents.count()
+  const total = await allEvents.count()
   const perPage = MAX_RESULT_ROWS * RESULT_COLUMNS
   const moreThanCurrentlyShown = filteredEvents.length > perPage
 
@@ -50,8 +50,8 @@ function findEvents(ctx, pattern) {
   return allEvents.find(pattern, blacklist)
 }
 
-function addEvent(ctx, event) {
-  const isExisting = allEvents.exists(event)
+async function addEvent(ctx, event) {
+  const isExisting = await allEvents.exists(event)
   const isAlreadyInCalendar = ctx.state.userconfig.events
     .concat(ctx.state.userconfig.additionalEvents || [])
     .indexOf(event) >= 0

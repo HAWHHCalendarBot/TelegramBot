@@ -10,7 +10,7 @@ async function statsText(ctx) {
   const userCount = userIds.length
 
   const canteenCount = (await getCanteenList()).length
-  const eventCount = allEvents.count()
+  const eventCount = await allEvents.count()
 
   let text = `Ich habe aktuell ${eventCount} Veranstaltungen und ${canteenCount} Mensen, die ich ${userCount} begeisterten Nutzern 😍 zur Verfügung stelle.`
 
