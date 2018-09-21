@@ -22,6 +22,8 @@ function overviewText(ctx) {
     text += '\n\nUnd du bist Veranstalter:\n'
     const eventLines = additionalEvents.map(o => '- ' + o)
     text += eventLines.join('\n')
+  } else {
+    text += '\n\nDu bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Schreib mal @EdJoPaTo an. ;)'
   }
 
   return text
