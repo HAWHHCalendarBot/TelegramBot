@@ -23,7 +23,64 @@ const menu = new TelegrafInlineMenu(mainText)
 
 menu.manual('Änderung hinzufügen', 'c:g', {root: true})
 
-menu.manual('Meine Änderungen', 'c:list', {
+function getChangeFromCtx(ctx) {
+  const complete = ctx.match[1]
+  const match = complete.match(/^(.+)#(.+)$/)
+  const name = match[1]
+  const date = match[2].replace('.', ':')
+
+  const changes = ctx.state.userconfig.changes || []
+  const change = changes.filter(c => c.name === name && c.date === date)[0]
+  return change
+}
+
+const changeDetailsMenu = new TelegrafInlineMenu(ctx => {
+  const change = getChangeFromCtx(ctx)
+  if (!change) {
+    return 'Change does not exist anymore'
+  }
+  return generateChangeText(change)
+})
+  .switchToChatButton('Teilen…', ctx => generateShortChangeText(getChangeFromCtx(ctx)), {
+    hide: ctx => {
+      const change = getChangeFromCtx(ctx)
+      return !change
+    }
+  })
+  .simpleButton('⚠️ Änderung entfernen', 'r', {
+    setParentMenuAfter: true,
+    doFunc: ctx => {
+      const change = getChangeFromCtx(ctx)
+      const currentChanges = ctx.state.userconfig.changes || []
+      ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== change.name || o.date !== change.date)
+      return ctx.answerCbQuery('Änderung wurde entfernt.')
+    }
+  })
+
+// TODO: Select only shows up to 15 elements. needs pagination
+menu.select('d', getChangesOptions, {
+  columns: 1,
+  submenu: changeDetailsMenu
+})
+
+function getChangesOptions(ctx) {
+  const changes = ctx.state.userconfig.changes || []
+  if (changes.length === 0) {
+    return []
+  }
+  const result = {}
+  for (const change of changes) {
+    const key = getChangeAction(change)
+    result[key] = generateShortChangeText(change)
+  }
+  return result
+}
+
+function getChangeAction(change) {
+  return change.name + '#' + change.date.replace(':', '.')
+}
+
+menu.manual('Meine Änderungen (legacy)', 'c:list', {
   root: true,
   hide: ctx => (ctx.state.userconfig.changes || []).length === 0
 })
@@ -58,24 +115,6 @@ function stopGenerationAfterBotRestartMiddleware(ctx, next) {
   ])
 }
 
-function handleList(ctx, next) {
-  const changes = ctx.state.userconfig.changes || []
-  if (changes.length === 0) {
-    return next(ctx)
-  }
-
-  let text = '*Veranstaltungsänderungen*\n'
-  text += '\nWelche Änderung möchtest du betrachten?'
-
-  const buttons = []
-  for (const change of changes) {
-    buttons.push(Markup.callbackButton(generateShortChangeText(change), 'c:d:' + change.name + '#' + change.date))
-  }
-  buttons.push(backToMainButton)
-  const keyboardMarkup = Markup.inlineKeyboard(buttons, {columns: 1})
-  return ctx.editMessageText(text, Extra.markdown().markup(keyboardMarkup))
-}
-
 function handleDetails(ctx, name, date) {
   const changes = ctx.state.userconfig.changes || []
   const change = changes.filter(c => c.name === name && c.date === date)[0]
@@ -83,7 +122,6 @@ function handleDetails(ctx, name, date) {
   const title = generateShortChangeText(change)
   const buttons = [
     Markup.switchToChatButton('Teilen…', title),
-    Markup.callbackButton('⚠️ Änderung entfernen', 'c:r:' + change.name + '#' + change.date),
     Markup.callbackButton('🔙 zur Änderungsliste', 'c:list'),
     backToMainButton
   ]
@@ -133,18 +171,7 @@ function handleFinishGeneration(ctx) {
   ])
 }
 
-bot.action('c:list', handleList)
-
 bot.action(/^c:d:(.+)#(.+)$/, ctx => handleDetails(ctx, ctx.match[1], ctx.match[2]))
-
-bot.action(/^c:r:(.+)#(.+)$/, (ctx, next) => {
-  const currentChanges = ctx.state.userconfig.changes || []
-  ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== ctx.match[1] || o.date !== ctx.match[2])
-  return Promise.all([
-    handleList(ctx, next),
-    ctx.answerCbQuery('Änderung wurde entfernt.')
-  ])
-})
 
 // Action: change generate
 bot.action('c:g', ctx => {
