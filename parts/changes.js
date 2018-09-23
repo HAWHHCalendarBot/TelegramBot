@@ -14,6 +14,8 @@ const {
   loadEvents
 } = require('../lib/change-helper')
 
+const changeDetails = require('./change-details')
+
 const menu = new TelegrafInlineMenu(mainText)
 
 // TODO: refactor menu
@@ -23,44 +25,10 @@ const menu = new TelegrafInlineMenu(mainText)
 
 menu.manual('Änderung hinzufügen', 'c:g', {root: true})
 
-function getChangeFromCtx(ctx) {
-  const complete = ctx.match[1]
-  const match = complete.match(/^(.+)#(.+)$/)
-  const name = match[1]
-  const date = match[2].replace('.', ':')
-
-  const changes = ctx.state.userconfig.changes || []
-  const change = changes.filter(c => c.name === name && c.date === date)[0]
-  return change
-}
-
-const changeDetailsMenu = new TelegrafInlineMenu(ctx => {
-  const change = getChangeFromCtx(ctx)
-  if (!change) {
-    return 'Change does not exist anymore'
-  }
-  return generateChangeText(change)
-})
-  .switchToChatButton('Teilen…', ctx => generateShortChangeText(getChangeFromCtx(ctx)), {
-    hide: ctx => {
-      const change = getChangeFromCtx(ctx)
-      return !change
-    }
-  })
-  .simpleButton('⚠️ Änderung entfernen', 'r', {
-    setParentMenuAfter: true,
-    doFunc: ctx => {
-      const change = getChangeFromCtx(ctx)
-      const currentChanges = ctx.state.userconfig.changes || []
-      ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== change.name || o.date !== change.date)
-      return ctx.answerCbQuery('Änderung wurde entfernt.')
-    }
-  })
-
 // TODO: Select only shows up to 15 elements. needs pagination
 menu.select('d', getChangesOptions, {
   columns: 1,
-  submenu: changeDetailsMenu
+  submenu: changeDetails.menu
 })
 
 function getChangesOptions(ctx) {
@@ -70,14 +38,10 @@ function getChangesOptions(ctx) {
   }
   const result = {}
   for (const change of changes) {
-    const key = getChangeAction(change)
+    const key = changeDetails.generateChangeAction(change)
     result[key] = generateShortChangeText(change)
   }
   return result
-}
-
-function getChangeAction(change) {
-  return change.name + '#' + change.date.replace(':', '.')
 }
 
 const bot = new Telegraf.Composer()
