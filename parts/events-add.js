@@ -10,7 +10,7 @@ const menu = new TelegrafInlineMenu(menuText)
 
 async function menuText(ctx) {
   const filter = ctx.session.eventfilter || '.+'
-  const filteredEvents = findEvents(ctx, filter)
+  const filteredEvents = await findEvents(ctx, filter)
   const isFiltered = filter !== '.+'
   const total = await allEvents.count()
   const perPage = MAX_RESULT_ROWS * RESULT_COLUMNS
