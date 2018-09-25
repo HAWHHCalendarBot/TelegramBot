@@ -44,7 +44,10 @@ menu.simpleButton('⚠️ Änderung entfernen', 'r', {
   }
 })
 
+const replyMenuMiddleware = menu.replyMenuMiddleware()
+
 module.exports = {
   generateChangeAction,
+  setSpecific: replyMenuMiddleware.setSpecific,
   menu
 }
