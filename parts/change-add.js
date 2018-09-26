@@ -5,7 +5,10 @@ const {
   loadEvents,
   generateChangeText
 } = require('../lib/change-helper')
-const {addStartEndTimeSelectionSubmenu} = require('../lib/event-creation-menu-parts')
+const {
+  addQuestionButton,
+  addStartEndTimeSelectionSubmenu
+} = require('../lib/event-creation-menu-parts')
 
 const changeDetails = require('./change-details')
 
@@ -123,22 +126,29 @@ menu.simpleButton('🚫 Entfällt', 'remove', {
   }
 })
 
+function generalGet(ctx, param) {
+  return ctx.session.generateChange[param]
+}
+function generalSet(ctx, param, newValue) {
+  ctx.session.generateChange[param] = newValue
+}
+
 addStartEndTimeSelectionSubmenu(menu, {
   menuTextStart: 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?',
   menuTextEnd: 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?',
-  getCurrent: (ctx, time) => ctx.session.generateChange[time],
-  setFunc: (ctx, time, newValue) => {
-    ctx.session.generateChange[time] = newValue
-  }
+  getCurrent: generalGet,
+  setFunc: generalSet
 }, {
   hide: hideGenerateChangeStep
 })
 
-menu.question('📍 Raum', 'room', {
+addQuestionButton(menu, 'room', {
+  emoji: '📍',
+  buttonText: 'Raum',
   questionText: 'In welchen Raum wurde der Termin verschoben?',
-  setFunc: (ctx, answer) => {
-    ctx.session.generateChange.room = answer
-  },
+  getCurrent: generalGet,
+  setFunc: generalSet
+}, {
   hide: hideGenerateChangeStep
 })
 
