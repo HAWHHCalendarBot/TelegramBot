@@ -5,7 +5,7 @@ const {
   loadEvents,
   generateChangeText
 } = require('../lib/change-helper')
-const {generateTimeSelectionMenu} = require('../lib/event-creation-menu-parts')
+const {addStartEndTimeSelectionSubmenu} = require('../lib/event-creation-menu-parts')
 
 const changeDetails = require('./change-details')
 
@@ -123,19 +123,14 @@ menu.simpleButton('🚫 Entfällt', 'remove', {
   }
 })
 
-menu.submenu('🕗 Startzeit', 'ts', generateTimeSelectionMenu(
-  'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?', (ctx, key) => {
-    ctx.session.generateChange.starttime = key
+addStartEndTimeSelectionSubmenu(menu, {
+  menuTextStart: 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?',
+  menuTextEnd: 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?',
+  getCurrent: (ctx, time) => ctx.session.generateChange[time],
+  setFunc: (ctx, time, newValue) => {
+    ctx.session.generateChange[time] = newValue
   }
-), {
-  hide: hideGenerateChangeStep
-})
-menu.submenu('🕓 Endzeit', 'te', generateTimeSelectionMenu(
-  'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?', (ctx, key) => {
-    ctx.session.generateChange.endtime = key
-  }
-), {
-  joinLastRow: true,
+}, {
   hide: hideGenerateChangeStep
 })
 
