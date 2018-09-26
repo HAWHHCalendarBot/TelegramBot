@@ -6,6 +6,7 @@ const {
   generateChangeText
 } = require('../lib/change-helper')
 const {
+  addDateSelection,
   addQuestionButton,
   addStartEndTimeSelectionSubmenu
 } = require('../lib/event-creation-menu-parts')
@@ -24,7 +25,7 @@ function addChangeMenuText(ctx) {
   if (!name) {
     return 'Zu welcher Veranstaltung willst du eine Änderung hinzufügen?'
   }
-  const {date} = ctx.session.generateChange
+  const {add, date} = ctx.session.generateChange
   if (!date) {
     let text = 'Zu welchem Termin willst du eine Änderung hinzufügen?'
     const changes = changesOfEvent(ctx, name)
@@ -42,7 +43,11 @@ function addChangeMenuText(ctx) {
     return text
   }
   let text = generateChangeText(ctx.session.generateChange)
-  text += '\nWelche Art von Änderung willst du vornehmen?'
+  if (add) {
+    text += '\nSpezifiziere den zusätzlichen Termin.'
+  } else {
+    text += '\nWelche Art von Änderung willst du vornehmen?'
+  }
   return text
 }
 
@@ -61,6 +66,10 @@ function hideGenerateChangeStep(ctx) {
   return !ctx.session.generateChange || !ctx.session.generateChange.name || !ctx.session.generateChange.date
 }
 
+function hideGenerateAddStep(ctx) {
+  return !ctx.session.generateChange || !ctx.session.generateChange.name || !ctx.session.generateChange.date || !ctx.session.generateChange.add
+}
+
 function generationDataIsValid(ctx) {
   const keys = Object.keys(ctx.session.generateChange || [])
   // Required (2): name and date
@@ -76,6 +85,21 @@ menu.select('event', possibleEventsToCreateChangeToOptions, {
   hide: hidePickEventStep,
   setFunc: (ctx, key) => {
     ctx.session.generateChange.name = key
+  }
+})
+
+menu.button('➕ Zusätzlicher Termin', 'new-date', {
+  hide: hidePickDateStep,
+  doFunc: ctx => {
+    const now = new Date()
+      .toISOString()
+      .replace(/:\d{2}.\d{3}Z/, '')
+    // Set everything that has to be set to be valid.
+    // When the user dont like the data he can change it but he is not able to create invalid data.
+    ctx.session.generateChange.add = true
+    ctx.session.generateChange.date = now
+    ctx.session.generateChange.starttime = now.split('T')[1]
+    ctx.session.generateChange.endtime = '23:45'
   }
 })
 
@@ -130,8 +154,21 @@ function generalGet(ctx, param) {
   return ctx.session.generateChange[param]
 }
 function generalSet(ctx, param, newValue) {
+  if (param === 'starttime' && ctx.session.generateChange.add) {
+    const date = ctx.session.generateChange.date.split('T')[0]
+    ctx.session.generateChange.date = `${date}T${newValue}`
+  }
   ctx.session.generateChange[param] = newValue
 }
+
+addDateSelection(menu, {
+  getCurrent: ctx => ctx.session.generateChange.date,
+  setFunc: (ctx, newValue) => {
+    ctx.session.generateChange.date = newValue
+  }
+}, {
+  hide: hideGenerateAddStep
+})
 
 addStartEndTimeSelectionSubmenu(menu, {
   menuTextStart: 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?',
@@ -172,6 +209,13 @@ function finish(ctx) {
 
   if (!ctx.state.userconfig.changes) {
     ctx.state.userconfig.changes = []
+  }
+  const {name, date} = change
+  if (ctx.state.userconfig.changes.some(o => o.name === name && o.date === date)) {
+    // Dont do something when there is already a change for the date
+    // This shouldn't occour but it can when the user adds a shared change
+    // Also the user can add an additional date that he already has 'used'
+    return ctx.answerCbQuery('Du hast bereits eine Veranstaltungsänderung für diesen Termin.')
   }
   ctx.state.userconfig.changes.push(change)
   delete ctx.session.generateChange
