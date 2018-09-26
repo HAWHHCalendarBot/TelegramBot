@@ -142,6 +142,16 @@ addStartEndTimeSelectionSubmenu(menu, {
   hide: hideGenerateChangeStep
 })
 
+addQuestionButton(menu, 'namesuffix', {
+  emoji: '🗯',
+  buttonText: 'Namenszusatz',
+  questionText: 'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.',
+  getCurrent: generalGet,
+  setFunc: generalSet
+}, {
+  hide: hideGenerateChangeStep
+})
+
 addQuestionButton(menu, 'room', {
   emoji: '📍',
   buttonText: 'Raum',
