@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.4.0"></a>
+# [3.4.0](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.3.0...v3.4.0) (2018-09-26)
+
+
+### Bug Fixes
+
+* **events-add:** no 'undefined filtered events' anymore ([db3e66a](https://github.com/HAWHHCalendarBot/telegrambot/commit/db3e66a))
+
+
+### Features
+
+* **changes-add:** add completly new events ([97ce00f](https://github.com/HAWHHCalendarBot/telegrambot/commit/97ce00f))
+* **changes-add:** allow to add namesuffix ([56f6def](https://github.com/HAWHHCalendarBot/telegrambot/commit/56f6def))
+* **changes-add:** migrate changes add to the new menu ([54ac3d9](https://github.com/HAWHHCalendarBot/telegrambot/commit/54ac3d9))
+* **changes-add:** simplify time selection ([2077944](https://github.com/HAWHHCalendarBot/telegrambot/commit/2077944))
+
+
+
 <a name="3.3.0"></a>
 # [3.3.0](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.2.1...v3.3.0) (2018-09-21)
 
