@@ -64,7 +64,11 @@ const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
 
 menu.submenu('🏢 Veranstaltungen', 'e', events.menu)
 menu.submenu('📲 Kalender abonnieren', 'url', subscribe.menu, {
-  hide: ctx => (ctx.state.userconfig.events || []).length === 0
+  hide: ctx => {
+    const normal = (ctx.state.userconfig.events || []).length
+    const tutor = (ctx.state.userconfig.additionalEvents || []).length
+    return normal + tutor === 0
+  }
 })
 
 menu.submenu('🍽 Mensa', 'mensa', mensa.menu)
