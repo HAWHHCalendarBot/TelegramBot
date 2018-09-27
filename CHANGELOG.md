@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.5.0"></a>
+# [3.5.0](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.4.1...v3.5.0) (2018-09-27)
+
+
+### Bug Fixes
+
+* **subscribe:** tutors can subscribe now too ([9d83d27](https://github.com/HAWHHCalendarBot/telegrambot/commit/9d83d27))
+
+
+### Features
+
+* **changes-add:** show finish & restart button in one row ([0cc2dbf](https://github.com/HAWHHCalendarBot/telegrambot/commit/0cc2dbf))
+* when not run in production mode all bot timings are shown ([469097f](https://github.com/HAWHHCalendarBot/telegrambot/commit/469097f))
+
+
+
 <a name="3.4.1"></a>
 ## [3.4.1](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.4.0...v3.4.1) (2018-09-27)
 
