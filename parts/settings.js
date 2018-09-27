@@ -24,27 +24,6 @@ menu.submenu('StISys', 'stisys', new TelegrafInlineMenu(stisysText))
     isSetFunc: ctx => ctx.state.userconfig.stisysUpdate === true
   })
 
-function changesText(ctx) {
-  const active = ctx.state.userconfig.showRemovedEvents
-
-  let text = '*Einstellungen*\nVeranstaltungsänderungen\n\n'
-  text += 'Mit dem /changes Feature kannst du Änderungen an Veranstaltungen hinzufügen.'
-  text += ' Möglicherweise fallen auch Vorlesungen aus.'
-  text += ' Mit dieser Option kann eingestellt werden, ob ausfallende Veranstaltungen statt ausfallend als stattfindend mit angepasstem Titel enthalten sein sollen.'
-  text += ' Dies ist nützlich, wenn das Kalender Tool keine Option zum Anzeigen von ausfallenden Veranstaltungen bietet und man sie trotzdem sehen möchte.'
-  text += '\n\n'
-  text += 'Entfernte Veranstaltungen werden für dich aktuell ' + (active ? 'angezeigt' : 'ausgeblendet') + '.'
-  return text
-}
-
-menu.submenu('Veranstaltungsänderungen', 'changes', new TelegrafInlineMenu(changesText))
-  .toggle('zeige ausfallende Veranstaltungen', 'showRemoved', {
-    setFunc: (ctx, newState) => {
-      ctx.state.userconfig.showRemovedEvents = newState
-    },
-    isSetFunc: ctx => ctx.state.userconfig.showRemovedEvents === true
-  })
-
 menu.submenu('🍽 Mensa', 'm', mensaSettings.menu)
 
 async function getActualUserconfigContent(ctx) {

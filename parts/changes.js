@@ -30,7 +30,53 @@ function getChangesOptions(ctx) {
   return result
 }
 
-// TODO: add setting for forced removed changes here
+function isShowRemovedEventsSet(ctx) {
+  return ctx.state.userconfig.showRemovedEvents === true
+}
+const showRemovedText = 'erzwinge entfernte Termine'
+function showRemovedDescription(ctx) {
+  const active = ctx.state.userconfig.showRemovedEvents
+
+  let text = '*erzwinge entfernte Veranstaltungsänderungen*\n'
+  text += '\nIn deinem Kalender hast du Änderungen, die Termine entfernen.'
+  text += ' Diese ausfallenden Termine werden nach dem iCal Standard mit dem Status CANCELLED markiert.'
+  text += ' Jedoch können nicht alle Kalendertools diese ausfallenden Veranstaltungen anzeigen.'
+  text += ' Um diese in deinem Kalender zu erzwingen, können diese Termine stattdessen ganz normal als stattfindende Termine in deinem Kalender hinterlegt werden, die mit dem 🚫 Emoji als ausfallend gekennzeichnent werden.'
+
+  text += '\n'
+  text += '\nSowohl die default iOS als auch macOS Kalender App kann CANCELLED Events optional anzeigen.'
+  text += ' Für den Google Kalender und den HAW Mailer ist mir diese Option nicht bekannt.'
+
+  text += '\n'
+  text += '\nEntfernte Veranstaltungen werden für dich aktuell '
+  if (active) {
+    text += 'als normales Event mit dem 🚫 Emoji im Namen dargestellt.'
+  } else {
+    text += 'mit dem Status CANCELLED markiert. Dein Kalendertool kann diese (möglicherweise) ein oder ausblenden.'
+  }
+  return text
+}
+function showRemovedTextSubmenu(ctx) {
+  const currentState = isShowRemovedEventsSet(ctx)
+  let text = currentState ? '✅' : '🚫'
+  text += ' ' + showRemovedText
+  return text
+}
+menu.submenu(showRemovedTextSubmenu, 'showRemoved', new TelegrafInlineMenu(showRemovedDescription), {
+  hide: ctx => (ctx.state.userconfig.changes || [])
+    .filter(c => c.remove)
+    .length === 0
+})
+  .toggle(showRemovedText, 'toggle', {
+    setFunc: (ctx, newValue) => {
+      if (newValue) {
+        ctx.state.userconfig.showRemovedEvents = true
+      } else {
+        delete ctx.state.userconfig.showRemovedEvents
+      }
+    },
+    isSetFunc: isShowRemovedEventsSet
+  })
 
 function mainText() {
   let text = '*Veranstaltungsänderungen*\n'
