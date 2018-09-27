@@ -229,6 +229,7 @@ function finish(ctx) {
 }
 
 menu.button('🛑 Neu beginnen', 'restart', {
+  joinLastRow: true,
   doFunc: ctx => {
     ctx.session.generateChange = {}
   },
