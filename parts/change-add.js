@@ -22,12 +22,13 @@ function changesOfEvent(ctx, name) {
 
 function addChangeMenuText(ctx) {
   const name = ctx.session.generateChange && ctx.session.generateChange.name
+  let text = ''
   if (!name) {
     return 'Zu welcher Veranstaltung willst du eine Änderung hinzufügen?'
   }
   const {add, date} = ctx.session.generateChange
   if (!date) {
-    let text = 'Zu welchem Termin willst du eine Änderung hinzufügen?'
+    text = 'Zu welchem Termin willst du eine Änderung hinzufügen?'
     const changes = changesOfEvent(ctx, name)
     if (changes.length > 0) {
       text += '\n\nFolgende Termine habe bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.'
@@ -40,13 +41,14 @@ function addChangeMenuText(ctx) {
         .map(o => `- ${o}`)
         .join('\n')
     }
-    return text
   }
-  let text = generateChangeText(ctx.session.generateChange)
-  if (add) {
-    text += '\nSpezifiziere den zusätzlichen Termin.'
-  } else {
-    text += '\nWelche Art von Änderung willst du vornehmen?'
+  if (date) {
+    text = generateChangeText(ctx.session.generateChange)
+    if (add) {
+      text += '\nSpezifiziere den zusätzlichen Termin.'
+    } else {
+      text += '\nWelche Art von Änderung willst du vornehmen?'
+    }
   }
   return text
 }
