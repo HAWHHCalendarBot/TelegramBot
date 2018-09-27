@@ -21,12 +21,11 @@ function changesOfEvent(ctx, name) {
 }
 
 function addChangeMenuText(ctx) {
-  const name = ctx.session.generateChange && ctx.session.generateChange.name
+  const {name, date, add} = ctx.session.generateChange || {}
   let text = ''
   if (!name) {
     return 'Zu welcher Veranstaltung willst du eine Änderung hinzufügen?'
   }
-  const {add, date} = ctx.session.generateChange
   if (!date) {
     text = 'Zu welchem Termin willst du eine Änderung hinzufügen?'
     const changes = changesOfEvent(ctx, name)
@@ -61,15 +60,18 @@ function hidePickEventStep(ctx) {
 }
 
 function hidePickDateStep(ctx) {
-  return !ctx.session.generateChange || !ctx.session.generateChange.name || ctx.session.generateChange.date
+  const {name, date} = ctx.session.generateChange || {}
+  return !name || date
 }
 
 function hideGenerateChangeStep(ctx) {
-  return !ctx.session.generateChange || !ctx.session.generateChange.name || !ctx.session.generateChange.date
+  const {name, date} = ctx.session.generateChange || {}
+  return !name || !date
 }
 
 function hideGenerateAddStep(ctx) {
-  return !ctx.session.generateChange || !ctx.session.generateChange.name || !ctx.session.generateChange.date || !ctx.session.generateChange.add
+  const {name, date, add} = ctx.session.generateChange || {}
+  return !name || !date || !add
 }
 
 function generationDataIsValid(ctx) {
