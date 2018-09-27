@@ -26,11 +26,8 @@ function predicate(ctx) {
 }
 
 function getEvents(name) {
-  try {
-    return readJsonFile(filenameFromEventName(name))
-  } catch (error) {
-    return []
-  }
+  return readJsonFile(filenameFromEventName(name))
+    .catch(() => ([]))
 }
 
 bot.command('additionalEvents', ctx => {
