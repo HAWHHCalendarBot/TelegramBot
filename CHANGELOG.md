@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.4.1"></a>
+## [3.4.1](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.4.0...v3.4.1) (2018-09-27)
+
+
+### Bug Fixes
+
+* **additional-events:** new events work again ([75559dc](https://github.com/HAWHHCalendarBot/telegrambot/commit/75559dc))
+
+
+
 <a name="3.4.0"></a>
 # [3.4.0](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.3.0...v3.4.0) (2018-09-26)
 
