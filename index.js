@@ -33,6 +33,18 @@ bot.telegram.getMe().then(botInfo => {
   bot.options.username = botInfo.username
 })
 
+if (process.env.NODE_ENV !== 'production') {
+  bot.use(async (ctx, next) => {
+    const identifier = `${new Date().toISOString()} ${ctx.from && ctx.from.first_name} ${ctx.updateType}`
+    console.time(identifier)
+    await next()
+    const callbackData = ctx.callbackQuery && ctx.callbackQuery.data
+    const messageText = ctx.message && ctx.message.text
+    const data = callbackData || messageText
+    console.timeLog(identifier, data && data.length, data)
+  })
+}
+
 bot.use(session())
 const chatconfig = new Chatconfig('userconfig', {
   events: []
