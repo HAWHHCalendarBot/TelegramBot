@@ -32,7 +32,7 @@ function getChangesOptions(ctx) {
 
 const removedEventsOptions = {
   cancelled: 'Standard',
-  removed: 'komplett entfernt',
+  removed: 'komplett entfernen',
   emoji: 'erzwungen'
 }
 
@@ -40,7 +40,7 @@ function currentlySetRemovedEvents(ctx) {
   return ctx.state.userconfig.removedEvents || 'cancelled'
 }
 function showRemovedDescription() {
-  let text = '*erzwinge entfernte Veranstaltungsänderungen*\n'
+  let text = '*Entfernte Veranstaltungsänderungen*\n'
   text += '\nIn deinem Kalender hast du Änderungen, die Termine entfernen.'
   text += ' Diese ausfallenden Termine werden nach dem iCal Standard mit dem Status CANCELLED markiert.'
   text += ' Jedoch arbeiten nicht alle Kalendertools standardkonform 🙄.'
@@ -75,7 +75,7 @@ function textRemovedEventsSubmenuButton(ctx) {
   } else {
     text += '👌'
   }
-  text += ' erzwinge entfernte Termine'
+  text += ' Entfernte Termine'
   return text
 }
 menu.submenu(textRemovedEventsSubmenuButton, 'showRemoved', new TelegrafInlineMenu(showRemovedDescription), {
@@ -84,6 +84,7 @@ menu.submenu(textRemovedEventsSubmenuButton, 'showRemoved', new TelegrafInlineMe
     .length === 0
 })
   .select('s', removedEventsOptions, {
+    columns: 1,
     setFunc: (ctx, key) => {
       ctx.state.userconfig.removedEvents = key
     },
