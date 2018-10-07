@@ -30,52 +30,64 @@ function getChangesOptions(ctx) {
   return result
 }
 
-function isShowRemovedEventsSet(ctx) {
-  return ctx.state.userconfig.showRemovedEvents === true
+const removedEventsOptions = {
+  cancelled: 'Standard',
+  removed: 'komplett entfernt',
+  emoji: 'erzwungen'
 }
-const showRemovedText = 'erzwinge entfernte Termine'
-function showRemovedDescription(ctx) {
-  const active = ctx.state.userconfig.showRemovedEvents
 
+function currentlySetRemovedEvents(ctx) {
+  return ctx.state.userconfig.removedEvents || 'cancelled'
+}
+function showRemovedDescription() {
   let text = '*erzwinge entfernte Veranstaltungsänderungen*\n'
   text += '\nIn deinem Kalender hast du Änderungen, die Termine entfernen.'
   text += ' Diese ausfallenden Termine werden nach dem iCal Standard mit dem Status CANCELLED markiert.'
-  text += ' Jedoch können nicht alle Kalendertools diese ausfallenden Veranstaltungen anzeigen.'
-  text += ' Um diese in deinem Kalender zu erzwingen, können diese Termine stattdessen ganz normal als stattfindende Termine in deinem Kalender hinterlegt werden, die mit dem 🚫 Emoji als ausfallend gekennzeichnent werden.'
+  text += ' Jedoch arbeiten nicht alle Kalendertools standardkonform 🙄.'
+  text += '\n'
+
+  text += '\nDer *iOS* und *macOS* Systemkalender halten sich an den Standard.'
+  text += ' Hier solltest du _Standard_ wählen.'
+  text += ' Veranstaltungen können in den jeweiligen Einstellungen vom Kalendertool ein- oder ausgeblendet werden.'
+
+  text += '\nDer *Google* Kalender ist nicht in der Lage, entfernte Veranstaltungen einzublenden.'
+  text += ' Sie werden immer ausgeblendet.'
+  text += ' Um diese trotzdem anzuzeigen, wähle _erzwungen_ oder bleibe bei _Standard_.'
+
+  text += '\nDer *Exchange* Kalender ignoriert den Status und zeigt die Veranstaltung an, als wäre nichts gewesen.'
+  text += ' Du kannst diese Veranstaltungen _komplett entfernen_ oder _erzwingen_.'
 
   text += '\n'
-  text += '\nSowohl die default iOS als auch macOS Kalender App kann CANCELLED Events optional anzeigen.'
-  text += ' Für den Google Kalender und den HAW Mailer ist mir diese Option nicht bekannt.'
 
-  text += '\n'
-  text += '\nEntfernte Veranstaltungen werden für dich aktuell '
-  if (active) {
-    text += 'als normales Event mit dem 🚫 Emoji im Namen dargestellt.'
+  text += '\n👌 _Standard_: Der erzeugte Kalender wird standardkonform sein.'
+  text += '\n🗑 _komplett entfernen_: Der erzeugte Kalender enthält keine entfernten Veranstaltungen mehr. Du kannst nur noch im Bot sehen, welche Veranstaltungen ausfallen.'
+  text += '\n🚫 _erzwungen_: Die Veranstaltung wird auf jeden Fall angezeigt und der Name enthält den 🚫 Emoji.'
+
+  return text
+}
+function textRemovedEventsSubmenuButton(ctx) {
+  const {removedEvents} = ctx.state.userconfig
+  let text = ''
+  if (removedEvents === 'removed') {
+    text += '🗑'
+  } else if (removedEvents === 'emoji') {
+    text += '🚫'
   } else {
-    text += 'mit dem Status CANCELLED markiert. Dein Kalendertool kann diese (möglicherweise) ein oder ausblenden.'
+    text += '👌'
   }
+  text += ' erzwinge entfernte Termine'
   return text
 }
-function showRemovedTextSubmenu(ctx) {
-  const currentState = isShowRemovedEventsSet(ctx)
-  let text = currentState ? '✅' : '🚫'
-  text += ' ' + showRemovedText
-  return text
-}
-menu.submenu(showRemovedTextSubmenu, 'showRemoved', new TelegrafInlineMenu(showRemovedDescription), {
+menu.submenu(textRemovedEventsSubmenuButton, 'showRemoved', new TelegrafInlineMenu(showRemovedDescription), {
   hide: ctx => (ctx.state.userconfig.changes || [])
     .filter(c => c.remove)
     .length === 0
 })
-  .toggle(showRemovedText, 'toggle', {
-    setFunc: (ctx, newValue) => {
-      if (newValue) {
-        ctx.state.userconfig.showRemovedEvents = true
-      } else {
-        delete ctx.state.userconfig.showRemovedEvents
-      }
+  .select('s', removedEventsOptions, {
+    setFunc: (ctx, key) => {
+      ctx.state.userconfig.removedEvents = key
     },
-    isSetFunc: isShowRemovedEventsSet
+    isSetFunc: (ctx, key) => currentlySetRemovedEvents(ctx) === key
   })
 
 function mainText() {

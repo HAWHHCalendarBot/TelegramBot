@@ -28,6 +28,8 @@ bot.use((ctx, next) => {
 
   delete ctx.state.userconfig.settings
 
+  delete ctx.state.userconfig.showRemovedEvents
+
   return next()
 })
 
