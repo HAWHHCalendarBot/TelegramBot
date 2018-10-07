@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.6.0"></a>
+# [3.6.0](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.5.0...v3.6.0) (2018-10-07)
+
+
+### Bug Fixes
+
+* **changes-add:** remove event when event doesnt exist anymore ([44ddbe0](https://github.com/HAWHHCalendarBot/telegrambot/commit/44ddbe0))
+
+
+### Features
+
+* **changes:** define how removed events should be handled ([e33b38d](https://github.com/HAWHHCalendarBot/telegrambot/commit/e33b38d))
+
+
+
 <a name="3.5.0"></a>
 # [3.5.0](https://github.com/HAWHHCalendarBot/telegrambot/compare/v3.4.1...v3.5.0) (2018-09-27)
 
