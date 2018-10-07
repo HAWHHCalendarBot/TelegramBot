@@ -1,5 +1,6 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
+const allEvents = require('../lib/all-events')
 const {formatDateToHumanReadable} = require('../lib/calendar-helper')
 const {
   loadEvents,
@@ -87,8 +88,14 @@ function possibleEventsToCreateChangeToOptions(ctx) {
 menu.select('event', possibleEventsToCreateChangeToOptions, {
   columns: 2,
   hide: hidePickEventStep,
-  setFunc: (ctx, key) => {
-    ctx.session.generateChange.name = key
+  setFunc: async (ctx, key) => {
+    if (await allEvents.exists(key)) {
+      ctx.session.generateChange.name = key
+    } else {
+      ctx.state.userconfig.events = ctx.state.userconfig.events
+        .filter(o => o !== key)
+      return ctx.answerCbQuery(`⚠️ Die Veranstaltung "${key}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`, true)
+    }
   }
 })
 
