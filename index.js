@@ -54,7 +54,6 @@ bot.use(chatconfig)
 bot.use(migrateStuff.bot)
 
 bot.use(additionalEvents.bot)
-bot.use(changes.bot)
 bot.use(changesInline.bot)
 bot.use(easterEggs.bot)
 bot.use(generateEventDate.bot)
