@@ -42,12 +42,7 @@
           "parts/changes-inline.js"
         ],
         "rules": {
-          "camelcase": [
-            "warn",
-            {
-              "properties": "never"
-            }
-          ]
+          "camelcase": "off"
         }
       }
     ]
