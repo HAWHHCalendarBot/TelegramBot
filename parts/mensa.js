@@ -17,9 +17,11 @@ function stringifyEqual(first, second) {
   if (!first || !second) {
     return false
   }
+
   if (first === second) {
     return true
   }
+
   return JSON.stringify(first) === JSON.stringify(second)
 }
 
@@ -36,6 +38,7 @@ function getCurrentSettings(ctx) {
   if (!mensa) {
     mensa = (ctx.state.userconfig.mensa || {}).main
   }
+
   if (!date) {
     date = new Date(Date.now())
   }
@@ -73,9 +76,11 @@ function setMensaDay(ctx, selected) {
   if (!ctx.session.mensa) {
     ctx.session.mensa = {}
   }
+
   if (mensa === 'undefined') {
     return
   }
+
   ctx.session.mensa.mensa = mensa
   ctx.session.mensa.date = date
 }
@@ -152,6 +157,7 @@ async function generateMensaTextOfDate(mensa, date, mensaSettings) {
   if (!mensa || mensa === 'undefined') {
     return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.'
   }
+
   const weekday = weekdays[date.getDay()]
   const {year, month, day} = getYearMonthDay(date)
   const prefix = `Mensa *${mensa}*\n${weekday} ${day}.${month}.${year}\n`

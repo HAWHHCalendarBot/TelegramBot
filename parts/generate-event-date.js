@@ -19,8 +19,10 @@ function somethingStrangeMiddleware(ctx, next) {
     if (ctx.updateType === 'callback_query') {
       return ctx.editMessageText(text)
     }
+
     return ctx.reply(text)
   }
+
   return next()
 }
 

@@ -59,6 +59,7 @@ async function addEvent(ctx, event) {
   if (!isExisting) {
     return ctx.answerCbQuery(`${event} existiert nicht!`)
   }
+
   if (isAlreadyInCalendar) {
     return ctx.answerCbQuery(`${event} ist bereits in deinem Kalender!`)
   }

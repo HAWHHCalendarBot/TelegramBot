@@ -27,6 +27,7 @@ function addChangeMenuText(ctx) {
   if (!name) {
     return 'Zu welcher Veranstaltung willst du eine Änderung hinzufügen?'
   }
+
   if (!date) {
     text = 'Zu welchem Termin willst du eine Änderung hinzufügen?'
     const changes = changesOfEvent(ctx, name)
@@ -42,6 +43,7 @@ function addChangeMenuText(ctx) {
         .join('\n')
     }
   }
+
   if (date) {
     text = generateChangeText(ctx.session.generateChange)
     if (add) {
@@ -50,6 +52,7 @@ function addChangeMenuText(ctx) {
       text += '\nWelche Art von Änderung willst du vornehmen?'
     }
   }
+
   return text
 }
 
@@ -57,6 +60,7 @@ function hidePickEventStep(ctx) {
   if (!ctx.session.generateChange) {
     ctx.session.generateChange = {}
   }
+
   return ctx.session.generateChange.name
 }
 
@@ -85,6 +89,7 @@ function generationDataIsValid(ctx) {
 function possibleEventsToCreateChangeToOptions(ctx) {
   return ctx.state.userconfig.events || []
 }
+
 menu.select('event', possibleEventsToCreateChangeToOptions, {
   columns: 2,
   hide: hidePickEventStep,
@@ -120,6 +125,7 @@ async function possibleTimesToCreateChangeToOptions(ctx) {
     // No event selected for which events could be found
     return []
   }
+
   if (ctx.session.generateChange.date) {
     // Date already selected
     return []
@@ -138,8 +144,10 @@ async function possibleTimesToCreateChangeToOptions(ctx) {
   for (const date of uniqueDates) {
     options[date.replace(':', '!')] = formatDateToHumanReadable(date)
   }
+
   return options
 }
+
 menu.select('date', possibleTimesToCreateChangeToOptions, {
   columns: 2,
   hide: hidePickDateStep,
@@ -157,6 +165,7 @@ menu.simpleButton('🚫 Entfällt', 'remove', {
     if (hideGenerateChangeStep(ctx)) {
       return true
     }
+
     return Object.keys(ctx.session.generateChange).length > 2
   }
 })
@@ -164,11 +173,13 @@ menu.simpleButton('🚫 Entfällt', 'remove', {
 function generalGet(ctx, param) {
   return ctx.session.generateChange[param]
 }
+
 function generalSet(ctx, param, newValue) {
   if (param === 'starttime' && ctx.session.generateChange.add) {
     const date = ctx.session.generateChange.date.split('T')[0]
     ctx.session.generateChange.date = `${date}T${newValue}`
   }
+
   ctx.session.generateChange[param] = newValue
 }
 
@@ -221,6 +232,7 @@ function finish(ctx) {
   if (!ctx.state.userconfig.changes) {
     ctx.state.userconfig.changes = []
   }
+
   const {name, date} = change
   if (ctx.state.userconfig.changes.some(o => o.name === name && o.date === date)) {
     // Dont do something when there is already a change for the date
@@ -228,6 +240,7 @@ function finish(ctx) {
     // Also the user can add an additional date that he already has 'used'
     return ctx.answerCbQuery('Du hast bereits eine Veranstaltungsänderung für diesen Termin.')
   }
+
   ctx.state.userconfig.changes.push(change)
   delete ctx.session.generateChange
 

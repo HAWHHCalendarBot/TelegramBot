@@ -41,9 +41,11 @@ function nameOfUser({first_name: first, last_name: last, username}) {
   if (last) {
     name += ' ' + last
   }
+
   if (username) {
     name += ` (${username})`
   }
+
   return name
 }
 

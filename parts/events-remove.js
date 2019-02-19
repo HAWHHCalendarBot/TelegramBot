@@ -11,6 +11,7 @@ function overviewText(ctx) {
   if (events.length === 0) {
     return prefix + 'Du hast keine Veranstaltungen mehr in deinem Kalender, die ich entfernen könnte. 😔'
   }
+
   return prefix + 'Welche Veranstaltungen möchtest du aus deinem Kalender entfernen?'
 }
 

@@ -29,6 +29,7 @@ function mainMensaText(ctx) {
   if (main) {
     text += `: ${main}`
   }
+
   return text
 }
 
@@ -36,15 +37,18 @@ function setMainMensa(ctx, mensa) {
   if (!ctx.state.userconfig.mensa) {
     ctx.state.userconfig.mensa = {}
   }
+
   const oldMain = ctx.state.userconfig.mensa.main
   ctx.state.userconfig.mensa.main = mensa
   if (ctx.state.userconfig.mensa.more) {
     ctx.state.userconfig.mensa.more = ctx.state.userconfig.mensa.more.filter(o => o !== mensa)
   }
+
   if (oldMain) {
     if (!ctx.state.userconfig.mensa.more) {
       ctx.state.userconfig.mensa.more = []
     }
+
     ctx.state.userconfig.mensa.more.push(oldMain)
   }
 }
@@ -65,6 +69,7 @@ function toggleAdditionalMensa(ctx, mensa) {
   if (getMainMensa(ctx) === mensa) {
     return ctx.answerCbQuery(mensa + ' ist bereits deine Hauptmensa')
   }
+
   const selected = ctx.state.userconfig.mensa.more || []
   if (selected.indexOf(mensa) >= 0) {
     ctx.state.userconfig.mensa.more = selected.filter(o => o !== mensa)
@@ -79,6 +84,7 @@ function moreMensaEmoji(ctx, mensa) {
   if (getMainMensa(ctx) === mensa) {
     return '🍽'
   }
+
   return enabledEmoji(isAdditionalMensa(ctx, mensa))
 }
 
@@ -88,6 +94,7 @@ function moreMensaText(ctx) {
   if (selected.length > 0) {
     text += ` (${selected.length})`
   }
+
   return text
 }
 

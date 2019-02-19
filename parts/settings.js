@@ -30,6 +30,7 @@ async function getActualUserconfigContent(ctx) {
   if (!ctx.state.userconfig) {
     return null
   }
+
   const userconfig = await ctx.userconfig.load(ctx.from.id)
   return userconfig && userconfig.config
 }
@@ -69,6 +70,7 @@ function deleteEverything(ctx, answer) {
   if (answer !== deleteConfirmString) {
     return ctx.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')
   }
+
   delete ctx.state.userconfig
   return ctx.reply('Deine Daten werden gelöscht…')
 }

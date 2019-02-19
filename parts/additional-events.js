@@ -11,6 +11,7 @@ const {Extra, Markup} = Telegraf
 async function readJsonFile(file) {
   return JSON.parse(await fsPromises.readFile(file, 'utf8'))
 }
+
 function writeJsonFile(file, data) {
   return fsPromises.writeFile(file, JSON.stringify(data, null, 2) + '\n', 'utf8')
 }

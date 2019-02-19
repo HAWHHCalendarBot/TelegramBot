@@ -45,6 +45,7 @@ function suffixButtonText(ctx) {
   } else {
     text = `⚠️ ${text} ⚠️`
   }
+
   return text
 }
 
@@ -67,6 +68,7 @@ function suffixText(ctx) {
   } else {
     text += '⚠️ Aktuell ist deine URL *nicht* geschützt und lautet:'
   }
+
   text += `\n\`https://${getUrl(ctx)}\``
   return text
 }
@@ -81,6 +83,7 @@ function setSuffix(ctx, val) {
   if (val.length < SUFFIX_MIN_LENGTH) {
     return
   }
+
   ctx.state.userconfig.calendarfileSuffix = val
   return sendHintText(ctx)
 }
@@ -90,6 +93,7 @@ function sendHintText(ctx) {
   if (ctx.updateType === 'callback_query') {
     return ctx.answerCbQuery(hintText, true)
   }
+
   return ctx.reply(hintText)
 }
 

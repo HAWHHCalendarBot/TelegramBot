@@ -25,6 +25,7 @@ const menu = new TelegrafInlineMenu(ctx => {
   if (!change) {
     return 'Change does not exist anymore'
   }
+
   return generateChangeText(change)
 })
 

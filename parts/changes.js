@@ -22,11 +22,13 @@ function getChangesOptions(ctx) {
   if (changes.length === 0) {
     return []
   }
+
   const result = {}
   for (const change of changes) {
     const key = changeDetails.generateChangeAction(change)
     result[key] = generateShortChangeText(change)
   }
+
   return result
 }
 
@@ -39,6 +41,7 @@ const removedEventsOptions = {
 function currentlySetRemovedEvents(ctx) {
   return ctx.state.userconfig.removedEvents || 'cancelled'
 }
+
 function showRemovedDescription() {
   let text = '*Entfernte Veranstaltungsänderungen*\n'
   text += '\nIn deinem Kalender hast du Änderungen, die Termine entfernen.'
@@ -65,6 +68,7 @@ function showRemovedDescription() {
 
   return text
 }
+
 function textRemovedEventsSubmenuButton(ctx) {
   const {removedEvents} = ctx.state.userconfig
   let text = ''
@@ -75,9 +79,11 @@ function textRemovedEventsSubmenuButton(ctx) {
   } else {
     text += '👌'
   }
+
   text += ' Entfernte Termine'
   return text
 }
+
 menu.submenu(textRemovedEventsSubmenuButton, 'showRemoved', new TelegrafInlineMenu(showRemovedDescription), {
   hide: ctx => (ctx.state.userconfig.changes || [])
     .filter(c => c.remove)

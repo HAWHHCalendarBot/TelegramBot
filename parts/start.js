@@ -18,6 +18,7 @@ bot.command('start', async (ctx, next) => {
   if (text.length > 0) {
     await ctx.replyWithMarkdown(intro + text)
   }
+
   return next()
 })
 

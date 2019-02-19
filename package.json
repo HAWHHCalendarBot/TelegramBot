@@ -18,7 +18,7 @@
   "devDependencies": {
     "ava": "^1.2.1",
     "nyc": "^13.3.0",
-    "xo": "^0.23.0"
+    "xo": "^0.24.0"
   },
   "scripts": {
     "ava": "ava",

@@ -10,6 +10,7 @@ bot.use((ctx, next) => {
     } else if (!ctx.state.userconfig.mensa.price) {
       ctx.state.userconfig.mensa.price = 'guest'
     }
+
     delete ctx.state.userconfig.mensa.student
 
     // Sometimes people have the main mensa multiple times in the more list
