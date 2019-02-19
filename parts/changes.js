@@ -11,10 +11,12 @@ const menu = new TelegrafInlineMenu(mainText)
 
 menu.submenu('➕ Änderung hinzufügen', 'a', changesAdd.menu)
 
-// TODO: Select only shows up to 15 elements. needs pagination
-menu.select('d', getChangesOptions, {
+menu.selectSubmenu('d', getChangesOptions, changeDetails.menu, {
   columns: 1,
-  submenu: changeDetails.menu
+  getCurrentPage: ctx => ctx.session.page,
+  setPage: (ctx, page) => {
+    ctx.session.page = page
+  }
 })
 
 function getChangesOptions(ctx) {

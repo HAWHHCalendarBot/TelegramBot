@@ -79,8 +79,8 @@ filteredOptions(userMenu, {
     delete ctx.session.adminuserquicklook
   },
   getFilteredOptionsFunc: userOptions,
-  columns: 3,
-  maxRows: 4,
+  columns: 2,
+  maxRows: 5,
   setFunc: (ctx, selected) => {
     ctx.session.adminuserquicklook = selected
   }

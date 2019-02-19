@@ -28,7 +28,11 @@ function deleteDict(ctx) {
 
 menu.select('r', deleteDict, {
   setFunc: remove,
-  columns: 2
+  columns: 2,
+  getCurrentPage: ctx => ctx.session.page,
+  setPage: (ctx, page) => {
+    ctx.session.page = page
+  }
 })
 
 function generateRemoveKeyboard(ctx) {

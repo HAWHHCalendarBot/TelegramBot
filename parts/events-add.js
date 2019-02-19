@@ -3,7 +3,7 @@ const TelegrafInlineMenu = require('telegraf-inline-menu')
 const allEvents = require('../lib/all-events')
 const {filteredOptions} = require('../lib/inline-menu-helper')
 
-const MAX_RESULT_ROWS = 15
+const MAX_RESULT_ROWS = 10
 const RESULT_COLUMNS = 2
 
 const menu = new TelegrafInlineMenu(menuText)
@@ -13,8 +13,6 @@ async function menuText(ctx) {
   const filteredEvents = await findEvents(ctx, filter)
   const isFiltered = filter !== '.+'
   const total = await allEvents.count()
-  const perPage = MAX_RESULT_ROWS * RESULT_COLUMNS
-  const moreThanCurrentlyShown = filteredEvents.length > perPage
 
   let text = '*Veranstaltungen*'
   text += '\nWelche Events möchtest du hinzufügen?'
@@ -22,11 +20,7 @@ async function menuText(ctx) {
   if (isFiltered) {
     text += `Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`
   } else {
-    text += `Ich habe ${total} Veranstaltungen.`
-  }
-
-  if (moreThanCurrentlyShown) {
-    text += ` Davon werden nur die ersten ${perPage} Veranstaltungen angezeigt. Nutze den Filter um das Ergebnis zu verbessern.`
+    text += `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
   }
 
   return text

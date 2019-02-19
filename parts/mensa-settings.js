@@ -57,7 +57,11 @@ menu.submenu(mainMensaText, 'main', new TelegrafInlineMenu('*Mensa Einstellungen
   .select('set', getCanteenList, {
     setFunc: setMainMensa,
     isSetFunc: (ctx, mensa) => mensa === getMainMensa(ctx),
-    columns: 2
+    columns: 2,
+    getCurrentPage: ctx => ctx.session.page,
+    setPage: (ctx, page) => {
+      ctx.session.page = page
+    }
   })
 
 function isAdditionalMensa(ctx, mensa) {
@@ -106,7 +110,11 @@ menu.submenu(moreMensaText, 'more', new TelegrafInlineMenu(
   .select('more', getCanteenList, {
     setFunc: toggleAdditionalMensa,
     prefixFunc: moreMensaEmoji,
-    columns: 2
+    columns: 2,
+    getCurrentPage: ctx => ctx.session.page,
+    setPage: (ctx, page) => {
+      ctx.session.page = page
+    }
   })
 
 const priceOptions = {

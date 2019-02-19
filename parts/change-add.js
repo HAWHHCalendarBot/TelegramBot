@@ -92,6 +92,10 @@ function possibleEventsToCreateChangeToOptions(ctx) {
 
 menu.select('event', possibleEventsToCreateChangeToOptions, {
   columns: 2,
+  getCurrentPage: ctx => ctx.session.page,
+  setPage: (ctx, page) => {
+    ctx.session.page = page
+  },
   hide: hidePickEventStep,
   setFunc: async (ctx, key) => {
     if (await allEvents.exists(key)) {
