@@ -9,7 +9,7 @@ function getUrl(ctx) {
 const menu = new TelegrafInlineMenu(mainText)
 
 menu.submenu('🍏 iOS / macOS', 'apple', new TelegrafInlineMenu(appleText))
-  .urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.php?url=${getUrl(ctx)}`)
+  .urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.html?url=${getUrl(ctx)}`)
 
 menu.submenu('🗂 HAW Mailer (Exchange)', 'exchange', new TelegrafInlineMenu(exchangeText))
   .urlButton('HAW Mailer', 'https://www.haw-hamburg.de/online-services/haw-mailer.html')
@@ -21,7 +21,7 @@ menu.submenu('🍰 Google Kalender', 'google', new TelegrafInlineMenu(googleText
   .manual('abonnieren mit dem HAW-Mailer (Exchange)', 'url:exchange', {root: true})
 
 menu.submenu('Freestyle 😎', 'freestyle', new TelegrafInlineMenu(freestyleText))
-  .urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.php?url=${getUrl(ctx)}`)
+  .urlButton('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.html?url=${getUrl(ctx)}`)
 
 function mainText(ctx) {
   let text = '*Kalender abonnieren*'
