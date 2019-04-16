@@ -66,7 +66,7 @@ menu.submenu(mainMensaText, 'main', new TelegrafInlineMenu('*Mensa Einstellungen
 
 function isAdditionalMensa(ctx, mensa) {
   const selected = ctx.state.userconfig.mensa.more || []
-  return selected.indexOf(mensa) >= 0
+  return selected.includes(mensa)
 }
 
 function toggleAdditionalMensa(ctx, mensa) {
@@ -75,7 +75,7 @@ function toggleAdditionalMensa(ctx, mensa) {
   }
 
   const selected = ctx.state.userconfig.mensa.more || []
-  if (selected.indexOf(mensa) >= 0) {
+  if (selected.includes(mensa)) {
     ctx.state.userconfig.mensa.more = selected.filter(o => o !== mensa)
   } else {
     selected.push(mensa)

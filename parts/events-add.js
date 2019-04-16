@@ -46,7 +46,7 @@ function findEvents(ctx, pattern) {
 async function addEvent(ctx, event) {
   const isExisting = await allEvents.exists(event)
   const isAlreadyInCalendar = ctx.state.userconfig.events
-    .indexOf(event) >= 0
+    .includes(event)
 
   if (!isExisting) {
     return ctx.answerCbQuery(`${event} existiert nicht!`)

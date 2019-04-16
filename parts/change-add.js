@@ -143,7 +143,7 @@ async function possibleTimesToCreateChangeToOptions(ctx) {
   const dates = events
     .map(o => o.StartTime)
     .map(o => o.toISOString().replace(':00.000Z', ''))
-    .filter(o => existingChangeDates.indexOf(o) < 0)
+    .filter(o => !existingChangeDates.includes(o))
     .filter(arrayFilterUnique())
   const options = {}
   for (const date of dates) {
