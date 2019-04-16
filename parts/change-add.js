@@ -1,4 +1,5 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
+const arrayFilterUnique = require('array-filter-unique')
 
 const allEvents = require('../lib/all-events')
 const {formatDateToHumanReadable} = require('../lib/calendar-helper')
@@ -143,9 +144,9 @@ async function possibleTimesToCreateChangeToOptions(ctx) {
     .map(o => o.StartTime)
     .map(o => o.toISOString().replace(':00.000Z', ''))
     .filter(o => existingChangeDates.indexOf(o) < 0)
-  const uniqueDates = [...new Set(dates)]
+    .filter(arrayFilterUnique())
   const options = {}
-  for (const date of uniqueDates) {
+  for (const date of dates) {
     options[date.replace(':', '!')] = formatDateToHumanReadable(date)
   }
 
