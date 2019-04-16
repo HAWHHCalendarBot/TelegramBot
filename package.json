@@ -1,6 +1,6 @@
 {
   "name": "hawhhcalendarbot-telegrambot",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "private": true,
   "description": "A bot to configure your personal calendar of HAW Hamburg lectures",
   "author": "edjopato@gmail.com",
