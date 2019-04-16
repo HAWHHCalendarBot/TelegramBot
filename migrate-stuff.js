@@ -1,3 +1,4 @@
+const arrayFilterUnique = require('array-filter-unique')
 const Telegraf = require('telegraf')
 
 const bot = new Telegraf.Composer()
@@ -30,6 +31,17 @@ bot.use((ctx, next) => {
   delete ctx.state.userconfig.settings
 
   delete ctx.state.userconfig.showRemovedEvents
+
+  if (ctx.state.userconfig.additionalEvents) {
+    ctx.state.userconfig.events = [
+      ...ctx.state.userconfig.events,
+      ...ctx.state.userconfig.additionalEvents
+    ]
+      .filter(arrayFilterUnique())
+      .sort()
+
+    delete ctx.state.userconfig.additionalEvents
+  }
 
   return next()
 })
