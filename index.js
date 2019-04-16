@@ -11,7 +11,6 @@ const Chatconfig = require('./lib/chatconfig')
 const migrateStuff = require('./migrate-stuff')
 
 const about = require('./parts/about')
-const additionalEvents = require('./parts/additional-events')
 const admin = require('./parts/admin')
 const changesInline = require('./parts/changes-inline')
 const easterEggs = require('./parts/easter-eggs')
@@ -19,7 +18,6 @@ const events = require('./parts/events')
 const generateEventDate = require('./parts/generate-event-date')
 const mensa = require('./parts/mensa')
 const settings = require('./parts/settings')
-const start = require('./parts/start')
 const stats = require('./parts/stats')
 const subscribe = require('./parts/subscribe')
 
@@ -52,21 +50,15 @@ bot.use(chatconfig)
 
 bot.use(migrateStuff.bot)
 
-bot.use(additionalEvents.bot)
 bot.use(changesInline.bot)
 bot.use(easterEggs.bot)
 bot.use(generateEventDate.bot)
-bot.use(start.bot)
 
 const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
 
 menu.submenu('🏢 Veranstaltungen', 'e', events.menu)
 menu.submenu('📲 Kalender abonnieren', 'url', subscribe.menu, {
-  hide: ctx => {
-    const normal = (ctx.state.userconfig.events || []).length
-    const tutor = (ctx.state.userconfig.additionalEvents || []).length
-    return normal + tutor === 0
-  }
+  hide: ctx => (ctx.state.userconfig.events || []).length === 0
 })
 
 menu.submenu('🍽 Mensa', 'mensa', mensa.menu)

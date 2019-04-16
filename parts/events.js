@@ -7,7 +7,7 @@ const changes = require('./changes')
 function overviewText(ctx) {
   let text = '*Veranstaltungen*'
 
-  const {events, additionalEvents} = ctx.state.userconfig
+  const {events} = ctx.state.userconfig
   if (events.length > 0) {
     text += '\n\nDu hast folgende Veranstaltungen im Kalender:\n'
     const eventLines = events
@@ -18,13 +18,7 @@ function overviewText(ctx) {
     text += '\n\nDu hast aktuell keine Veranstaltungen in deinem Kalender. 😔'
   }
 
-  if ((additionalEvents || []).length > 0) {
-    text += '\n\nUnd du bist Veranstalter:\n'
-    const eventLines = additionalEvents.map(o => '- ' + o)
-    text += eventLines.join('\n')
-  } else {
-    text += '\n\nDu bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Schreib mal @EdJoPaTo an. ;)'
-  }
+  text += '\n\nDu bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Wirf mal einen Blick auf [AdditionalEvents](https://github.com/HAWHHCalendarBot/AdditionalEvents) oder schreib @EdJoPaTo an. ;)'
 
   return text
 }

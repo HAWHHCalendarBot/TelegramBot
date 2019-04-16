@@ -40,14 +40,12 @@ filteredOptions(menu, {
 
 function findEvents(ctx, pattern) {
   const blacklist = ctx.state.userconfig.events
-    .concat(ctx.state.userconfig.additionalEvents || [])
   return allEvents.find(pattern, blacklist)
 }
 
 async function addEvent(ctx, event) {
   const isExisting = await allEvents.exists(event)
   const isAlreadyInCalendar = ctx.state.userconfig.events
-    .concat(ctx.state.userconfig.additionalEvents || [])
     .indexOf(event) >= 0
 
   if (!isExisting) {
