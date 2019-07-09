@@ -5,9 +5,10 @@ node_modules
 .nyc_output
 
 # botfiles
+bot-token.txt
+
 additionalEvents
 eventfiles
 meals
 tmp
-token.txt
 userconfig

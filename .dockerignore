@@ -6,10 +6,11 @@ node_modules
 README.md
 
 # botfiles
-additionalEvents
+bot-token.txt
 botfather-settings
+
+additionalEvents
 eventfiles
 meals
 tmp
-token.txt
 userconfig

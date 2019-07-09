@@ -1,4 +1,4 @@
-const fs = require('fs')
+const {existsSync, readFileSync} = require('fs')
 const Telegraf = require('telegraf')
 const session = require('telegraf/session')
 const TelegrafInlineMenu = require('telegraf-inline-menu')
@@ -21,8 +21,8 @@ const settings = require('./parts/settings')
 const stats = require('./parts/stats')
 const subscribe = require('./parts/subscribe')
 
-const tokenFilePath = process.env.NODE_ENV === 'production' ? process.env.npm_package_config_tokenpath : process.env.npm_package_config_tokenpathdebug
-const token = fs.readFileSync(tokenFilePath, 'utf8').trim()
+const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt'
+const token = readFileSync(tokenFilePath, 'utf8').trim()
 const bot = new Telegraf(token)
 
 // For handling group/supergroup commands (/start@your_bot) you need to provide bot username.
