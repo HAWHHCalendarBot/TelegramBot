@@ -104,7 +104,7 @@ bot.catch(error => {
       text += JSON.stringify(error.description || error, null, 2)
       text += '\n```\n'
       bot.telegram.sendMessage(error.on.payload.chat_id, text, Extra.markdown())
-    } catch (errorWhileSendError) {
+    } catch (_) {
       console.error(new Date(), 'Error while sending error to user', error)
     }
   }

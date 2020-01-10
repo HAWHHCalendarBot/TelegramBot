@@ -19,7 +19,7 @@
   "devDependencies": {
     "ava": "^2.1.0",
     "nyc": "^15.0.0",
-    "xo": "^0.24.0"
+    "xo": "^0.25.3"
   },
   "scripts": {
     "ava": "ava",
@@ -33,6 +33,9 @@
   "xo": {
     "space": true,
     "semicolon": false,
+    "rules": {
+      "prefer-named-capture-group": "off"
+    },
     "overrides": [
       {
         "files": [

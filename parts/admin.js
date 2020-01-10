@@ -98,7 +98,7 @@ async function userOptions(ctx, filter) {
   allChats.sort((a, b) => {
     const nameA = nameOfUser(a)
     const nameB = nameOfUser(b)
-    return nameA > nameB ? 1 : nameA < nameB ? -1 : 0
+    return nameA.localeCompare(nameB)
   })
 
   const result = {}
