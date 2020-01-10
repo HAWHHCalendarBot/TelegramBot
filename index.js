@@ -112,4 +112,9 @@ bot.catch(error => {
   console.error(new Date(), 'Telegraf Error', error.response, error.parameters, error.on || error, error.on && error.on.payload && error.on.payload.reply_markup && error.on.payload.reply_markup.inline_keyboard)
 })
 
-bot.startPolling()
+async function startup() {
+  await bot.launch()
+  console.log(new Date(), 'Bot started as', bot.options.username)
+}
+
+startup()
