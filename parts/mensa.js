@@ -2,9 +2,13 @@ const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const {generateMealText} = require('../lib/mensa-helper')
 const {getMealsOfDay} = require('../lib/mensa-meals')
+const mensaGit = require('../lib/mensa-git')
 
 const weekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
 const DAY_IN_MS = 1000 * 60 * 60 * 24
+
+setInterval(async () => mensaGit.pull(), 1000 * 60 * 30) // Every 30 minutes
+mensaGit.pull()
 
 function getYearMonthDay(date) {
   const year = date.getFullYear()

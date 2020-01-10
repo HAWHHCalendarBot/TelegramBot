@@ -1,9 +1,11 @@
 const arrayFilterUnique = require('array-filter-unique')
 const Telegraf = require('telegraf')
 
+const {getCanteenList} = require('./lib/mensa-meals')
+
 const bot = new Telegraf.Composer()
 
-bot.use((ctx, next) => {
+bot.use(async (ctx, next) => {
   // Mirgrate Mensa Student Price
   if (ctx.state.userconfig.mensa) {
     if (ctx.state.userconfig.mensa.student) {
@@ -25,6 +27,12 @@ bot.use((ctx, next) => {
       if (beforeCount !== afterCount) {
         console.log('migration: removed main mensa in more', ctx.from)
       }
+    }
+
+    if (more) {
+      const allAvailableCanteens = await getCanteenList()
+      ctx.state.userconfig.mensa.more = more
+        .filter(o => allAvailableCanteens.includes(o))
     }
   }
 
