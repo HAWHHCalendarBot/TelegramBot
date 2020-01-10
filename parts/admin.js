@@ -28,6 +28,7 @@ async function sendBroadcast(ctx) {
 
 broadcastMenu.question(broadcastButtonText, 'set', {
   setFunc: setMessageToBroadcast,
+  uniqueIdentifier: 'admin-broadcast',
   questionText: 'Hey admin! Was willst du broadcasten?'
 })
 
@@ -72,6 +73,7 @@ userMenu.urlButton('Kalender', async ctx => {
 })
 
 filteredOptions(userMenu, {
+  uniqueIdentifier: 'admin-user-filter',
   uniqueQuestionText: 'Wonach möchtest du die Nutzer filtern?',
   getCurrentFilterFunc: ctx => ctx.session.adminuserquicklookfilter,
   setCurrentFilterFunc: (ctx, filter) => {

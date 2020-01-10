@@ -27,6 +27,7 @@ async function menuText(ctx) {
 }
 
 filteredOptions(menu, {
+  uniqueIdentifier: 'events-add-filter',
   uniqueQuestionText: 'Wonach möchtest du die Veranstaltungen filtern?',
   getCurrentFilterFunc: ctx => ctx.session.eventfilter,
   setCurrentFilterFunc: (ctx, filter) => {

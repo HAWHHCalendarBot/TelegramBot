@@ -209,6 +209,7 @@ addStartEndTimeSelectionSubmenu(menu, {
 addQuestionButton(menu, 'namesuffix', {
   emoji: '🗯',
   buttonText: 'Namenszusatz',
+  uniqueIdentifier: 'change-add-suffix',
   questionText: 'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.',
   getCurrent: generalGet,
   setFunc: generalSet
@@ -219,6 +220,7 @@ addQuestionButton(menu, 'namesuffix', {
 addQuestionButton(menu, 'room', {
   emoji: '📍',
   buttonText: 'Raum',
+  uniqueIdentifier: 'change-add-room',
   questionText: 'In welchen Raum wurde der Termin verschoben?',
   getCurrent: generalGet,
   setFunc: generalSet

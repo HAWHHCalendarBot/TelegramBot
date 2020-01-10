@@ -110,6 +110,7 @@ suffixMenu.button('Generieren…', 'g', {
 
 suffixMenu.question('Manuell setzen…', 's', {
   setFunc: setSuffix,
+  uniqueIdentifier: 'subscribe-suffix-manual',
   questionText: `Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeiche werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`
 })
 

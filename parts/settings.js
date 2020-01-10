@@ -80,6 +80,7 @@ menu.submenu('💾 Gespeicherte Daten über dich', 'data', new TelegrafInlineMen
   .question('⚠️ Alles löschen ⚠️', 'delete-all', {
     setFunc: deleteEverything,
     hide: async ctx => !(await getActualUserconfigContent(ctx)),
+    uniqueIdentifier: 'delete-everything',
     questionText: deleteQuestion
   })
 
