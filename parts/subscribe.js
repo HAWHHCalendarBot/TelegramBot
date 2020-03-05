@@ -114,14 +114,6 @@ suffixMenu.question('Manuell setzen…', 's', {
   questionText: `Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeiche werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`
 })
 
-suffixMenu.button('⚠️ Schutz entfernen', 'r', {
-  doFunc: ctx => {
-    delete ctx.state.userconfig.calendarfileSuffix
-    return sendHintText(ctx)
-  },
-  hide: ctx => !ctx.state.userconfig.calendarfileSuffix
-})
-
 function appleText() {
   let text = '*Kalender abonnieren mit iOS / macOS*'
   text += '\nAuf den ersten Button klicken und die URL in Safari öffnen. Auf der nun geöffneten Website auf das Kalender Icon klicken und bestätigen. Done.'
