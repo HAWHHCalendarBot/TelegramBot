@@ -85,15 +85,18 @@ setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 checkStISysChangeAndNotify()
 
 async function checkStISysChangeAndNotify() {
-  const hasChanged = await hasStISysChanged()
-  console.log(new Date(), 'StISys has changed:', hasChanged)
-  if (!hasChanged) {
-    return
+  try {
+    const hasChanged = await hasStISysChanged()
+    if (!hasChanged) {
+      return
+    }
+
+    const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
+
+    await chatconfig.broadcast(bot.telegram, text, Extra.markdown().markup(Markup.removeKeyboard()), user => user.config.stisysUpdate)
+  } catch (error) {
+    console.error('checkStISysChangeAndNotify failed', error)
   }
-
-  const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
-
-  chatconfig.broadcast(bot.telegram, text, Extra.markdown().markup(Markup.removeKeyboard()), user => user.config.stisysUpdate)
 }
 
 bot.catch(error => {
