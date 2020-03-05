@@ -6,7 +6,7 @@
   "author": "edjopato@gmail.com",
   "main": "index.js",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "dependencies": {
     "array-filter-unique": "^2.1.0",
@@ -17,9 +17,9 @@
     "telegraf-inline-menu": "^4.0.0"
   },
   "devDependencies": {
-    "ava": "^2.1.0",
+    "ava": "^3.5.0",
     "nyc": "^15.0.0",
-    "xo": "^0.25.3"
+    "xo": "^0.27.2"
   },
   "scripts": {
     "ava": "ava",
