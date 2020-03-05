@@ -154,7 +154,7 @@ function googleText(ctx) {
 }
 
 function freestyleText(ctx) {
-  let text = '*Kalender abonnieren Freesyle Edition* 😎'
+  let text = '*Kalender abonnieren Freestyle Edition* 😎'
   text += '\nWenn dein Kalender Standards unterstützt, benutz den ersten Button an dieser Nachricht und öffne die Website. Klicke auf das Kalender Icon. Der Browser fragt dich nun, mit welchem Tool er den webcal:// Link öffnen soll. Wähle dein Kalenderprogramm.'
 
   text += '\n'
