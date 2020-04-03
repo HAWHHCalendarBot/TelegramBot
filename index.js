@@ -35,6 +35,33 @@ if (process.env.NODE_ENV !== 'production') {
   bot.use(generateUpdateMiddleware())
 }
 
+bot.use(async (ctx, next) => {
+  try {
+    if (next) {
+      await next()
+    }
+  } catch (error) {
+    if (error.message.includes('Too Many Requests')) {
+      console.warn('Telegraf Too Many Requests error. Skip.', error)
+      return
+    }
+
+    console.error('try to send error to user', ctx.update, error, error && error.on && error.on.payload)
+    let text = '🔥 Da ist wohl ein Fehler aufgetreten…'
+    text += '\n'
+    text += 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️'
+
+    text += '\n'
+    text += '\nError: `'
+    text += error.message
+      .replace(token, '')
+    text += '`'
+
+    const target = (ctx.chat || ctx.from).id
+    await ctx.telegram.sendMessage(target, text, Extra.markdown().webPreview(false))
+  }
+})
+
 bot.use(session())
 const chatconfig = new Chatconfig('userconfig', {
   events: []
@@ -93,19 +120,8 @@ async function checkStISysChangeAndNotify() {
 }
 
 bot.catch(error => {
-  if (error.on && error.on.payload && error.on.payload.chat_id) {
-    try {
-      let text = 'Da ist wohl ein Fehler aufgetreten… Schreib mal @EdJoPaTo dazu an. Dafür findet sich sicher eine Lösung:'
-      text += '\n```\n'
-      text += JSON.stringify(error.description || error, null, 2)
-      text += '\n```\n'
-      bot.telegram.sendMessage(error.on.payload.chat_id, text, Extra.markdown())
-    } catch (_) {
-      console.error(new Date(), 'Error while sending error to user', error)
-    }
-  }
-
-  console.error(new Date(), 'Telegraf Error', error.response, error.parameters, error.on || error, error.on && error.on.payload && error.on.payload.reply_markup && error.on.payload.reply_markup.inline_keyboard)
+  // Should not occur as the error middleware is in place
+  console.error('Telegraf Error', error)
 })
 
 async function startup() {
