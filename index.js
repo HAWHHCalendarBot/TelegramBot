@@ -2,6 +2,7 @@ const {existsSync, readFileSync} = require('fs')
 const Telegraf = require('telegraf')
 const session = require('telegraf/session')
 const TelegrafInlineMenu = require('telegraf-inline-menu')
+const {generateUpdateMiddleware} = require('telegraf-middleware-console-time')
 
 const {Extra, Markup} = Telegraf
 
@@ -31,15 +32,7 @@ bot.telegram.getMe().then(botInfo => {
 })
 
 if (process.env.NODE_ENV !== 'production') {
-  bot.use(async (ctx, next) => {
-    const identifier = `${new Date().toISOString()} ${ctx.from && ctx.from.first_name} ${ctx.updateType}`
-    console.time(identifier)
-    await next()
-    const callbackData = ctx.callbackQuery && ctx.callbackQuery.data
-    const messageText = ctx.message && ctx.message.text
-    const data = callbackData || messageText
-    console.timeLog(identifier, data && data.length, data)
-  })
+  bot.use(generateUpdateMiddleware())
 }
 
 bot.use(session())

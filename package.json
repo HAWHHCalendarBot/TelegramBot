@@ -14,7 +14,8 @@
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "telegraf": "^3.29.0",
-    "telegraf-inline-menu": "^4.0.0"
+    "telegraf-inline-menu": "^4.0.0",
+    "telegraf-middleware-console-time": "^1.0.0"
   },
   "devDependencies": {
     "ava": "^3.5.0",
