@@ -2,7 +2,7 @@
 
 function pull {
   echo "pull $1"
-  rsync -acv --delete-delay sk1m.de:/srv/calendarbot/$1/ $1/ | grep -E '^deleting|[^/]$|^$'
+  rsync -acv --delete-delay calendarbot.hawhh.de:/srv/hawhh-calendarbot/$1/ $1/ | grep -E '^deleting|[^/]$|^$'
 }
 
 pull eventfiles
