@@ -16,7 +16,6 @@ const admin = require('./parts/admin')
 const changesInline = require('./parts/changes-inline')
 const easterEggs = require('./parts/easter-eggs')
 const events = require('./parts/events')
-const generateEventDate = require('./parts/generate-event-date')
 const mensa = require('./parts/mensa')
 const settings = require('./parts/settings')
 const stats = require('./parts/stats')
@@ -72,7 +71,6 @@ bot.use(migrateStuff.bot)
 
 bot.use(changesInline.bot)
 bot.use(easterEggs.bot)
-bot.use(generateEventDate.bot)
 
 const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
 

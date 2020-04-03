@@ -1,9 +1,4 @@
-const Telegraf = require('telegraf')
 const TelegrafInlineMenu = require('telegraf-inline-menu')
-
-const {generateInlineKeyboardMarkup} = require('../lib/telegraf-helper')
-
-const {Extra, Markup} = Telegraf
 
 function overviewText(ctx) {
   const {events} = ctx.state.userconfig
@@ -35,25 +30,14 @@ menu.select('r', deleteDict, {
   }
 })
 
-function generateRemoveKeyboard(ctx) {
-  return generateInlineKeyboardMarkup('r', ctx.state.userconfig.events, 1)
-}
-
-function remove(ctx, event) {
+async function remove(ctx, event) {
   ctx.state.userconfig.events = ctx.state.userconfig.events.filter(e => e !== event)
 
   // Remove changes to that event too
   const currentChanges = ctx.state.userconfig.changes || []
   ctx.state.userconfig.changes = currentChanges.filter(o => o.name !== event)
 
-  // Update message
-  if (ctx.state.userconfig.events.length === 0) {
-    ctx.editMessageText('Alle deine Veranstaltungen wurden bereits aus dem Kalender entfernt. 😳', Extra.markup(Markup.inlineKeyboard([])))
-  } else {
-    ctx.editMessageReplyMarkup(generateRemoveKeyboard(ctx))
-  }
-
-  return ctx.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
+  await ctx.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
 }
 
 module.exports = {
