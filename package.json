@@ -3,7 +3,11 @@
   "version": "6.1.2",
   "private": true,
   "description": "A bot to configure your personal calendar of HAW Hamburg lectures",
-  "author": "edjopato@gmail.com",
+	"author": {
+		"name": "EdJoPaTo",
+		"email": "calendarbot@hawhh.de",
+		"url": "https://calendarbot.hawhh.de"
+	},
   "main": "index.js",
   "engines": {
     "node": ">=12"
