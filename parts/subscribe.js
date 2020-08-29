@@ -76,15 +76,15 @@ function suffixText(ctx) {
 const SUFFIX_MAX_LENGTH = 15
 const SUFFIX_MIN_LENGTH = 3
 
-function setSuffix(ctx, val) {
-  val = String(val)
+function setSuffix(ctx, value) {
+  value = String(value)
     .replace(/[^\w\d]/g, '')
     .slice(0, SUFFIX_MAX_LENGTH)
-  if (val.length < SUFFIX_MIN_LENGTH) {
+  if (value.length < SUFFIX_MIN_LENGTH) {
     return
   }
 
-  ctx.state.userconfig.calendarfileSuffix = val
+  ctx.state.userconfig.calendarfileSuffix = value
   return sendHintText(ctx)
 }
 

@@ -16,7 +16,7 @@ function getChangeFromCtx(ctx) {
   const date = match[2].replace('.', ':')
 
   const changes = ctx.state.userconfig.changes || []
-  const change = changes.filter(c => c.name === name && c.date === date)[0]
+  const change = changes.find(c => c.name === name && c.date === date)
   return change
 }
 

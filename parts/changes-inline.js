@@ -71,7 +71,7 @@ async function preAddMiddleware(ctx, next) {
 
     ctx.state.addChange = searchedChange[0]
     return next()
-  } catch (_) {
+  } catch {
     return ctx.editMessageText('Die Veranstaltungsänderung existiert nicht mehr. 😔')
   }
 }

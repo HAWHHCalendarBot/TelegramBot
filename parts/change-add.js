@@ -136,14 +136,14 @@ async function possibleTimesToCreateChangeToOptions(ctx) {
     return []
   }
 
-  const existingChangeDates = changesOfEvent(ctx, name)
-    .map(o => o.date)
+  const existingChangeDates = new Set(changesOfEvent(ctx, name)
+    .map(o => o.date))
 
   const events = await loadEvents(name, 'utf8')
   const dates = events
     .map(o => o.StartTime)
     .map(o => o.toISOString().replace(':00.000Z', ''))
-    .filter(o => !existingChangeDates.includes(o))
+    .filter(o => !existingChangeDates.has(o))
     .filter(arrayFilterUnique())
   const options = {}
   for (const date of dates) {
@@ -175,17 +175,17 @@ menu.simpleButton('🚫 Entfällt', 'remove', {
   }
 })
 
-function generalGet(ctx, param) {
-  return ctx.session.generateChange[param]
+function generalGet(ctx, parameter) {
+  return ctx.session.generateChange[parameter]
 }
 
-function generalSet(ctx, param, newValue) {
-  if (param === 'starttime' && ctx.session.generateChange.add) {
+function generalSet(ctx, parameter, newValue) {
+  if (parameter === 'starttime' && ctx.session.generateChange.add) {
     const date = ctx.session.generateChange.date.split('T')[0]
     ctx.session.generateChange.date = `${date}T${newValue}`
   }
 
-  ctx.session.generateChange[param] = newValue
+  ctx.session.generateChange[parameter] = newValue
 }
 
 addDateSelection(menu, {

@@ -3,28 +3,28 @@
   "version": "6.1.2",
   "private": true,
   "description": "A bot to configure your personal calendar of HAW Hamburg lectures",
-	"author": {
-		"name": "EdJoPaTo",
-		"email": "calendarbot@hawhh.de",
-		"url": "https://calendarbot.hawhh.de"
-	},
+  "author": {
+    "name": "EdJoPaTo",
+    "email": "calendarbot@hawhh.de",
+    "url": "https://calendarbot.hawhh.de"
+  },
   "main": "index.js",
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "dependencies": {
     "array-filter-unique": "^2.1.0",
     "json-stable-stringify": "^1.0.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "telegraf": "^3.29.0",
+    "telegraf": "^3.38.0",
     "telegraf-inline-menu": "^4.0.0",
     "telegraf-middleware-console-time": "^1.0.0"
   },
   "devDependencies": {
     "ava": "^3.5.0",
     "nyc": "^15.0.0",
-    "xo": "^0.28.2"
+    "xo": "^0.33.0"
   },
   "scripts": {
     "ava": "ava",
@@ -40,7 +40,7 @@
     "semicolon": false,
     "rules": {
       "prefer-named-capture-group": "off",
-      "unicorn/prevent-abbreviations": "warn"
+      "unicorn/no-fn-reference-in-iterator": "warn"
     },
     "overrides": [
       {

@@ -31,7 +31,7 @@ menu.select('r', deleteDict, {
 })
 
 async function remove(ctx, event) {
-  ctx.state.userconfig.events = ctx.state.userconfig.events.filter(e => e !== event)
+  ctx.state.userconfig.events = ctx.state.userconfig.events.filter(o => o !== event)
 
   // Remove changes to that event too
   const currentChanges = ctx.state.userconfig.changes || []
