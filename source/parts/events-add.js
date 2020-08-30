@@ -50,16 +50,18 @@ async function addEvent(ctx, event) {
     .includes(event)
 
   if (!isExisting) {
-    return ctx.answerCbQuery(`${event} existiert nicht!`)
+    await ctx.answerCbQuery(`${event} existiert nicht!`)
+    return
   }
 
   if (isAlreadyInCalendar) {
-    return ctx.answerCbQuery(`${event} ist bereits in deinem Kalender!`)
+    await ctx.answerCbQuery(`${event} ist bereits in deinem Kalender!`)
+    return
   }
 
   ctx.state.userconfig.events.push(event)
   ctx.state.userconfig.events.sort()
-  return ctx.answerCbQuery(`${event} wurde zu deinem Kalender hinzugefügt.`)
+  await ctx.answerCbQuery(`${event} wurde zu deinem Kalender hinzugefügt.`)
 }
 
 module.exports = {

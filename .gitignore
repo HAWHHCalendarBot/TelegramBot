@@ -1,8 +1,9 @@
 botfather-settings/userpic.png
 
 # node
-node_modules
 .nyc_output
+dist
+node_modules
 
 # botfiles
 bot-token.txt

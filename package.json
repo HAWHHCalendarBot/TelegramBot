@@ -8,42 +8,47 @@
     "email": "calendarbot@hawhh.de",
     "url": "https://calendarbot.hawhh.de"
   },
-  "main": "source/index.js",
   "engines": {
     "node": ">=14"
   },
   "dependencies": {
     "array-filter-unique": "^2.1.0",
+    "got": "^11.5.2",
     "json-stable-stringify": "^1.0.1",
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.7",
     "telegraf": "^3.38.0",
     "telegraf-inline-menu": "^4.0.0",
     "telegraf-middleware-console-time": "^1.0.0"
   },
   "devDependencies": {
+    "@sindresorhus/tsconfig": "^0.7.0",
+    "@types/json-stable-stringify": "^1.0.32",
     "ava": "^3.5.0",
     "nyc": "^15.0.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2",
     "xo": "^0.33.0"
   },
   "scripts": {
-    "start": "node source/index.js",
-    "test": "xo && nyc ava"
+    "start": "ts-node source/index.ts",
+    "test": "tsc --sourceMap && xo && nyc ava"
   },
   "xo": {
-    "space": true,
     "semicolon": false,
     "rules": {
+      "ava/no-ignored-test-files": "off",
       "prefer-named-capture-group": "off",
       "unicorn/no-fn-reference-in-iterator": "warn"
     },
     "overrides": [
       {
         "files": [
-          "source/parts/changes-inline.js"
+          "source/**/*.js"
         ],
         "rules": {
-          "camelcase": "off"
+          "indent": [
+            "error",
+            2
+          ]
         }
       }
     ]

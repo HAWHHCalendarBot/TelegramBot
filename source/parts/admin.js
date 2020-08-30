@@ -102,10 +102,10 @@ async function userOptions(ctx, filter) {
   })
 
   const result = {}
-  allChats
-    .forEach(chat => {
-      result[String(chat.id)] = nameOfUser(chat)
-    })
+  for (const chat of allChats) {
+    result[String(chat.id)] = nameOfUser(chat)
+  }
+
   return result
 }
 

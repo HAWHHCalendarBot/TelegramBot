@@ -18,12 +18,12 @@ const changeDetails = require('./change-details')
 const menu = new TelegrafInlineMenu(addChangeMenuText)
 
 function changesOfEvent(ctx, name) {
-  const allChanges = ctx.state.userconfig.changes || []
+  const allChanges = ctx.state.userconfig.changes
   return allChanges.filter(o => o.name === name)
 }
 
 function addChangeMenuText(ctx) {
-  const {name, date, add} = ctx.session.generateChange || {}
+  const {name, date, add} = ctx.session.generateChange ?? {}
   let text = ''
   if (!name) {
     return 'Zu welcher Veranstaltung willst du eine Änderung hinzufügen?'
@@ -66,32 +66,28 @@ function hidePickEventStep(ctx) {
 }
 
 function hidePickDateStep(ctx) {
-  const {name, date} = ctx.session.generateChange || {}
+  const {name, date} = ctx.session.generateChange ?? {}
   return !name || date
 }
 
 function hideGenerateChangeStep(ctx) {
-  const {name, date} = ctx.session.generateChange || {}
+  const {name, date} = ctx.session.generateChange ?? {}
   return !name || !date
 }
 
 function hideGenerateAddStep(ctx) {
-  const {name, date, add} = ctx.session.generateChange || {}
+  const {name, date, add} = ctx.session.generateChange ?? {}
   return !name || !date || !add
 }
 
 function generationDataIsValid(ctx) {
-  const keys = Object.keys(ctx.session.generateChange || [])
+  const keys = Object.keys(ctx.session.generateChange ?? [])
   // Required (2): name and date
   // There have to be other changes than that in order to do something.
   return keys.length > 2
 }
 
-function possibleEventsToCreateChangeToOptions(ctx) {
-  return ctx.state.userconfig.events || []
-}
-
-menu.select('event', possibleEventsToCreateChangeToOptions, {
+menu.select('event', ctx => ctx.state.userconfig.events, {
   columns: 2,
   getCurrentPage: ctx => ctx.session.page,
   setPage: (ctx, page) => {
@@ -104,7 +100,7 @@ menu.select('event', possibleEventsToCreateChangeToOptions, {
     } else {
       ctx.state.userconfig.events = ctx.state.userconfig.events
         .filter(o => o !== key)
-      return ctx.answerCbQuery(`⚠️ Die Veranstaltung "${key}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`, true)
+      await ctx.answerCbQuery(`⚠️ Die Veranstaltung "${key}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`, true)
     }
   }
 })
@@ -233,7 +229,7 @@ menu.simpleButton('✅ Fertig stellen', 'finish', {
   hide: ctx => !generationDataIsValid(ctx)
 })
 
-function finish(ctx) {
+async function finish(ctx) {
   const change = ctx.session.generateChange
 
   if (!ctx.state.userconfig.changes) {
@@ -245,14 +241,15 @@ function finish(ctx) {
     // Dont do something when there is already a change for the date
     // This shouldn't occour but it can when the user adds a shared change
     // Also the user can add an additional date that he already has 'used'
-    return ctx.answerCbQuery('Du hast bereits eine Veranstaltungsänderung für diesen Termin.')
+    await ctx.answerCbQuery('Du hast bereits eine Veranstaltungsänderung für diesen Termin.')
+    return
   }
 
   ctx.state.userconfig.changes.push(change)
   delete ctx.session.generateChange
 
   const actionPart = changeDetails.generateChangeAction(change)
-  return changeDetails.setSpecific(ctx, `e:c:d-${actionPart}`)
+  await changeDetails.setSpecific(ctx, `e:c:d-${actionPart}`)
 }
 
 menu.button('🛑 Neu beginnen', 'restart', {
@@ -260,7 +257,7 @@ menu.button('🛑 Neu beginnen', 'restart', {
   doFunc: ctx => {
     ctx.session.generateChange = {}
   },
-  hide: ctx => Object.keys(ctx.session.generateChange || {}).length === 0
+  hide: ctx => Object.keys(ctx.session.generateChange ?? {}).length === 0
 })
 
 module.exports = {

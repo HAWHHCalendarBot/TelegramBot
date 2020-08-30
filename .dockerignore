@@ -1,5 +1,6 @@
 .*
 **/*.test.js
+dist
 Dockerfile
 init-debug-environment.sh
 node_modules
