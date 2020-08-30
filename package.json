@@ -8,7 +8,7 @@
     "email": "calendarbot@hawhh.de",
     "url": "https://calendarbot.hawhh.de"
   },
-  "main": "index.js",
+  "main": "source/index.js",
   "engines": {
     "node": ">=14"
   },
@@ -27,7 +27,7 @@
     "xo": "^0.33.0"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node source/index.js",
     "test": "xo && nyc ava"
   },
   "xo": {
@@ -40,7 +40,7 @@
     "overrides": [
       {
         "files": [
-          "parts/changes-inline.js"
+          "source/parts/changes-inline.js"
         ],
         "rules": {
           "camelcase": "off"

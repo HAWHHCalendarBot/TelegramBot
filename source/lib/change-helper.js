@@ -3,7 +3,7 @@ const fsPromises = require('fs').promises
 const {
   formatDateToHumanReadable,
   parseDateTimeToDate
-} = require('../lib/calendar-helper')
+} = require('./calendar-helper')
 
 function generateChangeDescription(change) {
   let text = ''
