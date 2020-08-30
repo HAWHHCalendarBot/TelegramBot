@@ -27,13 +27,8 @@
     "xo": "^0.33.0"
   },
   "scripts": {
-    "ava": "ava",
-    "ava:watch": "ava -w",
-    "nyc": "nyc",
-    "xo": "xo",
     "start": "node index.js",
-    "pretest": "xo",
-    "test": "nyc ava"
+    "test": "xo && nyc ava"
   },
   "xo": {
     "space": true,
