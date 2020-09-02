@@ -1,6 +1,6 @@
 import TelegrafInlineMenu from 'telegraf-inline-menu'
 
-import {MyContext} from '../lib/types'
+import {MyContext} from '../../lib/types'
 
 function overviewText(context: MyContext): string {
 	const prefix = '*Veranstaltungen*\n'

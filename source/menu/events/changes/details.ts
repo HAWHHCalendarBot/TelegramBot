@@ -1,7 +1,7 @@
 import TelegrafInlineMenu from 'telegraf-inline-menu'
 
-import {Change, MyContext} from '../lib/types'
-import {generateChangeText, generateShortChangeText} from '../lib/change-helper'
+import {Change, MyContext} from '../../../lib/types'
+import {generateChangeText, generateShortChangeText} from '../../../lib/change-helper'
 
 export function generateChangeAction(change: Change): string {
 	return change.name + '#' + change.date.replace(':', '.')

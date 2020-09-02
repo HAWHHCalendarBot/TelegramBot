@@ -1,7 +1,7 @@
 import TelegrafInlineMenu from 'telegraf-inline-menu'
 
-import {getCanteenList} from '../lib/mensa-meals'
-import {MyContext, MealWishes, MensaPriceClass} from '../lib/types'
+import {getCanteenList} from '../../lib/mensa-meals'
+import {MyContext, MealWishes, MensaPriceClass} from '../../lib/types'
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫'

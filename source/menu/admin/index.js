@@ -1,7 +1,7 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
-const {getUrl} = require('../lib/calendar-helper')
-const {filteredOptions} = require('../lib/inline-menu-helper')
+const {getUrl} = require('../../lib/calendar-helper')
+const {filteredOptions} = require('../../lib/inline-menu-helper')
 
 function hide(ctx) {
   return !ctx.state.userconfig.admin

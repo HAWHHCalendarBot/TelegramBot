@@ -1,7 +1,7 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
-const allEvents = require('../lib/all-events')
-const {filteredOptions} = require('../lib/inline-menu-helper')
+const allEvents = require('../../lib/all-events')
+const {filteredOptions} = require('../../lib/inline-menu-helper')
 
 const MAX_RESULT_ROWS = 10
 const RESULT_COLUMNS = 2

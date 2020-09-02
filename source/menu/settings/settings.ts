@@ -1,6 +1,6 @@
 import TelegrafInlineMenu from 'telegraf-inline-menu'
 
-import {MyContext, Userconfig} from '../lib/types'
+import {MyContext, Userconfig} from '../../lib/types'
 
 import {menu as mensaSettingsMenu} from './mensa-settings'
 

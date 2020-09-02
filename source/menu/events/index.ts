@@ -1,9 +1,9 @@
 import TelegrafInlineMenu from 'telegraf-inline-menu'
 
-import {MyContext} from '../lib/types'
+import {MyContext} from '../../lib/types'
 
-import addMenu from './events-add'
-import {menu as removeMenu} from './events-remove'
+import addMenu from './add'
+import {menu as removeMenu} from './remove'
 import {menu as changesMenu} from './changes'
 
 function overviewText(context: MyContext): string {

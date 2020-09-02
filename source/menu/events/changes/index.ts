@@ -1,10 +1,10 @@
 import TelegrafInlineMenu from 'telegraf-inline-menu'
 
-import {generateShortChangeText} from '../lib/change-helper'
-import {MyContext, RemovedEventsDisplayStyle} from '../lib/types'
+import {generateShortChangeText} from '../../../lib/change-helper'
+import {MyContext, RemovedEventsDisplayStyle} from '../../../lib/types'
 
 import changesAdd from './change-add'
-import * as changeDetails from './change-details'
+import * as changeDetails from './details'
 
 export const menu = new TelegrafInlineMenu(mainText)
 

@@ -6,7 +6,7 @@ import {User, ExtraReplyMessage} from 'telegraf/typings/telegram-types'
 import stringify from 'json-stable-stringify'
 
 import {MyContext, Userconfig} from './types'
-import {sequentialLoop } from './async'
+import {sequentialLoop} from './async'
 import * as telegrafBroadcast from './telegraf-broadcast'
 
 interface ChatConfigFileContent {

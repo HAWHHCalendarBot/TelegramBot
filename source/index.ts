@@ -1,7 +1,6 @@
 import {existsSync, readFileSync} from 'fs'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
 import {Telegraf, Extra, Markup, session} from 'telegraf'
-import TelegrafInlineMenu from 'telegraf-inline-menu'
 
 import {Chatconfig} from './lib/chatconfig'
 import {hasStISysChanged} from './lib/has-stisys-changed'
@@ -9,15 +8,10 @@ import {MyContext} from './lib/types'
 
 import {bot as migrateStuffBot} from './migrate-stuff'
 
-import * as about from './parts/about'
-import * as admin from './parts/admin'
 import * as changesInline from './parts/changes-inline'
 import * as easterEggs from './parts/easter-eggs'
-import * as events from './parts/events'
-import * as mensa from './parts/mensa'
-import * as settings from './parts/settings'
-import * as stats from './parts/stats'
-import * as subscribe from './parts/subscribe'
+
+import {bot as menu} from './menu'
 
 const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt'
 const token = readFileSync(tokenFilePath, 'utf8').trim()
@@ -63,30 +57,7 @@ bot.use(migrateStuffBot)
 bot.use(changesInline.bot)
 bot.use(easterEggs.bot)
 
-const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from!.first_name}!`)
-
-menu.submenu('🏢 Veranstaltungen', 'e', events.menu)
-menu.submenu('📲 Kalender abonnieren', 'url', subscribe.menu, {
-	hide: ctx => (ctx as MyContext).state.userconfig.events.length === 0
-})
-
-menu.submenu('🍽 Mensa', 'mensa', mensa.menu)
-
-menu.submenu('😇 Admin Area', 'admin', admin.menu, {
-	hide: admin.hide
-})
-
-menu.submenu('⚙️ Einstellungen', 's', settings.menu)
-
-menu.submenu('📈 Statistiken', 'stats', stats.menu)
-menu.submenu('ℹ️ Über den Bot', 'about', about.menu, {joinLastRow: true})
-
-menu.setCommand('start')
-
-bot.use(menu.init({
-	backButtonText: '🔙 zurück…',
-	mainMenuButtonText: '🔝 zum Hauptmenü'
-}))
+bot.use(menu)
 
 async function checkStISysChangeAndNotify() {
 	try {

@@ -1,19 +1,19 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 const arrayFilterUnique = require('array-filter-unique')
 
-const allEvents = require('../lib/all-events')
-const {formatDateToHumanReadable} = require('../lib/calendar-helper')
+const allEvents = require('../../../lib/all-events')
+const {formatDateToHumanReadable} = require('../../../lib/calendar-helper')
 const {
   loadEvents,
   generateChangeText
-} = require('../lib/change-helper')
+} = require('../../../lib/change-helper')
 const {
   addDateSelection,
   addQuestionButton,
   addStartEndTimeSelectionSubmenu
-} = require('../lib/event-creation-menu-parts')
+} = require('../../../lib/event-creation-menu-parts')
 
-const changeDetails = require('./change-details')
+const changeDetails = require('./details')
 
 const menu = new TelegrafInlineMenu(addChangeMenuText)
 
