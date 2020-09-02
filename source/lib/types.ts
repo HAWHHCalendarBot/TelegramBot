@@ -9,6 +9,7 @@ export interface MyContext extends TelegrafContext {
 		addChange?: Change;
 	};
 	session: {
+		adminBroadcast?: number; // Message ID
 		page?: number;
 		mensa?: {
 			mensa?: string;
@@ -18,6 +19,7 @@ export interface MyContext extends TelegrafContext {
 }
 
 export interface Userconfig {
+	admin?: true;
 	calendarfileSuffix?: string;
 	changes: Change[];
 	events: string[];

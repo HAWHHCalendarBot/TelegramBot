@@ -23,7 +23,7 @@ menu.submenu('📲 Kalender abonnieren', 'url', subscribe.menu, {
 menu.submenu('🍽 Mensa', 'mensa', mensa.menu)
 
 menu.submenu('😇 Admin Area', 'admin', admin.menu, {
-	hide: admin.hide
+	hide: admin.hide as any
 })
 
 menu.submenu('⚙️ Einstellungen', 's', settings.menu)
