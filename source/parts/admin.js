@@ -22,6 +22,7 @@ function setMessageToBroadcast(ctx) {
 }
 
 async function sendBroadcast(ctx) {
+  // TODO: broadcast takes some time. This should be done in parallel so the bot responds to normal users
   await ctx.userconfig.forwardBroadcast(ctx.from.id, ctx.session.adminBroadcast)
   delete ctx.session.adminBroadcast
 }

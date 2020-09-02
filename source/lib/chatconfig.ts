@@ -6,6 +6,8 @@ import {User, ExtraReplyMessage} from 'telegraf/typings/telegram-types'
 import stringify from 'json-stable-stringify'
 
 import {MyContext, Userconfig} from './types'
+import {sequentialLoop } from './async'
+import * as telegrafBroadcast from './telegraf-broadcast'
 
 interface ChatConfigFileContent {
 	chat: User;
@@ -92,15 +94,6 @@ export class Chatconfig {
 		await fsPromises.unlink(this.filenameFromId(id))
 	}
 
-	async removeConfigOnCorrectError(id: number, errorDescription: string): Promise<void> {
-		if (errorDescription.includes('user is deactivated') ||
-      errorDescription.includes('bot was blocked by the user')
-		) {
-			console.log('remove config due to error', id, errorDescription)
-			await this.removeConfig(id)
-		}
-	}
-
 	async allIds(): Promise<number[]> {
 		const files = await fsPromises.readdir(this.folder)
 		const ids = files
@@ -126,31 +119,15 @@ export class Chatconfig {
 	async broadcast(telegram: Telegram, text: string, extra: ExtraReplyMessage, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
 		const allConfigs = await this.all(filter)
 		const allIds = allConfigs.map(config => config.chat.id)
-		// TODO: use loop with sleep. Too many users
-		await Promise.all(
-			allIds.map(async id =>
-				telegram.sendMessage(id, text, extra)
-					.catch(async (error: any) => {
-						console.warn('broadcast failed. Target:', id, error.response)
-						await this.removeConfigOnCorrectError(id, error.message)
-					})
-			)
-		)
+		const failedIds = await telegrafBroadcast.broadcast(telegram, allIds, text, extra)
+		await sequentialLoop(failedIds, async id => this.removeConfig(id))
 	}
 
 	async forwardBroadcast(telegram: Telegram, originChat: string | number, messageId: number, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
 		const allConfigs = await this.all(filter)
 		const allIds = allConfigs.map(config => config.chat.id)
-		// TODO: use loop with sleep. Too many users
-		await Promise.all(
-			allIds.map(async id =>
-				telegram.forwardMessage(id, originChat, messageId)
-					.catch(async (error: any) => {
-						console.warn('forwardBroadcast failed. Target:', id, error.response)
-						await this.removeConfigOnCorrectError(id, error.message)
-					})
-			)
-		)
+		const failedIds = await telegrafBroadcast.forwardBroadcast(telegram, allIds, originChat, messageId)
+		await sequentialLoop(failedIds, async id => this.removeConfig(id))
 	}
 
 	private filenameFromId(id: number): string {
