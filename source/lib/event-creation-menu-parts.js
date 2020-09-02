@@ -1,27 +1,6 @@
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
-function generateNumberArray(start, end, interval = 1) {
-  const array = []
-  for (let i = start; i <= end; i += interval) {
-    array.push(i)
-  }
-
-  return array
-}
-
-const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
-function generateMonthOptions() {
-  const result = {}
-  monthNames.forEach((name, i) => {
-    result[i + 1] = name
-  })
-  return result
-}
-
-function generateYearOptions() {
-  const currentYear = new Date(Date.now()).getFullYear()
-  return generateNumberArray(currentYear - 1, currentYear + 1)
-}
+const {MONTH_NAMES, DAY_OPTIONS, HOUR_OPTIONS, MINUTE_OPTIONS, generateMonthOptions, generateYearOptions} = require('./event-creation-menu-options')
 
 function addDateSelection(menu, {
   getCurrent,
@@ -53,13 +32,13 @@ function addDateSelection(menu, {
   menu.submenu(get(3), 'day', new TelegrafInlineMenu(submenuText), {
     ...additionalArgs
   })
-    .select('s', generateNumberArray(1, 31), {
+    .select('s', DAY_OPTIONS, {
       setParentMenuAfter: true,
       columns: 7,
       setFunc: set(3)
     })
 
-  const monthText = async ctx => monthNames[Number(await get(2)(ctx)) - 1]
+  const monthText = async ctx => MONTH_NAMES[Number(await get(2)(ctx)) - 1]
   menu.submenu(monthText, 'month', new TelegrafInlineMenu(submenuText), {
     joinLastRow: true,
     ...additionalArgs
@@ -133,7 +112,7 @@ function generateTimeSelectionMenu(text, setFunc, currentFunc) {
   }
 
   return new TelegrafInlineMenu(textFunc)
-    .select('hour', generateNumberArray(7, 21), {
+    .select('hour', HOUR_OPTIONS, {
       columns: 5,
       setFunc: async (ctx, key) => {
         const {minute} = await getCurrent(ctx)
@@ -145,7 +124,7 @@ function generateTimeSelectionMenu(text, setFunc, currentFunc) {
         return Number(hour) === Number(key)
       }
     })
-    .select('minute', generateMinuteOptions(generateNumberArray(0, 55, 5)), {
+    .select('minute', generateMinuteOptions(MINUTE_OPTIONS), {
       columns: 6,
       setFunc: async (ctx, key) => {
         const {hour} = await getCurrent(ctx)
@@ -203,7 +182,5 @@ function addStartEndTimeSelectionSubmenu(menu, {
 module.exports = {
   addDateSelection,
   addQuestionButton,
-  addStartEndTimeSelectionSubmenu,
-  addTimeSelectionSubmenu,
-  generateTimeSelectionMenu
+  addStartEndTimeSelectionSubmenu
 }
