@@ -18,34 +18,34 @@ async function getActualUserconfigContent(context: MyContext): Promise<Userconfi
 async function menuBody(context: MyContext): Promise<Body> {
 	const github = format.url('GitHub', 'https://github.com/HAWHHCalendarBot')
 
-	let infotext = ''
+	let text = ''
 
-	infotext += '\nAuf dem Server wird geloggt, wenn Aktionen von Nutzern zu einem neu Bauen von Kalendern oder ungewollten Fehlern führen. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.'
-	infotext += `\nDer Quellcode dieses Bots ist auf ${github} verfügbar.`
-	infotext += '\n'
+	text += '\nAuf dem Server wird geloggt, wenn Aktionen von Nutzern zu einem neu Bauen von Kalendern oder ungewollten Fehlern führen. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.'
+	text += `\nDer Quellcode dieses Bots ist auf ${github} verfügbar.`
+	text += '\n'
+	text += '\nDie folgenden Daten werden auf dem Server über dich gespeichert. Wenn du alle Daten über dich löschen lassen möchtest, wähle "Alles löschen".'
 
-	const userconfig = await getActualUserconfigContent(context)
-	if (userconfig) {
-		infotext += '\nDie folgenden Daten werden auf dem Server über dich gespeichert. Wenn du alle Daten über dich löschen lassen möchtest, wähle "Alles löschen".'
-	} else {
-		infotext += '\nAktuell speichert der Server keine Daten zu dir.'
-	}
+	text += '\n\n'
+	text += format.bold('Telegram User Info')
+	text += '\n'
+	text += 'Jeder Telegram Bot kann diese User Infos abrufen, wenn du mit ihm interagierst.'
+	text += ' Um dies zu verhindern, blockiere den Bot.'
+	text += '\n'
+	text += format.monospaceBlock(JSON.stringify(context.from, null, 2), 'json')
 
-	const user = context.from
-	let dataText = format.bold('Telegram User Info')
-	dataText += '\nJeder Telegram Bot kann diese User Infos abrufen, wenn du mit ihm interagierst.'
-	dataText += ' Um dies zu verhindern, blockiere den Bot.'
-	dataText += '\n'
-	dataText += format.monospaceBlock(JSON.stringify(user, null, 2), 'json')
+	text += '\n\n'
+	text += format.bold('Persistente Einstellungen im Bot')
+	text += '\n'
+	text +=	'Damit dein Kalender generiert oder deine Mensa Einstellungen gespeichert werden können, werden einige Daten persistent auf dem Server hinterlegt.'
+	text += '\n'
+	text += format.monospaceBlock(JSON.stringify(context.state.userconfig, null, 2), 'json')
 
-	if (userconfig) {
-		dataText += '\n\n'
-		dataText += format.bold('Einstellungen im Bot')
-		dataText += '\n'
-		dataText += format.monospaceBlock(JSON.stringify(userconfig, null, 2), 'json')
-	}
-
-	const text = infotext + '\n\n' + dataText
+	text += '\n\n'
+	text += format.bold('Temporäre Daten des Bots')
+	text += '\n'
+	text += 'Diese Daten werden nur temporär gehalten und sind nur bis zum Neustart des Servers im RAM hinterlegt.'
+	text += '\n'
+	text += format.monospaceBlock(JSON.stringify(context.session, null, 2), 'json')
 
 	return {text, parse_mode: format.parse_mode}
 }
@@ -67,6 +67,7 @@ const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-every
 
 	// @ts-expect-error
 	delete context.state.userconfig
+	context.session = {}
 	await context.reply('Deine Daten werden gelöscht…')
 })
 
