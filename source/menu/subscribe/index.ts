@@ -35,33 +35,14 @@ freestyleMenu.url('Kalender abonnieren', context => `https://calendarbot.hawhh.d
 freestyleMenu.manualRow(backMainButtons)
 menu.submenu('Freestyle 😎', 'freestyle', freestyleMenu)
 
-function menuBody(context: MyContext): Body {
+function menuBody(): Body {
 	let text = '*Kalender abonnieren*'
 	text += '\nBitte wähle die Art aus, mit der du den Kalender abonnieren willst.\n\nIch empfehle über iOS / macOS Boardmittel oder über den HAW-Mailer.'
-
-	const {calendarfileSuffix} = context.state.userconfig
-	if (!calendarfileSuffix) {
-		text += '\n\n⚠️ '
-		text += `Die Kalender liegen für jeden frei zugänglich im Internet. Jeder, der deine Telegram Nutzer ID (\`${context.from!.id}\`) kennt, kann sich deinen Kalender ansehen.`
-		text += '\nDu kannst die URL Privacy aktivieren, musst danach jedoch die Kalender neu abonnieren.'
-	}
 
 	return {text, parse_mode: 'Markdown'}
 }
 
-function suffixButtonText(context: MyContext): string {
-	const {calendarfileSuffix} = context.state.userconfig
-	let text = 'URL Privacy'
-	if (calendarfileSuffix) {
-		text = `✅ ${text}`
-	} else {
-		text = `⚠️ ${text} ⚠️`
-	}
-
-	return text
-}
-
-menu.submenu(suffixButtonText, 'suffix', suffixMenu.menu)
+menu.submenu('⚙️ URL Privacy', 'suffix', suffixMenu.menu)
 
 menu.manualRow(backMainButtons)
 

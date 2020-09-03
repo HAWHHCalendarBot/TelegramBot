@@ -6,6 +6,11 @@ import {MyContext} from './lib/types'
 export const bot = new Composer<MyContext>()
 
 bot.use(async (ctx, next) => {
+	if (!ctx.state.userconfig.calendarfileSuffix) {
+		const fromTime = Date.now() % (10 ** 8)
+		ctx.state.userconfig.calendarfileSuffix = String(fromTime)
+	}
+
 	if (!ctx.state.userconfig.changes) {
 		ctx.state.userconfig.changes = []
 	}

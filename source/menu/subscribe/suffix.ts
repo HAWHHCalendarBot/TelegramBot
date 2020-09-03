@@ -10,8 +10,8 @@ function menuBody(context: MyContext): Body {
 	const {calendarfileSuffix} = context.state.userconfig
 
 	let text = 'Die Kalender liegen für jeden frei zugänglich im Internet. '
-	text += `Da die default URL nur aus deiner Telegram Nutzer ID (\`${context.from!.id}\`) besteht, kann jeder mit dieser ID deinen Kalender einsehen.`
-	text += '\nWird der URL eine zufällige Zeichenkette angefügt, muss diese erraten werden und erhöht so deine Privatsphäre.'
+	text += `Wenn die URL nur aus deiner Telegram Nutzer ID (\`${context.from!.id}\`) bestehen würde, könnte jeder mit dieser ID deinen Kalender einsehen.`
+	text += `\nWird der URL eine zufällige Zeichenkette angefügt (aktuell \`${calendarfileSuffix}\`), muss diese erraten werden und erhöht so deine Privatsphäre.`
 	text += ' Eine Zeichenkette, die deiner Kalender URL angefügt wird, kannst du entweder generieren lassen (_Generieren…_) oder _Manuell setzen…_.'
 	text += ' Jedoch musst du nach jedem Ändern dieser Einstellung deinen Kalender neu abonnieren, da sich die URL ändert.'
 
@@ -20,12 +20,7 @@ function menuBody(context: MyContext): Body {
 	text += ' Wenn man eine Nachricht von dir hat oder in einer Gruppe mit dir ist, kann man deine Nutzer ID erhalten.'
 
 	text += '\n\n'
-	if (calendarfileSuffix) {
-		text += '✅ Aktuell ist deine URL geschützt und lautet:'
-	} else {
-		text += '⚠️ Aktuell ist deine URL *nicht* geschützt und lautet:'
-	}
-
+	text += 'Deine URL lautet:'
 	text += `\n\`https://${getUrlFromContext(context)}\``
 	return {text, parse_mode: 'Markdown'}
 }

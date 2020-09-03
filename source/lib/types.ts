@@ -26,7 +26,7 @@ export interface Session {
 
 export interface Userconfig {
 	admin?: true;
-	calendarfileSuffix?: string;
+	calendarfileSuffix: string;
 	changes: Change[];
 	events: string[];
 	mensa: MensaSettings;
