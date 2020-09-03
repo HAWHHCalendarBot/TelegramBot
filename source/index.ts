@@ -80,6 +80,12 @@ bot.catch((error: any) => {
 })
 
 async function startup() {
+	await bot.telegram.setMyCommands([
+		{command: 'start', description: 'öffne das Menü'},
+		{command: 'mensa', description: 'zeige das heutige Mensaessen deiner Mensa'},
+		{command: 'settings', description: 'setze Einstellungen des Bots'}
+	])
+
 	setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
 	await checkStISysChangeAndNotify()
 

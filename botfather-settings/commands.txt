@@ -1,3 +1,0 @@
-start - öffne das Menü
-mensa - zeige das heutige Mensaessen deiner Mensa
-settings - setze Einstellungen des Bots
