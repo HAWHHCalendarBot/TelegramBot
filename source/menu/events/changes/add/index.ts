@@ -171,6 +171,10 @@ menu.choose('date', possibleTimesToCreateChangeToOptions, {
 	do: (context, key) => {
 		context.session.generateChange!.date = key.replace('!', ':')
 		return true
+	},
+	getCurrentPage: context => context.session.page,
+	setPage: (context, page) => {
+		context.session.page = page
 	}
 })
 
