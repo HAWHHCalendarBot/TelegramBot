@@ -1,10 +1,11 @@
-import TelegrafInlineMenu from 'telegraf-inline-menu'
+import {MenuTemplate} from 'telegraf-inline-menu'
 
+import {backMainButtons} from '../lib/inline-menu'
 import {getCanteenList} from '../lib/mensa-meals'
 import {MyContext} from '../lib/types'
 import * as allEvents from '../lib/all-events'
 
-export const menu = new TelegrafInlineMenu(statsText as any)
+export const menu = new MenuTemplate<MyContext>(statsText)
 
 async function statsText(context: MyContext): Promise<string> {
 	const userIds = await context.userconfig.allIds()
@@ -20,3 +21,5 @@ async function statsText(context: MyContext): Promise<string> {
 
 	return text
 }
+
+menu.manualRow(backMainButtons)

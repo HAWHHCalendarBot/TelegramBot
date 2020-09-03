@@ -8,13 +8,19 @@ export interface MyContext extends TelegrafContext {
 		userconfig: Userconfig;
 		addChange?: Change;
 	};
-	session: {
-		adminBroadcast?: number; // Message ID
-		page?: number;
-		mensa?: {
-			mensa?: string;
-			date?: number;
-		};
+	session: Session;
+}
+
+export interface Session {
+	adminBroadcast?: number; // Message ID
+	adminuserquicklook?: number; // User ID
+	adminuserquicklookfilter?: string;
+	eventfilter?: string;
+	generateChange?: Partial<Change>;
+	page?: number;
+	mensa?: {
+		mensa?: string;
+		date?: number;
 	};
 }
 
@@ -31,9 +37,10 @@ export interface Userconfig {
 export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji'
 
 export interface Change {
+	add?: true;
 	name: string;
 	date: string;
-	remove?: boolean;
+	remove?: true;
 	namesuffix?: string;
 	starttime?: string;
 	endtime?: string;

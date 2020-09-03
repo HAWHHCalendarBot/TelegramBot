@@ -1,38 +1,51 @@
-import TelegrafInlineMenu from 'telegraf-inline-menu'
+import {Composer} from 'telegraf'
+import {MenuTemplate, Body} from 'telegraf-inline-menu'
+import {html as format} from 'telegram-format'
 
+import {backMainButtons} from '../../lib/inline-menu'
 import {MyContext} from '../../lib/types'
 
-import addMenu from './add'
 import {menu as removeMenu} from './remove'
-import {menu as changesMenu} from './changes'
+import * as addMenu from './add'
+import * as changesMenu from './changes'
 
-function overviewText(context: MyContext): string {
-	let text = '*Veranstaltungen*'
+function menuBody(context: MyContext): Body {
+	let text = format.bold('Veranstaltungen')
+	text += '\n\n'
 
 	const {events} = context.state.userconfig
 	if (events.length > 0) {
-		text += '\n\nDu hast folgende Veranstaltungen im Kalender:\n'
+		text += 'Du hast folgende Veranstaltungen im Kalender:'
+		text += '\n'
 		const eventLines = events
-			.map(o => o.replace('_', '\\_'))
+			.map(o => format.escape(o))
 			.map(o => '- ' + o)
 		text += eventLines.join('\n')
 	} else {
-		text += '\n\nDu hast aktuell keine Veranstaltungen in deinem Kalender. 😔'
+		text += 'Du hast aktuell keine Veranstaltungen in deinem Kalender. 😔'
 	}
 
-	text += '\n\nDu bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Wirf mal einen Blick auf [AdditionalEvents](https://github.com/HAWHHCalendarBot/AdditionalEvents) oder schreib @EdJoPaTo an. ;)'
+	text += '\n\n'
+	const additionalEventsLink = format.url('AdditionalEvents', 'https://github.com/HAWHHCalendarBot/AdditionalEvents')
+	text += `Du bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Wirf mal einen Blick auf ${additionalEventsLink} oder schreib @EdJoPaTo an. ;)`
 
-	return text
+	return {text, parse_mode: format.parse_mode}
 }
 
-export const menu = new TelegrafInlineMenu(overviewText as any)
+export const bot = new Composer<MyContext>()
+export const menu = new MenuTemplate(menuBody)
+
+bot.use(addMenu.bot)
+bot.use(changesMenu.bot)
 
 menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
 menu.submenu('🗑 Entfernen', 'r', removeMenu, {
 	joinLastRow: true,
-	hide: ctx => (ctx as MyContext).state.userconfig.events.length === 0
+	hide: context => context.state.userconfig.events.length === 0
 })
 
-menu.submenu('✏️ Änderungen', 'c', changesMenu, {
-	hide: ctx => (ctx as MyContext).state.userconfig.events.length === 0
+menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
+	hide: context => context.state.userconfig.events.length === 0
 })
+
+menu.manualRow(backMainButtons)

@@ -5,11 +5,9 @@
 		"test"
 	],
 	"compilerOptions": {
-        "declaration": false,
-        "allowJs": true,
+		"declaration": false,
 		"target": "es2019",
 		"sourceMap": true,
-		"esModuleInterop": true,
 		"outDir": "dist"
 	}
 }

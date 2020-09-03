@@ -1,4 +1,4 @@
-import {Userconfig} from './types'
+import {Userconfig, MyContext} from './types'
 
 export function getUrl(id: number, userconfig: Userconfig): string {
 	let filename = `${id}`
@@ -9,6 +9,10 @@ export function getUrl(id: number, userconfig: Userconfig): string {
 
 	const full = `calendarbot.hawhh.de/tg/${filename}.ics`
 	return full
+}
+
+export function getUrlFromContext(context: MyContext): string {
+	return getUrl(context.from!.id, context.state.userconfig)
 }
 
 export function formatDateToHumanReadable(isoDateString: string): string {

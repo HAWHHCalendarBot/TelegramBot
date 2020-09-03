@@ -1,42 +1,46 @@
-import TelegrafInlineMenu from 'telegraf-inline-menu'
+import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
+import {backMainButtons} from '../../lib/inline-menu'
 import {MyContext} from '../../lib/types'
 
-function overviewText(context: MyContext): string {
-	const prefix = '*Veranstaltungen*\n'
-	if (context.state.userconfig.events.length === 0) {
-		return prefix + 'Du hast keine Veranstaltungen mehr in deinem Kalender, die ich entfernen könnte. 😔'
-	}
+function menuBody(): Body {
+	let text = ''
+	text += '*Veranstaltungen*'
+	text += '\n'
+	text += 'Welche Veranstaltungen möchtest du aus deinem Kalender entfernen?'
 
-	return prefix + 'Welche Veranstaltungen möchtest du aus deinem Kalender entfernen?'
+	return {text, parse_mode: 'Markdown'}
 }
 
-export const menu = new TelegrafInlineMenu(overviewText as any)
+export const menu = new MenuTemplate<MyContext>(menuBody)
 
-function deleteDict(context: MyContext): Record<string, string> {
-	const entries: Record<string, string> = {}
+async function eventOptions(context: MyContext): Promise<Record<string, string>> {
+	const result: Record<string, string> = {}
 	for (const event of context.state.userconfig.events) {
-		entries[event] = '🗑 ' + event
+		result[event.replace(/\//g, ';')] = event
 	}
 
-	return entries
+	return result
 }
 
-menu.select('r', deleteDict as any, {
-	setFunc: remove as any,
+menu.choose('r', eventOptions, {
 	columns: 2,
-	getCurrentPage: ctx => (ctx as MyContext).session.page,
-	setPage: (ctx, page) => {
-		(ctx as MyContext).session.page = page
+	buttonText: (_, event) => '🗑 ' + event,
+	do: async (context, key) => {
+		const event = key.replace(/;/g, '/')
+		context.state.userconfig.events = context.state.userconfig.events.filter(o => o !== event)
+
+		// Remove changes to that event too
+		context.state.userconfig.changes = context.state.userconfig.changes
+			.filter(o => o.name !== event)
+
+		await context.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
+		return true
+	},
+	getCurrentPage: context => context.session.page,
+	setPage: (context, page) => {
+		context.session.page = page
 	}
 })
 
-async function remove(context: MyContext, event: string): Promise<void> {
-	context.state.userconfig.events = context.state.userconfig.events.filter(o => o !== event)
-
-	// Remove changes to that event too
-	context.state.userconfig.changes = context.state.userconfig.changes
-		.filter(o => o.name !== event)
-
-	await context.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
-}
+menu.manualRow(backMainButtons)

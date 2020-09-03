@@ -3,7 +3,7 @@ import {promises as fsPromises} from 'fs'
 import {MiddlewareFn} from 'telegraf/typings/composer'
 import {Telegram} from 'telegraf'
 import {User, ExtraReplyMessage} from 'telegraf/typings/telegram-types'
-import stringify from 'json-stable-stringify'
+import * as stringify from 'json-stable-stringify'
 
 import {MyContext, Userconfig} from './types'
 import {sequentialLoop} from './async'

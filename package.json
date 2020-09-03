@@ -16,8 +16,10 @@
     "got": "^11.5.2",
     "json-stable-stringify": "^1.0.1",
     "telegraf": "^3.38.0",
-    "telegraf-inline-menu": "^4.0.0",
-    "telegraf-middleware-console-time": "^1.0.0"
+    "telegraf-inline-menu": "^5.0.2",
+    "telegraf-middleware-console-time": "^1.0.0",
+    "telegraf-stateless-question": "^0.1.1",
+    "telegram-format": "^2.0.1"
   },
   "devDependencies": {
     "@sindresorhus/tsconfig": "^0.7.0",
@@ -36,22 +38,8 @@
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "off",
-      "prefer-named-capture-group": "off",
-      "unicorn/no-fn-reference-in-iterator": "warn"
-    },
-    "overrides": [
-      {
-        "files": [
-          "source/**/*.js"
-        ],
-        "rules": {
-          "indent": [
-            "error",
-            2
-          ]
-        }
-      }
-    ]
+      "prefer-named-capture-group": "off"
+    }
   },
   "repository": {
     "type": "git",

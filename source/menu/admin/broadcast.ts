@@ -1,32 +1,41 @@
-import TelegrafInlineMenu from 'telegraf-inline-menu'
+import {Composer} from 'telegraf'
+import {MenuTemplate, replyMenuToContext} from 'telegraf-inline-menu'
+import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
+import {backMainButtons} from '../../lib/inline-menu'
 import {MyContext} from '../../lib/types'
 
-export const menu = new TelegrafInlineMenu('Broadcast')
+export const bot = new Composer<MyContext>()
+export const menu = new MenuTemplate<MyContext>('Broadcast')
 
-function broadcastButtonText(ctx: MyContext) {
-	return ctx.session.adminBroadcast ?
+function broadcastButtonText(context: MyContext): string {
+	return context.session.adminBroadcast ?
 		'✏️ Ändere Nachricht…' :
 		'✏️ Setze Nachricht…'
 }
 
-function setMessageToBroadcast(ctx: MyContext) {
-	ctx.session.adminBroadcast = ctx.message!.message_id
-}
-
-async function sendBroadcast(ctx: MyContext) {
-	// TODO: broadcast takes some time. This should be done in parallel so the bot responds to normal users
-	await ctx.userconfig.forwardBroadcast(ctx.from!.id, ctx.session.adminBroadcast!)
-	delete ctx.session.adminBroadcast
-}
-
-menu.question(broadcastButtonText as any, 'set', {
-	setFunc: setMessageToBroadcast as any,
-	uniqueIdentifier: 'admin-broadcast',
-	questionText: 'Hey admin! Was willst du broadcasten?'
+const broadcastQuestion = new TelegrafStatelessQuestion<MyContext>('admin-broadcast', async context => {
+	context.session.adminBroadcast = context.message.message_id
+	await replyMenuToContext(menu, context, '/admin/broadcast/')
 })
 
-menu.button('📤 Versende Broadcast', 'send', {
-	doFunc: sendBroadcast as any,
-	hide: ctx => !(ctx as MyContext).session.adminBroadcast
+bot.use(broadcastQuestion.middleware())
+
+menu.interact(broadcastButtonText, 'set', {
+	do: async context => {
+		await broadcastQuestion.replyWithMarkdown(context, 'Hey admin! Was willst du broadcasten?')
+		return false
+	}
 })
+
+menu.interact('📤 Versende Broadcast', 'send', {
+	do: async context => {
+		// TODO: broadcast takes some time. This should be done in parallel so the bot responds to normal users
+		await context.userconfig.forwardBroadcast(context.from!.id, context.session.adminBroadcast!)
+		delete context.session.adminBroadcast
+		return false
+	},
+	hide: context => !context.session.adminBroadcast
+})
+
+menu.manualRow(backMainButtons)

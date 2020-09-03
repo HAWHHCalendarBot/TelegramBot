@@ -1,8 +1,9 @@
-import TelegrafInlineMenu from 'telegraf-inline-menu'
+import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
+import {backMainButtons} from '../lib/inline-menu'
 import {generateMealText} from '../lib/mensa-helper'
 import {getMealsOfDay} from '../lib/mensa-meals'
-import {MyContext, MensaSettings} from '../lib/types'
+import {MyContext} from '../lib/types'
 import * as mensaGit from '../lib/mensa-git'
 
 const weekdays: readonly string[] = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
@@ -35,9 +36,7 @@ function dateEqual(first: Readonly<Date>, second: Readonly<Date>): boolean {
 	return stringifyEqual(getYearMonthDay(first), getYearMonthDay(second))
 }
 
-export const menu = new TelegrafInlineMenu(currentMensaText as any)
-
-menu.setCommand('mensa')
+export const menu = new MenuTemplate<MyContext>(menuBody)
 
 function getCurrentSettings(context: MyContext): Readonly<{mensa?: string; date: Date}> {
 	let {mensa, date} = context.session.mensa ?? {}
@@ -59,51 +58,36 @@ function getCurrentSettings(context: MyContext): Readonly<{mensa?: string; date:
 	return {mensa, date: new Date(date)}
 }
 
-async function currentMensaText(context: MyContext): Promise<string> {
+async function menuBody(context: MyContext): Promise<Body> {
 	const {mensa, date} = getCurrentSettings(context)
 	const mensaSettings = context.state.userconfig.mensa
-	return generateMensaTextOfDate(mensa, date, mensaSettings)
-}
 
-function parseActionCode(actionCode: string): Readonly<{mensa: string; date: Date}> {
-	const result = /^([^:]+)#(\d+-\d+-\d+)/.exec(actionCode)!
-	const mensa = result[1]
-	const date = new Date(Date.parse(result[2]))
-	return {mensa, date}
-}
+	if (!mensa || mensa === 'undefined') {
+		return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.'
+	}
 
-function generateActionCode(mensa: string, date: Date): string {
+	const weekday = weekdays[date.getDay()]
 	const {year, month, day} = getYearMonthDay(date)
-	return `${mensa}#${year}-${month}-${day}`
+	let text = ''
+	text += `Mensa *${mensa}*`
+	text += '\n'
+	text += `${weekday} ${day}.${month}.${year}`
+	text += '\n'
+
+	const meals = await getMealsOfDay(mensa, year, month, day)
+	text += generateMealText(meals, mensaSettings)
+
+	return {text, parse_mode: 'Markdown'}
 }
 
-function setMensaDay(context: MyContext, selected: string): void {
-	const {mensa, date} = parseActionCode(selected)
-	if (!context.session.mensa) {
-		context.session.mensa = {}
-	}
-
-	if (mensa === 'undefined') {
-		return
-	}
-
-	context.session.mensa.mensa = mensa
-	context.session.mensa.date = date.getTime()
+function parseDateString(actionCode: string): Readonly<Date> {
+	const date = new Date(Date.parse(actionCode))
+	return date
 }
 
-function timePrefixFunc(context: MyContext, key: string): string {
-	const action = parseActionCode(key)
-	const selected = getCurrentSettings(context)
-	const mensaSelected = action.mensa === selected.mensa
-	const dateSelected = dateEqual(action.date, selected.date)
-	const isSelected = mensaSelected && dateSelected
-
-	return isSelected ? '🕚' : ''
-}
-
-function hideMensa(context: MyContext, key: string): boolean {
-	const {mensa} = getCurrentSettings(context)
-	return mensa === parseActionCode(key).mensa
+function generateDateString(date: Date): string {
+	const {year, month, day} = getYearMonthDay(date)
+	return `${year}-${month}-${day}`
 }
 
 function daySelectOptions(context: MyContext): Record<string, string> {
@@ -124,53 +108,48 @@ function daySelectOptions(context: MyContext): Record<string, string> {
 		const weekday = weekdays[date.getDay()]
 			.slice(0, 2)
 		const day = date.getDate()
-		const key = generateActionCode(mensa, date)
+		const key = generateDateString(date)
 		result[key] = `${weekday} ${day}.`
 	}
 
 	return result
 }
 
-function mensaSelectOption(context: MyContext): Record<string, string> {
-	const {date} = getCurrentSettings(context)
-
-	const {main, more} = context.state.userconfig.mensa ?? {}
-	const mensaOptions = [...more ?? []]
-	if (main) {
-		mensaOptions.unshift(main)
-	}
-
-	const result: Record<string, string> = {}
-	for (const mensa of mensaOptions) {
-		const key = generateActionCode(mensa, date)
-		result[key] = '🍽 ' + mensa
-	}
-
-	return result
+function mensaSelectOption(context: MyContext): string[] {
+	const current = getCurrentSettings(context).mensa
+	const {main, more} = context.state.userconfig.mensa
+	return [main, ...(more ?? [])]
+		.filter(o => o !== current)
+		.filter((o): o is string => Boolean(o))
 }
 
-menu.select('t', daySelectOptions as any, {
-	setFunc: setMensaDay as any,
+menu.select('t', daySelectOptions, {
 	columns: 3,
-	prefixFunc: timePrefixFunc as any
-})
+	isSet: (context, key) => dateEqual(getCurrentSettings(context).date, parseDateString(key)),
+	set: (context, key) => {
+		if (!context.session.mensa) {
+			context.session.mensa = {}
+		}
 
-menu.select('m', mensaSelectOption as any, {
-	setFunc: setMensaDay as any,
-	columns: 1,
-	hide: hideMensa as any
-})
-
-async function generateMensaTextOfDate(mensa: string | undefined, date: Date, mensaSettings: Readonly<MensaSettings>): Promise<string> {
-	if (!mensa || mensa === 'undefined') {
-		return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.'
+		context.session.mensa.date = parseDateString(key).getTime()
+		return true
+	},
+	formatState: (_, textResult, state) => {
+		return state ? `🕚 ${textResult}` : textResult
 	}
+})
 
-	const weekday = weekdays[date.getDay()]
-	const {year, month, day} = getYearMonthDay(date)
-	const prefix = `Mensa *${mensa}*\n${weekday} ${day}.${month}.${year}\n`
+menu.choose('m', mensaSelectOption, {
+	columns: 1,
+	buttonText: (_, key) => '🍽 ' + key,
+	do: (context, key) => {
+		if (!context.session.mensa) {
+			context.session.mensa = {}
+		}
 
-	const meals = await getMealsOfDay(mensa, year, month, day)
-	const text = generateMealText(meals, mensaSettings)
-	return prefix + text
-}
+		context.session.mensa.mensa = key
+		return true
+	}
+})
+
+menu.manualRow(backMainButtons)

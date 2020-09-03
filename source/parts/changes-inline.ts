@@ -111,7 +111,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {
 	await context.answerCbQuery('Die Änderung wurde hinzugefügt')
 })
 
-bot.action('c:cancel', async ctx => ctx.editMessageText('Ich habe nichts verändert. 🙂'))
+bot.action('c:cancel', async context => context.editMessageText('Ich habe nichts verändert. 🙂'))
 
 // Action: change add force
 bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {

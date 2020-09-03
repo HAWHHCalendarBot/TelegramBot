@@ -1,15 +1,23 @@
-import TelegrafInlineMenu from 'telegraf-inline-menu'
+import {Composer} from 'telegraf'
+import {MenuTemplate} from 'telegraf-inline-menu'
 
+import {backMainButtons} from '../../lib/inline-menu'
 import {MyContext} from '../../lib/types'
 
-import {menu as broadcastMenu} from './broadcast'
-import {menu as userMenu} from './user-quicklook'
+import * as broadcastMenu from './broadcast'
+import * as userMenu from './user-quicklook'
 
-export function hide(ctx: MyContext) {
-	return !ctx.state.userconfig.admin
+export function hide(context: MyContext) {
+	return !context.state.userconfig.admin
 }
 
-export const menu = new TelegrafInlineMenu('Hey Admin!')
+export const bot = new Composer<MyContext>()
+export const menu = new MenuTemplate<MyContext>('Hey Admin!')
 
-menu.submenu('Broadcast', 'broadcast', broadcastMenu)
-menu.submenu('User Quicklook', 'u', userMenu)
+bot.use(broadcastMenu.bot)
+bot.use(userMenu.bot)
+
+menu.submenu('Broadcast', 'broadcast', broadcastMenu.menu)
+menu.submenu('User Quicklook', 'u', userMenu.menu)
+
+menu.manualRow(backMainButtons)
