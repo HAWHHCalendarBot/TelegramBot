@@ -1,5 +1,5 @@
 import {Composer} from 'telegraf'
-import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext} from 'telegraf-inline-menu'
+import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu'
@@ -62,22 +62,23 @@ menu.interact('Generieren…', 'g', {
 	}
 })
 
-const manualSuffixQuestion = new TelegrafStatelessQuestion<MyContext>('subscribe-suffix-manual', async context => {
+const manualSuffixQuestion = new TelegrafStatelessQuestion<MyContext>('subscribe-suffix-manual', async (context, path) => {
 	const {text} = context.message
 	if (text) {
 		await setSuffix(context, text)
 	}
 
-	await replyMenuToContext(menu, context, '/subscribe/suffix/')
+	await replyMenuToContext(menu, context, path)
 })
 
 bot.use(manualSuffixQuestion.middleware())
 
 menu.interact('Manuell setzen…', 's', {
-	do: async context => {
+	do: async (context, path) => {
 		await manualSuffixQuestion.replyWithMarkdown(
 			context,
-			`Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeichen werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`
+			`Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeichen werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`,
+			getMenuOfPath(path)
 		)
 
 		await deleteMenuFromContext(context)

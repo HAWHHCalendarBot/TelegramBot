@@ -16,9 +16,9 @@
     "got": "^11.5.2",
     "json-stable-stringify": "^1.0.1",
     "telegraf": "^3.38.0",
-    "telegraf-inline-menu": "^5.0.2",
+    "telegraf-inline-menu": "^5.1.0",
     "telegraf-middleware-console-time": "^1.0.0",
-    "telegraf-stateless-question": "^0.1.1",
+    "telegraf-stateless-question": "^1.0.0",
     "telegram-format": "^2.0.1"
   },
   "devDependencies": {

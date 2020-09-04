@@ -1,5 +1,5 @@
 import {Composer} from 'telegraf'
-import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body} from 'telegraf-inline-menu'
+import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu'
@@ -38,16 +38,16 @@ async function findEvents(context: MyContext): Promise<readonly string[]> {
 	return allEvents.find(filter, blacklist)
 }
 
-const question = new TelegrafStatelessQuestion<MyContext>('events-add-filter', async context => {
+const question = new TelegrafStatelessQuestion<MyContext>('events-add-filter', async (context, path) => {
 	context.session.eventfilter = context.message.text
-	await replyMenuToContext(menu, context, '/e/a/')
+	await replyMenuToContext(menu, context, path)
 })
 
 bot.use(question.middleware())
 
 menu.interact(filterButtonText(context => context.session.eventfilter), 'filter', {
-	do: async context => {
-		await question.replyWithMarkdown(context, 'Wonach möchtest du die Veranstaltungen filtern?')
+	do: async (context, path) => {
+		await question.replyWithMarkdown(context, 'Wonach möchtest du die Veranstaltungen filtern?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
 	}

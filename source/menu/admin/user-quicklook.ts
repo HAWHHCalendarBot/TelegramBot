@@ -1,6 +1,6 @@
 import {Composer} from 'telegraf'
 import {html as format} from 'telegram-format'
-import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body} from 'telegraf-inline-menu'
+import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'telegraf-inline-menu'
 import {User} from 'telegraf/typings/telegram-types'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
@@ -48,17 +48,17 @@ menu.url('Kalender', async context => {
 	hide: context => !context.session.adminuserquicklook
 })
 
-const question = new TelegrafStatelessQuestion<MyContext>('admin-user-filter', async context => {
+const question = new TelegrafStatelessQuestion<MyContext>('admin-user-filter', async (context, path) => {
 	context.session.adminuserquicklookfilter = context.message.text
 	delete context.session.adminuserquicklook
-	await replyMenuToContext(menu, context, '/admin/u/')
+	await replyMenuToContext(menu, context, path)
 })
 
 bot.use(question.middleware())
 
 menu.interact(filterButtonText(context => context.session.adminuserquicklookfilter), 'filter', {
-	do: async context => {
-		await question.replyWithMarkdown(context, 'Wonach möchtest du die Nutzer filtern?')
+	do: async (context, path) => {
+		await question.replyWithMarkdown(context, 'Wonach möchtest du die Nutzer filtern?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
 	}

@@ -1,5 +1,5 @@
 import {Composer} from 'telegraf'
-import {MenuTemplate, Body, replyMenuToContext} from 'telegraf-inline-menu'
+import {MenuTemplate, Body, replyMenuToContext, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 import {html as format} from 'telegram-format'
 
@@ -57,11 +57,11 @@ const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Eins
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
-const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-everything', async context => {
+const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-everything', async (context, path) => {
 	const answer = context.message.text
 	if (answer !== deleteConfirmString) {
 		await context.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')
-		await replyMenuToContext(menu, context, '/settings/data/')
+		await replyMenuToContext(menu, context, path)
 		return
 	}
 
@@ -71,14 +71,14 @@ const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-every
 	await context.reply('Deine Daten werden gelöscht…')
 })
 
+bot.use(deleteAllQuestion.middleware())
+
 menu.interact('⚠️ Alles löschen ⚠️', 'delete-all', {
 	hide: async context => !(await getActualUserconfigContent(context)),
-	do: async context => {
-		await deleteAllQuestion.replyWithMarkdown(context, deleteQuestion)
+	do: async (context, path) => {
+		await deleteAllQuestion.replyWithMarkdown(context, deleteQuestion, getMenuOfPath(path))
 		return false
 	}
 })
 
 menu.manualRow(backMainButtons)
-
-bot.use(deleteAllQuestion.middleware())

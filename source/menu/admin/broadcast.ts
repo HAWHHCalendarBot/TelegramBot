@@ -1,5 +1,5 @@
 import {Composer} from 'telegraf'
-import {MenuTemplate, replyMenuToContext} from 'telegraf-inline-menu'
+import {MenuTemplate, replyMenuToContext, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu'
@@ -14,16 +14,16 @@ function broadcastButtonText(context: MyContext): string {
 		'✏️ Setze Nachricht…'
 }
 
-const broadcastQuestion = new TelegrafStatelessQuestion<MyContext>('admin-broadcast', async context => {
+const broadcastQuestion = new TelegrafStatelessQuestion<MyContext>('admin-broadcast', async (context, path) => {
 	context.session.adminBroadcast = context.message.message_id
-	await replyMenuToContext(menu, context, '/admin/broadcast/')
+	await replyMenuToContext(menu, context, path)
 })
 
 bot.use(broadcastQuestion.middleware())
 
 menu.interact(broadcastButtonText, 'set', {
-	do: async context => {
-		await broadcastQuestion.replyWithMarkdown(context, 'Hey admin! Was willst du broadcasten?')
+	do: async (context, path) => {
+		await broadcastQuestion.replyWithMarkdown(context, 'Hey admin! Was willst du broadcasten?', getMenuOfPath(path))
 		return false
 	}
 })

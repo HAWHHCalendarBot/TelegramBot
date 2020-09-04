@@ -1,5 +1,5 @@
 import {Composer} from 'telegraf'
-import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext} from 'telegraf-inline-menu'
+import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext, getMenuOfPath} from 'telegraf-inline-menu'
 import arrayFilterUnique from 'array-filter-unique'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
@@ -196,16 +196,16 @@ createDatePickerButtons(menu, hideGenerateAddStep)
 
 createTimeSelectionSubmenuButtons(menu, hideGenerateChangeStep)
 
-const namesuffixQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-suffix', async context => {
+const namesuffixQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-suffix', async (context, path) => {
 	const {text} = context.message
 	context.session.generateChange!.namesuffix = text
-	await replyMenuToContext(menu, context, '/e/c/a/')
+	await replyMenuToContext(menu, context, path)
 })
 
-const roomQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-room', async context => {
+const roomQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-room', async (context, path) => {
 	const {text} = context.message
 	context.session.generateChange!.room = text
-	await replyMenuToContext(menu, context, '/e/c/a/')
+	await replyMenuToContext(menu, context, path)
 })
 
 bot.use(namesuffixQuestion.middleware())
@@ -221,8 +221,8 @@ function questionButtonText(property: 'namesuffix' | 'room', emoji: string, fall
 
 menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuffix', {
 	hide: hideGenerateChangeStep,
-	do: async context => {
-		await namesuffixQuestion.replyWithMarkdown(context, 'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.')
+	do: async (context, path) => {
+		await namesuffixQuestion.replyWithMarkdown(context, 'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
 	}
@@ -230,8 +230,8 @@ menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuf
 
 menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
 	hide: hideGenerateChangeStep,
-	do: async context => {
-		await roomQuestion.replyWithMarkdown(context, 'In welchen Raum wurde der Termin verschoben?')
+	do: async (context, path) => {
+		await roomQuestion.replyWithMarkdown(context, 'In welchen Raum wurde der Termin verschoben?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
 	}
