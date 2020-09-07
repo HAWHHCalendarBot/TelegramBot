@@ -124,7 +124,7 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 	hide: hidePickDateStep,
 	do: context => {
 		// Set everything that has to be set to be valid.
-		// When the user dont like the data he can change it but he is not able to create invalid data.
+		// When the user dont like the data they can change it but they are not able to create invalid data.
 		context.session.generateChange!.add = true
 		// TODO: when setting the start time on add date, the date has to be changed
 		context.session.generateChange!.date = formatDateToStoredChangeDate(new Date())
@@ -250,7 +250,7 @@ async function finish(context: MyContext): Promise<string | boolean> {
 	if (context.state.userconfig.changes.some(o => o.name === name && o.date === date)) {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
-		// Also the user can add an additional date that he already has 'used'
+		// Also the user can add an additional date that they already have 'used'
 		await context.answerCbQuery('Du hast bereits eine Veranstaltungsänderung für diesen Termin.')
 		return true
 	}
