@@ -1,7 +1,9 @@
 import {MenuTemplate} from 'telegraf-inline-menu'
-import {DAY_OPTIONS, generateMonthOptions, generateYearOptions, MONTH_NAMES} from '../../../../lib/event-creation-menu-options'
-import {MyContext} from '../../../../lib/types'
+
 import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu'
+import {DAY_OPTIONS, generateMonthOptions, generateYearOptions, MONTH_NAMES} from '../../../../lib/event-creation-menu-options'
+import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper'
+import {MyContext} from '../../../../lib/types'
 
 const menuText = 'Wann findet der Termin statt?'
 
@@ -12,10 +14,6 @@ function getCurrent(context: MyContext): Date {
 	}
 
 	return new Date()
-}
-
-function formatDate(date: Date): string {
-	return date.toISOString().replace(':00.000Z', '')
 }
 
 export function createDatePickerButtons(menu: MenuTemplate<MyContext>, hide: (context: MyContext) => boolean): void {
@@ -39,7 +37,7 @@ dayMenu.select('', DAY_OPTIONS, {
 	set: async (context, date) => {
 		const current = getCurrent(context)
 		current.setDate(Number(date))
-		context.session.generateChange!.date = formatDate(current)
+		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
 		return '..'
 	}
 })
@@ -50,7 +48,7 @@ monthMenu.select('', generateMonthOptions(), {
 	set: async (context, month) => {
 		const current = getCurrent(context)
 		current.setMonth(Number(month))
-		context.session.generateChange!.date = formatDate(current)
+		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
 		return '..'
 	}
 })
@@ -60,7 +58,7 @@ yearMenu.select('', generateYearOptions(), {
 	set: async (context, year) => {
 		const current = getCurrent(context)
 		current.setFullYear(Number(year))
-		context.session.generateChange!.date = formatDate(current)
+		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
 		return '..'
 	}
 })

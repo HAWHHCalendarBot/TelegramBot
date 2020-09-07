@@ -3,7 +3,7 @@ import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext, getMenuOf
 import arrayFilterUnique from 'array-filter-unique'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
-import {formatDateToHumanReadable} from '../../../../lib/calendar-helper'
+import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper'
 import {loadEvents, generateChangeText} from '../../../../lib/change-helper'
 import {MyContext, Change} from '../../../../lib/types'
 import * as allEvents from '../../../../lib/all-events'
@@ -123,14 +123,11 @@ menu.choose('event', eventOptions, {
 menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 	hide: hidePickDateStep,
 	do: context => {
-		const now = new Date()
-			.toISOString()
-			.replace(/:\d{2}.\d{3}Z/, '')
 		// Set everything that has to be set to be valid.
 		// When the user dont like the data he can change it but he is not able to create invalid data.
 		context.session.generateChange!.add = true
-		context.session.generateChange!.date = now
-		context.session.generateChange!.starttime = now.split('T')[1]
+		// TODO: when setting the start time on add date, the date has to be changed
+		context.session.generateChange!.date = formatDateToStoredChangeDate(new Date())
 		context.session.generateChange!.endtime = '23:45'
 		return true
 	}
@@ -154,7 +151,7 @@ async function possibleTimesToCreateChangeToOptions(context: MyContext): Promise
 	const events = await loadEvents(name)
 	const dates = events
 		.map(o => o.StartTime)
-		.map(o => o.toISOString().replace(':00.000Z', ''))
+		.map(o => formatDateToStoredChangeDate(o))
 		.filter(o => !existingChangeDates.has(o))
 		.filter(arrayFilterUnique())
 	const options: Record<string, string> = {}

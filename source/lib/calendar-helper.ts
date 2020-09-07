@@ -28,6 +28,10 @@ export function formatDateToHumanReadable(isoDateString: string): string {
 	})
 }
 
+export function formatDateToStoredChangeDate(date: Readonly<Date>): string {
+	return date.toISOString().replace(/:\d{2}.\d{3}Z$/, '')
+}
+
 export function parseDateTimeToDate(dateTime: string): Date {
 	if (dateTime.includes('(')) {
 		const unixTime = Number(/(\d+)\+/.exec(dateTime)![1])
