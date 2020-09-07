@@ -126,8 +126,8 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 		// Set everything that has to be set to be valid.
 		// When the user dont like the data they can change it but they are not able to create invalid data.
 		context.session.generateChange!.add = true
-		// TODO: when setting the start time on add date, the date has to be changed
 		context.session.generateChange!.date = formatDateToStoredChangeDate(new Date())
+		context.session.generateChange!.starttime = new Date().toLocaleTimeString('de-DE', {hour12: false, hour: '2-digit', minute: '2-digit'})
 		context.session.generateChange!.endtime = '23:45'
 		return true
 	}
@@ -241,6 +241,15 @@ menu.interact('✅ Fertig stellen', 'finish', {
 
 async function finish(context: MyContext): Promise<string | boolean> {
 	const change = context.session.generateChange!
+
+	if (change.add) {
+		const date = new Date(Date.parse(change.date!))
+		const [hour, minute] = change.starttime!.split(':').map(o => Number(o))
+		date.setHours(hour)
+		date.setMinutes(minute)
+		change.date = formatDateToStoredChangeDate(date)
+		delete change.starttime
+	}
 
 	if (!context.state.userconfig.changes) {
 		context.state.userconfig.changes = []
