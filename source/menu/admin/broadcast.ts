@@ -29,13 +29,35 @@ menu.interact(broadcastButtonText, 'set', {
 })
 
 menu.interact('📤 Versende Broadcast', 'send', {
+	hide: context => !context.session.adminBroadcast,
 	do: async context => {
-		// TODO: broadcast takes some time. This should be done in parallel so the bot responds to normal users
-		await context.userconfig.forwardBroadcast(context.from!.id, context.session.adminBroadcast!)
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
+		handleOngoingBroadcast(context, context.session.adminBroadcast!)
+
 		delete context.session.adminBroadcast
+		await context.editMessageText('wird versendet…')
+
 		return false
-	},
-	hide: context => !context.session.adminBroadcast
+	}
 })
+
+async function handleOngoingBroadcast(context: MyContext, messageId: number): Promise<void> {
+	let text: string
+	try {
+		await context.userconfig.forwardBroadcast(context.from!.id, messageId)
+		text = 'Broadcast finished'
+	} catch (error) {
+		text = 'Broadcast failed: ' + String(error)
+	}
+
+	await context.reply(text, {
+		reply_to_message_id: messageId,
+		reply_markup: {
+			remove_keyboard: true
+		}
+	})
+
+	await replyMenuToContext(menu, context, getMenuOfPath(context.callbackQuery!.data!))
+}
 
 menu.manualRow(backMainButtons)
