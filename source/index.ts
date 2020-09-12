@@ -13,6 +13,8 @@ import * as easterEggs from './parts/easter-eggs'
 
 import {bot as menu} from './menu'
 
+process.title = 'calendarbot-tgbot'
+
 const tokenFilePath = existsSync('/run/secrets') ? '/run/secrets/bot-token.txt' : 'bot-token.txt'
 const token = readFileSync(tokenFilePath, 'utf8').trim()
 const bot = new Telegraf<MyContext>(token)
