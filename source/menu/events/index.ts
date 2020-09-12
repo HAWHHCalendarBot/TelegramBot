@@ -67,6 +67,11 @@ menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 		const nonExisting = new Set(await allEvents.nonExisting(context.state.userconfig.events))
 		context.state.userconfig.events = context.state.userconfig.events
 			.filter(o => !nonExisting.has(o))
+
+		// Only keep changes of events the user still has
+		context.state.userconfig.changes = context.state.userconfig.changes
+			.filter(o => context.state.userconfig.events.includes(o.name))
+
 		return true
 	}
 })

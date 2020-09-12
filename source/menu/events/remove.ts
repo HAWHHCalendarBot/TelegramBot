@@ -30,9 +30,9 @@ menu.choose('r', eventOptions, {
 		const event = key.replace(/;/g, '/')
 		context.state.userconfig.events = context.state.userconfig.events.filter(o => o !== event)
 
-		// Remove changes to that event too
+		// Only keep changes of events the user still has
 		context.state.userconfig.changes = context.state.userconfig.changes
-			.filter(o => o.name !== event)
+			.filter(o => context.state.userconfig.events.includes(o.name))
 
 		await context.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
 		return true
