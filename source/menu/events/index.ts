@@ -4,23 +4,37 @@ import {html as format} from 'telegram-format'
 
 import {backMainButtons} from '../../lib/inline-menu'
 import {MyContext} from '../../lib/types'
+import * as allEvents from '../../lib/all-events'
 
 import {menu as removeMenu} from './remove'
 import * as addMenu from './add'
 import * as changesMenu from './changes'
 
-function menuBody(context: MyContext): Body {
+async function menuBody(context: MyContext): Promise<Body> {
 	let text = format.bold('Veranstaltungen')
 	text += '\n\n'
 
 	const {events} = context.state.userconfig
 	if (events.length > 0) {
+		const nonExisting = new Set(await allEvents.nonExisting(events))
 		text += 'Du hast folgende Veranstaltungen im Kalender:'
 		text += '\n'
-		const eventLines = events
-			.map(o => format.escape(o))
-			.map(o => '- ' + o)
-		text += eventLines.join('\n')
+		text += events
+			.map(o => {
+				let line = '- '
+				if (nonExisting.has(o)) {
+					line += '⚠️ '
+				}
+
+				line += format.escape(o)
+				return line
+			})
+			.join('\n')
+
+		if (nonExisting.size > 0) {
+			text += '\n\n'
+			text += '⚠️ Du hast Veranstaltungen, die nicht mehr existieren.'
+		}
 	} else {
 		text += 'Du hast aktuell keine Veranstaltungen in deinem Kalender. 😔'
 	}
@@ -42,6 +56,19 @@ menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
 menu.submenu('🗑 Entfernen', 'r', removeMenu, {
 	joinLastRow: true,
 	hide: context => context.state.userconfig.events.length === 0
+})
+
+menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
+	hide: async context => {
+		const nonExisting = await allEvents.nonExisting(context.state.userconfig.events)
+		return nonExisting.length === 0
+	},
+	do: async context => {
+		const nonExisting = new Set(await allEvents.nonExisting(context.state.userconfig.events))
+		context.state.userconfig.events = context.state.userconfig.events
+			.filter(o => !nonExisting.has(o))
+		return true
+	}
 })
 
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {

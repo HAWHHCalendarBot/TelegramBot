@@ -16,6 +16,18 @@ export async function exists(name: string): Promise<boolean> {
 	return allEvents.includes(name)
 }
 
+export async function nonExisting(names: readonly string[]): Promise<string[]> {
+	const allEvents = new Set(await getAll())
+	const result: string[] = []
+	for (const event of names) {
+		if (!allEvents.has(event)) {
+			result.push(event)
+		}
+	}
+
+	return result
+}
+
 export async function find(pattern: string | RegExp, blacklist: readonly string[] = []): Promise<readonly string[]> {
 	const allEvents = await getAll()
 	const regex = new RegExp(pattern, 'i')
