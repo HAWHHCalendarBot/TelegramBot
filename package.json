@@ -15,6 +15,7 @@
     "array-filter-unique": "^2.1.0",
     "got": "^11.5.2",
     "json-stable-stringify": "^1.0.1",
+    "source-map-support": "^0.5.19",
     "telegraf": "^3.38.0",
     "telegraf-inline-menu": "^5.1.0",
     "telegraf-middleware-console-time": "^1.0.0",
