@@ -46,11 +46,9 @@ function menuBody(context: MyContext): Body {
 
 	if (date) {
 		text = generateChangeText(context.session.generateChange as Change)
-		if (add) {
-			text += '\nSpezifiziere den zusätzlichen Termin.'
-		} else {
-			text += '\nWelche Art von Änderung willst du vornehmen?'
-		}
+		text += add ?
+			'\nSpezifiziere den zusätzlichen Termin.' :
+			'\nWelche Art von Änderung willst du vornehmen?'
 	}
 
 	return {text, parse_mode: 'Markdown'}

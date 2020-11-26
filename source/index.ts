@@ -28,21 +28,21 @@ bot.use(async (ctx, next) => {
 		if (next) {
 			await next()
 		}
-	} catch (error) {
-		if (error.message.includes('Too Many Requests')) {
+	} catch (error: unknown) {
+		if (error instanceof Error && error.message.includes('Too Many Requests')) {
 			console.warn('Telegraf Too Many Requests error. Skip.', error)
 			return
 		}
 
-		console.error('try to send error to user', ctx.update, error, error?.on?.payload)
+		console.error('try to send error to user', ctx.update, error, (error as any)?.on?.payload)
 		let text = '🔥 Da ist wohl ein Fehler aufgetreten…'
 		text += '\n'
 		text += 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️'
 
 		text += '\n'
 		text += '\nError: `'
-		text += error.message
-			.replace(token, '')
+		const errorText = error instanceof Error ? error.message : String(error)
+		text += errorText.replace(token, '')
 		text += '`'
 
 		const target = (ctx.chat ?? ctx.from!).id
@@ -71,7 +71,7 @@ async function checkStISysChangeAndNotify() {
 		const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
 
 		await chatconfig.broadcast(bot.telegram, text, Extra.markdown().markup(Markup.removeKeyboard()), user => Boolean(user.config.stisysUpdate))
-	} catch (error) {
+	} catch (error: unknown) {
 		console.error('checkStISysChangeAndNotify failed', error)
 	}
 }

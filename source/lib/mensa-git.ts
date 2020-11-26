@@ -6,6 +6,7 @@ const run = promisify(exec)
 
 export async function pull(): Promise<void> {
 	try {
+		// eslint-disable-next-line unicorn/prefer-ternary
 		if (existsSync('mensa-data/.git')) {
 			await gitCommand('pull')
 		} else {

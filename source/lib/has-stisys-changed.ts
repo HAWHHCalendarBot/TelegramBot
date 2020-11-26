@@ -40,7 +40,7 @@ export async function hasStISysChanged(): Promise<boolean | undefined> {
 	try {
 		const currentStISys = await getCurrentStISys()
 		return await compareToOldStISys(currentStISys)
-	} catch (error) {
+	} catch (error: unknown) {
 		console.error('StISys check failed', error)
 		return undefined
 	}

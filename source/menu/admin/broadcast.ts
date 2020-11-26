@@ -46,7 +46,7 @@ async function handleOngoingBroadcast(context: MyContext, messageId: number): Pr
 	try {
 		await context.userconfig.forwardBroadcast(context.from!.id, messageId)
 		text = 'Broadcast finished'
-	} catch (error) {
+	} catch (error: unknown) {
 		text = 'Broadcast failed: ' + String(error)
 	}
 

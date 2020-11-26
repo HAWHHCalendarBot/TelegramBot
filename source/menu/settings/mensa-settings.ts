@@ -137,11 +137,9 @@ function specialWishMenuBody(context: MyContext): Body {
 	const wishes = (Object.keys(settingName) as Array<keyof MealWishes>)
 		.filter(o => context.state.userconfig.mensa[o])
 
-	if (wishes.length > 0) {
-		text += 'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.'
-	} else {
-		text += 'Aktuell siehst du alle ungefilterten Angebote.'
-	}
+	text += wishes.length > 0 ?
+		'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.' :
+		'Aktuell siehst du alle ungefilterten Angebote.'
 
 	return {text, parse_mode: 'Markdown'}
 }

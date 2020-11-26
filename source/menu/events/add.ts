@@ -21,11 +21,9 @@ async function menuBody(context: MyContext): Promise<Body> {
 	let text = '*Veranstaltungen*'
 	text += '\nWelche Events möchtest du hinzufügen?'
 	text += '\n\n'
-	if (isFiltered) {
-		text += `Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`
-	} else {
-		text += `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
-	}
+	text += isFiltered ?
+		`Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.` :
+		`Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
 
 	return {text, parse_mode: 'Markdown'}
 }
