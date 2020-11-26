@@ -66,7 +66,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 		return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.'
 	}
 
-	const weekday = weekdays[date.getDay()]
+	const weekday = weekdays[date.getDay()]!
 	const {year, month, day} = getYearMonthDay(date)
 	let text = ''
 	text += `Mensa *${mensa}*`
@@ -105,7 +105,7 @@ function daySelectOptions(context: MyContext): Record<string, string> {
 
 	const result: Record<string, string> = {}
 	for (const date of dateOptions) {
-		const weekday = weekdays[date.getDay()]
+		const weekday = weekdays[date.getDay()]!
 			.slice(0, 2)
 		const day = date.getDate()
 		const key = generateDateString(date)

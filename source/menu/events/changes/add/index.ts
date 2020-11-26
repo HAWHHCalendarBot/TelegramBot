@@ -245,8 +245,8 @@ async function finish(context: MyContext): Promise<string | boolean> {
 	if (change.add) {
 		const date = new Date(Date.parse(change.date!))
 		const [hour, minute] = change.starttime!.split(':').map(o => Number(o))
-		date.setHours(hour)
-		date.setMinutes(minute)
+		date.setHours(hour!)
+		date.setMinutes(minute!)
 		change.date = formatDateToStoredChangeDate(date)
 		delete change.starttime
 	}

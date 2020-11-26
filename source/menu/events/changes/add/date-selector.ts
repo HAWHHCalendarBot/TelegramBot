@@ -28,7 +28,7 @@ const yearMenu = new MenuTemplate<MyContext>(menuText)
 
 function monthText(context: MyContext): string {
 	const current = getCurrent(context)
-	return MONTH_NAMES[current.getMonth() - 1]
+	return MONTH_NAMES[current.getMonth() - 1]!
 }
 
 dayMenu.select('', DAY_OPTIONS, {

@@ -90,8 +90,8 @@ export function mealToMarkdown(meal: Meal, priceClass: MensaPriceClass | undefin
 	}
 
 	if (showAdditives) {
-		for (const additive of Object.keys(meal.Additives)) {
-			text += `\n${additive}: ${meal.Additives[additive]}`
+		for (const [short, full] of Object.entries(meal.Additives)) {
+			text += `\n${short}: ${full}`
 		}
 	}
 

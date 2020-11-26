@@ -68,5 +68,5 @@ function getCurrent(context: MyContext, time: 'starttime' | 'endtime'): {hour: n
 	const current = context.session.generateChange![time]
 	const fallback = time === 'starttime' ? '8:00' : '16:00'
 	const [hour, minute] = (current ?? fallback).split(':').map(o => Number(o))
-	return {hour, minute}
+	return {hour: hour!, minute: minute!}
 }

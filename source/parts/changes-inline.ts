@@ -70,9 +70,9 @@ async function preAddMiddleware(context: MyContext, next: () => Promise<void>): 
 }
 
 bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {
-	const name = context.match![1]
-	const date = context.match![2]
-	const fromId = context.match![3]
+	const name = context.match![1]!
+	const date = context.match![2]!
+	const fromId = context.match![3]!
 
 	if (context.from?.id === Number(fromId)) {
 		await context.answerCbQuery('Das ist deine eigene Änderung 😉')
@@ -87,7 +87,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {
 		const warning = '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.'
 		await context.answerCbQuery(warning)
 
-		const currentChange = myChangeToThisEvent[0]
+		const currentChange = myChangeToThisEvent[0]!
 
 		let text = warning + '\n'
 		text += generateChangeTextHeader(currentChange)

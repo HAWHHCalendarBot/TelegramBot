@@ -17,7 +17,7 @@ async function getCurrentStISys(): Promise<string> {
 	}
 
 	const match = /;jsessionid=[^"]+/.exec(response.body)!
-	return response.body.replace(match[0], '')
+	return response.body.replace(match[0]!, '')
 }
 
 async function compareToOldStISys(currentStISys: string): Promise<boolean | undefined> {

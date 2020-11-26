@@ -9,10 +9,10 @@ export function generateChangeAction(change: Change): string {
 }
 
 function getChangeFromContext(context: MyContext): Change | undefined {
-	const complete = context.match![1]
+	const complete = context.match![1]!
 	const match = /^(.+)#(.+)$/.exec(complete)!
-	const name = match[1].replace(/;/g, '/')
-	const date = match[2].replace(/&/g, ':')
+	const name = match[1]!.replace(/;/g, '/')
+	const date = match[2]!.replace(/&/g, ':')
 
 	return context.state.userconfig.changes
 		.find(c => c.name === name && c.date === date)
