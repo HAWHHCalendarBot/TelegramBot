@@ -30,10 +30,10 @@ async function menuBody(context: MyContext): Promise<Body> {
 
 async function findEvents(context: MyContext): Promise<readonly string[]> {
 	const filter = context.session.eventfilter ?? DEFAULT_FILTER
-	const blacklist = context.state.userconfig.events
+	const ignore = context.state.userconfig.events
 	// This is not the array.find function which this eslint thingy trying to fix…
-	// eslint-disable-next-line unicorn/no-fn-reference-in-iterator
-	return allEvents.find(filter, blacklist)
+	// eslint-disable-next-line unicorn/no-array-callback-reference
+	return allEvents.find(filter, ignore)
 }
 
 const question = new TelegrafStatelessQuestion<MyContext>('events-add-filter', async (context, path) => {
