@@ -43,7 +43,7 @@ async function setSuffix(context: MyContext, value: string): Promise<void> {
 async function sendHintText(context: MyContext): Promise<void> {
 	const hintText = '⚠️ Hinweis: Dein Kalender muss nun neu abonniert werden!'
 	if (context.updateType === 'callback_query') {
-		await context.answerCbQuery(hintText, true)
+		await context.answerCbQuery(hintText, {show_alert: true})
 		return
 	}
 
@@ -63,9 +63,8 @@ menu.interact('Generieren…', 'g', {
 })
 
 const manualSuffixQuestion = new TelegrafStatelessQuestion<MyContext>('subscribe-suffix-manual', async (context, path) => {
-	const {text} = context.message
-	if (text) {
-		await setSuffix(context, text)
+	if ('text' in context.message) {
+		await setSuffix(context, context.message.text)
 	}
 
 	await replyMenuToContext(menu, context, path)

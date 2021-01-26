@@ -3,6 +3,7 @@ import {Context as TelegrafContext} from 'telegraf'
 import {ContextProperty} from './chatconfig'
 
 export interface MyContext extends TelegrafContext {
+	readonly match: RegExpExecArray | undefined;
 	userconfig: ContextProperty;
 	state: {
 		userconfig: Userconfig;

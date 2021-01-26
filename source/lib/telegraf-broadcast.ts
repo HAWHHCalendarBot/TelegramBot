@@ -1,7 +1,9 @@
-import {Telegram} from 'telegraf'
+import {Telegraf} from 'telegraf'
 import {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
 
 import {sequentialLoop, sleep} from './async'
+
+type Telegram = Telegraf['telegram']
 
 const SLEEP_MS = 250
 

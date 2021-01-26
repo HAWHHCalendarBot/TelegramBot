@@ -111,7 +111,10 @@ menu.choose('event', eventOptions, {
 		} else {
 			context.state.userconfig.events = context.state.userconfig.events
 				.filter(o => o !== event)
-			await context.answerCbQuery(`⚠️ Die Veranstaltung "${event}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`, true)
+			await context.answerCbQuery(
+				`⚠️ Die Veranstaltung "${event}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`,
+				{show_alert: true}
+			)
 		}
 
 		return true
@@ -192,14 +195,18 @@ createDatePickerButtons(menu, hideGenerateAddStep)
 createTimeSelectionSubmenuButtons(menu, hideGenerateChangeStep)
 
 const namesuffixQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-suffix', async (context, path) => {
-	const {text} = context.message
-	context.session.generateChange!.namesuffix = text
+	if ('text' in context.message) {
+		context.session.generateChange!.namesuffix = context.message.text
+	}
+
 	await replyMenuToContext(menu, context, path)
 })
 
 const roomQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-room', async (context, path) => {
-	const {text} = context.message
-	context.session.generateChange!.room = text
+	if ('text' in context.message) {
+		context.session.generateChange!.room = context.message.text
+	}
+
 	await replyMenuToContext(menu, context, path)
 })
 

@@ -57,7 +57,9 @@ async function handleOngoingBroadcast(context: MyContext, messageId: number): Pr
 		}
 	})
 
-	await replyMenuToContext(menu, context, getMenuOfPath(context.callbackQuery!.data!))
+	if (context.callbackQuery && 'data' in context.callbackQuery) {
+		await replyMenuToContext(menu, context, getMenuOfPath(context.callbackQuery.data))
+	}
 }
 
 menu.manualRow(backMainButtons)

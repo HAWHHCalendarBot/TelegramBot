@@ -58,17 +58,15 @@ export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
 const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-everything', async (context, path) => {
-	const answer = context.message.text
-	if (answer !== deleteConfirmString) {
+	if ('text' in context.message && context.message.text === deleteConfirmString) {
+		// @ts-expect-error
+		delete context.state.userconfig
+		context.session = {}
+		await context.reply('Deine Daten werden gelöscht…')
+	} else {
 		await context.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')
 		await replyMenuToContext(menu, context, path)
-		return
 	}
-
-	// @ts-expect-error
-	delete context.state.userconfig
-	context.session = {}
-	await context.reply('Deine Daten werden gelöscht…')
 })
 
 bot.use(deleteAllQuestion.middleware())

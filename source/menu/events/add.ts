@@ -37,7 +37,10 @@ async function findEvents(context: MyContext): Promise<readonly string[]> {
 }
 
 const question = new TelegrafStatelessQuestion<MyContext>('events-add-filter', async (context, path) => {
-	context.session.eventfilter = context.message.text
+	if ('text' in context.message) {
+		context.session.eventfilter = context.message.text
+	}
+
 	await replyMenuToContext(menu, context, path)
 })
 

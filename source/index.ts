@@ -1,6 +1,6 @@
 import {existsSync, readFileSync} from 'fs'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
-import {Telegraf, Extra, Markup, session} from 'telegraf'
+import {Telegraf, session} from 'telegraf'
 
 import {Chatconfig} from './lib/chatconfig'
 import {hasStISysChanged} from './lib/has-stisys-changed'
@@ -51,6 +51,14 @@ bot.use(async (ctx, next) => {
 })
 
 bot.use(session())
+bot.use(async (ctx, next) => {
+	if (!ctx.session) {
+		ctx.session = {}
+	}
+
+	await next()
+})
+
 const chatconfig = new Chatconfig('userconfig')
 bot.use(chatconfig)
 
@@ -70,7 +78,15 @@ async function checkStISysChangeAndNotify() {
 
 		const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
 
-		await chatconfig.broadcast(bot.telegram, text, Extra.markdown().markup(Markup.removeKeyboard()), user => Boolean(user.config.stisysUpdate))
+		await chatconfig.broadcast(
+			bot.telegram,
+			text,
+			{
+				parse_mode: 'Markdown',
+				reply_markup: {remove_keyboard: true}
+			},
+			user => Boolean(user.config.stisysUpdate)
+		)
 	} catch (error: unknown) {
 		console.error('checkStISysChangeAndNotify failed', error)
 	}
@@ -92,7 +108,7 @@ async function startup() {
 	await checkStISysChangeAndNotify()
 
 	await bot.launch()
-	console.log(new Date(), 'Bot started as', bot.options.username)
+	console.log(new Date(), 'Bot started as', bot.botInfo?.username)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

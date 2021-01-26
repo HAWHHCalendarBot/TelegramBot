@@ -1,7 +1,7 @@
 import {Composer} from 'telegraf'
 import {html as format} from 'telegram-format'
 import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'telegraf-inline-menu'
-import {User} from 'telegraf/typings/telegram-types'
+import {User} from 'typegram'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu'
@@ -49,8 +49,11 @@ menu.url('Kalender', async context => {
 })
 
 const question = new TelegrafStatelessQuestion<MyContext>('admin-user-filter', async (context, path) => {
-	context.session.adminuserquicklookfilter = context.message.text
-	delete context.session.adminuserquicklook
+	if ('text' in context.message) {
+		context.session.adminuserquicklookfilter = context.message.text
+		delete context.session.adminuserquicklook
+	}
+
 	await replyMenuToContext(menu, context, path)
 })
 
