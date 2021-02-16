@@ -1,55 +1,73 @@
 {
-  "name": "hawhhcalendarbot-telegrambot",
-  "version": "6.2.2",
-  "private": true,
-  "description": "A bot to configure your personal calendar of HAW Hamburg lectures",
-  "author": {
-    "name": "EdJoPaTo",
-    "email": "calendarbot@hawhh.de",
-    "url": "https://calendarbot.hawhh.de"
-  },
-  "engines": {
-    "node": ">=14"
-  },
-  "dependencies": {
-    "array-filter-unique": "^2.1.0",
-    "got": "^11.5.2",
-    "json-stable-stringify": "^1.0.1",
-    "source-map-support": "^0.5.19",
-    "telegraf": "^4.0.1",
-    "telegraf-inline-menu": "^6.0.0",
-    "telegraf-middleware-console-time": "^2.0.0",
-    "telegraf-stateless-question": "^2.0.0",
-    "telegram-format": "^2.0.1",
-    "typegram": "^3.1.8"
-  },
-  "devDependencies": {
-    "@sindresorhus/tsconfig": "^0.8.0",
-    "@types/json-stable-stringify": "^1.0.32",
-    "ava": "^3.5.0",
-    "nyc": "^15.0.0",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.1.0",
-    "xo": "^0.37.1"
-  },
-  "scripts": {
-    "start": "ts-node source/index.ts",
-    "test": "tsc --sourceMap && xo && nyc ava"
-  },
-  "xo": {
-    "semicolon": false,
-    "rules": {
-      "ava/no-ignored-test-files": "off",
-      "prefer-named-capture-group": "off"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/HAWHHCalendarBot/telegrambot.git"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/HAWHHCalendarBot/telegrambot/issues"
-  },
-  "homepage": "https://calendarbot.hawhh.de"
+	"name": "hawhhcalendarbot-telegrambot",
+	"version": "6.2.2",
+	"private": true,
+	"description": "A bot to configure your personal calendar of HAW Hamburg lectures",
+	"license": "MIT",
+	"homepage": "https://calendarbot.hawhh.de",
+	"author": {
+		"name": "EdJoPaTo",
+		"email": "calendarbot@hawhh.de",
+		"url": "https://calendarbot.hawhh.de"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/HAWHHCalendarBot/telegrambot.git"
+	},
+	"scripts": {
+		"build": "del-cli dist && tsc",
+		"start": "ts-node source/index.ts",
+		"test": "tsc --sourceMap && xo && nyc ava"
+	},
+	"engines": {
+		"node": ">=14"
+	},
+	"dependencies": {
+		"array-filter-unique": "^2.1.0",
+		"got": "^11.5.2",
+		"json-stable-stringify": "^1.0.1",
+		"source-map-support": "^0.5.19",
+		"telegraf": "^4.0.1",
+		"telegraf-inline-menu": "^6.0.0",
+		"telegraf-middleware-console-time": "^2.0.0",
+		"telegraf-stateless-question": "^2.0.0",
+		"telegram-format": "^2.0.1",
+		"typegram": "^3.1.8"
+	},
+	"devDependencies": {
+		"@sindresorhus/tsconfig": "^0.8.0",
+		"@types/json-stable-stringify": "^1.0.32",
+		"@types/node": "^14.0.5",
+		"ava": "^3.5.0",
+		"del-cli": "^3.0.0",
+		"nyc": "^15.0.0",
+		"ts-node": "^9.0.0",
+		"typescript": "^4.1.0",
+		"xo": "^0.37.1"
+	},
+	"nyc": {
+		"all": true,
+		"extension": [
+			".ts"
+		],
+		"include": [
+			"dist/source",
+			"source"
+		],
+		"exclude": [
+			"**/*.d.ts",
+			"**/*.test.ts"
+		],
+		"reporter": [
+			"lcov",
+			"text"
+		]
+	},
+	"xo": {
+		"semicolon": false,
+		"rules": {
+			"ava/no-ignored-test-files": "off",
+			"prefer-named-capture-group": "off"
+		}
+	}
 }
