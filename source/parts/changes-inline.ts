@@ -34,7 +34,7 @@ bot.on('inline_query', async context => {
 
 	const filtered = context.state.userconfig.changes
 		.filter(o => regex.test(generateShortChangeText(o)))
-	const results = filtered.map(c => generateInlineQueryResultFromChange(c, context.from!))
+	const results = filtered.map(c => generateInlineQueryResultFromChange(c, context.from))
 
 	await context.answerInlineQuery(results, {
 		cache_time: 20,
@@ -45,11 +45,11 @@ bot.on('inline_query', async context => {
 })
 
 async function preAddMiddleware(context: MyContext, next: () => Promise<void>): Promise<void> {
-	const name = context.match![1]
-	const date = context.match![2]
-	const fromId = Number(context.match![3])
+	const name = context.match![1]!
+	const date = context.match![2]!
+	const fromId = Number(context.match![3]!)
 
-	if (!context.state.userconfig.events.some(o => o === name)) {
+	if (!context.state.userconfig.events.includes(name)) {
 		await context.answerCbQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
 		return
 	}

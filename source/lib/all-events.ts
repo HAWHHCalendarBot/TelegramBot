@@ -31,6 +31,6 @@ export async function nonExisting(names: readonly string[]): Promise<string[]> {
 export async function find(pattern: string | RegExp, ignore: readonly string[] = []): Promise<readonly string[]> {
 	const allEvents = await getAll()
 	const regex = new RegExp(pattern, 'i')
-	const filtered = allEvents.filter(event => regex.test(event) && !ignore.some(v => v === event))
+	const filtered = allEvents.filter(event => regex.test(event) && !ignore.includes(event))
 	return filtered
 }
