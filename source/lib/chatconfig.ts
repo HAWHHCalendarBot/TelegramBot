@@ -1,15 +1,13 @@
 import {promises as fsPromises} from 'fs'
 
 import {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
-import {Telegraf, MiddlewareFn} from 'telegraf'
+import {Telegram, MiddlewareFn} from 'telegraf'
 import {User} from 'typegram'
 import * as stringify from 'json-stable-stringify'
 
 import {MyContext, Userconfig} from './types'
 import {sequentialLoop} from './async'
 import * as telegrafBroadcast from './telegraf-broadcast'
-
-type Telegram = Telegraf['telegram']
 
 interface ChatConfigFileContent {
 	chat: User;
