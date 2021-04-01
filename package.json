@@ -35,7 +35,7 @@
 		"typegram": "^3.1.8"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.8.0",
+		"@sindresorhus/tsconfig": "^1.0.1",
 		"@types/json-stable-stringify": "^1.0.32",
 		"@types/node": "^14.0.5",
 		"ava": "^3.5.0",
