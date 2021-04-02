@@ -8,7 +8,11 @@ const _stISysFile = 'StISys.html'
 
 async function getCurrentStISys(): Promise<string> {
 	const response = await got('https://stisys.haw-hamburg.de/', {
-		encoding: 'latin1'
+		encoding: 'latin1',
+		headers: {
+			from: 'calendarbot@hawhh.de',
+			'user-agent': 'github.com/HAWHHCalendarBot/telegrambot'
+		}
 	})
 
 	if (response.statusCode !== 200) {
