@@ -1,4 +1,5 @@
 import {Composer} from 'telegraf'
+import {html as format} from 'telegram-format'
 import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
@@ -14,18 +15,26 @@ export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
 async function menuBody(context: MyContext): Promise<Body> {
-	const filteredEvents = await findEvents(context)
-	const isFiltered = context.session.eventfilter !== DEFAULT_FILTER
 	const total = await allEvents.count()
 
-	let text = '*Veranstaltungen*'
+	let text = format.bold('Veranstaltungen')
 	text += '\nWelche Events möchtest du hinzufügen?'
 	text += '\n\n'
-	text += isFiltered ?
-		`Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.` :
-		`Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
 
-	return {text, parse_mode: 'Markdown'}
+	try {
+		const filteredEvents = await findEvents(context)
+
+		const filter = context.session.eventfilter ?? DEFAULT_FILTER
+		text += filter === DEFAULT_FILTER ?
+			`Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.` :
+			`Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`
+	} catch (error: unknown) {
+		const errorText = error instanceof Error ? error.message : String(error)
+		text += 'Filter Error: '
+		text += format.monospace(errorText)
+	}
+
+	return {text, parse_mode: format.parse_mode}
 }
 
 async function findEvents(context: MyContext): Promise<readonly string[]> {
@@ -64,13 +73,17 @@ menu.interact('Filter aufheben', 'filter-clear', {
 })
 
 async function eventOptions(context: MyContext): Promise<Record<string, string>> {
-	const all = await findEvents(context)
-	const result: Record<string, string> = {}
-	for (const event of all) {
-		result[event.replace(/\//g, ';')] = event
-	}
+	try {
+		const all = await findEvents(context)
+		const result: Record<string, string> = {}
+		for (const event of all) {
+			result[event.replace(/\//g, ';')] = event
+		}
 
-	return result
+		return result
+	} catch {
+		return {}
+	}
 }
 
 menu.choose('a', eventOptions, {
