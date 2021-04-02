@@ -112,6 +112,7 @@ async function startup() {
 	])
 
 	setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
+	console.log(new Date(), 'Initial StISys check...')
 	await checkStISysChangeAndNotify()
 
 	await bot.launch()

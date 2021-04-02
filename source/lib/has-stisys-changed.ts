@@ -9,6 +9,7 @@ const _stISysFile = 'StISys.html'
 async function getCurrentStISys(): Promise<string> {
 	const response = await got('https://stisys.haw-hamburg.de/', {
 		encoding: 'latin1',
+		timeout: 5 * 1000, // 5 seconds
 		headers: {
 			from: 'calendarbot@hawhh.de',
 			'user-agent': 'github.com/HAWHHCalendarBot/telegrambot'
