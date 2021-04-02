@@ -28,7 +28,7 @@ const yearMenu = new MenuTemplate<MyContext>(menuText)
 
 function monthText(context: MyContext): string {
 	const current = getCurrent(context)
-	return MONTH_NAMES[current.getMonth() - 1]!
+	return MONTH_NAMES[current.getMonth()]!
 }
 
 dayMenu.select('', DAY_OPTIONS, {
@@ -44,10 +44,10 @@ dayMenu.select('', DAY_OPTIONS, {
 
 monthMenu.select('', generateMonthOptions(), {
 	columns: 2,
-	isSet: (context, month) => getCurrent(context).getMonth() === Number(month),
+	isSet: (context, month) => getCurrent(context).getMonth() + 1 === Number(month),
 	set: async (context, month) => {
 		const current = getCurrent(context)
-		current.setMonth(Number(month))
+		current.setMonth(Number(month) - 1)
 		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
 		return '..'
 	}
