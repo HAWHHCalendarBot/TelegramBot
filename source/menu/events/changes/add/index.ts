@@ -85,8 +85,11 @@ function generationDataIsValid(context: MyContext): boolean {
 }
 
 async function eventOptions(context: MyContext): Promise<Record<string, string>> {
+	const events = Object.keys(context.userconfig.mine.events)
+	events.sort()
+
 	const result: Record<string, string> = {}
-	for (const event of context.userconfig.mine.events) {
+	for (const event of events) {
 		result[event.replace(/\//g, ';')] = event
 	}
 
@@ -109,8 +112,7 @@ menu.choose('event', eventOptions, {
 
 			context.session.generateChange.name = event
 		} else {
-			context.userconfig.mine.events = context.userconfig.mine.events
-				.filter(o => o !== event)
+			delete context.userconfig.mine.events[event]
 			await context.answerCbQuery(
 				`⚠️ Die Veranstaltung "${event}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`,
 				{show_alert: true}

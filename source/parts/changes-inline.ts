@@ -56,7 +56,7 @@ async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRela
 	const date = context.match![2]!
 	const fromId = Number(context.match![3]!)
 
-	if (!context.userconfig.mine.events.includes(name)) {
+	if (!Object.keys(context.userconfig.mine.events).includes(name)) {
 		await context.answerCbQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
 		return undefined
 	}

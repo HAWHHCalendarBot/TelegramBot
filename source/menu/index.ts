@@ -21,7 +21,7 @@ bot.use(subscribe.bot)
 
 menu.submenu('🏢 Veranstaltungen', 'e', events.menu)
 menu.submenu('📲 Kalender abonnieren', 'subscribe', subscribe.menu, {
-	hide: context => context.userconfig.mine.events.length === 0
+	hide: context => Object.keys(context.userconfig.mine.events).length === 0
 })
 
 menu.submenu('🍽 Mensa', 'mensa', mensa.menu)

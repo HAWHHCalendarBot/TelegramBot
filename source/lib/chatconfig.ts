@@ -145,7 +145,7 @@ export class Chatconfig {
 		const config: Userconfig = content?.config ?? {
 			calendarfileSuffix: '',
 			changes: [],
-			events: [],
+			events: {},
 			mensa: {}
 		}
 		return {...config}

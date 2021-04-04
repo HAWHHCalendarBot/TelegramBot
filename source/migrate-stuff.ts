@@ -1,7 +1,7 @@
 import {Composer} from 'telegraf'
 
 import {getCanteenList} from './lib/mensa-meals.js'
-import {MyContext} from './lib/types.js'
+import {MyContext, EventDetails} from './lib/types.js'
 
 export const bot = new Composer<MyContext>()
 
@@ -16,7 +16,17 @@ bot.use(async (ctx, next) => {
 	}
 
 	if (!ctx.userconfig.mine.events) {
-		ctx.userconfig.mine.events = []
+		ctx.userconfig.mine.events = {}
+	}
+
+	if (Array.isArray(ctx.userconfig.mine.events)) {
+		const array = ctx.userconfig.mine.events as string[]
+		const map: Record<string, EventDetails> = {}
+		for (const name of array) {
+			map[name] = {}
+		}
+
+		ctx.userconfig.mine.events = map
 	}
 
 	if (!ctx.userconfig.mine.mensa) {

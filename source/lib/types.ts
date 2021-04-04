@@ -25,13 +25,16 @@ export interface Userconfig {
 	readonly admin?: true;
 	calendarfileSuffix: string;
 	changes: Change[];
-	events: string[];
+	events: Record<string, EventDetails>;
 	mensa: MensaSettings;
 	removedEvents?: RemovedEventsDisplayStyle;
 	stisysUpdate?: boolean;
 }
 
 export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji'
+
+export interface EventDetails {
+}
 
 export interface Change {
 	add?: true;

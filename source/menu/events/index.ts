@@ -14,7 +14,8 @@ async function menuBody(context: MyContext): Promise<Body> {
 	let text = format.bold('Veranstaltungen')
 	text += '\n\n'
 
-	const {events} = context.userconfig.mine
+	const events = Object.keys(context.userconfig.mine.events)
+	events.sort()
 	if (events.length > 0) {
 		const nonExisting = new Set(await allEvents.nonExisting(events))
 		text += 'Du hast folgende Veranstaltungen im Kalender:'
@@ -55,29 +56,31 @@ bot.use(changesMenu.bot)
 menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
 menu.submenu('🗑 Entfernen', 'r', removeMenu, {
 	joinLastRow: true,
-	hide: context => context.userconfig.mine.events.length === 0
+	hide: context => Object.keys(context.userconfig.mine.events).length === 0
 })
 
 menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 	hide: async context => {
-		const nonExisting = await allEvents.nonExisting(context.userconfig.mine.events)
+		const nonExisting = await allEvents.nonExisting(Object.keys(context.userconfig.mine.events))
 		return nonExisting.length === 0
 	},
 	do: async context => {
-		const nonExisting = new Set(await allEvents.nonExisting(context.userconfig.mine.events))
-		context.userconfig.mine.events = context.userconfig.mine.events
-			.filter(o => !nonExisting.has(o))
+		const nonExisting = new Set(await allEvents.nonExisting(Object.keys(context.userconfig.mine.events)))
+		for (const name of nonExisting) {
+			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+			delete context.userconfig.mine.events[name]
+		}
 
 		// Only keep changes of events the user still has
 		context.userconfig.mine.changes = context.userconfig.mine.changes
-			.filter(o => context.userconfig.mine.events.includes(o.name))
+			.filter(o => Object.keys(context.userconfig.mine.events).includes(o.name))
 
 		return true
 	}
 })
 
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
-	hide: context => context.userconfig.mine.events.length === 0
+	hide: context => Object.keys(context.userconfig.mine.events).length === 0
 })
 
 menu.manualRow(backMainButtons)
