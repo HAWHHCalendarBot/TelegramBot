@@ -55,14 +55,19 @@ export function generateShortChangeText(change: Change): string {
 }
 
 export async function loadEvents(eventname: string): Promise<EventEntryInternal[]> {
-	const filename = eventname.replace('/', '-')
-	const content = await fsPromises.readFile(`eventfiles/${filename}.json`, 'utf8')
-	const array = JSON.parse(content) as EventEntryFileContent[]
-	const parsed = array.map((o): EventEntryInternal => ({
-		...o,
-		StartTime: parseDateTimeToDate(o.StartTime),
-		EndTime: parseDateTimeToDate(o.EndTime)
-	}))
+	try {
+		const filename = eventname.replace('/', '-')
+		const content = await fsPromises.readFile(`eventfiles/${filename}.json`, 'utf8')
+		const array = JSON.parse(content) as EventEntryFileContent[]
+		const parsed = array.map((o): EventEntryInternal => ({
+			...o,
+			StartTime: parseDateTimeToDate(o.StartTime),
+			EndTime: parseDateTimeToDate(o.EndTime)
+		}))
 
-	return parsed
+		return parsed
+	} catch (error: unknown) {
+		console.error('ERROR while loading events for change date picker', error)
+		return []
+	}
 }
