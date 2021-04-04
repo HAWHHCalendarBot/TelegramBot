@@ -1,11 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-function pull {
-  echo "pull $1"
-  rsync -acv --delete-delay calendarbot.hawhh.de:/srv/hawhh-calendarbot/$1/ $1/ | grep -E '^deleting|[^/]$|^$'
-}
-
-pull eventfiles
+# assumes downloader was cloned and executed
+ln -rfs ../downloader/eventfiles
 
 mkdir -p tmp
 mkdir -p userconfig
