@@ -61,6 +61,7 @@ const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-every
 	if ('text' in context.message && context.message.text === deleteConfirmString) {
 		// @ts-expect-error
 		delete context.userconfig.mine
+		// @ts-expect-error
 		context.session = {}
 		await context.reply('Deine Daten werden gelöscht…')
 	} else {

@@ -4,8 +4,8 @@ import {ContextProperty} from './chatconfig.js'
 
 export interface MyContext extends TelegrafContext {
 	readonly match: RegExpExecArray | undefined;
-	userconfig: ContextProperty;
-	session: Session;
+	readonly userconfig: ContextProperty;
+	readonly session: Session;
 }
 
 export interface Session {
@@ -22,7 +22,7 @@ export interface Session {
 }
 
 export interface Userconfig {
-	admin?: true;
+	readonly admin?: true;
 	calendarfileSuffix: string;
 	changes: Change[];
 	events: string[];

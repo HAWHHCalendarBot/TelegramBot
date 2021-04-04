@@ -43,7 +43,7 @@ export class Chatconfig {
 			const wholeconfig = await this.load(ctx.from.id)
 			const configOfUser = this.configFromWholeConfig(wholeconfig)
 
-			ctx.userconfig = {
+			const contextProperty: ContextProperty = {
 				all: async (filter?: (o: ChatConfigFileContent) => boolean) => this.all(filter),
 				allIds: async () => this.allIds(),
 				broadcast: async (text: string, extra: ExtraReplyMessage, filter?: (o: ChatConfigFileContent) => boolean) => this.broadcast(ctx.telegram, text, extra, filter),
@@ -52,6 +52,9 @@ export class Chatconfig {
 				loadConfig: async (id: number) => this.loadConfig(id),
 				mine: configOfUser
 			}
+
+			// @ts-expect-error
+			ctx.userconfig = contextProperty
 
 			const before = stringify(ctx.userconfig.mine)
 			await next()

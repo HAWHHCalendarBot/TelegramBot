@@ -4,7 +4,7 @@ import {Telegraf, session} from 'telegraf'
 
 import {Chatconfig} from './lib/chatconfig.js'
 import {hasStISysChanged} from './lib/has-stisys-changed.js'
-import {MyContext} from './lib/types.js'
+import {MyContext, Session} from './lib/types.js'
 
 import {bot as migrateStuffBot} from './migrate-stuff.js'
 
@@ -60,7 +60,9 @@ bot.use(async (ctx, next) => {
 bot.use(session())
 bot.use(async (ctx, next) => {
 	if (!ctx.session) {
-		ctx.session = {}
+		const defaultSession: Session = {}
+		// @ts-expect-error
+		ctx.session = defaultSession
 	}
 
 	await next()
