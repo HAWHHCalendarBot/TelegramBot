@@ -8,7 +8,7 @@ import * as broadcastMenu from './broadcast.js'
 import * as userMenu from './user-quicklook.js'
 
 export function hide(context: MyContext) {
-	return !context.state.userconfig.admin
+	return !context.userconfig.mine.admin
 }
 
 export const bot = new Composer<MyContext>()

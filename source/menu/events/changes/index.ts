@@ -25,7 +25,7 @@ menu.chooseIntoSubmenu('d', getChangesOptions, changeDetails.menu, {
 })
 
 function getChangesOptions(context: MyContext): Record<string, string> {
-	const {changes} = context.state.userconfig
+	const {changes} = context.userconfig.mine
 	if (changes.length === 0) {
 		return {}
 	}
@@ -40,7 +40,7 @@ function getChangesOptions(context: MyContext): Record<string, string> {
 }
 
 menu.submenu('⚙️ Anzeigeart entfernter Termine', 'showRemoved', removedStyleMenu, {
-	hide: context => (context.state.userconfig.changes)
+	hide: context => context.userconfig.mine.changes
 		.filter(c => c.remove)
 		.length === 0
 })

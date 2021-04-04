@@ -32,7 +32,7 @@ function escapeRegexSpecificChars(input: string): string {
 bot.on('inline_query', async context => {
 	const regex = new RegExp(escapeRegexSpecificChars(context.inlineQuery.query), 'i')
 
-	const filtered = context.state.userconfig.changes
+	const filtered = context.userconfig.mine.changes
 		.filter(o => regex.test(generateShortChangeText(o)))
 	const results = filtered.map(c => generateInlineQueryResultFromChange(c, context.from))
 
@@ -56,7 +56,7 @@ async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRela
 	const date = context.match![2]!
 	const fromId = Number(context.match![3]!)
 
-	if (!context.state.userconfig.events.includes(name)) {
+	if (!context.userconfig.mine.events.includes(name)) {
 		await context.answerCbQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
 		return undefined
 	}
@@ -92,7 +92,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 	}
 
 	// Prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
-	const myChangeToThisEvent = context.state.userconfig.changes
+	const myChangeToThisEvent = context.userconfig.mine.changes
 		.filter(o => o.name === name && o.date === date)
 
 	if (myChangeToThisEvent.length > 0) {
@@ -119,7 +119,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 		return
 	}
 
-	context.state.userconfig.changes.push(change)
+	context.userconfig.mine.changes.push(change)
 	await context.answerCbQuery('Die Änderung wurde hinzugefügt')
 })
 
@@ -133,8 +133,8 @@ bot.action(/^c:af:(.+)#(.+)#(.+)$/, async context => {
 	}
 
 	const {name, date, change} = meta
-	context.state.userconfig.changes = context.state.userconfig.changes
+	context.userconfig.mine.changes = context.userconfig.mine.changes
 		.filter(o => o.name !== name || o.date !== date)
-	context.state.userconfig.changes.push(change)
+	context.userconfig.mine.changes.push(change)
 	return context.editMessageText('Die Änderung wurde hinzugefügt.')
 })

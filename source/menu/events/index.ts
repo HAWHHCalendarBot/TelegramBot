@@ -14,7 +14,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	let text = format.bold('Veranstaltungen')
 	text += '\n\n'
 
-	const {events} = context.state.userconfig
+	const {events} = context.userconfig.mine
 	if (events.length > 0) {
 		const nonExisting = new Set(await allEvents.nonExisting(events))
 		text += 'Du hast folgende Veranstaltungen im Kalender:'
@@ -55,29 +55,29 @@ bot.use(changesMenu.bot)
 menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
 menu.submenu('🗑 Entfernen', 'r', removeMenu, {
 	joinLastRow: true,
-	hide: context => context.state.userconfig.events.length === 0
+	hide: context => context.userconfig.mine.events.length === 0
 })
 
 menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 	hide: async context => {
-		const nonExisting = await allEvents.nonExisting(context.state.userconfig.events)
+		const nonExisting = await allEvents.nonExisting(context.userconfig.mine.events)
 		return nonExisting.length === 0
 	},
 	do: async context => {
-		const nonExisting = new Set(await allEvents.nonExisting(context.state.userconfig.events))
-		context.state.userconfig.events = context.state.userconfig.events
+		const nonExisting = new Set(await allEvents.nonExisting(context.userconfig.mine.events))
+		context.userconfig.mine.events = context.userconfig.mine.events
 			.filter(o => !nonExisting.has(o))
 
 		// Only keep changes of events the user still has
-		context.state.userconfig.changes = context.state.userconfig.changes
-			.filter(o => context.state.userconfig.events.includes(o.name))
+		context.userconfig.mine.changes = context.userconfig.mine.changes
+			.filter(o => context.userconfig.mine.events.includes(o.name))
 
 		return true
 	}
 })
 
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
-	hide: context => context.state.userconfig.events.length === 0
+	hide: context => context.userconfig.mine.events.length === 0
 })
 
 menu.manualRow(backMainButtons)

@@ -7,7 +7,7 @@ import {backMainButtons} from '../../lib/inline-menu.js'
 import {MyContext, Userconfig} from '../../lib/types.js'
 
 async function getActualUserconfigContent(context: MyContext): Promise<Userconfig | undefined> {
-	if (!context.state.userconfig) {
+	if (!context.userconfig.mine) {
 		return undefined
 	}
 
@@ -38,7 +38,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	text += '\n'
 	text +=	'Damit dein Kalender generiert oder deine Mensa Einstellungen gespeichert werden können, werden einige Daten persistent auf dem Server hinterlegt.'
 	text += '\n'
-	text += format.monospaceBlock(JSON.stringify(context.state.userconfig, null, 2), 'json')
+	text += format.monospaceBlock(JSON.stringify(context.userconfig.mine, null, 2), 'json')
 
 	text += '\n\n'
 	text += format.bold('Temporäre Daten des Bots')
@@ -60,7 +60,7 @@ export const menu = new MenuTemplate<MyContext>(menuBody)
 const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-everything', async (context, path) => {
 	if ('text' in context.message && context.message.text === deleteConfirmString) {
 		// @ts-expect-error
-		delete context.state.userconfig
+		delete context.userconfig.mine
 		context.session = {}
 		await context.reply('Deine Daten werden gelöscht…')
 	} else {

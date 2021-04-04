@@ -41,7 +41,7 @@ export const menu = new MenuTemplate<MyContext>(menuBody)
 function getCurrentSettings(context: MyContext): Readonly<{mensa?: string; date: Date}> {
 	let {mensa, date} = context.session.mensa ?? {}
 	if (!mensa) {
-		mensa = context.state.userconfig.mensa.main
+		mensa = context.userconfig.mine.mensa.main
 	}
 
 	if (!date) {
@@ -52,7 +52,7 @@ function getCurrentSettings(context: MyContext): Readonly<{mensa?: string; date:
 	// When that date is more than a day ago, update it
 	if ((now - date) > DAY_IN_MS) {
 		date = Date.now()
-		mensa = context.state.userconfig.mensa.main
+		mensa = context.userconfig.mine.mensa.main
 	}
 
 	return {mensa, date: new Date(date)}
@@ -60,7 +60,7 @@ function getCurrentSettings(context: MyContext): Readonly<{mensa?: string; date:
 
 async function menuBody(context: MyContext): Promise<Body> {
 	const {mensa, date} = getCurrentSettings(context)
-	const mensaSettings = context.state.userconfig.mensa
+	const mensaSettings = context.userconfig.mine.mensa
 
 	if (!mensa || mensa === 'undefined') {
 		return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.'
@@ -117,7 +117,7 @@ function daySelectOptions(context: MyContext): Record<string, string> {
 
 function mensaSelectOption(context: MyContext): string[] {
 	const current = getCurrentSettings(context).mensa
-	const {main, more} = context.state.userconfig.mensa
+	const {main, more} = context.userconfig.mine.mensa
 	return [main, ...(more ?? [])]
 		.filter(o => o !== current)
 		.filter((o): o is string => Boolean(o))

@@ -5,9 +5,6 @@ import {ContextProperty} from './chatconfig.js'
 export interface MyContext extends TelegrafContext {
 	readonly match: RegExpExecArray | undefined;
 	userconfig: ContextProperty;
-	state: {
-		userconfig: Userconfig;
-	};
 	session: Session;
 }
 

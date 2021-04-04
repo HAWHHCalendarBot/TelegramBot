@@ -16,7 +16,7 @@ export const menu = new MenuTemplate<MyContext>(menuBody)
 
 async function eventOptions(context: MyContext): Promise<Record<string, string>> {
 	const result: Record<string, string> = {}
-	for (const event of context.state.userconfig.events) {
+	for (const event of context.userconfig.mine.events) {
 		result[event.replace(/\//g, ';')] = event
 	}
 
@@ -28,11 +28,11 @@ menu.choose('r', eventOptions, {
 	buttonText: (_, event) => '🗑 ' + event,
 	do: async (context, key) => {
 		const event = key.replace(/;/g, '/')
-		context.state.userconfig.events = context.state.userconfig.events.filter(o => o !== event)
+		context.userconfig.mine.events = context.userconfig.mine.events.filter(o => o !== event)
 
 		// Only keep changes of events the user still has
-		context.state.userconfig.changes = context.state.userconfig.changes
-			.filter(o => context.state.userconfig.events.includes(o.name))
+		context.userconfig.mine.changes = context.userconfig.mine.changes
+			.filter(o => context.userconfig.mine.events.includes(o.name))
 
 		await context.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
 		return true

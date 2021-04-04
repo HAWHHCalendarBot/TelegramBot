@@ -17,7 +17,7 @@ export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
 function changesOfEvent(context: MyContext, name: string) {
-	const allChanges = context.state.userconfig.changes
+	const allChanges = context.userconfig.mine.changes
 	return allChanges.filter(o => o.name === name)
 }
 
@@ -86,7 +86,7 @@ function generationDataIsValid(context: MyContext): boolean {
 
 async function eventOptions(context: MyContext): Promise<Record<string, string>> {
 	const result: Record<string, string> = {}
-	for (const event of context.state.userconfig.events) {
+	for (const event of context.userconfig.mine.events) {
 		result[event.replace(/\//g, ';')] = event
 	}
 
@@ -109,7 +109,7 @@ menu.choose('event', eventOptions, {
 
 			context.session.generateChange.name = event
 		} else {
-			context.state.userconfig.events = context.state.userconfig.events
+			context.userconfig.mine.events = context.userconfig.mine.events
 				.filter(o => o !== event)
 			await context.answerCbQuery(
 				`⚠️ Die Veranstaltung "${event}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`,
@@ -256,12 +256,12 @@ async function finish(context: MyContext): Promise<string | boolean> {
 		delete change.starttime
 	}
 
-	if (!context.state.userconfig.changes) {
-		context.state.userconfig.changes = []
+	if (!context.userconfig.mine.changes) {
+		context.userconfig.mine.changes = []
 	}
 
 	const {name, date} = change
-	if (context.state.userconfig.changes.some(o => o.name === name && o.date === date)) {
+	if (context.userconfig.mine.changes.some(o => o.name === name && o.date === date)) {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
 		// Also the user can add an additional date that they already have 'used'
@@ -269,7 +269,7 @@ async function finish(context: MyContext): Promise<string | boolean> {
 		return true
 	}
 
-	context.state.userconfig.changes.push(change as Change)
+	context.userconfig.mine.changes.push(change as Change)
 	delete context.session.generateChange
 
 	const actionPart = changeDetails.generateChangeAction(change as Change)

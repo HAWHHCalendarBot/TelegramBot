@@ -21,6 +21,9 @@ export interface ContextProperty {
 	readonly forwardBroadcast: (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => Promise<void>;
 	readonly load: (id: number) => Promise<ChatConfigFileContent | undefined>;
 	readonly loadConfig: (id: number) => Promise<Userconfig>;
+
+	// Data deletion will delete this property but thats only there and only in that place
+	readonly mine: Userconfig;
 }
 
 export class Chatconfig {
@@ -37,8 +40,8 @@ export class Chatconfig {
 				return next()
 			}
 
-			const wholeconfig: ChatConfigFileContent = (await this.load(ctx.from.id)) ?? {user: {}, userconfig: {}} as any
-			ctx.state.userconfig = this.configFromWholeConfig(wholeconfig)
+			const wholeconfig = await this.load(ctx.from.id)
+			const configOfUser = this.configFromWholeConfig(wholeconfig)
 
 			ctx.userconfig = {
 				all: async (filter?: (o: ChatConfigFileContent) => boolean) => this.all(filter),
@@ -46,23 +49,24 @@ export class Chatconfig {
 				broadcast: async (text: string, extra: ExtraReplyMessage, filter?: (o: ChatConfigFileContent) => boolean) => this.broadcast(ctx.telegram, text, extra, filter),
 				forwardBroadcast: async (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => this.forwardBroadcast(ctx.telegram, originChat, messageId, filter),
 				load: async (id: number) => this.load(id),
-				loadConfig: async (id: number) => this.loadConfig(id)
+				loadConfig: async (id: number) => this.loadConfig(id),
+				mine: configOfUser
 			}
 
-			const before = stringify(ctx.state.userconfig)
+			const before = stringify(ctx.userconfig.mine)
 			await next()
-			if (!ctx.state.userconfig) {
+			if (!ctx.userconfig.mine) {
 				console.log(new Date(), 'request to delete data', ctx.from)
 				// Request to remove the userconfig
 				return this.removeConfig(ctx.from.id)
 			}
 
-			const after = stringify(ctx.state.userconfig)
-			const userString = stringify(wholeconfig.chat)
+			const after = stringify(ctx.userconfig.mine)
+			const userString = stringify(wholeconfig?.chat)
 			const currentUserString = stringify(ctx.from)
 
 			if (before !== after || userString !== currentUserString) {
-				await this.saveConfig(ctx.from, ctx.state.userconfig)
+				await this.saveConfig(ctx.from, ctx.userconfig.mine)
 			}
 		}
 	}

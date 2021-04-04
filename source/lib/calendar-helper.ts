@@ -12,7 +12,7 @@ export function getUrl(id: number, userconfig: Userconfig): string {
 }
 
 export function getUrlFromContext(context: MyContext): string {
-	return getUrl(context.from!.id, context.state.userconfig)
+	return getUrl(context.from!.id, context.userconfig.mine)
 }
 
 export function formatDateToHumanReadable(isoDateString: string): string {

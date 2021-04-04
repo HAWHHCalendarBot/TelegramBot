@@ -7,7 +7,7 @@ import {MyContext} from '../../lib/types.js'
 import {getUrlFromContext} from '../../lib/calendar-helper.js'
 
 function menuBody(context: MyContext): Body {
-	const {calendarfileSuffix} = context.state.userconfig
+	const {calendarfileSuffix} = context.userconfig.mine
 
 	let text = 'Die Kalender liegen für jeden frei zugänglich im Internet. '
 	text += `Wenn die URL nur aus deiner Telegram Nutzer ID (\`${context.from!.id}\`) bestehen würde, könnte jeder mit dieser ID deinen Kalender einsehen.`
@@ -36,7 +36,7 @@ async function setSuffix(context: MyContext, value: string): Promise<void> {
 		return
 	}
 
-	context.state.userconfig.calendarfileSuffix = value
+	context.userconfig.mine.calendarfileSuffix = value
 	await sendHintText(context)
 }
 

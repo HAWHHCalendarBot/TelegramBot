@@ -41,10 +41,10 @@ export const menu = new MenuTemplate<MyContext>(menuBody)
 menu.select('s', removedEventsOptions, {
 	columns: 1,
 	set: (context, key) => {
-		context.state.userconfig.removedEvents = key as RemovedEventsDisplayStyle
+		context.userconfig.mine.removedEvents = key as RemovedEventsDisplayStyle
 		return true
 	},
-	isSet: (context, key) => (context.state.userconfig.removedEvents ?? 'cancelled') === key
+	isSet: (context, key) => (context.userconfig.mine.removedEvents ?? 'cancelled') === key
 })
 
 menu.manualRow(backMainButtons)

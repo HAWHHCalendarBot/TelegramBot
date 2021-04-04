@@ -39,7 +39,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 
 async function findEvents(context: MyContext): Promise<readonly string[]> {
 	const filter = context.session.eventfilter ?? DEFAULT_FILTER
-	const ignore = context.state.userconfig.events
+	const ignore = context.userconfig.mine.events
 	// This is not the array.find function which this eslint thingy trying to fix…
 	// eslint-disable-next-line unicorn/no-array-callback-reference
 	return allEvents.find(filter, ignore)
@@ -92,7 +92,7 @@ menu.choose('a', eventOptions, {
 	do: async (context, key) => {
 		const event = key.replace(/;/g, '/')
 		const isExisting = await allEvents.exists(event)
-		const isAlreadyInCalendar = context.state.userconfig.events
+		const isAlreadyInCalendar = context.userconfig.mine.events
 			.includes(event)
 
 		if (!isExisting) {
@@ -105,8 +105,8 @@ menu.choose('a', eventOptions, {
 			return true
 		}
 
-		context.state.userconfig.events.push(event)
-		context.state.userconfig.events.sort()
+		context.userconfig.mine.events.push(event)
+		context.userconfig.mine.events.sort()
 		await context.answerCbQuery(`${event} wurde zu deinem Kalender hinzugefügt.`)
 		return true
 	},
