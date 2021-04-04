@@ -21,11 +21,20 @@ function getNameFromPath(path: string): string {
 function menuBody(context: MyContext, path: string): Body {
 	const name = getNameFromPath(path)
 	const event = context.userconfig.mine.events[name]!
+	const changes = context.userconfig.mine.changes.filter(o => o.name === name).length
 
 	let text = format.bold('Veranstaltung')
 	text += '\n'
 	text += name
 	text += '\n\n'
+
+	if (changes > 0) {
+		text += '✏️'
+		text += 'Änderungen'
+		text += ': '
+		text += changes
+		text += '\n\n'
+	}
 
 	if (event.notes) {
 		text += '🗒'
