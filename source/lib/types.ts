@@ -34,6 +34,7 @@ export interface Userconfig {
 export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji'
 
 export interface EventDetails {
+	notes?: string;
 }
 
 export interface Change {

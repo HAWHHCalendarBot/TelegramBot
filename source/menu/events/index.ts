@@ -78,11 +78,15 @@ function getEventOptions(context: MyContext): Record<string, string> {
 	const {changes} = context.userconfig.mine
 	const result: Record<string, string> = {}
 
-	for (const name of Object.keys(context.userconfig.mine.events)) {
+	for (const [name, details] of Object.entries(context.userconfig.mine.events)) {
 		let title = name + ' '
 
 		if (changes.some(o => o.name === name)) {
 			title += '✏️'
+		}
+
+		if (details.notes) {
+			title += '🗒'
 		}
 
 		result[name.replace(/\//g, ';')] = title.trim()
