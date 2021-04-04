@@ -107,6 +107,6 @@ removeMenu.interact('Ja ich will!', 'y', {
 })
 removeMenu.navigate('🛑 Abbrechen', '..', {joinLastRow: true})
 
-menu.submenu('🗑 Entfernen', 'r', removeMenu)
+menu.submenu('🗑 Veranstaltung entfernen', 'r', removeMenu)
 
 menu.manualRow(backMainButtons)

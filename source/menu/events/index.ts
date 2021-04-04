@@ -72,7 +72,7 @@ menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 	}
 })
 
-menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
+menu.submenu('➕ Veranstaltung hinzufügen', 'a', addMenu.menu)
 
 function getEventOptions(context: MyContext): Record<string, string> {
 	const {changes} = context.userconfig.mine
