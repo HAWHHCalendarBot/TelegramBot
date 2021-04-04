@@ -2,7 +2,7 @@ import {Composer} from 'telegraf'
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
 import {backMainButtons} from '../../../lib/inline-menu.js'
-import {generateShortChangeText} from '../../../lib/change-helper.js'
+import {formatDateToHumanReadable} from '../../../lib/calendar-helper.js'
 import {MyContext} from '../../../lib/types.js'
 
 import * as changeDetails from './details.js'
@@ -24,22 +24,25 @@ menu.chooseIntoSubmenu('d', getChangesOptions, changeDetails.menu, {
 })
 
 function getChangesOptions(context: MyContext): Record<string, string> {
-	const {changes} = context.userconfig.mine
-	if (changes.length === 0) {
-		return {}
-	}
+	const event = context.match![1]!.replace(/;/, '/')
+	const changes = context.userconfig.mine.changes
+		.filter(o => o.name === event)
 
 	const result: Record<string, string> = {}
 	for (const change of changes) {
 		const key = changeDetails.generateChangeAction(change)
-		result[key] = generateShortChangeText(change)
+		result[key] = formatDateToHumanReadable(change.date)
 	}
 
 	return result
 }
 
-function menuBody(): Body {
+function menuBody(context: MyContext): Body {
+	const event = context.match![1]!.replace(/;/, '/')
+
 	let text = '*Veranstaltungsänderungen*\n'
+	text += event
+	text += '\n'
 
 	text += '\nWenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen.'
 	text += ' Dein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.'

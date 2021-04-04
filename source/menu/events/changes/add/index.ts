@@ -6,7 +6,6 @@ import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
 import {loadEvents, generateChangeText} from '../../../../lib/change-helper.js'
 import {MyContext, Change} from '../../../../lib/types.js'
-import * as allEvents from '../../../../lib/all-events.js'
 
 import * as changeDetails from '../details.js'
 
@@ -22,15 +21,20 @@ function changesOfEvent(context: MyContext, name: string) {
 }
 
 function menuBody(context: MyContext): Body {
-	const {name, date, add} = context.session.generateChange ?? {}
-	let text = ''
-	if (!name) {
-		return 'Zu welcher Veranstaltung willst du eine Änderung hinzufügen?'
+	if (!context.session.generateChange) {
+		context.session.generateChange = {}
 	}
+
+	if (context.match) {
+		context.session.generateChange.name = context.match[1]!.replace(/;/g, '/')
+	}
+
+	const {name, date, add} = context.session.generateChange
+	let text = ''
 
 	if (!date) {
 		text = 'Zu welchem Termin willst du eine Änderung hinzufügen?'
-		const changes = changesOfEvent(context, name)
+		const changes = changesOfEvent(context, name!)
 		if (changes.length > 0) {
 			text += '\n\nFolgende Termine habe bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.'
 			text += '\n'
@@ -52,14 +56,6 @@ function menuBody(context: MyContext): Body {
 	}
 
 	return {text, parse_mode: 'Markdown'}
-}
-
-function hidePickEventStep(context: MyContext): boolean {
-	if (!context.session.generateChange) {
-		context.session.generateChange = {}
-	}
-
-	return Boolean(context.session.generateChange.name)
 }
 
 function hidePickDateStep(context: MyContext): boolean {
@@ -84,45 +80,6 @@ function generationDataIsValid(context: MyContext): boolean {
 	return keys.length > 2
 }
 
-async function eventOptions(context: MyContext): Promise<Record<string, string>> {
-	const events = Object.keys(context.userconfig.mine.events)
-	events.sort()
-
-	const result: Record<string, string> = {}
-	for (const event of events) {
-		result[event.replace(/\//g, ';')] = event
-	}
-
-	return result
-}
-
-menu.choose('event', eventOptions, {
-	columns: 2,
-	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
-		context.session.page = page
-	},
-	hide: hidePickEventStep,
-	do: async (context, key) => {
-		const event = key.replace(/;/g, '/')
-		if (await allEvents.exists(event)) {
-			if (!context.session.generateChange) {
-				context.session.generateChange = {}
-			}
-
-			context.session.generateChange.name = event
-		} else {
-			delete context.userconfig.mine.events[event]
-			await context.answerCbQuery(
-				`⚠️ Die Veranstaltung "${event}" existiert garnicht mehr!\nIch habe sie aus deinem Kalender entfernt.`,
-				{show_alert: true}
-			)
-		}
-
-		return true
-	}
-})
-
 menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 	hide: hidePickDateStep,
 	do: context => {
@@ -137,11 +94,8 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 })
 
 async function possibleTimesToCreateChangeToOptions(context: MyContext): Promise<Record<string, string>> {
-	const {name, date} = context.session.generateChange ?? {}
-	if (!name) {
-		// No event selected for which events could be found
-		return {}
-	}
+	const name = context.match![1]!.replace(/;/g, '/')
+	const {date} = context.session.generateChange ?? {}
 
 	if (date) {
 		// Date already selected
@@ -159,7 +113,7 @@ async function possibleTimesToCreateChangeToOptions(context: MyContext): Promise
 		.filter(arrayFilterUnique())
 	const options: Record<string, string> = {}
 	for (const date of dates) {
-		options[date.replace(':', '!')] = formatDateToHumanReadable(date)
+		options[date] = formatDateToHumanReadable(date)
 	}
 
 	return options
@@ -169,7 +123,7 @@ menu.choose('date', possibleTimesToCreateChangeToOptions, {
 	columns: 2,
 	hide: hidePickDateStep,
 	do: (context, key) => {
-		context.session.generateChange!.date = key.replace('!', ':')
+		context.session.generateChange!.date = key
 		return true
 	},
 	getCurrentPage: context => context.session.page,
@@ -248,6 +202,7 @@ menu.interact('✅ Fertig stellen', 'finish', {
 
 async function finish(context: MyContext): Promise<string | boolean> {
 	const change = context.session.generateChange!
+	change.name = context.match![1]!.replace(/;/, '/')
 
 	if (change.add) {
 		const date = new Date(Date.parse(change.date!))

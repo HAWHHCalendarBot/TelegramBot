@@ -6,9 +6,8 @@ import {backMainButtons} from '../../lib/inline-menu.js'
 import {MyContext} from '../../lib/types.js'
 import * as allEvents from '../../lib/all-events.js'
 
-import {menu as removeMenu} from './remove.js'
 import * as addMenu from './add.js'
-import * as changesMenu from './changes/index.js'
+import * as detailsMenu from './details.js'
 
 async function menuBody(context: MyContext): Promise<Body> {
 	let text = format.bold('Veranstaltungen')
@@ -51,13 +50,7 @@ export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate(menuBody)
 
 bot.use(addMenu.bot)
-bot.use(changesMenu.bot)
-
-menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
-menu.submenu('🗑 Entfernen', 'r', removeMenu, {
-	joinLastRow: true,
-	hide: context => Object.keys(context.userconfig.mine.events).length === 0
-})
+bot.use(detailsMenu.bot)
 
 menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 	hide: async context => {
@@ -79,8 +72,31 @@ menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 	}
 })
 
-menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
-	hide: context => Object.keys(context.userconfig.mine.events).length === 0
+menu.submenu('➕ Hinzufügen', 'a', addMenu.menu)
+
+function getEventOptions(context: MyContext): Record<string, string> {
+	const {changes} = context.userconfig.mine
+	const result: Record<string, string> = {}
+
+	for (const name of Object.keys(context.userconfig.mine.events)) {
+		let title = name + ' '
+
+		if (changes.some(o => o.name === name)) {
+			title += '✏️'
+		}
+
+		result[name.replace(/\//g, ';')] = title.trim()
+	}
+
+	return result
+}
+
+menu.chooseIntoSubmenu('d', getEventOptions, detailsMenu.menu, {
+	columns: 1,
+	getCurrentPage: context => context.session.page,
+	setPage: (context, page) => {
+		context.session.page = page
+	}
 })
 
 menu.manualRow(backMainButtons)

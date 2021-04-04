@@ -5,14 +5,12 @@ import {Change, MyContext} from '../../../lib/types.js'
 import {generateChangeText, generateShortChangeText} from '../../../lib/change-helper.js'
 
 export function generateChangeAction(change: Change): string {
-	return change.name.replace(/\//g, ';') + '#' + change.date.replace(/:/g, '&')
+	return change.date
 }
 
 function getChangeFromContext(context: MyContext): Change | undefined {
-	const complete = context.match![1]!
-	const match = /^(.+)#(.+)$/.exec(complete)!
-	const name = match[1]!.replace(/;/g, '/')
-	const date = match[2]!.replace(/&/g, ':')
+	const name = context.match![1]!.replace(/;/g, '/')
+	const date = context.match![2]!
 
 	return context.userconfig.mine.changes
 		.find(c => c.name === name && c.date === date)
