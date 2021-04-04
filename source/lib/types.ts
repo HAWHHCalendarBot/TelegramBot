@@ -7,7 +7,6 @@ export interface MyContext extends TelegrafContext {
 	userconfig: ContextProperty;
 	state: {
 		userconfig: Userconfig;
-		addChange?: Change;
 	};
 	session: Session;
 }

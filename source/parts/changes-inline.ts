@@ -44,35 +44,47 @@ bot.on('inline_query', async context => {
 	})
 })
 
-async function preAddMiddleware(context: MyContext, next: () => Promise<void>): Promise<void> {
+interface ChangeRelatedInfos {
+	name: string;
+	date: string;
+	fromId: number;
+	change: Change;
+}
+
+async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRelatedInfos | undefined> {
 	const name = context.match![1]!
 	const date = context.match![2]!
 	const fromId = Number(context.match![3]!)
 
 	if (!context.state.userconfig.events.includes(name)) {
 		await context.answerCbQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
-		return
+		return undefined
 	}
 
 	try {
 		const fromconfig = await context.userconfig.loadConfig(fromId)
-		const searchedChange = fromconfig.changes.filter(o => o.name === name && o.date === date)
-
-		if (searchedChange.length !== 1) {
+		const searchedChange = fromconfig.changes.find(o => o.name === name && o.date === date)
+		if (!searchedChange) {
 			throw new Error('User does not have this change')
 		}
 
-		context.state.addChange = searchedChange[0]
-		await next()
+		return {
+			name, date, fromId,
+			change: searchedChange
+		}
 	} catch {
 		await context.editMessageText('Die Veranstaltungsänderung existiert nicht mehr. 😔')
+		return undefined
 	}
 }
 
-bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {
-	const name = context.match[1]!
-	const date = context.match[2]!
-	const fromId = context.match[3]!
+bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
+	const meta = await getChangeFromContextMatch(context)
+	if (!meta) {
+		return
+	}
+
+	const {name, date, fromId, change} = meta
 
 	if (context.from?.id === Number(fromId)) {
 		await context.answerCbQuery('Das ist deine eigene Änderung 😉')
@@ -96,7 +108,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {
 		text += '\n' + generateChangeDescription(currentChange)
 
 		text += '\nDiese Veränderung wolltest du hinzufügen:'
-		text += '\n' + generateChangeDescription(context.state.addChange!)
+		text += '\n' + generateChangeDescription(change)
 
 		const keyboardMarkup = Markup.inlineKeyboard([
 			Markup.button.callback('Überschreiben', `c:af:${name}#${date}#${fromId}`),
@@ -107,18 +119,22 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {
 		return
 	}
 
-	context.state.userconfig.changes.push(context.state.addChange!)
+	context.state.userconfig.changes.push(change)
 	await context.answerCbQuery('Die Änderung wurde hinzugefügt')
 })
 
 bot.action('c:cancel', async context => context.editMessageText('Ich habe nichts verändert. 🙂'))
 
 // Action: change add force
-bot.action(/^c:af:(.+)#(.+)#(.+)$/, preAddMiddleware, async context => {
-	const name = context.match[1]
-	const date = context.match[2]
+bot.action(/^c:af:(.+)#(.+)#(.+)$/, async context => {
+	const meta = await getChangeFromContextMatch(context)
+	if (!meta) {
+		return
+	}
+
+	const {name, date, change} = meta
 	context.state.userconfig.changes = context.state.userconfig.changes
 		.filter(o => o.name !== name || o.date !== date)
-	context.state.userconfig.changes.push(context.state.addChange!)
+	context.state.userconfig.changes.push(change)
 	return context.editMessageText('Die Änderung wurde hinzugefügt.')
 })
