@@ -2,16 +2,16 @@ import {existsSync, readFileSync} from 'fs'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
 import {Telegraf, session} from 'telegraf'
 
-import {Chatconfig} from './lib/chatconfig'
-import {hasStISysChanged} from './lib/has-stisys-changed'
-import {MyContext} from './lib/types'
+import {Chatconfig} from './lib/chatconfig.js'
+import {hasStISysChanged} from './lib/has-stisys-changed.js'
+import {MyContext} from './lib/types.js'
 
-import {bot as migrateStuffBot} from './migrate-stuff'
+import {bot as migrateStuffBot} from './migrate-stuff.js'
 
-import * as changesInline from './parts/changes-inline'
-import * as easterEggs from './parts/easter-eggs'
+import * as changesInline from './parts/changes-inline.js'
+import * as easterEggs from './parts/easter-eggs.js'
 
-import {bot as menu} from './menu'
+import {bot as menu} from './menu/index.js'
 
 process.title = 'calendarbot-tgbot'
 

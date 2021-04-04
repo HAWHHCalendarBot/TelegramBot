@@ -1,7 +1,7 @@
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {MyContext} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext} from '../../lib/types.js'
 
 function menuBody(): Body {
 	let text = ''

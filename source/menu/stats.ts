@@ -1,9 +1,9 @@
 import {MenuTemplate} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../lib/inline-menu'
-import {getCanteenList} from '../lib/mensa-meals'
-import {MyContext} from '../lib/types'
-import * as allEvents from '../lib/all-events'
+import {backMainButtons} from '../lib/inline-menu.js'
+import {getCanteenList} from '../lib/mensa-meals.js'
+import {MyContext} from '../lib/types.js'
+import * as allEvents from '../lib/all-events.js'
 
 export const menu = new MenuTemplate<MyContext>(statsText)
 

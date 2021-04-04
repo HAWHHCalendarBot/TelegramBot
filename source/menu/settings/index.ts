@@ -1,11 +1,11 @@
 import {Composer} from 'telegraf'
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {MyContext} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext} from '../../lib/types.js'
 
-import {menu as mensaSettingsMenu} from './mensa-settings'
-import {menu as dataMenu, bot as dataBot} from './data'
+import {menu as mensaSettingsMenu} from './mensa-settings.js'
+import {menu as dataMenu, bot as dataBot} from './data.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>({text: '*Einstellungen*', parse_mode: 'Markdown'})

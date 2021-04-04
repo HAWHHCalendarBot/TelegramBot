@@ -1,6 +1,6 @@
 import {Context as TelegrafContext} from 'telegraf'
 
-import {ContextProperty} from './chatconfig'
+import {ContextProperty} from './chatconfig.js'
 
 export interface MyContext extends TelegrafContext {
 	readonly match: RegExpExecArray | undefined;

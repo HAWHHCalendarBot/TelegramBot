@@ -2,9 +2,9 @@ import {Composer} from 'telegraf'
 import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {MyContext} from '../../lib/types'
-import {getUrlFromContext} from '../../lib/calendar-helper'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext} from '../../lib/types.js'
+import {getUrlFromContext} from '../../lib/calendar-helper.js'
 
 function menuBody(context: MyContext): Body {
 	const {calendarfileSuffix} = context.state.userconfig

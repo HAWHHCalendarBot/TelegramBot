@@ -1,8 +1,8 @@
 import {MenuTemplate} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../../lib/inline-menu'
-import {Change, MyContext} from '../../../lib/types'
-import {generateChangeText, generateShortChangeText} from '../../../lib/change-helper'
+import {backMainButtons} from '../../../lib/inline-menu.js'
+import {Change, MyContext} from '../../../lib/types.js'
+import {generateChangeText, generateShortChangeText} from '../../../lib/change-helper.js'
 
 export function generateChangeAction(change: Change): string {
 	return change.name.replace(/\//g, ';') + '#' + change.date.replace(/:/g, '&')

@@ -1,5 +1,5 @@
-import {Meal} from './meal'
-import {MealWishes, MensaPriceClass, MensaSettings} from './types'
+import {Meal} from './meal.js'
+import {MealWishes, MensaPriceClass, MensaSettings} from './types.js'
 
 export function filterMeals(meals: readonly Meal[], specialWishes: Readonly<MealWishes>): Meal[] {
 	return meals

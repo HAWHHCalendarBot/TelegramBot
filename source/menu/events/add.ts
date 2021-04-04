@@ -3,10 +3,10 @@ import {html as format} from 'telegram-format'
 import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {filterButtonText, DEFAULT_FILTER} from '../../lib/inline-menu-filter'
-import {MyContext} from '../../lib/types'
-import * as allEvents from '../../lib/all-events'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {filterButtonText, DEFAULT_FILTER} from '../../lib/inline-menu-filter.js'
+import {MyContext} from '../../lib/types.js'
+import * as allEvents from '../../lib/all-events.js'
 
 const MAX_RESULT_ROWS = 10
 const RESULT_COLUMNS = 2

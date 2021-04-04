@@ -1,7 +1,7 @@
 import {promises as fsPromises} from 'fs'
 
-import {Change, EventEntryInternal, EventEntryFileContent} from './types'
-import {formatDateToHumanReadable, parseDateTimeToDate} from './calendar-helper'
+import {Change, EventEntryInternal, EventEntryFileContent} from './types.js'
+import {formatDateToHumanReadable, parseDateTimeToDate} from './calendar-helper.js'
 
 export function generateChangeDescription(change: Change): string {
 	let text = ''

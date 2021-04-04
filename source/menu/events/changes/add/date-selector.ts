@@ -1,9 +1,9 @@
 import {MenuTemplate} from 'telegraf-inline-menu'
 
-import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu'
-import {DAY_OPTIONS, generateMonthOptions, generateYearOptions, MONTH_NAMES} from '../../../../lib/event-creation-menu-options'
-import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper'
-import {MyContext} from '../../../../lib/types'
+import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
+import {DAY_OPTIONS, generateMonthOptions, generateYearOptions, MONTH_NAMES} from '../../../../lib/event-creation-menu-options.js'
+import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
+import {MyContext} from '../../../../lib/types.js'
 
 const menuText = 'Wann findet der Termin statt?'
 

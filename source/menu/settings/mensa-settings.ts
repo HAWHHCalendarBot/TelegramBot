@@ -1,8 +1,8 @@
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {getCanteenList} from '../../lib/mensa-meals'
-import {MyContext, MealWishes, MensaPriceClass} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {getCanteenList} from '../../lib/mensa-meals.js'
+import {MyContext, MealWishes, MensaPriceClass} from '../../lib/types.js'
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫'

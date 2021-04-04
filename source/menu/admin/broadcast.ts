@@ -2,8 +2,8 @@ import {Composer} from 'telegraf'
 import {MenuTemplate, replyMenuToContext, getMenuOfPath} from 'telegraf-inline-menu'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {MyContext} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext} from '../../lib/types.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>('Broadcast')

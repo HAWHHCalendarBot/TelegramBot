@@ -1,11 +1,11 @@
 import {Composer} from 'telegraf'
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {getUrlFromContext} from '../../lib/calendar-helper'
-import {MyContext} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {getUrlFromContext} from '../../lib/calendar-helper.js'
+import {MyContext} from '../../lib/types.js'
 
-import * as suffixMenu from './suffix'
+import * as suffixMenu from './suffix.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)

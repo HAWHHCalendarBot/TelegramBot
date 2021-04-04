@@ -1,7 +1,7 @@
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../../lib/inline-menu'
-import {MyContext, RemovedEventsDisplayStyle} from '../../../lib/types'
+import {backMainButtons} from '../../../lib/inline-menu.js'
+import {MyContext, RemovedEventsDisplayStyle} from '../../../lib/types.js'
 
 const removedEventsOptions = {
 	cancelled: 'Standard',

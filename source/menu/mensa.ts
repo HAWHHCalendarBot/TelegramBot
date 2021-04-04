@@ -1,10 +1,10 @@
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../lib/inline-menu'
-import {generateMealText} from '../lib/mensa-helper'
-import {getMealsOfDay} from '../lib/mensa-meals'
-import {MyContext} from '../lib/types'
-import * as mensaGit from '../lib/mensa-git'
+import {backMainButtons} from '../lib/inline-menu.js'
+import {generateMealText} from '../lib/mensa-helper.js'
+import {getMealsOfDay} from '../lib/mensa-meals.js'
+import {MyContext} from '../lib/types.js'
+import * as mensaGit from '../lib/mensa-git.js'
 
 const weekdays: readonly string[] = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
 const DAY_IN_MS = 1000 * 60 * 60 * 24

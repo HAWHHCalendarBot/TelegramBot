@@ -3,11 +3,11 @@ import {promises as fsPromises} from 'fs'
 import {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
 import {Telegram, MiddlewareFn} from 'telegraf'
 import {User} from 'typegram'
-import * as stringify from 'json-stable-stringify'
+import stringify from 'json-stable-stringify'
 
-import {MyContext, Userconfig} from './types'
-import {sequentialLoop} from './async'
-import * as telegrafBroadcast from './telegraf-broadcast'
+import {MyContext, Userconfig} from './types.js'
+import {sequentialLoop} from './async.js'
+import * as telegrafBroadcast from './telegraf-broadcast.js'
 
 interface ChatConfigFileContent {
 	chat: User;

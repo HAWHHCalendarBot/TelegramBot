@@ -3,8 +3,8 @@ import {MenuTemplate, Body, replyMenuToContext, getMenuOfPath} from 'telegraf-in
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 import {html as format} from 'telegram-format'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {MyContext, Userconfig} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext, Userconfig} from '../../lib/types.js'
 
 async function getActualUserconfigContent(context: MyContext): Promise<Userconfig | undefined> {
 	if (!context.state.userconfig) {

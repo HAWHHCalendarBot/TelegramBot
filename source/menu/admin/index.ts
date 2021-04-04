@@ -1,11 +1,11 @@
 import {Composer} from 'telegraf'
 import {MenuTemplate} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {MyContext} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext} from '../../lib/types.js'
 
-import * as broadcastMenu from './broadcast'
-import * as userMenu from './user-quicklook'
+import * as broadcastMenu from './broadcast.js'
+import * as userMenu from './user-quicklook.js'
 
 export function hide(context: MyContext) {
 	return !context.state.userconfig.admin

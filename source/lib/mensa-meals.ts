@@ -1,6 +1,6 @@
 import {promises as fsPromises} from 'fs'
 
-import {Meal} from './meal'
+import {Meal} from './meal.js'
 
 export async function getCanteenList(): Promise<string[]> {
 	const found = await fsPromises.readdir('mensa-data', {withFileTypes: true})

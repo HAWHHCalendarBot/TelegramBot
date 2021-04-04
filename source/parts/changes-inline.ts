@@ -1,8 +1,8 @@
 import {Composer, Markup} from 'telegraf'
 import {User, InlineQueryResultArticle} from 'typegram'
 
-import {Change, MyContext} from '../lib/types'
-import {generateChangeDescription, generateChangeText, generateChangeTextHeader, generateShortChangeText} from '../lib/change-helper'
+import {Change, MyContext} from '../lib/types.js'
+import {generateChangeDescription, generateChangeText, generateChangeTextHeader, generateShortChangeText} from '../lib/change-helper.js'
 
 export const bot = new Composer<MyContext>()
 

@@ -2,13 +2,13 @@ import {Composer} from 'telegraf'
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 import {html as format} from 'telegram-format'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {MyContext} from '../../lib/types'
-import * as allEvents from '../../lib/all-events'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext} from '../../lib/types.js'
+import * as allEvents from '../../lib/all-events.js'
 
-import {menu as removeMenu} from './remove'
-import * as addMenu from './add'
-import * as changesMenu from './changes'
+import {menu as removeMenu} from './remove.js'
+import * as addMenu from './add.js'
+import * as changesMenu from './changes/index.js'
 
 async function menuBody(context: MyContext): Promise<Body> {
 	let text = format.bold('Veranstaltungen')

@@ -4,10 +4,10 @@ import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOf
 import {User} from 'typegram'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
-import {backMainButtons} from '../../lib/inline-menu'
-import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter'
-import {getUrl} from '../../lib/calendar-helper'
-import {MyContext} from '../../lib/types'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js'
+import {getUrl} from '../../lib/calendar-helper.js'
+import {MyContext} from '../../lib/types.js'
 
 function nameOfUser({first_name, last_name, username}: User): string {
 	let name = first_name

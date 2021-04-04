@@ -1,15 +1,15 @@
 import {Composer} from 'telegraf'
 import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
 
-import {MyContext} from '../lib/types'
+import {MyContext} from '../lib/types.js'
 
-import * as about from './about'
-import * as admin from './admin'
-import * as events from './events'
-import * as mensa from './mensa'
-import * as settings from './settings'
-import * as stats from './stats'
-import * as subscribe from './subscribe'
+import * as about from './about.js'
+import * as admin from './admin/index.js'
+import * as events from './events/index.js'
+import * as mensa from './mensa.js'
+import * as settings from './settings/index.js'
+import * as stats from './stats.js'
+import * as subscribe from './subscribe/index.js'
 
 export const bot = new Composer<MyContext>()
 const menu = new MenuTemplate<MyContext>(context => `Hey ${context.from!.first_name}!`)

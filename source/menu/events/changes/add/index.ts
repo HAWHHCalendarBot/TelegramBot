@@ -3,15 +3,15 @@ import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext, getMenuOf
 import arrayFilterUnique from 'array-filter-unique'
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
-import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper'
-import {loadEvents, generateChangeText} from '../../../../lib/change-helper'
-import {MyContext, Change} from '../../../../lib/types'
-import * as allEvents from '../../../../lib/all-events'
+import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
+import {loadEvents, generateChangeText} from '../../../../lib/change-helper.js'
+import {MyContext, Change} from '../../../../lib/types.js'
+import * as allEvents from '../../../../lib/all-events.js'
 
-import * as changeDetails from '../details'
+import * as changeDetails from '../details.js'
 
-import {createTimeSelectionSubmenuButtons} from './time-selector'
-import {createDatePickerButtons} from './date-selector'
+import {createTimeSelectionSubmenuButtons} from './time-selector.js'
+import {createDatePickerButtons} from './date-selector.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)

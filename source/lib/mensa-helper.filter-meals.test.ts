@@ -1,8 +1,8 @@
 import test from 'ava'
 
-import {Meal} from './meal'
+import {Meal} from './meal.js'
 
-import {filterMeals} from './mensa-helper'
+import {filterMeals} from './mensa-helper.js'
 
 const testMeals: readonly Meal[] = [
 	{

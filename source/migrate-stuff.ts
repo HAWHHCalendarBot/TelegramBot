@@ -1,7 +1,7 @@
 import {Composer} from 'telegraf'
 
-import {getCanteenList} from './lib/mensa-meals'
-import {MyContext} from './lib/types'
+import {getCanteenList} from './lib/mensa-meals.js'
+import {MyContext} from './lib/types.js'
 
 export const bot = new Composer<MyContext>()
 

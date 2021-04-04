@@ -1,13 +1,13 @@
 import {Composer} from 'telegraf'
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../../lib/inline-menu'
-import {generateShortChangeText} from '../../../lib/change-helper'
-import {MyContext} from '../../../lib/types'
+import {backMainButtons} from '../../../lib/inline-menu.js'
+import {generateShortChangeText} from '../../../lib/change-helper.js'
+import {MyContext} from '../../../lib/types.js'
 
-import {menu as removedStyleMenu} from './removed-style'
-import * as changeDetails from './details'
-import * as changeAdd from './add'
+import {menu as removedStyleMenu} from './removed-style.js'
+import * as changeDetails from './details.js'
+import * as changeAdd from './add/index.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)

@@ -1,8 +1,8 @@
 import test from 'ava'
 
-import {Meal} from './meal'
+import {Meal} from './meal.js'
 
-import {generateMealText} from './mensa-helper'
+import {generateMealText} from './mensa-helper.js'
 
 const example: Meal = {
 	Additives: {

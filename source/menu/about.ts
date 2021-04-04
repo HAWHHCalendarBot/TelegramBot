@@ -1,6 +1,6 @@
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../lib/inline-menu'
+import {backMainButtons} from '../lib/inline-menu.js'
 
 export const menu = new MenuTemplate(menuBody)
 

@@ -1,8 +1,8 @@
 import {MenuTemplate} from 'telegraf-inline-menu'
 
-import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu'
-import {HOUR_OPTIONS, MINUTE_OPTIONS} from '../../../../lib/event-creation-menu-options'
-import {MyContext} from '../../../../lib/types'
+import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
+import {HOUR_OPTIONS, MINUTE_OPTIONS} from '../../../../lib/event-creation-menu-options.js'
+import {MyContext} from '../../../../lib/types.js'
 
 export function createTimeSelectionSubmenuButtons(menu: MenuTemplate<MyContext>, hide: (context: MyContext) => boolean): void {
 	createTimeSelectionSubmenuButton(menu, 'starttime', hide)

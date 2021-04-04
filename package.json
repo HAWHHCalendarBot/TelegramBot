@@ -16,10 +16,10 @@
 	},
 	"scripts": {
 		"build": "del-cli dist && tsc",
-		"start": "ts-node source/index.ts",
-		"test": "tsc --sourceMap && xo && nyc ava"
+		"start": "node --loader ts-node/esm source/index.ts",
+		"test": "tsc --sourceMap && xo && ava"
 	},
-	"type": "commonjs",
+	"type": "module",
 	"engines": {
 		"node": ">=14"
 	},
@@ -41,34 +41,19 @@
 		"@types/node": "^14.0.5",
 		"ava": "^3.5.0",
 		"del-cli": "^3.0.0",
-		"nyc": "^15.0.0",
 		"ts-node": "^9.0.0",
 		"typescript": "^4.2.3",
 		"xo": "^0.38.2"
-	},
-	"nyc": {
-		"all": true,
-		"extension": [
-			".ts"
-		],
-		"include": [
-			"dist/source",
-			"source"
-		],
-		"exclude": [
-			"**/*.d.ts",
-			"**/*.test.ts"
-		],
-		"reporter": [
-			"lcov",
-			"text"
-		]
 	},
 	"xo": {
 		"semicolon": false,
 		"rules": {
 			"ava/no-ignored-test-files": "off",
-			"prefer-named-capture-group": "off"
+			"prefer-named-capture-group": "off",
+			"import/extensions": [
+				"error",
+				"ignorePackages"
+			]
 		}
 	}
 }

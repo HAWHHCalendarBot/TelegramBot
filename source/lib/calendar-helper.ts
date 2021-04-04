@@ -1,4 +1,4 @@
-import {Userconfig, MyContext} from './types'
+import {Userconfig, MyContext} from './types.js'
 
 export function getUrl(id: number, userconfig: Userconfig): string {
 	let filename = `${id}`
