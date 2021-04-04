@@ -5,7 +5,6 @@ import {backMainButtons} from '../../../lib/inline-menu.js'
 import {generateShortChangeText} from '../../../lib/change-helper.js'
 import {MyContext} from '../../../lib/types.js'
 
-import {menu as removedStyleMenu} from './removed-style.js'
 import * as changeDetails from './details.js'
 import * as changeAdd from './add/index.js'
 
@@ -38,12 +37,6 @@ function getChangesOptions(context: MyContext): Record<string, string> {
 
 	return result
 }
-
-menu.submenu('⚙️ Anzeigeart entfernter Termine', 'showRemoved', removedStyleMenu, {
-	hide: context => context.userconfig.mine.changes
-		.filter(c => c.remove)
-		.length === 0
-})
 
 function menuBody(): Body {
 	let text = '*Veranstaltungsänderungen*\n'

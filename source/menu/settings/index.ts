@@ -4,8 +4,9 @@ import {MenuTemplate, Body} from 'telegraf-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {MyContext} from '../../lib/types.js'
 
-import {menu as mensaSettingsMenu} from './mensa-settings.js'
 import {menu as dataMenu, bot as dataBot} from './data.js'
+import {menu as mensaSettingsMenu} from './mensa-settings.js'
+import {menu as removedStyleMenu} from './removed-style.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>({text: '*Einstellungen*', parse_mode: 'Markdown'})
@@ -34,6 +35,8 @@ stisysMenu.toggle('StISys Update', 'update', {
 stisysMenu.manualRow(backMainButtons)
 
 menu.submenu('🍽 Mensa', 'm', mensaSettingsMenu)
+
+menu.submenu('✏️ Anzeigeart entfernter Termine', 'showRemoved', removedStyleMenu)
 
 menu.submenu('💾 Gespeicherte Daten über dich', 'data', dataMenu)
 

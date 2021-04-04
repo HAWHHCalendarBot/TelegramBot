@@ -1,17 +1,21 @@
 import {MenuTemplate, Body} from 'telegraf-inline-menu'
 
-import {backMainButtons} from '../../../lib/inline-menu.js'
-import {MyContext, RemovedEventsDisplayStyle} from '../../../lib/types.js'
+import {backMainButtons} from '../../lib/inline-menu.js'
+import {MyContext, RemovedEventsDisplayStyle} from '../../lib/types.js'
 
 const removedEventsOptions = {
-	cancelled: 'Standard',
-	removed: 'komplett entfernen',
-	emoji: 'erzwungen'
+	cancelled: '👌 Standard',
+	removed: '🗑 komplett entfernen',
+	emoji: '🚫 erzwungen'
 }
 
 function menuBody(): Body {
-	let text = '*Entfernte Veranstaltungsänderungen*\n'
-	text += '\nIn deinem Kalender hast du Änderungen, die Termine entfernen.'
+	let text = '*Einstellungen*'
+	text += '\n'
+	text += 'Entfernte Veranstaltungsänderungen'
+	text += '\n'
+
+	text += '\nVeranstaltungsänderungen, die du mit diesem Bot anlegst, können Termine entfernen.'
 	text += ' Diese ausfallenden Termine werden nach dem iCal Standard mit dem Status CANCELLED markiert.'
 	text += ' Jedoch arbeiten nicht alle Kalendertools standardkonform 🙄.'
 	text += '\n'
