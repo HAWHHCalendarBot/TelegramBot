@@ -66,7 +66,9 @@ bot.use(noteQuestion.middleware())
 
 menu.interact('🗒 Schreibe Notiz', 'set-notes', {
 	do: async (context, path) => {
-		await noteQuestion.replyWithMarkdown(context, 'Welche Infos möchtest du an den Kalendereinträgen stehen haben?', getMenuOfPath(path))
+		const name = getNameFromPath(path)
+		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${format.escape(name)} stehen haben?`
+		await noteQuestion.replyWithHTML(context, text, getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
 	}
