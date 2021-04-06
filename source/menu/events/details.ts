@@ -44,7 +44,7 @@ function menuBody(context: MyContext, path: string): Body {
 		text += '\n\n'
 	}
 
-	return {text, parse_mode: format.parse_mode}
+	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true}
 }
 
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
