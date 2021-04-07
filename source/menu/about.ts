@@ -19,4 +19,6 @@ function menuBody(): Body {
 	return {text, parse_mode: format.parse_mode}
 }
 
+menu.url('😌 PayPal Spende', 'https://www.paypal.com/donate?hosted_button_id=L2EMBSGTEXK42')
+
 menu.manualRow(backMainButtons)
