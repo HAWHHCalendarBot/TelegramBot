@@ -29,9 +29,8 @@ menu.submenu('😇 Admin Area', 'admin', admin.menu, {
 	hide: admin.hide
 })
 
-menu.submenu('⚙️ Einstellungen', 'settings', settings.menu)
-
 menu.submenu('ℹ️📈 Über den Bot', 'about', about.menu)
+menu.submenu('⚙️ Einstellungen', 'settings', settings.menu, {joinLastRow: true})
 
 const middleware = new MenuMiddleware('/', menu)
 
