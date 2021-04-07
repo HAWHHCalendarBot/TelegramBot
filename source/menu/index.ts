@@ -8,7 +8,6 @@ import * as admin from './admin/index.js'
 import * as events from './events/index.js'
 import * as mensa from './mensa.js'
 import * as settings from './settings/index.js'
-import * as stats from './stats.js'
 import * as subscribe from './subscribe/index.js'
 
 export const bot = new Composer<MyContext>()
@@ -32,8 +31,7 @@ menu.submenu('😇 Admin Area', 'admin', admin.menu, {
 
 menu.submenu('⚙️ Einstellungen', 'settings', settings.menu)
 
-menu.submenu('📈 Statistiken', 'stats', stats.menu)
-menu.submenu('ℹ️ Über den Bot', 'about', about.menu, {joinLastRow: true})
+menu.submenu('ℹ️📈 Über den Bot', 'about', about.menu)
 
 const middleware = new MenuMiddleware('/', menu)
 
