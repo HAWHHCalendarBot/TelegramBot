@@ -3,7 +3,7 @@
 	"version": "7.2.0",
 	"private": true,
 	"description": "A bot to configure your personal calendar of HAW Hamburg lectures",
-	"license": "MIT",
+	"license": "AGPLv3",
 	"homepage": "https://calendarbot.hawhh.de",
 	"author": {
 		"name": "EdJoPaTo",
