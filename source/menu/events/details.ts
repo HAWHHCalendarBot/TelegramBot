@@ -26,17 +26,28 @@ function menuBody(context: MyContext, path: string): Body {
 	let text = format.bold('Veranstaltung')
 	text += '\n'
 	text += name
-	text += '\n\n'
+	text += '\n'
 
 	if (changes > 0) {
+		text += '\n'
 		text += '✏️'
 		text += 'Änderungen'
 		text += ': '
 		text += changes
-		text += '\n\n'
+		text += '\n'
+	}
+
+	if (event.alertMinutesBefore !== undefined) {
+		text += '\n'
+		text += '⏰'
+		text += 'Erinnerung'
+		text += ': '
+		text += `${event.alertMinutesBefore} Minuten vorher`
+		text += '\n'
 	}
 
 	if (event.notes) {
+		text += '\n'
 		text += '🗒'
 		text += format.bold('Notizen')
 		text += '\n'
@@ -50,6 +61,49 @@ function menuBody(context: MyContext, path: string): Body {
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
 	hide: context => Object.keys(context.userconfig.mine.events).length === 0
 })
+
+const alertMenu = new MenuTemplate<MyContext>((_, path) => {
+	const name = getNameFromPath(path)
+	return `Wie lange im vorraus möchtest du an einen Termin der Veranstaltung ${name} erinnert werden?`
+})
+
+alertMenu.interact('🔕 Garnicht', 'nope', {
+	do: (context, path) => {
+		const name = getNameFromPath(path)
+		delete context.userconfig.mine.events[name]!.alertMinutesBefore
+		return '..'
+	}
+})
+
+const alertChoices = {
+	0: 'Beginn',
+	5: '5 Minuten',
+	10: '10 Minuten',
+	15: '15 Minuten',
+	30: '30 Minuten',
+	45: '45 Minuten',
+	60: '1 Stunde',
+	120: '2 Stunden',
+	1337: '1337 Minuten'
+}
+
+alertMenu.choose('t', alertChoices, {
+	columns: 3,
+	do: (context, key) => {
+		if (!context.callbackQuery || !('data' in context.callbackQuery)) {
+			throw new Error('how?')
+		}
+
+		const name = getNameFromPath(context.callbackQuery.data)
+		const minutes = Number(key)
+		context.userconfig.mine.events[name]!.alertMinutesBefore = minutes
+		return '..'
+	}
+})
+
+alertMenu.manualRow(backMainButtons)
+
+menu.submenu('⏰ Erinnerung', 'alert', alertMenu)
 
 const noteQuestion = new TelegrafStatelessQuestion<MyContext>('event-notes', async (context, path) => {
 	const name = getNameFromPath(path)

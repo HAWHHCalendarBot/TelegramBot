@@ -85,6 +85,10 @@ function getEventOptions(context: MyContext): Record<string, string> {
 			title += '✏️'
 		}
 
+		if (details.alertMinutesBefore !== undefined) {
+			title += '⏰'
+		}
+
 		if (details.notes) {
 			title += '🗒'
 		}
