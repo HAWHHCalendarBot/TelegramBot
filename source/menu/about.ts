@@ -34,4 +34,7 @@ menu.url('calendarbot.hawhh.de', 'https://calendarbot.hawhh.de')
 
 menu.url('😌 PayPal Spende', 'https://www.paypal.com/donate?hosted_button_id=L2EMBSGTEXK42')
 
+menu.url('🦑 Quellcode', 'https://github.com/HAWHHCalendarBot')
+menu.url('🦑 Änderungshistorie', 'https://github.com/HAWHHCalendarBot/TelegramBot/releases', {joinLastRow: true})
+
 menu.manualRow(backMainButtons)
