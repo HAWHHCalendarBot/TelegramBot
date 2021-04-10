@@ -27,6 +27,7 @@ ENV NODE_ENV=production
 
 COPY package.json ./
 COPY --from=packages /build/node_modules ./node_modules
+COPY locales locales
 COPY --from=builder /build/dist ./
 
 CMD node --unhandled-rejections=strict -r source-map-support/register index.js

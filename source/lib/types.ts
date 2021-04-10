@@ -1,11 +1,13 @@
 import {Context as TelegrafContext} from 'telegraf'
+import {I18nContext} from '@edjopato/telegraf-i18n'
 
 import {ContextProperty} from './chatconfig.js'
 
 export interface MyContext extends TelegrafContext {
+	readonly i18n: I18nContext;
 	readonly match: RegExpExecArray | undefined;
-	readonly userconfig: ContextProperty;
 	readonly session: Session;
+	readonly userconfig: ContextProperty;
 }
 
 export interface Session {

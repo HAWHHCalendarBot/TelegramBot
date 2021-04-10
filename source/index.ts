@@ -1,5 +1,6 @@
 import {existsSync, readFileSync} from 'fs'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
+import {I18n} from '@edjopato/telegraf-i18n'
 import {Telegraf, session} from 'telegraf'
 
 import {Chatconfig} from './lib/chatconfig.js'
@@ -24,6 +25,13 @@ if (!token) {
 }
 
 const bot = new Telegraf<MyContext>(token)
+
+const i18n = new I18n({
+	defaultLanguage: 'de',
+	defaultLanguageOnMissing: true,
+	directory: 'locales'
+})
+bot.use(i18n.middleware())
 
 // eslint-disable-next-line @typescript-eslint/dot-notation
 if (process.env['NODE_ENV'] !== 'production') {
