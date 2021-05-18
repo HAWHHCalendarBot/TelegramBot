@@ -4,8 +4,19 @@ import {Meal} from './meal.js'
 
 import {filterMeals} from './mensa-helper.js'
 
-const testMeals: readonly Meal[] = [
+const BASE_MEAL = {
+	Additives: {},
+	Category: 'Test Meal',
+	Date: '2021-05-18T07:39Z',
+	PriceAttendant: 0,
+	PriceGuest: 0,
+	PriceStudent: 0
+}
+
+const TEST_MEALS: readonly Meal[] = [
 	{
+		...BASE_MEAL,
+		Alcohol: false,
 		Beef: false,
 		Fish: true,
 		LactoseFree: false,
@@ -15,6 +26,8 @@ const testMeals: readonly Meal[] = [
 		Vegan: false,
 		Vegetarian: false
 	}, {
+		...BASE_MEAL,
+		Alcohol: false,
 		Beef: false,
 		Fish: false,
 		LactoseFree: false,
@@ -24,6 +37,8 @@ const testMeals: readonly Meal[] = [
 		Vegan: false,
 		Vegetarian: true
 	}, {
+		...BASE_MEAL,
+		Alcohol: false,
 		Beef: false,
 		Fish: false,
 		LactoseFree: false,
@@ -33,6 +48,8 @@ const testMeals: readonly Meal[] = [
 		Vegan: false,
 		Vegetarian: false
 	}, {
+		...BASE_MEAL,
+		Alcohol: false,
 		Beef: false,
 		Fish: false,
 		LactoseFree: true,
@@ -42,6 +59,8 @@ const testMeals: readonly Meal[] = [
 		Vegan: true,
 		Vegetarian: false
 	}, {
+		...BASE_MEAL,
+		Alcohol: false,
 		Beef: true,
 		Fish: false,
 		LactoseFree: false,
@@ -51,22 +70,22 @@ const testMeals: readonly Meal[] = [
 		Vegan: false,
 		Vegetarian: false
 	}
-] as any
+]
 
 test('filterfrei', t => {
-	const filtered = filterMeals(testMeals, {})
-	t.is(filtered.length, testMeals.length)
+	const filtered = filterMeals(TEST_MEALS, {})
+	t.is(filtered.length, TEST_MEALS.length)
 })
 
 test('vegan', t => {
-	const filtered = filterMeals(testMeals, {vegan: true})
+	const filtered = filterMeals(TEST_MEALS, {vegan: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Pasta'
 	])
 })
 
 test('vegetarisch', t => {
-	const filtered = filterMeals(testMeals, {vegetarian: true})
+	const filtered = filterMeals(TEST_MEALS, {vegetarian: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Pasta Sahne',
 		'Pasta'
@@ -74,14 +93,14 @@ test('vegetarisch', t => {
 })
 
 test('laktosefrei', t => {
-	const filtered = filterMeals(testMeals, {lactoseFree: true})
+	const filtered = filterMeals(TEST_MEALS, {lactoseFree: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Pasta'
 	])
 })
 
 test('ohne Schwein', t => {
-	const filtered = filterMeals(testMeals, {noPig: true})
+	const filtered = filterMeals(TEST_MEALS, {noPig: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Fisch',
 		'Pasta Sahne',
@@ -91,7 +110,7 @@ test('ohne Schwein', t => {
 })
 
 test('ohne Rind', t => {
-	const filtered = filterMeals(testMeals, {noBeef: true})
+	const filtered = filterMeals(TEST_MEALS, {noBeef: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Fisch',
 		'Pasta Sahne',
@@ -101,7 +120,7 @@ test('ohne Rind', t => {
 })
 
 test('ohne Geflügel', t => {
-	const filtered = filterMeals(testMeals, {noPoultry: true})
+	const filtered = filterMeals(TEST_MEALS, {noPoultry: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Fisch',
 		'Pasta Sahne',
@@ -112,7 +131,7 @@ test('ohne Geflügel', t => {
 })
 
 test('ohne Fisch', t => {
-	const filtered = filterMeals(testMeals, {noFish: true})
+	const filtered = filterMeals(TEST_MEALS, {noFish: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Pasta Sahne',
 		'Pasta Speck',

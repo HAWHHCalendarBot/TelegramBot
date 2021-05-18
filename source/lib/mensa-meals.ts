@@ -24,7 +24,7 @@ export async function getMealsOfDay(mensa: string, year: number, month: number, 
 	try {
 		const filename = getFilename(mensa, year, month, day)
 		const content = await fsPromises.readFile(filename, 'utf8')
-		return JSON.parse(content)
+		return JSON.parse(content) as Meal[]
 	} catch {
 		return []
 	}

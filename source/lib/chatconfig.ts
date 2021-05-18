@@ -77,7 +77,7 @@ export class Chatconfig {
 	async load(id: number): Promise<ChatConfigFileContent | undefined> {
 		try {
 			const content = await fsPromises.readFile(this.filenameFromId(id), 'utf8')
-			return JSON.parse(content)
+			return JSON.parse(content) as ChatConfigFileContent
 		} catch {
 			return undefined
 		}
