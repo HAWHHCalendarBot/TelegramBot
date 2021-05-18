@@ -21,9 +21,10 @@ VOLUME /app/mensa-data
 VOLUME /app/tmp
 VOLUME /app/userconfig
 
-RUN apk --no-cache add git
-
 ENV NODE_ENV=production
+
+RUN apk --no-cache upgrade \
+    && apk --no-cache add git
 
 COPY package.json ./
 COPY --from=packages /build/node_modules ./node_modules
