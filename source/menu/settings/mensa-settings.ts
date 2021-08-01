@@ -15,7 +15,7 @@ const settingName: Readonly<Record<keyof MealWishes, string>> = {
 	noPig: 'kein Schweinefleisch',
 	noBeef: 'kein Rindfleisch',
 	noPoultry: 'kein Geflügel',
-	noFish: 'kein Fisch'
+	noFish: 'kein Fisch',
 }
 
 export const menu = new MenuTemplate<MyContext>({text: '*Mensa Einstellungen*', parse_mode: 'Markdown'})
@@ -56,7 +56,7 @@ mainMensaMenu.select('set', getCanteenList, {
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
-	}
+	},
 })
 
 mainMensaMenu.manualRow(backMainButtons)
@@ -78,7 +78,7 @@ function moreMensaButtonText(context: MyContext): string {
 
 const moreMenu = new MenuTemplate<MyContext>({text: '*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist', parse_mode: 'Markdown'})
 menu.submenu(moreMensaButtonText, 'more', moreMenu, {
-	hide: context => !context.userconfig.mine.mensa.main
+	hide: context => !context.userconfig.mine.mensa.main,
 })
 moreMenu.select('more', getCanteenList, {
 	columns: 1,
@@ -110,14 +110,14 @@ moreMenu.select('more', getCanteenList, {
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
-	}
+	},
 })
 moreMenu.manualRow(backMainButtons)
 
 const priceOptions = {
 	student: 'Student',
 	attendant: 'Angestellt',
-	guest: 'Gast'
+	guest: 'Gast',
 }
 
 menu.select('price', priceOptions, {
@@ -126,7 +126,7 @@ menu.select('price', priceOptions, {
 		return true
 	},
 	isSet: (context, price) => context.userconfig.mine.mensa.price === price,
-	hide: context => !context.userconfig.mine.mensa.main
+	hide: context => !context.userconfig.mine.mensa.main,
 })
 
 function specialWishMenuBody(context: MyContext): Body {
@@ -137,16 +137,16 @@ function specialWishMenuBody(context: MyContext): Body {
 	const wishes = (Object.keys(settingName) as Array<keyof MealWishes>)
 		.filter(o => context.userconfig.mine.mensa[o])
 
-	text += wishes.length > 0 ?
-		'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.' :
-		'Aktuell siehst du alle ungefilterten Angebote.'
+	text += wishes.length > 0
+		? 'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.'
+		: 'Aktuell siehst du alle ungefilterten Angebote.'
 
 	return {text, parse_mode: 'Markdown'}
 }
 
 const specialWishMenu = new MenuTemplate<MyContext>(specialWishMenuBody)
 menu.submenu('Extrawünsche Essen', 's', specialWishMenu, {
-	hide: context => !context.userconfig.mine.mensa.main
+	hide: context => !context.userconfig.mine.mensa.main,
 })
 
 function showWishAsOption(context: MyContext, wish: keyof MealWishes): boolean {
@@ -190,13 +190,13 @@ specialWishMenu.select('w', specialWishOptions, {
 		}
 
 		return true
-	}
+	},
 })
 specialWishMenu.interact('warm… nicht versalzen… kein Spüli…', 'warm', {
 	do: async context => {
 		await context.answerCbQuery('das wär mal was… 😈')
 		return false
-	}
+	},
 })
 
 specialWishMenu.manualRow(backMainButtons)
@@ -212,7 +212,7 @@ menu.toggle('zeige Inhaltsstoffe', 'showAdditives', {
 		return true
 	},
 	isSet: context => context.userconfig.mine.mensa.showAdditives === true,
-	hide: context => !context.userconfig.mine.mensa.main
+	hide: context => !context.userconfig.mine.mensa.main,
 })
 
 menu.manualRow(backMainButtons)

@@ -20,7 +20,7 @@ menu.chooseIntoSubmenu('d', getChangesOptions, changeDetails.menu, {
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
-	}
+	},
 })
 
 function getChangesOptions(context: MyContext): Record<string, string> {

@@ -30,7 +30,7 @@ menu.switchToChat('Teilen…', context => generateShortChangeText(getChangeFromC
 	hide: context => {
 		const change = getChangeFromContext(context)
 		return !change
-	}
+	},
 })
 menu.interact('⚠️ Änderung entfernen', 'r', {
 	do: async context => {
@@ -39,7 +39,7 @@ menu.interact('⚠️ Änderung entfernen', 'r', {
 			.filter(o => o.name !== change?.name || o.date !== change?.date)
 		await context.answerCbQuery('Änderung wurde entfernt.')
 		return '..'
-	}
+	},
 })
 
 menu.manualRow(backMainButtons)

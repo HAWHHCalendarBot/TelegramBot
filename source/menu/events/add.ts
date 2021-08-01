@@ -4,9 +4,9 @@ import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOf
 import TelegrafStatelessQuestion from 'telegraf-stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
+import {count as allEventsCount, find as allEventsFind, exists as allEventsExists} from '../../lib/all-events.js'
 import {filterButtonText, DEFAULT_FILTER} from '../../lib/inline-menu-filter.js'
 import {MyContext} from '../../lib/types.js'
-import * as allEvents from '../../lib/all-events.js'
 
 const MAX_RESULT_ROWS = 10
 const RESULT_COLUMNS = 2
@@ -15,7 +15,7 @@ export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
 async function menuBody(context: MyContext): Promise<Body> {
-	const total = await allEvents.count()
+	const total = await allEventsCount()
 
 	let text = format.bold('Veranstaltungen')
 	text += '\nWelche Events möchtest du hinzufügen?'
@@ -25,9 +25,9 @@ async function menuBody(context: MyContext): Promise<Body> {
 		const filteredEvents = await findEvents(context)
 
 		const filter = context.session.eventfilter ?? DEFAULT_FILTER
-		text += filter === DEFAULT_FILTER ?
-			`Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.` :
-			`Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`
+		text += filter === DEFAULT_FILTER
+			? `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
+			: `Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`
 	} catch (error: unknown) {
 		const errorText = error instanceof Error ? error.message : String(error)
 		text += 'Filter Error: '
@@ -40,9 +40,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 async function findEvents(context: MyContext): Promise<readonly string[]> {
 	const filter = context.session.eventfilter ?? DEFAULT_FILTER
 	const ignore = Object.keys(context.userconfig.mine.events)
-	// This is not the array.find function which this eslint thingy trying to fix…
-	// eslint-disable-next-line unicorn/no-array-callback-reference
-	return allEvents.find(filter, ignore)
+	return allEventsFind(filter, ignore)
 }
 
 const question = new TelegrafStatelessQuestion<MyContext>('events-add-filter', async (context, path) => {
@@ -60,7 +58,7 @@ menu.interact(filterButtonText(context => context.session.eventfilter), 'filter'
 		await question.replyWithMarkdown(context, 'Wonach möchtest du die Veranstaltungen filtern?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
-	}
+	},
 })
 
 menu.interact('Filter aufheben', 'filter-clear', {
@@ -69,7 +67,7 @@ menu.interact('Filter aufheben', 'filter-clear', {
 	do: context => {
 		delete context.session.eventfilter
 		return true
-	}
+	},
 })
 
 async function eventOptions(context: MyContext): Promise<Record<string, string>> {
@@ -91,7 +89,7 @@ menu.choose('a', eventOptions, {
 	columns: RESULT_COLUMNS,
 	do: async (context, key) => {
 		const event = key.replace(/;/g, '/')
-		const isExisting = await allEvents.exists(event)
+		const isExisting = await allEventsExists(event)
 		const isAlreadyInCalendar = Object.keys(context.userconfig.mine.events)
 			.includes(event)
 
@@ -112,7 +110,7 @@ menu.choose('a', eventOptions, {
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
-	}
+	},
 })
 
 menu.manualRow(backMainButtons)

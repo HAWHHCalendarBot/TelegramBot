@@ -28,7 +28,7 @@ export interface ContextProperty {
 
 export class Chatconfig {
 	constructor(
-		public readonly folder: string
+		public readonly folder: string,
 	) {
 		// Creating the folder is not needed. It should already be there
 	}
@@ -50,7 +50,7 @@ export class Chatconfig {
 				forwardBroadcast: async (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => this.forwardBroadcast(ctx.telegram, originChat, messageId, filter),
 				load: async (id: number) => this.load(id),
 				loadConfig: async (id: number) => this.loadConfig(id),
-				mine: configOfUser
+				mine: configOfUser,
 			}
 
 			// @ts-expect-error
@@ -91,7 +91,7 @@ export class Chatconfig {
 	async saveConfig(from: User, config: Userconfig): Promise<void> {
 		const json: ChatConfigFileContent = {
 			chat: from,
-			config
+			config,
 		}
 
 		await fsPromises.writeFile(this.filenameFromId(from.id), stringify(json, {space: 2}) + '\n', 'utf8')
@@ -113,7 +113,7 @@ export class Chatconfig {
 		const ids = await this.allIds()
 
 		const fileContents = await Promise.all(ids.map(async id =>
-			fsPromises.readFile(this.filenameFromId(id), 'utf8')
+			fsPromises.readFile(this.filenameFromId(id), 'utf8'),
 		))
 
 		const configs = fileContents
@@ -146,7 +146,7 @@ export class Chatconfig {
 			calendarfileSuffix: '',
 			changes: [],
 			events: {},
-			mensa: {}
+			mensa: {},
 		}
 		return {...config}
 	}

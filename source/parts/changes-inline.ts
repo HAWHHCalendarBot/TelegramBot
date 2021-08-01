@@ -13,11 +13,11 @@ function generateInlineQueryResultFromChange(change: Change, from: User): Inline
 		id,
 		input_message_content: {
 			message_text: generateChangeText(change),
-			parse_mode: 'Markdown'
+			parse_mode: 'Markdown',
 		},
 		...Markup.inlineKeyboard([Markup.button.callback('zu meinem Kalender hinzufügen', 'c:a:' + id)]),
 		title: generateShortChangeText(change),
-		type: 'article'
+		type: 'article',
 	}
 }
 
@@ -40,7 +40,7 @@ bot.on('inline_query', async context => {
 		cache_time: 20,
 		is_personal: true,
 		switch_pm_parameter: 'changes',
-		switch_pm_text: 'Zum Bot'
+		switch_pm_text: 'Zum Bot',
 	})
 })
 
@@ -70,7 +70,7 @@ async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRela
 
 		return {
 			name, date, fromId,
-			change: searchedChange
+			change: searchedChange,
 		}
 	} catch {
 		await context.editMessageText('Die Veranstaltungsänderung existiert nicht mehr. 😔')
@@ -112,7 +112,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 
 		const keyboardMarkup = Markup.inlineKeyboard([
 			Markup.button.callback('Überschreiben', `c:af:${name}#${date}#${fromId}`),
-			Markup.button.callback('Abbrechen', 'c:cancel')
+			Markup.button.callback('Abbrechen', 'c:cancel'),
 		])
 
 		await context.telegram.sendMessage(context.from!.id, text, {...keyboardMarkup, parse_mode: 'Markdown'})

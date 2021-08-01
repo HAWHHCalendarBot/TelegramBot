@@ -134,9 +134,7 @@ menu.select('t', daySelectOptions, {
 		context.session.mensa.date = parseDateString(key).getTime()
 		return true
 	},
-	formatState: (_, textResult, state) => {
-		return state ? `🕚 ${textResult}` : textResult
-	}
+	formatState: (_, textResult, state) => state ? `🕚 ${textResult}` : textResult,
 })
 
 menu.choose('m', mensaSelectOption, {
@@ -149,7 +147,7 @@ menu.choose('m', mensaSelectOption, {
 
 		context.session.mensa.mensa = key
 		return true
-	}
+	},
 })
 
 menu.manualRow(backMainButtons)

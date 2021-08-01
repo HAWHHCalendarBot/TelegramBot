@@ -50,9 +50,9 @@ function menuBody(context: MyContext): Body {
 
 	if (date) {
 		text = generateChangeText(context.session.generateChange as Change)
-		text += add ?
-			'\nSpezifiziere den zusätzlichen Termin.' :
-			'\nWelche Art von Änderung willst du vornehmen?'
+		text += add
+			? '\nSpezifiziere den zusätzlichen Termin.'
+			: '\nWelche Art von Änderung willst du vornehmen?'
 	}
 
 	return {text, parse_mode: 'Markdown'}
@@ -90,7 +90,7 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 		context.session.generateChange!.starttime = new Date().toLocaleTimeString('de-DE', {hour12: false, hour: '2-digit', minute: '2-digit'})
 		context.session.generateChange!.endtime = '23:45'
 		return true
-	}
+	},
 })
 
 async function possibleTimesToCreateChangeToOptions(context: MyContext): Promise<Record<string, string>> {
@@ -129,7 +129,7 @@ menu.choose('date', possibleTimesToCreateChangeToOptions, {
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
-	}
+	},
 })
 
 menu.interact('🚫 Entfällt', 'remove', {
@@ -143,7 +143,7 @@ menu.interact('🚫 Entfällt', 'remove', {
 		}
 
 		return Object.keys(context.session.generateChange!).length > 2
-	}
+	},
 })
 
 createDatePickerButtons(menu, hideGenerateAddStep)
@@ -183,7 +183,7 @@ menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuf
 		await namesuffixQuestion.replyWithMarkdown(context, 'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
-	}
+	},
 })
 
 menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
@@ -192,12 +192,12 @@ menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
 		await roomQuestion.replyWithMarkdown(context, 'In welchen Raum wurde der Termin verschoben?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
-	}
+	},
 })
 
 menu.interact('✅ Fertig stellen', 'finish', {
 	do: finish,
-	hide: context => !generationDataIsValid(context)
+	hide: context => !generationDataIsValid(context),
 })
 
 async function finish(context: MyContext): Promise<string | boolean> {
@@ -238,5 +238,5 @@ menu.interact('🛑 Abbrechen', 'abort', {
 	do: context => {
 		delete context.session.generateChange
 		return '..'
-	}
+	},
 })

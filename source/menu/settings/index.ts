@@ -30,7 +30,7 @@ stisysMenu.toggle('StISys Update', 'update', {
 		context.userconfig.mine.stisysUpdate = newState
 		return true
 	},
-	isSet: context => context.userconfig.mine.stisysUpdate === true
+	isSet: context => context.userconfig.mine.stisysUpdate === true,
 })
 stisysMenu.manualRow(backMainButtons)
 

@@ -10,7 +10,7 @@ const BASE_MEAL = {
 	Date: '2021-05-18T07:39Z',
 	PriceAttendant: 0,
 	PriceGuest: 0,
-	PriceStudent: 0
+	PriceStudent: 0,
 }
 
 const TEST_MEALS: readonly Meal[] = [
@@ -24,7 +24,7 @@ const TEST_MEALS: readonly Meal[] = [
 		Pig: false,
 		Poultry: false,
 		Vegan: false,
-		Vegetarian: false
+		Vegetarian: false,
 	}, {
 		...BASE_MEAL,
 		Alcohol: false,
@@ -35,7 +35,7 @@ const TEST_MEALS: readonly Meal[] = [
 		Pig: false,
 		Poultry: false,
 		Vegan: false,
-		Vegetarian: true
+		Vegetarian: true,
 	}, {
 		...BASE_MEAL,
 		Alcohol: false,
@@ -46,7 +46,7 @@ const TEST_MEALS: readonly Meal[] = [
 		Pig: true,
 		Poultry: false,
 		Vegan: false,
-		Vegetarian: false
+		Vegetarian: false,
 	}, {
 		...BASE_MEAL,
 		Alcohol: false,
@@ -57,7 +57,7 @@ const TEST_MEALS: readonly Meal[] = [
 		Pig: false,
 		Poultry: false,
 		Vegan: true,
-		Vegetarian: false
+		Vegetarian: false,
 	}, {
 		...BASE_MEAL,
 		Alcohol: false,
@@ -68,8 +68,8 @@ const TEST_MEALS: readonly Meal[] = [
 		Pig: false,
 		Poultry: false,
 		Vegan: false,
-		Vegetarian: false
-	}
+		Vegetarian: false,
+	},
 ]
 
 test('filterfrei', t => {
@@ -80,7 +80,7 @@ test('filterfrei', t => {
 test('vegan', t => {
 	const filtered = filterMeals(TEST_MEALS, {vegan: true})
 	t.deepEqual(filtered.map(o => o.Name), [
-		'Pasta'
+		'Pasta',
 	])
 })
 
@@ -88,14 +88,14 @@ test('vegetarisch', t => {
 	const filtered = filterMeals(TEST_MEALS, {vegetarian: true})
 	t.deepEqual(filtered.map(o => o.Name), [
 		'Pasta Sahne',
-		'Pasta'
+		'Pasta',
 	])
 })
 
 test('laktosefrei', t => {
 	const filtered = filterMeals(TEST_MEALS, {lactoseFree: true})
 	t.deepEqual(filtered.map(o => o.Name), [
-		'Pasta'
+		'Pasta',
 	])
 })
 
@@ -105,7 +105,7 @@ test('ohne Schwein', t => {
 		'Fisch',
 		'Pasta Sahne',
 		'Pasta',
-		'Rindstuff'
+		'Rindstuff',
 	])
 })
 
@@ -115,7 +115,7 @@ test('ohne Rind', t => {
 		'Fisch',
 		'Pasta Sahne',
 		'Pasta Speck',
-		'Pasta'
+		'Pasta',
 	])
 })
 
@@ -126,7 +126,7 @@ test('ohne Geflügel', t => {
 		'Pasta Sahne',
 		'Pasta Speck',
 		'Pasta',
-		'Rindstuff'
+		'Rindstuff',
 	])
 })
 
@@ -136,6 +136,6 @@ test('ohne Fisch', t => {
 		'Pasta Sahne',
 		'Pasta Speck',
 		'Pasta',
-		'Rindstuff'
+		'Rindstuff',
 	])
 })

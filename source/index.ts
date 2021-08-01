@@ -16,9 +16,9 @@ import {bot as menu} from './menu/index.js'
 
 process.title = 'calendarbot-tgbot'
 
-const token = (existsSync('/run/secrets/bot-token.txt') && readFileSync('/run/secrets/bot-token.txt', 'utf8').trim()) ||
-	(existsSync('bot-token.txt') && readFileSync('bot-token.txt', 'utf8').trim()) ||
-	process.env['BOT_TOKEN']
+const token = (existsSync('/run/secrets/bot-token.txt') && readFileSync('/run/secrets/bot-token.txt', 'utf8').trim())
+	|| (existsSync('bot-token.txt') && readFileSync('bot-token.txt', 'utf8').trim())
+	|| process.env['BOT_TOKEN']
 if (!token) {
 	throw new Error('You have to provide the bot-token from @BotFather via file (bot-token.txt) or environment variable (BOT_TOKEN)')
 }
@@ -28,7 +28,7 @@ const bot = new Telegraf<MyContext>(token)
 const i18n = new I18n({
 	defaultLanguage: 'de',
 	defaultLanguageOnMissing: true,
-	directory: 'locales'
+	directory: 'locales',
 })
 bot.use(i18n.middleware())
 
@@ -98,9 +98,9 @@ async function checkStISysChangeAndNotify() {
 			text,
 			{
 				parse_mode: 'Markdown',
-				reply_markup: {remove_keyboard: true}
+				reply_markup: {remove_keyboard: true},
 			},
-			user => Boolean(user.config.stisysUpdate)
+			user => Boolean(user.config.stisysUpdate),
 		)
 	} catch (error: unknown) {
 		console.error('checkStISysChangeAndNotify failed', error)
@@ -116,7 +116,7 @@ async function startup() {
 	await bot.telegram.setMyCommands([
 		{command: 'start', description: 'öffne das Menü'},
 		{command: 'mensa', description: 'zeige das heutige Mensaessen deiner Mensa'},
-		{command: 'settings', description: 'setze Einstellungen des Bots'}
+		{command: 'settings', description: 'setze Einstellungen des Bots'},
 	])
 
 	setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)

@@ -45,7 +45,7 @@ menu.url('Kalender', async context => {
 	const config = await context.userconfig.loadConfig(context.session.adminuserquicklook!)
 	return `https://${getUrl(context.session.adminuserquicklook!, config)}`
 }, {
-	hide: context => !context.session.adminuserquicklook
+	hide: context => !context.session.adminuserquicklook,
 })
 
 const question = new TelegrafStatelessQuestion<MyContext>('admin-user-filter', async (context, path) => {
@@ -64,7 +64,7 @@ menu.interact(filterButtonText(context => context.session.adminuserquicklookfilt
 		await question.replyWithMarkdown(context, 'Wonach möchtest du die Nutzer filtern?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
-	}
+	},
 })
 
 menu.interact('Filter aufheben', 'filter-clear', {
@@ -74,14 +74,14 @@ menu.interact('Filter aufheben', 'filter-clear', {
 		delete context.session.adminuserquicklookfilter
 		delete context.session.adminuserquicklook
 		return true
-	}
+	},
 })
 
 async function userOptions(context: MyContext): Promise<Record<number, string>> {
 	const filter = context.session.adminuserquicklookfilter ?? DEFAULT_FILTER
 	const filterRegex = new RegExp(filter, 'i')
 	const allConfigs = await context.userconfig.all(
-		config => filterRegex.test(JSON.stringify(config))
+		config => filterRegex.test(JSON.stringify(config)),
 	)
 	const allChats = allConfigs.map(o => o.chat)
 
@@ -110,7 +110,7 @@ menu.select('u', userOptions, {
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
-	}
+	},
 })
 
 menu.manualRow(backMainButtons)

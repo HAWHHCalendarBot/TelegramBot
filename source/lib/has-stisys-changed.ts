@@ -12,8 +12,8 @@ async function getCurrentStISys(): Promise<string> {
 		timeout: 5 * 1000, // 5 seconds
 		headers: {
 			from: 'calendarbot@hawhh.de',
-			'user-agent': 'github.com/HAWHHCalendarBot/telegrambot'
-		}
+			'user-agent': 'github.com/HAWHHCalendarBot/telegrambot',
+		},
 	})
 
 	if (response.statusCode !== 200) {

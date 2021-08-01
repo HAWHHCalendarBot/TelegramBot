@@ -69,7 +69,7 @@ menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 			.filter(o => Object.keys(context.userconfig.mine.events).includes(o.name))
 
 		return true
-	}
+	},
 })
 
 menu.submenu('➕ Veranstaltung hinzufügen', 'a', addMenu.menu)
@@ -104,7 +104,7 @@ menu.chooseIntoSubmenu('d', getEventOptions, detailsMenu.menu, {
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
-	}
+	},
 })
 
 menu.manualRow(backMainButtons)

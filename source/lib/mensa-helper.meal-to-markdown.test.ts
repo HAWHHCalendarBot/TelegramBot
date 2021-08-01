@@ -6,7 +6,7 @@ import {mealToMarkdown} from './mensa-helper.js'
 
 const example: Meal = {
 	Additives: {
-		La: 'Milch/-erzeugnisse (einschl. Laktose)'
+		La: 'Milch/-erzeugnisse (einschl. Laktose)',
 	},
 	Alcohol: false,
 	Beef: false,
@@ -21,7 +21,7 @@ const example: Meal = {
 	PriceGuest: 4.7,
 	PriceStudent: 2.45,
 	Vegan: false,
-	Vegetarian: true
+	Vegetarian: true,
 }
 
 test('example student without Additives', t => {

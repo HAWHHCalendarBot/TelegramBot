@@ -62,7 +62,7 @@ export async function loadEvents(eventname: string): Promise<EventEntryInternal[
 		const parsed = array.map((o): EventEntryInternal => ({
 			...o,
 			StartTime: parseDateTimeToDate(o.StartTime),
-			EndTime: parseDateTimeToDate(o.EndTime)
+			EndTime: parseDateTimeToDate(o.EndTime),
 		}))
 
 		return parsed

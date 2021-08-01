@@ -59,7 +59,7 @@ function menuBody(context: MyContext, path: string): Body {
 }
 
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
-	hide: context => Object.keys(context.userconfig.mine.events).length === 0
+	hide: context => Object.keys(context.userconfig.mine.events).length === 0,
 })
 
 const alertMenu = new MenuTemplate<MyContext>((_, path) => {
@@ -72,7 +72,7 @@ alertMenu.interact('🔕 Garnicht', 'nope', {
 		const name = getNameFromPath(path)
 		delete context.userconfig.mine.events[name]!.alertMinutesBefore
 		return '..'
-	}
+	},
 })
 
 const alertChoices = {
@@ -84,7 +84,7 @@ const alertChoices = {
 	45: '45 Minuten',
 	60: '1 Stunde',
 	120: '2 Stunden',
-	1337: '1337 Minuten'
+	1337: '1337 Minuten',
 }
 
 alertMenu.choose('t', alertChoices, {
@@ -98,7 +98,7 @@ alertMenu.choose('t', alertChoices, {
 		const minutes = Number(key)
 		context.userconfig.mine.events[name]!.alertMinutesBefore = minutes
 		return '..'
-	}
+	},
 })
 
 alertMenu.manualRow(backMainButtons)
@@ -125,7 +125,7 @@ menu.interact('🗒 Schreibe Notiz', 'set-notes', {
 		await noteQuestion.replyWithHTML(context, text, getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
-	}
+	},
 })
 
 menu.interact('Notiz löschen', 'remove-notes', {
@@ -138,7 +138,7 @@ menu.interact('Notiz löschen', 'remove-notes', {
 		const name = getNameFromPath(path)
 		delete context.userconfig.mine.events[name]!.notes
 		return true
-	}
+	},
 })
 
 function removeBody(context: MyContext): Body {
@@ -159,7 +159,7 @@ removeMenu.interact('Ja ich will!', 'y', {
 
 		await context.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
 		return true
-	}
+	},
 })
 removeMenu.navigate('🛑 Abbrechen', '..', {joinLastRow: true})
 

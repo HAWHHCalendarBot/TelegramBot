@@ -59,7 +59,7 @@ menu.interact('Generieren…', 'g', {
 		const fromTime = Date.now() % (10 ** 8)
 		await setSuffix(context, String(fromTime))
 		return true
-	}
+	},
 })
 
 const manualSuffixQuestion = new TelegrafStatelessQuestion<MyContext>('subscribe-suffix-manual', async (context, path) => {
@@ -77,12 +77,12 @@ menu.interact('Manuell setzen…', 's', {
 		await manualSuffixQuestion.replyWithMarkdown(
 			context,
 			`Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeichen werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`,
-			getMenuOfPath(path)
+			getMenuOfPath(path),
 		)
 
 		await deleteMenuFromContext(context)
 		return false
-	}
+	},
 })
 
 menu.manualRow(backMainButtons)

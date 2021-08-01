@@ -77,7 +77,7 @@ menu.interact('⚠️ Alles löschen ⚠️', 'delete-all', {
 	do: async (context, path) => {
 		await deleteAllQuestion.replyWithMarkdown(context, deleteQuestion, getMenuOfPath(path))
 		return false
-	}
+	},
 })
 
 menu.manualRow(backMainButtons)

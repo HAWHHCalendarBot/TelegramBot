@@ -21,7 +21,7 @@ function createTimeSelectionSubmenuButton(menu: MenuTemplate<MyContext>, time: '
 
 	menu.submenu(buttonText, time, subMenu, {
 		joinLastRow: time === 'endtime',
-		hide
+		hide,
 	})
 
 	subMenu.select('h', HOUR_OPTIONS, {
@@ -31,7 +31,7 @@ function createTimeSelectionSubmenuButton(menu: MenuTemplate<MyContext>, time: '
 			const {minute} = getCurrent(context, time)
 			context.session.generateChange![time] = formatTime(key, minute)
 			return true
-		}
+		},
 	})
 
 	subMenu.select('m', MINUTE_OPTIONS, {
@@ -42,7 +42,7 @@ function createTimeSelectionSubmenuButton(menu: MenuTemplate<MyContext>, time: '
 			const {hour} = getCurrent(context, time)
 			context.session.generateChange![time] = formatTime(hour, key)
 			return true
-		}
+		},
 	})
 
 	subMenu.navigate(BACK_BUTTON_TEXT, '..')

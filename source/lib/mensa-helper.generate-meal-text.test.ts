@@ -6,7 +6,7 @@ import {generateMealText} from './mensa-helper.js'
 
 const example: Meal = {
 	Additives: {
-		La: 'Milch/-erzeugnisse (einschl. Laktose)'
+		La: 'Milch/-erzeugnisse (einschl. Laktose)',
 	},
 	Alcohol: false,
 	Beef: false,
@@ -21,7 +21,7 @@ const example: Meal = {
 	PriceGuest: 4.7,
 	PriceStudent: 2.45,
 	Vegan: false,
-	Vegetarian: true
+	Vegetarian: true,
 }
 
 // Shortened
@@ -31,7 +31,7 @@ const bracketsInNameExample: Meal = {
 		2: 'Konservierungsstoffe',
 		Gl: 'Glutenhaltiges Getreide und daraus hergestellte Erzeugnissse',
 		Ei: 'Ei/-erzeugnisse',
-		La: 'Milch/-erzeugnisse (einschl. Laktose)'
+		La: 'Milch/-erzeugnisse (einschl. Laktose)',
 	},
 	Alcohol: false,
 	Beef: true,
@@ -46,19 +46,19 @@ const bracketsInNameExample: Meal = {
 	PriceGuest: 5.65,
 	PriceStudent: 3.5,
 	Vegan: false,
-	Vegetarian: false
+	Vegetarian: false,
 }
 
 test('shows hint when something is filtered', t => {
 	const result = generateMealText([example], {
-		vegan: true
+		vegan: true,
 	})
 	t.regex(result, /Sonderwünsche/)
 })
 
 test('does not show hint when nothing is filtered while having filters', t => {
 	const result = generateMealText([example], {
-		noPig: true
+		noPig: true,
 	})
 	t.notRegex(result, /Sonderwünsche/)
 })
@@ -75,7 +75,7 @@ test('has meal', t => {
 
 test('even amount of markdown bold markers without showAdditives', t => {
 	const result = generateMealText([example], {
-		showAdditives: false
+		showAdditives: false,
 	})
 	t.log(result)
 	const occurrences = result.match(/\*/g)?.length
@@ -84,7 +84,7 @@ test('even amount of markdown bold markers without showAdditives', t => {
 
 test('even amount of markdown bold markers with showAdditives', t => {
 	const result = generateMealText([example], {
-		showAdditives: true
+		showAdditives: true,
 	})
 	t.log(result)
 	const occurrences = result.match(/\*/g)?.length
@@ -93,7 +93,7 @@ test('even amount of markdown bold markers with showAdditives', t => {
 
 test('Name without showAdditives', t => {
 	const result = generateMealText([example], {
-		showAdditives: false
+		showAdditives: false,
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')
@@ -102,7 +102,7 @@ test('Name without showAdditives', t => {
 
 test('Name with showAdditives', t => {
 	const result = generateMealText([example], {
-		showAdditives: true
+		showAdditives: true,
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')
@@ -111,7 +111,7 @@ test('Name with showAdditives', t => {
 
 test('Name with brackets without showAdditives', t => {
 	const result = generateMealText([bracketsInNameExample], {
-		showAdditives: false
+		showAdditives: false,
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')
@@ -120,7 +120,7 @@ test('Name with brackets without showAdditives', t => {
 
 test('Name with brackets with showAdditives', t => {
 	const result = generateMealText([bracketsInNameExample], {
-		showAdditives: true
+		showAdditives: true,
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')

@@ -42,6 +42,6 @@ export async function forwardBroadcast(telegram: Telegram, targetIds: readonly n
 }
 
 function isUserGoneError(errorDescription: string): boolean {
-	return errorDescription.includes('user is deactivated') ||
-        errorDescription.includes('bot was blocked by the user')
+	return errorDescription.includes('user is deactivated')
+        || errorDescription.includes('bot was blocked by the user')
 }

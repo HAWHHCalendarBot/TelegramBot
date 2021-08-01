@@ -42,7 +42,7 @@ function generateBody(resourceKeySuffix: string): (context: MyContext) => Body {
 	return context => ({
 		parse_mode: 'Markdown',
 		text: context.i18n.t('subscribe.' + resourceKeySuffix, {
-			url: getUrlFromContext(context)
-		})
+			url: getUrlFromContext(context),
+		}),
 	})
 }

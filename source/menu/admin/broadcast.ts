@@ -9,9 +9,9 @@ export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>('Broadcast')
 
 function broadcastButtonText(context: MyContext): string {
-	return context.session.adminBroadcast ?
-		'✏️ Ändere Nachricht…' :
-		'✏️ Setze Nachricht…'
+	return context.session.adminBroadcast
+		? '✏️ Ändere Nachricht…'
+		: '✏️ Setze Nachricht…'
 }
 
 const broadcastQuestion = new TelegrafStatelessQuestion<MyContext>('admin-broadcast', async (context, path) => {
@@ -25,7 +25,7 @@ menu.interact(broadcastButtonText, 'set', {
 	do: async (context, path) => {
 		await broadcastQuestion.replyWithMarkdown(context, 'Hey admin! Was willst du broadcasten?', getMenuOfPath(path))
 		return false
-	}
+	},
 })
 
 menu.interact('📤 Versende Broadcast', 'send', {
@@ -38,7 +38,7 @@ menu.interact('📤 Versende Broadcast', 'send', {
 		await context.editMessageText('wird versendet…')
 
 		return false
-	}
+	},
 })
 
 async function handleOngoingBroadcast(context: MyContext, messageId: number): Promise<void> {
@@ -53,8 +53,8 @@ async function handleOngoingBroadcast(context: MyContext, messageId: number): Pr
 	await context.reply(text, {
 		reply_to_message_id: messageId,
 		reply_markup: {
-			remove_keyboard: true
-		}
+			remove_keyboard: true,
+		},
 	})
 
 	if (context.callbackQuery && 'data' in context.callbackQuery) {

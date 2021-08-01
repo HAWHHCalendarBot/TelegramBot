@@ -39,7 +39,7 @@ dayMenu.select('', DAY_OPTIONS, {
 		current.setDate(Number(date))
 		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
 		return '..'
-	}
+	},
 })
 
 monthMenu.select('', generateMonthOptions(), {
@@ -50,7 +50,7 @@ monthMenu.select('', generateMonthOptions(), {
 		current.setMonth(Number(month) - 1)
 		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
 		return '..'
-	}
+	},
 })
 
 yearMenu.select('', generateYearOptions(), {
@@ -60,7 +60,7 @@ yearMenu.select('', generateYearOptions(), {
 		current.setFullYear(Number(year))
 		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
 		return '..'
-	}
+	},
 })
 
 dayMenu.navigate(BACK_BUTTON_TEXT, '..')
