@@ -12,3 +12,6 @@ updates:
     versioning-strategy: increase-if-necessary
     commit-message:
       prefix: "build(npm):"
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
