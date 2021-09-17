@@ -53,7 +53,7 @@ export class Chatconfig {
 				mine: configOfUser,
 			}
 
-			// @ts-expect-error
+			// @ts-expect-error write to readonly
 			ctx.userconfig = contextProperty
 
 			const before = stringify(ctx.userconfig.mine)

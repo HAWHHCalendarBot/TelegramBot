@@ -59,9 +59,9 @@ export const menu = new MenuTemplate<MyContext>(menuBody)
 
 const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-everything', async (context, path) => {
 	if ('text' in context.message && context.message.text === deleteConfirmString) {
-		// @ts-expect-error
+		// @ts-expect-error delete readonly
 		delete context.userconfig.mine
-		// @ts-expect-error
+		// @ts-expect-error write readonly
 		context.session = {}
 		await context.reply('Deine Daten werden gelöscht…')
 	} else {

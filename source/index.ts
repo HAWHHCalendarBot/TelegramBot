@@ -67,7 +67,7 @@ bot.use(session())
 bot.use(async (ctx, next) => {
 	if (!ctx.session) {
 		const defaultSession: Session = {}
-		// @ts-expect-error
+		// @ts-expect-error write to readonly
 		ctx.session = defaultSession
 	}
 
