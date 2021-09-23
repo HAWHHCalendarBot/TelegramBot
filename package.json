@@ -24,7 +24,7 @@
 		"node": ">=14"
 	},
 	"dependencies": {
-		"@edjopato/telegraf-i18n": "^0.2.2",
+		"@grammyjs/i18n": "^0.3.0",
 		"array-filter-unique": "^2.1.0",
 		"got": "^11.5.2",
 		"json-stable-stringify": "^1.0.1",
