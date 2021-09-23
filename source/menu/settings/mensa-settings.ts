@@ -1,4 +1,4 @@
-import {MenuTemplate, Body} from 'telegraf-inline-menu'
+import {MenuTemplate, Body} from 'grammy-inline-menu'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getCanteenList} from '../../lib/mensa-meals.js'
@@ -85,7 +85,7 @@ moreMenu.select('more', getCanteenList, {
 	isSet: (context, mensa) => isAdditionalMensa(context, mensa),
 	set: async (context, mensa) => {
 		if (context.userconfig.mine.mensa.main === mensa) {
-			await context.answerCbQuery(mensa + ' ist bereits deine Hauptmensa')
+			await context.answerCallbackQuery({text: mensa + ' ist bereits deine Hauptmensa'})
 			return false
 		}
 
@@ -194,7 +194,7 @@ specialWishMenu.select('w', specialWishOptions, {
 })
 specialWishMenu.interact('warm… nicht versalzen… kein Spüli…', 'warm', {
 	do: async context => {
-		await context.answerCbQuery('das wär mal was… 😈')
+		await context.answerCallbackQuery({text: 'das wär mal was… 😈'})
 		return false
 	},
 })

@@ -1,4 +1,4 @@
-import {MenuTemplate, Body} from 'telegraf-inline-menu'
+import {MenuTemplate, Body} from 'grammy-inline-menu'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {MyContext, RemovedEventsDisplayStyle} from '../../lib/types.js'

@@ -1,4 +1,4 @@
-import {Composer} from 'telegraf'
+import {Composer} from 'grammy'
 
 import {getCanteenList} from './lib/mensa-meals.js'
 import {MyContext, EventDetails} from './lib/types.js'

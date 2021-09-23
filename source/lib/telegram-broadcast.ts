@@ -1,11 +1,11 @@
-import {Telegram} from 'telegraf'
-import {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
+import {Api} from 'grammy'
 
+import {OtherSendMessage} from './types.js'
 import {sequentialLoop, sleep} from './async.js'
 
 const SLEEP_MS = 250
 
-export async function broadcast(telegram: Telegram, targetIds: readonly number[], text: string, extra: ExtraReplyMessage): Promise<number[]> {
+export async function broadcast(telegram: Api, targetIds: readonly number[], text: string, extra: OtherSendMessage): Promise<number[]> {
 	const goneUserIds: number[] = []
 
 	await sequentialLoop(targetIds, async id => {
@@ -23,7 +23,7 @@ export async function broadcast(telegram: Telegram, targetIds: readonly number[]
 	return goneUserIds
 }
 
-export async function forwardBroadcast(telegram: Telegram, targetIds: readonly number[], originChat: string | number, messageId: number): Promise<number[]> {
+export async function forwardBroadcast(telegram: Api, targetIds: readonly number[], originChat: string | number, messageId: number): Promise<number[]> {
 	const goneUserIds: number[] = []
 
 	await sequentialLoop(targetIds, async id => {

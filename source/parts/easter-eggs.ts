@@ -1,4 +1,4 @@
-import {Composer} from 'telegraf'
+import {Composer} from 'grammy'
 
 import {MyContext} from '../lib/types.js'
 

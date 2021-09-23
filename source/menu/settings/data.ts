@@ -1,6 +1,6 @@
-import {Composer} from 'telegraf'
-import {MenuTemplate, Body, replyMenuToContext, getMenuOfPath} from 'telegraf-inline-menu'
-import TelegrafStatelessQuestion from 'telegraf-stateless-question'
+import {Composer} from 'grammy'
+import {MenuTemplate, Body, replyMenuToContext, getMenuOfPath} from 'grammy-inline-menu'
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 import {html as format} from 'telegram-format'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
@@ -57,7 +57,7 @@ const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Eins
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
-const deleteAllQuestion = new TelegrafStatelessQuestion<MyContext>('delete-everything', async (context, path) => {
+const deleteAllQuestion = new StatelessQuestion<MyContext>('delete-everything', async (context, path) => {
 	if ('text' in context.message && context.message.text === deleteConfirmString) {
 		// @ts-expect-error delete readonly
 		delete context.userconfig.mine

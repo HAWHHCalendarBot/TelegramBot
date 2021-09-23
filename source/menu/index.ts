@@ -1,5 +1,5 @@
-import {Composer} from 'telegraf'
-import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
+import {Composer} from 'grammy'
+import {MenuTemplate, MenuMiddleware} from 'grammy-inline-menu'
 
 import {MyContext} from '../lib/types.js'
 

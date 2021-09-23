@@ -1,5 +1,5 @@
-import {Composer, Markup} from 'telegraf'
-import {User, InlineQueryResultArticle} from 'typegram'
+import {Composer} from 'grammy'
+import {InlineQueryResultArticle, User} from 'grammy/out/platform'
 
 import {Change, MyContext} from '../lib/types.js'
 import {generateChangeDescription, generateChangeText, generateChangeTextHeader, generateShortChangeText} from '../lib/change-helper.js'
@@ -15,7 +15,11 @@ function generateInlineQueryResultFromChange(change: Change, from: User): Inline
 			message_text: generateChangeText(change),
 			parse_mode: 'Markdown',
 		},
-		...Markup.inlineKeyboard([Markup.button.callback('zu meinem Kalender hinzufügen', 'c:a:' + id)]),
+		reply_markup: {
+			inline_keyboard: [[
+				{text: 'zu meinem Kalender hinzufügen', callback_data: 'c:a:' + id},
+			]],
+		},
 		title: generateShortChangeText(change),
 		type: 'article',
 	}
@@ -57,7 +61,7 @@ async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRela
 	const fromId = Number(context.match![3]!)
 
 	if (!Object.keys(context.userconfig.mine.events).includes(name)) {
-		await context.answerCbQuery('Du besuchst diese Veranstaltung garnicht. 🤔')
+		await context.answerCallbackQuery({text: 'Du besuchst diese Veranstaltung garnicht. 🤔'})
 		return undefined
 	}
 
@@ -78,7 +82,7 @@ async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRela
 	}
 }
 
-bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
+bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 	const meta = await getChangeFromContextMatch(context)
 	if (!meta) {
 		return
@@ -87,7 +91,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 	const {name, date, fromId, change} = meta
 
 	if (context.from?.id === Number(fromId)) {
-		await context.answerCbQuery('Das ist deine eigene Änderung 😉')
+		await context.answerCallbackQuery({text: 'Das ist deine eigene Änderung 😉'})
 		return
 	}
 
@@ -97,7 +101,7 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 
 	if (myChangeToThisEvent.length > 0) {
 		const warning = '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.'
-		await context.answerCbQuery(warning)
+		await context.answerCallbackQuery({text: warning})
 
 		const currentChange = myChangeToThisEvent[0]!
 
@@ -110,23 +114,23 @@ bot.action(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 		text += '\nDiese Veränderung wolltest du hinzufügen:'
 		text += '\n' + generateChangeDescription(change)
 
-		const keyboardMarkup = Markup.inlineKeyboard([
-			Markup.button.callback('Überschreiben', `c:af:${name}#${date}#${fromId}`),
-			Markup.button.callback('Abbrechen', 'c:cancel'),
-		])
+		const inline_keyboard = [[
+			{text: 'Überschreiben', callback_data: `c:af:${name}#${date}#${fromId}`},
+			{text: 'Abbrechen', callback_data: 'c:cancel'},
+		]]
 
-		await context.telegram.sendMessage(context.from!.id, text, {...keyboardMarkup, parse_mode: 'Markdown'})
+		await context.api.sendMessage(context.from.id, text, {reply_markup: {inline_keyboard}, parse_mode: 'Markdown'})
 		return
 	}
 
 	context.userconfig.mine.changes.push(change)
-	await context.answerCbQuery('Die Änderung wurde hinzugefügt')
+	await context.answerCallbackQuery({text: 'Die Änderung wurde hinzugefügt'})
 })
 
-bot.action('c:cancel', async context => context.editMessageText('Ich habe nichts verändert. 🙂'))
+bot.callbackQuery('c:cancel', async context => context.editMessageText('Ich habe nichts verändert. 🙂'))
 
 // Action: change add force
-bot.action(/^c:af:(.+)#(.+)#(.+)$/, async context => {
+bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async context => {
 	const meta = await getChangeFromContextMatch(context)
 	if (!meta) {
 		return

@@ -1,6 +1,6 @@
-import {Composer} from 'telegraf'
-import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext, getMenuOfPath} from 'telegraf-inline-menu'
-import TelegrafStatelessQuestion from 'telegraf-stateless-question'
+import {Composer} from 'grammy'
+import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext, getMenuOfPath} from 'grammy-inline-menu'
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {MyContext} from '../../lib/types.js'
@@ -42,8 +42,8 @@ async function setSuffix(context: MyContext, value: string): Promise<void> {
 
 async function sendHintText(context: MyContext): Promise<void> {
 	const hintText = '⚠️ Hinweis: Dein Kalender muss nun neu abonniert werden!'
-	if (context.updateType === 'callback_query') {
-		await context.answerCbQuery(hintText, {show_alert: true})
+	if (context.callbackQuery) {
+		await context.answerCallbackQuery({text: hintText, show_alert: true})
 		return
 	}
 
@@ -62,8 +62,8 @@ menu.interact('Generieren…', 'g', {
 	},
 })
 
-const manualSuffixQuestion = new TelegrafStatelessQuestion<MyContext>('subscribe-suffix-manual', async (context, path) => {
-	if ('text' in context.message) {
+const manualSuffixQuestion = new StatelessQuestion<MyContext>('subscribe-suffix-manual', async (context, path) => {
+	if (context.message.text) {
 		await setSuffix(context, context.message.text)
 	}
 

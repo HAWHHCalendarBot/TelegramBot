@@ -1,13 +1,12 @@
 import {promises as fsPromises} from 'fs'
 
-import {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
-import {Telegram, MiddlewareFn} from 'telegraf'
-import {User} from 'typegram'
+import {Api, MiddlewareFn} from 'grammy'
+import {User} from 'grammy/out/platform'
 import stringify from 'json-stable-stringify'
 
-import {MyContext, Userconfig} from './types.js'
+import {MyContext, OtherSendMessage, Userconfig} from './types.js'
 import {sequentialLoop} from './async.js'
-import * as telegrafBroadcast from './telegraf-broadcast.js'
+import * as telegramBroadcast from './telegram-broadcast.js'
 
 interface ChatConfigFileContent {
 	chat: User;
@@ -17,7 +16,7 @@ interface ChatConfigFileContent {
 export interface ContextProperty {
 	readonly all: (filter?: (o: ChatConfigFileContent) => boolean) => Promise<readonly ChatConfigFileContent[]>;
 	readonly allIds: () => Promise<number[]>;
-	readonly broadcast: (text: string, extra: ExtraReplyMessage, filter?: (o: ChatConfigFileContent) => boolean) => Promise<void>;
+	readonly broadcast: (text: string, extra: OtherSendMessage, filter?: (o: ChatConfigFileContent) => boolean) => Promise<void>;
 	readonly forwardBroadcast: (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => Promise<void>;
 	readonly load: (id: number) => Promise<ChatConfigFileContent | undefined>;
 	readonly loadConfig: (id: number) => Promise<Userconfig>;
@@ -36,7 +35,7 @@ export class Chatconfig {
 	middleware(): MiddlewareFn<MyContext> {
 		return async (ctx, next) => {
 			if (!ctx.from) {
-				console.warn(new Date(), 'Chatconfig', 'ctx.from empty, update type:', ctx.updateType, ctx.update)
+				console.warn(new Date(), 'Chatconfig', 'ctx.from empty', ctx.update)
 				return next()
 			}
 
@@ -46,8 +45,8 @@ export class Chatconfig {
 			const contextProperty: ContextProperty = {
 				all: async (filter?: (o: ChatConfigFileContent) => boolean) => this.all(filter),
 				allIds: async () => this.allIds(),
-				broadcast: async (text: string, extra: ExtraReplyMessage, filter?: (o: ChatConfigFileContent) => boolean) => this.broadcast(ctx.telegram, text, extra, filter),
-				forwardBroadcast: async (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => this.forwardBroadcast(ctx.telegram, originChat, messageId, filter),
+				broadcast: async (text: string, extra: OtherSendMessage, filter?: (o: ChatConfigFileContent) => boolean) => this.broadcast(ctx.api, text, extra, filter),
+				forwardBroadcast: async (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => this.forwardBroadcast(ctx.api, originChat, messageId, filter),
 				load: async (id: number) => this.load(id),
 				loadConfig: async (id: number) => this.loadConfig(id),
 				mine: configOfUser,
@@ -123,17 +122,17 @@ export class Chatconfig {
 		return configs
 	}
 
-	async broadcast(telegram: Telegram, text: string, extra: ExtraReplyMessage, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
+	async broadcast(telegram: Api, text: string, extra: OtherSendMessage, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
 		const allConfigs = await this.all(filter)
 		const allIds = allConfigs.map(config => config.chat.id)
-		const failedIds = await telegrafBroadcast.broadcast(telegram, allIds, text, extra)
+		const failedIds = await telegramBroadcast.broadcast(telegram, allIds, text, extra)
 		await sequentialLoop(failedIds, async id => this.removeConfig(id))
 	}
 
-	async forwardBroadcast(telegram: Telegram, originChat: string | number, messageId: number, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
+	async forwardBroadcast(telegram: Api, originChat: string | number, messageId: number, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
 		const allConfigs = await this.all(filter)
 		const allIds = allConfigs.map(config => config.chat.id)
-		const failedIds = await telegrafBroadcast.forwardBroadcast(telegram, allIds, originChat, messageId)
+		const failedIds = await telegramBroadcast.forwardBroadcast(telegram, allIds, originChat, messageId)
 		await sequentialLoop(failedIds, async id => this.removeConfig(id))
 	}
 

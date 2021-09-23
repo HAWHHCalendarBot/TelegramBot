@@ -1,7 +1,7 @@
 import {existsSync, readFileSync} from 'fs'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
 import {I18n} from '@grammyjs/i18n'
-import {Telegraf, session} from 'telegraf'
+import {Bot, session} from 'grammy'
 
 import {Chatconfig} from './lib/chatconfig.js'
 import {hasStISysChanged} from './lib/has-stisys-changed.js'
@@ -23,7 +23,7 @@ if (!token) {
 	throw new Error('You have to provide the bot-token from @BotFather via file (bot-token.txt) or environment variable (BOT_TOKEN)')
 }
 
-const bot = new Telegraf<MyContext>(token)
+const bot = new Bot<MyContext>(token)
 
 const i18n = new I18n({
 	defaultLanguage: 'de',
@@ -43,7 +43,7 @@ bot.use(async (ctx, next) => {
 		}
 	} catch (error: unknown) {
 		if (error instanceof Error && error.message.includes('Too Many Requests')) {
-			console.warn('Telegraf Too Many Requests error. Skip.', error)
+			console.warn('grammY Too Many Requests error. Skip.', error)
 			return
 		}
 
@@ -59,7 +59,7 @@ bot.use(async (ctx, next) => {
 		text += '`'
 
 		const target = (ctx.chat ?? ctx.from!).id
-		await ctx.telegram.sendMessage(target, text, {parse_mode: 'Markdown', disable_web_page_preview: true})
+		await ctx.api.sendMessage(target, text, {parse_mode: 'Markdown', disable_web_page_preview: true})
 	}
 })
 
@@ -94,7 +94,7 @@ async function checkStISysChangeAndNotify() {
 		const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
 
 		await chatconfig.broadcast(
-			bot.telegram,
+			bot.api,
 			text,
 			{
 				parse_mode: 'Markdown',
@@ -109,11 +109,11 @@ async function checkStISysChangeAndNotify() {
 
 bot.catch((error: any) => {
 	// Should not occur as the error middleware is in place
-	console.error('Telegraf Error', error)
+	console.error('grammY Error', error)
 })
 
 async function startup() {
-	await bot.telegram.setMyCommands([
+	await bot.api.setMyCommands([
 		{command: 'start', description: 'öffne das Menü'},
 		{command: 'mensa', description: 'zeige das heutige Mensaessen deiner Mensa'},
 		{command: 'settings', description: 'setze Einstellungen des Bots'},
@@ -123,8 +123,11 @@ async function startup() {
 	console.log(new Date(), 'Initial StISys check...')
 	await checkStISysChangeAndNotify()
 
-	await bot.launch()
-	console.log(new Date(), 'Bot started as', bot.botInfo?.username)
+	await bot.start({
+		onStart: botInfo => {
+			console.log(new Date(), 'Bot starts as', botInfo.username)
+		},
+	})
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

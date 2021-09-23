@@ -1,7 +1,7 @@
-import {Composer} from 'telegraf'
+import {Composer} from 'grammy'
 import {html as format} from 'telegram-format'
-import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'telegraf-inline-menu'
-import TelegrafStatelessQuestion from 'telegraf-stateless-question'
+import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'grammy-inline-menu'
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {count as allEventsCount, find as allEventsFind, exists as allEventsExists} from '../../lib/all-events.js'
@@ -43,7 +43,7 @@ async function findEvents(context: MyContext): Promise<readonly string[]> {
 	return allEventsFind(filter, ignore)
 }
 
-const question = new TelegrafStatelessQuestion<MyContext>('events-add-filter', async (context, path) => {
+const question = new StatelessQuestion<MyContext>('events-add-filter', async (context, path) => {
 	if ('text' in context.message) {
 		context.session.eventfilter = context.message.text
 	}
@@ -94,17 +94,17 @@ menu.choose('a', eventOptions, {
 			.includes(event)
 
 		if (!isExisting) {
-			await context.answerCbQuery(`${event} existiert nicht!`)
+			await context.answerCallbackQuery({text: `${event} existiert nicht!`})
 			return true
 		}
 
 		if (isAlreadyInCalendar) {
-			await context.answerCbQuery(`${event} ist bereits in deinem Kalender!`)
+			await context.answerCallbackQuery({text: `${event} ist bereits in deinem Kalender!`})
 			return true
 		}
 
 		context.userconfig.mine.events[event] = {}
-		await context.answerCbQuery(`${event} wurde zu deinem Kalender hinzugefügt.`)
+		await context.answerCallbackQuery({text: `${event} wurde zu deinem Kalender hinzugefügt.`})
 		return true
 	},
 	getCurrentPage: context => context.session.page,

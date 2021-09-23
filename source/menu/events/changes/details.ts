@@ -1,4 +1,4 @@
-import {MenuTemplate} from 'telegraf-inline-menu'
+import {MenuTemplate} from 'grammy-inline-menu'
 
 import {backMainButtons} from '../../../lib/inline-menu.js'
 import {Change, MyContext} from '../../../lib/types.js'
@@ -37,7 +37,7 @@ menu.interact('⚠️ Änderung entfernen', 'r', {
 		const change = getChangeFromContext(context)
 		context.userconfig.mine.changes = context.userconfig.mine.changes
 			.filter(o => o.name !== change?.name || o.date !== change?.date)
-		await context.answerCbQuery('Änderung wurde entfernt.')
+		await context.answerCallbackQuery({text: 'Änderung wurde entfernt.'})
 		return '..'
 	},
 })

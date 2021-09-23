@@ -1,7 +1,7 @@
-import {Composer} from 'telegraf'
+import {Composer} from 'grammy'
 import {html as format} from 'telegram-format'
-import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext, getMenuOfPath} from 'telegraf-inline-menu'
-import TelegrafStatelessQuestion from 'telegraf-stateless-question'
+import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext, getMenuOfPath} from 'grammy-inline-menu'
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {MyContext} from '../../lib/types.js'
@@ -90,7 +90,7 @@ const alertChoices = {
 alertMenu.choose('t', alertChoices, {
 	columns: 3,
 	do: (context, key) => {
-		if (!context.callbackQuery || !('data' in context.callbackQuery)) {
+		if (!context.callbackQuery?.data) {
 			throw new Error('how?')
 		}
 
@@ -105,7 +105,7 @@ alertMenu.manualRow(backMainButtons)
 
 menu.submenu('⏰ Erinnerung', 'alert', alertMenu)
 
-const noteQuestion = new TelegrafStatelessQuestion<MyContext>('event-notes', async (context, path) => {
+const noteQuestion = new StatelessQuestion<MyContext>('event-notes', async (context, path) => {
 	const name = getNameFromPath(path)
 	if ('text' in context.message) {
 		const notes = context.message.text
@@ -157,7 +157,7 @@ removeMenu.interact('Ja ich will!', 'y', {
 		context.userconfig.mine.changes = context.userconfig.mine.changes
 			.filter(o => Object.keys(context.userconfig.mine.events).includes(o.name))
 
-		await context.answerCbQuery(`${event} wurde aus deinem Kalender entfernt.`)
+		await context.answerCallbackQuery({text: `${event} wurde aus deinem Kalender entfernt.`})
 		return true
 	},
 })

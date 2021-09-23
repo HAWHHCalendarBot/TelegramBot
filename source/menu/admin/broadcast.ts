@@ -1,6 +1,6 @@
-import {Composer} from 'telegraf'
-import {MenuTemplate, replyMenuToContext, getMenuOfPath} from 'telegraf-inline-menu'
-import TelegrafStatelessQuestion from 'telegraf-stateless-question'
+import {Composer} from 'grammy'
+import {MenuTemplate, replyMenuToContext, getMenuOfPath} from 'grammy-inline-menu'
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {MyContext} from '../../lib/types.js'
@@ -14,7 +14,7 @@ function broadcastButtonText(context: MyContext): string {
 		: '✏️ Setze Nachricht…'
 }
 
-const broadcastQuestion = new TelegrafStatelessQuestion<MyContext>('admin-broadcast', async (context, path) => {
+const broadcastQuestion = new StatelessQuestion<MyContext>('admin-broadcast', async (context, path) => {
 	context.session.adminBroadcast = context.message.message_id
 	await replyMenuToContext(menu, context, path)
 })
@@ -57,7 +57,7 @@ async function handleOngoingBroadcast(context: MyContext, messageId: number): Pr
 		},
 	})
 
-	if (context.callbackQuery && 'data' in context.callbackQuery) {
+	if (context.callbackQuery?.data) {
 		await replyMenuToContext(menu, context, getMenuOfPath(context.callbackQuery.data))
 	}
 }

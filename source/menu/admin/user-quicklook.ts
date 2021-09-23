@@ -1,8 +1,8 @@
-import {Composer} from 'telegraf'
+import {Composer} from 'grammy'
 import {html as format} from 'telegram-format'
-import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'telegraf-inline-menu'
-import {User} from 'typegram'
-import TelegrafStatelessQuestion from 'telegraf-stateless-question'
+import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'grammy-inline-menu'
+import {User} from 'grammy/out/platform'
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js'
@@ -48,7 +48,7 @@ menu.url('Kalender', async context => {
 	hide: context => !context.session.adminuserquicklook,
 })
 
-const question = new TelegrafStatelessQuestion<MyContext>('admin-user-filter', async (context, path) => {
+const question = new StatelessQuestion<MyContext>('admin-user-filter', async (context, path) => {
 	if ('text' in context.message) {
 		context.session.adminuserquicklookfilter = context.message.text
 		delete context.session.adminuserquicklook

@@ -1,4 +1,4 @@
-import {createBackMainMenuButtons} from 'telegraf-inline-menu'
+import {createBackMainMenuButtons} from 'grammy-inline-menu'
 
 export const BACK_BUTTON_TEXT = '🔙 zurück…'
 

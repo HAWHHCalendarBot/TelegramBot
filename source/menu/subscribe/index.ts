@@ -1,5 +1,5 @@
-import {Composer} from 'telegraf'
-import {MenuTemplate, Body} from 'telegraf-inline-menu'
+import {Composer} from 'grammy'
+import {MenuTemplate, Body} from 'grammy-inline-menu'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getUrlFromContext} from '../../lib/calendar-helper.js'

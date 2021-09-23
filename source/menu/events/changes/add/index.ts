@@ -1,7 +1,7 @@
-import {Composer} from 'telegraf'
-import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext, getMenuOfPath} from 'telegraf-inline-menu'
+import {Composer} from 'grammy'
+import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext, getMenuOfPath} from 'grammy-inline-menu'
 import arrayFilterUnique from 'array-filter-unique'
-import TelegrafStatelessQuestion from 'telegraf-stateless-question'
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
 import {loadEvents, generateChangeText} from '../../../../lib/change-helper.js'
@@ -150,7 +150,7 @@ createDatePickerButtons(menu, hideGenerateAddStep)
 
 createTimeSelectionSubmenuButtons(menu, hideGenerateChangeStep)
 
-const namesuffixQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-suffix', async (context, path) => {
+const namesuffixQuestion = new StatelessQuestion<MyContext>('change-add-suffix', async (context, path) => {
 	if ('text' in context.message) {
 		context.session.generateChange!.namesuffix = context.message.text
 	}
@@ -158,7 +158,7 @@ const namesuffixQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-
 	await replyMenuToContext(menu, context, path)
 })
 
-const roomQuestion = new TelegrafStatelessQuestion<MyContext>('change-add-room', async (context, path) => {
+const roomQuestion = new StatelessQuestion<MyContext>('change-add-room', async (context, path) => {
 	if ('text' in context.message) {
 		context.session.generateChange!.room = context.message.text
 	}
@@ -222,7 +222,7 @@ async function finish(context: MyContext): Promise<string | boolean> {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
 		// Also the user can add an additional date that they already have 'used'
-		await context.answerCbQuery('Du hast bereits eine Veranstaltungsänderung für diesen Termin.')
+		await context.answerCallbackQuery({text: 'Du hast bereits eine Veranstaltungsänderung für diesen Termin.'})
 		return true
 	}
 

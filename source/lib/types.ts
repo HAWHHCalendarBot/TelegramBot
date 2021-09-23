@@ -1,14 +1,18 @@
-import {Context as TelegrafContext} from 'telegraf'
+import {Api, Context as BaseContext} from 'grammy'
 import {I18nContext} from '@grammyjs/i18n'
 
 import {ContextProperty} from './chatconfig.js'
 
-export interface MyContext extends TelegrafContext {
+export type OtherSendMessage = Parameters<Api['sendMessage']>[2]
+
+export interface ContextFlavour {
 	readonly i18n: I18nContext;
 	readonly match: RegExpExecArray | undefined;
 	readonly session: Session;
 	readonly userconfig: ContextProperty;
 }
+
+export type MyContext = BaseContext & ContextFlavour
 
 export interface Session {
 	adminBroadcast?: number; // Message ID

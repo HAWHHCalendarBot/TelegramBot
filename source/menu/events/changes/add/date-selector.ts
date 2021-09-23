@@ -1,4 +1,4 @@
-import {MenuTemplate} from 'telegraf-inline-menu'
+import {MenuTemplate} from 'grammy-inline-menu'
 
 import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
 import {DAY_OPTIONS, generateMonthOptions, generateYearOptions, MONTH_NAMES} from '../../../../lib/event-creation-menu-options.js'
