@@ -43,7 +43,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	const additionalEventsLink = format.url('AdditionalEvents', 'https://github.com/HAWHHCalendarBot/AdditionalEvents')
 	text += `Du bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Wirf mal einen Blick auf ${additionalEventsLink} oder schreib @EdJoPaTo an. ;)`
 
-	return {text, parse_mode: format.parse_mode}
+	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true}
 }
 
 export const bot = new Composer<MyContext>()
