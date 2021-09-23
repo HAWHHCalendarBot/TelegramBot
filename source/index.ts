@@ -1,4 +1,3 @@
-import {existsSync, readFileSync} from 'fs'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
 import {I18n} from '@grammyjs/i18n'
 import {Bot, session} from 'grammy'
@@ -16,11 +15,9 @@ import {bot as menu} from './menu/index.js'
 
 process.title = 'calendarbot-tgbot'
 
-const token = (existsSync('/run/secrets/bot-token.txt') && readFileSync('/run/secrets/bot-token.txt', 'utf8').trim())
-	|| (existsSync('bot-token.txt') && readFileSync('bot-token.txt', 'utf8').trim())
-	|| process.env['BOT_TOKEN']
+const token = process.env['BOT_TOKEN']
 if (!token) {
-	throw new Error('You have to provide the bot-token from @BotFather via file (bot-token.txt) or environment variable (BOT_TOKEN)')
+	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)')
 }
 
 const bot = new Bot<MyContext>(token)
