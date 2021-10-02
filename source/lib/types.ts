@@ -3,6 +3,10 @@ import {I18nContext} from '@grammyjs/i18n'
 
 import {ContextProperty} from './chatconfig.js'
 
+export function unreachable(unreachable: never): never {
+	throw new Error('Should have been unreachable but looks like it wasnt: ' + JSON.stringify(unreachable))
+}
+
 export type OtherSendMessage = Parameters<Api['sendMessage']>[2]
 
 export interface ContextFlavour {
@@ -60,11 +64,14 @@ export interface Change {
 export type MensaPriceClass = 'student' | 'attendant' | 'guest'
 
 export interface MealWishes {
+	lactoseFree?: boolean;
 	noBeef?: boolean;
 	noFish?: boolean;
+	noGame?: boolean;
+	noGelatine?: boolean;
+	noLamb?: boolean;
 	noPig?: boolean;
 	noPoultry?: boolean;
-	lactoseFree?: boolean;
 	vegan?: boolean;
 	vegetarian?: boolean;
 }

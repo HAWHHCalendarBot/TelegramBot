@@ -2,7 +2,7 @@ import {MenuTemplate, Body} from 'grammy-inline-menu'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getCanteenList} from '../../lib/mensa-meals.js'
-import {MyContext, MealWishes, MensaPriceClass} from '../../lib/types.js'
+import {MyContext, MealWishes, MensaPriceClass, unreachable} from '../../lib/types.js'
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫'
@@ -12,10 +12,13 @@ const settingName: Readonly<Record<keyof MealWishes, string>> = {
 	vegan: 'vegan',
 	vegetarian: 'vegetarisch',
 	lactoseFree: 'laktosefrei',
-	noPig: 'kein Schweinefleisch',
 	noBeef: 'kein Rindfleisch',
-	noPoultry: 'kein Geflügel',
 	noFish: 'kein Fisch',
+	noGame: 'kein Wild',
+	noGelatine: 'keine Gelatine',
+	noLamb: 'kein Lamm',
+	noPig: 'kein Schweinefleisch',
+	noPoultry: 'kein Geflügel',
 }
 
 export const menu = new MenuTemplate<MyContext>({text: '*Mensa Einstellungen*', parse_mode: 'Markdown'})
@@ -154,6 +157,9 @@ function showWishAsOption(context: MyContext, wish: keyof MealWishes): boolean {
 	switch (wish) {
 		case 'noBeef':
 		case 'noFish':
+		case 'noGame':
+		case 'noGelatine':
+		case 'noLamb':
 		case 'noPig':
 		case 'noPoultry':
 			return !wishes.vegan && !wishes.vegetarian
@@ -161,8 +167,9 @@ function showWishAsOption(context: MyContext, wish: keyof MealWishes): boolean {
 		case 'lactoseFree':
 			return !wishes.vegan
 		case 'vegan':
-		default:
 			return true
+		default:
+			unreachable(wish)
 	}
 }
 
