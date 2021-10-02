@@ -1,4 +1,4 @@
-import {promises as fsPromises} from 'fs'
+import {promises as fsPromises} from 'node:fs'
 
 async function getAll(): Promise<string[]> {
 	const data = await fsPromises.readFile('eventfiles/all.txt', 'utf8')

@@ -1,4 +1,4 @@
-import {createServer} from 'http'
+import {createServer} from 'node:http'
 
 import {Webhooks, createNodeMiddleware} from '@octokit/webhooks'
 import {PushEvent} from '@octokit/webhooks-types'

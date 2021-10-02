@@ -45,16 +45,14 @@
 		"del-cli": "^4.0.0",
 		"ts-node": "^10.0.0",
 		"typescript": "^4.2.3",
-		"xo": "^0.44.0"
+		"xo": "^0.45.0"
 	},
 	"xo": {
 		"semicolon": false,
 		"rules": {
-			"@typescript-eslint/no-non-null-assertion": "off",
-			"@typescript-eslint/no-unsafe-member-access": "off",
 			"ava/no-ignored-test-files": "off",
+			"@typescript-eslint/naming-convention": "off",
 			"node/prefer-global/process": "off",
-			"prefer-named-capture-group": "off",
 			"unicorn/prefer-node-protocol": "off",
 			"import/extensions": [
 				"error",

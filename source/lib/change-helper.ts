@@ -1,4 +1,4 @@
-import {promises as fsPromises} from 'fs'
+import {promises as fsPromises} from 'node:fs'
 
 import {Change, EventEntryInternal, EventEntryFileContent} from './types.js'
 import {formatDateToHumanReadable, parseDateTimeToDate} from './calendar-helper.js'

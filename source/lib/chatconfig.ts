@@ -1,4 +1,4 @@
-import {promises as fsPromises} from 'fs'
+import {promises as fsPromises} from 'node:fs'
 
 import {Api, MiddlewareFn} from 'grammy'
 import {User} from 'grammy/out/platform'
