@@ -1,4 +1,5 @@
 import {Composer} from 'grammy'
+import {html as format} from 'telegram-format'
 import {MenuTemplate, Body} from 'grammy-inline-menu'
 
 import {backMainButtons} from '../../../lib/inline-menu.js'
@@ -40,18 +41,14 @@ function getChangesOptions(context: MyContext): Record<string, string> {
 function menuBody(context: MyContext): Body {
 	const event = context.match![1]!.replace(/;/, '/')
 
-	let text = '*Veranstaltungsänderungen*\n'
-	text += event
+	let text = ''
+	text += format.bold('Veranstaltungsänderungen')
 	text += '\n'
+	text += format.escape(event)
+	text += '\n\n'
+	text += format.escape(context.i18n.t('changes.help'))
 
-	text += '\nWenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen.'
-	text += ' Dein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.'
-
-	text += '\nAußerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.'
-
-	text += '\n\n⚠️ Du bist in der Lage, unlogische Veranstaltungstermine zu kreieren. Beispielsweise kannst du einen Termin so verändern, dass er aufhört bevor er beginnt. Den Bot interessiert das nicht, der tut genau das, was du ihm sagst. Dein Kalenderprogramm ist damit dann allerdings häufig nicht so glücklich…'
-
-	return {text, parse_mode: 'Markdown'}
+	return {text, parse_mode: format.parse_mode}
 }
 
 menu.manualRow(backMainButtons)

@@ -1,5 +1,7 @@
 import {promises as fsPromises} from 'node:fs'
 
+import {html as format} from 'telegram-format'
+
 import {Change, EventEntryInternal, EventEntryFileContent} from './types.js'
 import {formatDateToHumanReadable, parseDateTimeToDate} from './calendar-helper.js'
 
@@ -33,15 +35,17 @@ export function generateChangeText(change: Change): string {
 
 	if (Object.keys(change).length > 2) {
 		text += '\nÄnderungen:\n'
-		text += generateChangeDescription(change)
+		text += format.escape(generateChangeDescription(change))
 	}
 
 	return text
 }
 
 export function generateChangeTextHeader(change: Change): string {
-	let text = '*Veranstaltungsänderung*\n'
-	text += `*${change.name}*`
+	let text = ''
+	text += format.bold('Veranstaltungsänderung')
+	text += '\n'
+	text += format.bold(format.escape(change.name))
 	if (change.date) {
 		text += ` ${formatDateToHumanReadable(change.date)}`
 	}

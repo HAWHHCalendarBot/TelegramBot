@@ -23,7 +23,7 @@ export const menu = new MenuTemplate<MyContext>(context => {
 	}
 
 	const text = generateChangeText(change)
-	return {text, parse_mode: 'Markdown'}
+	return {text, parse_mode: 'HTML'}
 })
 
 menu.switchToChat('Teilen…', context => generateShortChangeText(getChangeFromContext(context)!), {

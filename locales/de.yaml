@@ -1,3 +1,16 @@
+changes:
+  help: >
+    Wenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen.
+    Dein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.
+
+    Außerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.
+
+
+    ⚠️ Du bist in der Lage, unlogische Veranstaltungstermine zu kreieren.
+    Beispielsweise kannst du einen Termin so verändern, dass er aufhört bevor er beginnt.
+    Den Bot interessiert das nicht, der tut genau das, was du ihm sagst.
+    Dein Kalenderprogramm ist damit dann allerdings häufig nicht so glücklich…
+
 subscribe:
   overview: >
     *Kalender abonnieren*

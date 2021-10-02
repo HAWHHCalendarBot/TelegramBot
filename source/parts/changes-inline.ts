@@ -1,4 +1,5 @@
 import {Composer} from 'grammy'
+import {html as format} from 'telegram-format'
 import {InlineQueryResultArticle, User} from 'grammy/out/platform'
 
 import {Change, MyContext} from '../lib/types.js'
@@ -13,7 +14,7 @@ function generateInlineQueryResultFromChange(change: Change, from: User): Inline
 		id,
 		input_message_content: {
 			message_text: generateChangeText(change),
-			parse_mode: 'Markdown',
+			parse_mode: format.parse_mode,
 		},
 		reply_markup: {
 			inline_keyboard: [[
@@ -109,17 +110,20 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 		text += generateChangeTextHeader(currentChange)
 
 		text += '\nDiese Veränderung ist bereits in deinem Kalender:'
-		text += '\n' + generateChangeDescription(currentChange)
+		text += '\n' + format.escape(generateChangeDescription(currentChange))
 
 		text += '\nDiese Veränderung wolltest du hinzufügen:'
-		text += '\n' + generateChangeDescription(change)
+		text += '\n' + format.escape(generateChangeDescription(change))
 
 		const inline_keyboard = [[
 			{text: 'Überschreiben', callback_data: `c:af:${name}#${date}#${fromId}`},
 			{text: 'Abbrechen', callback_data: 'c:cancel'},
 		]]
 
-		await context.api.sendMessage(context.from.id, text, {reply_markup: {inline_keyboard}, parse_mode: 'Markdown'})
+		await context.api.sendMessage(context.from.id, text, {
+			reply_markup: {inline_keyboard},
+			parse_mode: format.parse_mode,
+		})
 		return
 	}
 

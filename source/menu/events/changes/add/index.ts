@@ -55,7 +55,7 @@ function menuBody(context: MyContext): Body {
 			: '\nWelche Art von Änderung willst du vornehmen?'
 	}
 
-	return {text, parse_mode: 'Markdown'}
+	return {text, parse_mode: 'HTML'}
 }
 
 function hidePickDateStep(context: MyContext): boolean {
