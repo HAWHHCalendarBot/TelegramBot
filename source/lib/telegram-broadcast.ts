@@ -13,7 +13,7 @@ export async function broadcast(telegram: Api, targetIds: readonly number[], tex
 			await sleep(SLEEP_MS)
 			await telegram.sendMessage(id, text, extra)
 		} catch (error: unknown) {
-			console.warn('broadcast failed. Target:', id, (error as any)?.response)
+			console.warn('broadcast failed. Target:', id, error instanceof Error ? error.message : error)
 			if (isUserGoneError(error instanceof Error ? error.message : String(error))) {
 				goneUserIds.push(id)
 			}
@@ -31,7 +31,7 @@ export async function forwardBroadcast(telegram: Api, targetIds: readonly number
 			await sleep(SLEEP_MS)
 			await telegram.forwardMessage(id, originChat, messageId)
 		} catch (error: unknown) {
-			console.warn('forwardBroadcast failed. Target:', id, (error as any)?.response)
+			console.warn('forwardBroadcast failed. Target:', id, error instanceof Error ? error.message : error)
 			if (isUserGoneError(error instanceof Error ? error.message : String(error))) {
 				goneUserIds.push(id)
 			}
