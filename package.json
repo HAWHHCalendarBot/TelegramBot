@@ -1,6 +1,6 @@
 {
 	"name": "hawhhcalendarbot-telegrambot",
-	"version": "8.0.0",
+	"version": "8.0.1",
 	"private": true,
 	"description": "A bot to configure your personal calendar of HAW Hamburg lectures",
 	"license": "AGPLv3",
