@@ -29,6 +29,10 @@ bot.use(async (ctx, next) => {
 		ctx.userconfig.mine.events = map
 	}
 
+	if (ctx.userconfig.mine.stisysUpdate) {
+		ctx.userconfig.mine.websiteStalkerUpdate = true
+	}
+
 	if (!ctx.userconfig.mine.mensa) {
 		ctx.userconfig.mine.mensa = {}
 	}
@@ -55,10 +59,11 @@ bot.use(async (ctx, next) => {
 			.filter(o => allAvailableCanteens.includes(o))
 	}
 
+	delete (ctx as any).userconfig.mine.additionalEvents
 	delete (ctx as any).userconfig.mine.mensa.student
 	delete (ctx as any).userconfig.mine.settings
 	delete (ctx as any).userconfig.mine.showRemovedEvents
-	delete (ctx as any).userconfig.mine.additionalEvents
+	delete (ctx as any).userconfig.mine.stisysUpdate
 
 	return next()
 })

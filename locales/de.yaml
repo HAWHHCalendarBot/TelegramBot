@@ -88,3 +88,14 @@ subscribe:
 
 
     Viel Erfolg 😎
+website-stalker:
+  help: >
+    Der website-stalker prüft regelmäßig auf Änderungen an relevanten Webseiten.
+
+
+    Hier wird beispielsweise StISys auf Änderungen betrachtet und wenn sich etwas ändert, kannst du direkt benachrichtigt werden.
+
+
+    Alternativ kannst du die Änderungen auch als RSS Feed mit deinem Feed Reader abonnieren.
+    Abonniere dazu folgende URL:
+    https://github.com/HAWHHCalendarBot/study-website-stalker/commits/main.atom

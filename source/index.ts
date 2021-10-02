@@ -3,8 +3,8 @@ import {I18n} from '@grammyjs/i18n'
 import {Bot, session} from 'grammy'
 
 import {Chatconfig} from './lib/chatconfig.js'
-import {hasStISysChanged} from './lib/has-stisys-changed.js'
 import {MyContext, Session} from './lib/types.js'
+import {startListenWebsiteStalkerWebhook} from './lib/study-website-stalker.js'
 
 import {bot as migrateStuffBot} from './migrate-stuff.js'
 
@@ -81,29 +81,6 @@ bot.use(easterEggs.bot)
 
 bot.use(menu)
 
-async function checkStISysChangeAndNotify() {
-	try {
-		const hasChanged = await hasStISysChanged()
-		if (!hasChanged) {
-			return
-		}
-
-		const text = 'Es hat sich eine Änderung auf der [StISys Einstiegsseite](https://stisys.haw-hamburg.de) ergeben.'
-
-		await chatconfig.broadcast(
-			bot.api,
-			text,
-			{
-				parse_mode: 'Markdown',
-				reply_markup: {remove_keyboard: true},
-			},
-			user => Boolean(user.config.stisysUpdate),
-		)
-	} catch (error: unknown) {
-		console.error('checkStISysChangeAndNotify failed', error)
-	}
-}
-
 bot.catch((error: any) => {
 	// Should not occur as the error middleware is in place
 	console.error('grammY Error', error)
@@ -116,9 +93,16 @@ async function startup() {
 		{command: 'settings', description: 'setze Einstellungen des Bots'},
 	])
 
-	setInterval(checkStISysChangeAndNotify, 15 * 60 * 1000)
-	console.log(new Date(), 'Initial StISys check...')
-	await checkStISysChangeAndNotify()
+	startListenWebsiteStalkerWebhook(async text => {
+		await chatconfig.broadcast(
+			bot.api,
+			text,
+			{
+				reply_markup: {remove_keyboard: true},
+			},
+			user => Boolean(user.config.websiteStalkerUpdate) || Boolean(user.config.stisysUpdate),
+		)
+	})
 
 	await bot.start({
 		onStart: botInfo => {

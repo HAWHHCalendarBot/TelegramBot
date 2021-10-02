@@ -34,7 +34,9 @@ export interface Userconfig {
 	events: Record<string, EventDetails>;
 	mensa: MensaSettings;
 	removedEvents?: RemovedEventsDisplayStyle;
+	/** @deprecated use websiteStalkerUpdate instead */
 	stisysUpdate?: boolean;
+	websiteStalkerUpdate?: true;
 }
 
 export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji'

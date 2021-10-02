@@ -20,9 +20,9 @@ RUN apk upgrade --no-cache \
     && apk --no-cache add git
 
 WORKDIR /app
+EXPOSE 3000
 VOLUME /app/eventfiles
 VOLUME /app/mensa-data
-VOLUME /app/tmp
 VOLUME /app/userconfig
 
 COPY package.json ./
