@@ -22,13 +22,14 @@ export function startListenWebsiteStalkerWebhook(callback: (text: string) => Pro
 	webhooks.on('push', async ({payload}) => {
 		// Only care for events on main branch
 		if (payload.ref !== 'refs/heads/main') {
-			console.log('website-stalker webhook ignore not on main branch', payload)
+			console.log('website-stalker webhook ignore not on main branch', new Date())
 			return
 		}
 
 		const hasRelevantModification = payload.commits.some(commit => commit.modified.some(file => file.startsWith('sites/')))
 		if (!hasRelevantModification) {
-			console.log('website-stalker webhook ignore unrelevant push', payload)
+			console.log('website-stalker webhook ignore unrelevant push', new Date())
+			return
 		}
 
 		const text = textFromPayload(payload)
