@@ -98,6 +98,7 @@ async function startup() {
 			bot.api,
 			text,
 			{
+				disable_web_page_preview: true,
 				reply_markup: {remove_keyboard: true},
 			},
 			user => Boolean(user.config.websiteStalkerUpdate) || Boolean(user.config.stisysUpdate),
