@@ -28,7 +28,7 @@ export function startListenWebsiteStalkerWebhook(callback: (text: string) => Pro
 
 		const hasRelevantModification = payload.commits.some(commit => commit.modified.some(file => file.startsWith('sites/')))
 		if (!hasRelevantModification) {
-			console.log('website-stalker webhook ignore unrelevant push', new Date())
+			console.log('website-stalker webhook ignore irrelevant push', new Date())
 			return
 		}
 
@@ -44,7 +44,7 @@ export function startListenWebsiteStalkerWebhook(callback: (text: string) => Pro
 function textFromPayload(payload: PushEvent) {
 	let text = 'Es gab Webseitenänderungen:\n\n'
 
-	const messages = payload.commits.map(o => o.message)
+	const messages = payload.commits.map(o => o.message.replace(/\n\n+/g, '\n').trim())
 	text += messages.join('\n\n')
 
 	text += '\n\n'
