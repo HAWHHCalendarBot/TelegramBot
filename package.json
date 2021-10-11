@@ -37,7 +37,6 @@
 		"telegram-format": "^2.0.1"
 	},
 	"devDependencies": {
-		"@octokit/webhooks-types": "^4.8.2",
 		"@sindresorhus/tsconfig": "^2.0.0",
 		"@types/json-stable-stringify": "^1.0.32",
 		"@types/node": "^16.9.6",

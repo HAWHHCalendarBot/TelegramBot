@@ -1,9 +1,13 @@
 import {createServer} from 'node:http'
 
 import {Webhooks, createNodeMiddleware} from '@octokit/webhooks'
-import {PushEvent} from '@octokit/webhooks-types'
 
-export function startListenWebsiteStalkerWebhook(callback: (text: string) => Promise<void>) {
+export interface CommitSummary {
+	readonly commitMessages: readonly string[];
+	readonly compareUrl: string;
+}
+
+export function startListenWebsiteStalkerWebhook(callback: (summary: CommitSummary) => Promise<void>) {
 	const secret = process.env['WEBSITE_STALKER_WEBHOOK_SECRET']
 	if (!secret) {
 		console.log('WEBSITE_STALKER_WEBHOOK_SECRET is not set. webserver is not started.')
@@ -32,22 +36,15 @@ export function startListenWebsiteStalkerWebhook(callback: (text: string) => Pro
 			return
 		}
 
-		const text = textFromPayload(payload)
+		const commitMessages = payload.commits.map(o => o.message.replace(/\n\n+/g, '\n').trim())
+
 		try {
-			await callback(text)
+			await callback({
+				commitMessages,
+				compareUrl: payload.compare,
+			})
 		} catch (error: unknown) {
 			console.error('study-website-stalker callback ERROR', error)
 		}
 	})
-}
-
-function textFromPayload(payload: PushEvent) {
-	let text = 'Es gab Webseitenänderungen:\n\n'
-
-	const messages = payload.commits.map(o => o.message.replace(/\n\n+/g, '\n').trim())
-	text += messages.join('\n\n')
-
-	text += '\n\n'
-	text += `Kompletter Diff:\n${payload.compare}`
-	return text
 }
