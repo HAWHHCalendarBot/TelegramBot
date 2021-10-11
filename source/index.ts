@@ -1,6 +1,6 @@
 import {Bot, session} from 'grammy'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
-import {html as format} from 'telegram-format/dist/source'
+import {html as format} from 'telegram-format'
 import {I18n} from '@grammyjs/i18n'
 
 import {Chatconfig} from './lib/chatconfig.js'
