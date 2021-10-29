@@ -1,7 +1,7 @@
 import {promises as fsPromises} from 'node:fs'
 
 import {Api, MiddlewareFn} from 'grammy'
-import {User} from 'grammy/out/platform'
+import {User} from '@grammyjs/types'
 import stringify from 'json-stable-stringify'
 
 import {MyContext, OtherSendMessage, Userconfig} from './types.js'
