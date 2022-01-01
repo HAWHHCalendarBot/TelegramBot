@@ -28,7 +28,7 @@
 		"@grammyjs/stateless-question": "^3.0.0",
 		"@octokit/webhooks": "^9.15.0",
 		"array-filter-unique": "^2.1.0",
-		"got": "^11.5.2",
+		"got": "^12.0.0",
 		"grammy": "^1.3.4",
 		"grammy-inline-menu": "^7.0.0",
 		"json-stable-stringify": "^1.0.1",
