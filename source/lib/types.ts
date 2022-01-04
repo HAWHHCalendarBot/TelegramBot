@@ -38,8 +38,9 @@ export interface Userconfig {
 	events: Record<string, EventDetails>;
 	mensa: MensaSettings;
 	removedEvents?: RemovedEventsDisplayStyle;
-	/** @deprecated use websiteStalkerUpdate instead */
+	/** @deprecated use channel https://t.me/HAWHHWebsiteStalker instead */
 	stisysUpdate?: boolean;
+	/** @deprecated use channel https://t.me/HAWHHWebsiteStalker instead */
 	websiteStalkerUpdate?: true;
 }
 

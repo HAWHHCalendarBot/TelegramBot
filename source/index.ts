@@ -1,11 +1,9 @@
 import {Bot, session} from 'grammy'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
-import {html as format} from 'telegram-format'
 import {I18n} from '@grammyjs/i18n'
 
 import {Chatconfig} from './lib/chatconfig.js'
 import {MyContext, Session} from './lib/types.js'
-import {startListenWebsiteStalkerWebhook} from './lib/study-website-stalker.js'
 
 import {bot as migrateStuffBot} from './migrate-stuff.js'
 
@@ -93,26 +91,6 @@ async function startup() {
 		{command: 'mensa', description: 'zeige das heutige Mensaessen deiner Mensa'},
 		{command: 'settings', description: 'setze Einstellungen des Bots'},
 	])
-
-	startListenWebsiteStalkerWebhook(async summary => {
-		let text = ''
-		text += 'Es gab Webseitenänderungen:'
-		text += '\n\n'
-		text += summary.commitMessages.map(o => format.escape(o)).join('\n\n')
-		text += '\n\n'
-		text += format.url('Kompletter Diff', summary.compareUrl)
-
-		await chatconfig.broadcast(
-			bot.api,
-			text,
-			{
-				disable_web_page_preview: true,
-				parse_mode: format.parse_mode,
-				reply_markup: {remove_keyboard: true},
-			},
-			user => Boolean(user.config.websiteStalkerUpdate) || Boolean(user.config.stisysUpdate),
-		)
-	})
 
 	await bot.start({
 		onStart: botInfo => {

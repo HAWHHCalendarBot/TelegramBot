@@ -22,7 +22,6 @@ RUN apk upgrade --no-cache \
 
 WORKDIR /app
 ENV TZ=Europe/Berlin
-EXPOSE 3000
 VOLUME /app/eventfiles
 VOLUME /app/mensa-data
 VOLUME /app/userconfig

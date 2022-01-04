@@ -29,8 +29,8 @@ bot.use(async (ctx, next) => {
 		ctx.userconfig.mine.events = map
 	}
 
-	if (ctx.userconfig.mine.stisysUpdate) {
-		ctx.userconfig.mine.websiteStalkerUpdate = true
+	if (ctx.userconfig.mine.websiteStalkerUpdate || ctx.userconfig.mine.stisysUpdate) {
+		await ctx.reply('Das beobachten von StISys ist nicht mehr Teil dieses Bots und wurde in den Channel @HAWHHWebsiteStalker verlagert.')
 	}
 
 	if (!ctx.userconfig.mine.mensa) {
@@ -64,6 +64,7 @@ bot.use(async (ctx, next) => {
 	delete (ctx as any).userconfig.mine.settings
 	delete (ctx as any).userconfig.mine.showRemovedEvents
 	delete (ctx as any).userconfig.mine.stisysUpdate
+	delete (ctx as any).userconfig.mine.websiteStalkerUpdate
 
 	return next()
 })
