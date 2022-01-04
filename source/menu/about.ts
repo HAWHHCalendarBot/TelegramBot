@@ -12,7 +12,8 @@ async function menuBody(context: MyContext): Promise<Body> {
 	const userIds = await context.userconfig.allIds()
 	const userCount = userIds.length
 
-	const canteenCount = (await getCanteenList()).length
+	const canteens = await getCanteenList()
+	const canteenCount = canteens.length
 	const eventCount = await allEvents.count()
 
 	const websiteLink = format.url('calendarbot.hawhh.de', 'https://calendarbot.hawhh.de')
