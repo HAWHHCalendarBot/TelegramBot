@@ -34,7 +34,7 @@ function monthText(context: MyContext): string {
 dayMenu.select('', DAY_OPTIONS, {
 	columns: 7,
 	isSet: (context, date) => getCurrent(context).getDate() === Number(date),
-	set: async (context, date) => {
+	async set(context, date) {
 		const current = getCurrent(context)
 		current.setDate(Number(date))
 		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
@@ -45,7 +45,7 @@ dayMenu.select('', DAY_OPTIONS, {
 monthMenu.select('', generateMonthOptions(), {
 	columns: 2,
 	isSet: (context, month) => getCurrent(context).getMonth() + 1 === Number(month),
-	set: async (context, month) => {
+	async set(context, month) {
 		const current = getCurrent(context)
 		current.setMonth(Number(month) - 1)
 		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
@@ -55,7 +55,7 @@ monthMenu.select('', generateMonthOptions(), {
 
 yearMenu.select('', generateYearOptions(), {
 	isSet: (context, year) => getCurrent(context).getFullYear() === Number(year),
-	set: async (context, year) => {
+	async set(context, year) {
 		const current = getCurrent(context)
 		current.setFullYear(Number(year))
 		context.session.generateChange!.date = formatDateToStoredChangeDate(current)

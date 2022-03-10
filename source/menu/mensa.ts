@@ -126,7 +126,7 @@ function mensaSelectOption(context: MyContext): string[] {
 menu.select('t', daySelectOptions, {
 	columns: 3,
 	isSet: (context, key) => dateEqual(getCurrentSettings(context).date, parseDateString(key)),
-	set: (context, key) => {
+	set(context, key) {
 		if (!context.session.mensa) {
 			context.session.mensa = {}
 		}
@@ -140,7 +140,7 @@ menu.select('t', daySelectOptions, {
 menu.choose('m', mensaSelectOption, {
 	columns: 1,
 	buttonText: (_, key) => '🍽 ' + key,
-	do: (context, key) => {
+	do(context, key) {
 		if (!context.session.mensa) {
 			context.session.mensa = {}
 		}

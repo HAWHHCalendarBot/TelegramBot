@@ -44,7 +44,7 @@ export const menu = new MenuTemplate<MyContext>(menuBody)
 
 menu.select('s', removedEventsOptions, {
 	columns: 1,
-	set: (context, key) => {
+	set(context, key) {
 		context.userconfig.mine.removedEvents = key as RemovedEventsDisplayStyle
 		return true
 	},

@@ -22,7 +22,7 @@ const broadcastQuestion = new StatelessQuestion<MyContext>('admin-broadcast', as
 bot.use(broadcastQuestion.middleware())
 
 menu.interact(broadcastButtonText, 'set', {
-	do: async (context, path) => {
+	async do(context, path) {
 		await broadcastQuestion.replyWithMarkdown(context, 'Hey admin! Was willst du broadcasten?', getMenuOfPath(path))
 		return false
 	},
@@ -30,7 +30,7 @@ menu.interact(broadcastButtonText, 'set', {
 
 menu.interact('📤 Versende Broadcast', 'send', {
 	hide: context => !context.session.adminBroadcast,
-	do: async context => {
+	async do(context) {
 		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		handleOngoingBroadcast(context, context.session.adminBroadcast!)
 

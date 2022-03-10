@@ -33,7 +33,7 @@ function menuBody(context: MyContext, path: string): Body {
 		text += '✏️'
 		text += 'Änderungen'
 		text += ': '
-		text += changes
+		text += String(changes)
 		text += '\n'
 	}
 
@@ -68,7 +68,7 @@ const alertMenu = new MenuTemplate<MyContext>((_, path) => {
 })
 
 alertMenu.interact('🔕 Garnicht', 'nope', {
-	do: (context, path) => {
+	do(context, path) {
 		const name = getNameFromPath(path)
 		delete context.userconfig.mine.events[name]!.alertMinutesBefore
 		return '..'
@@ -89,7 +89,7 @@ const alertChoices = {
 
 alertMenu.choose('t', alertChoices, {
 	columns: 3,
-	do: (context, key) => {
+	do(context, key) {
 		if (!context.callbackQuery?.data) {
 			throw new Error('how?')
 		}
@@ -119,7 +119,7 @@ const noteQuestion = new StatelessQuestion<MyContext>('event-notes', async (cont
 bot.use(noteQuestion.middleware())
 
 menu.interact('🗒 Schreibe Notiz', 'set-notes', {
-	do: async (context, path) => {
+	async do(context, path) {
 		const name = getNameFromPath(path)
 		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${format.escape(name)} stehen haben?`
 		await noteQuestion.replyWithHTML(context, text, getMenuOfPath(path))
@@ -130,11 +130,11 @@ menu.interact('🗒 Schreibe Notiz', 'set-notes', {
 
 menu.interact('Notiz löschen', 'remove-notes', {
 	joinLastRow: true,
-	hide: (context, path) => {
+	hide(context, path) {
 		const name = getNameFromPath(path)
 		return !context.userconfig.mine.events[name]!.notes
 	},
-	do: (context, path) => {
+	do(context, path) {
 		const name = getNameFromPath(path)
 		delete context.userconfig.mine.events[name]!.notes
 		return true
@@ -148,7 +148,7 @@ function removeBody(context: MyContext): Body {
 
 const removeMenu = new MenuTemplate<MyContext>(removeBody)
 removeMenu.interact('Ja ich will!', 'y', {
-	do: async context => {
+	async do(context) {
 		const event = context.match![1]!.replace(/;/, '/')
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		delete context.userconfig.mine.events[event]

@@ -60,7 +60,7 @@ const question = new StatelessQuestion<MyContext>('admin-user-filter', async (co
 bot.use(question.middleware())
 
 menu.interact(filterButtonText(context => context.session.adminuserquicklookfilter), 'filter', {
-	do: async (context, path) => {
+	async do(context, path) {
 		await question.replyWithMarkdown(context, 'Wonach möchtest du die Nutzer filtern?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
@@ -70,7 +70,7 @@ menu.interact(filterButtonText(context => context.session.adminuserquicklookfilt
 menu.interact('Filter aufheben', 'filter-clear', {
 	joinLastRow: true,
 	hide: context => (context.session.adminuserquicklookfilter ?? DEFAULT_FILTER) === DEFAULT_FILTER,
-	do: context => {
+	do(context) {
 		delete context.session.adminuserquicklookfilter
 		delete context.session.adminuserquicklook
 		return true
@@ -103,12 +103,12 @@ menu.select('u', userOptions, {
 	maxRows: 5,
 	columns: 2,
 	isSet: (context, selected) => context.session.adminuserquicklook === Number(selected),
-	set: async (context, selected) => {
+	async set(context, selected) {
 		context.session.adminuserquicklook = Number(selected)
 		return true
 	},
 	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
+	setPage(context, page) {
 		context.session.page = page
 	},
 })

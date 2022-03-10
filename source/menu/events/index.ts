@@ -53,11 +53,11 @@ bot.use(addMenu.bot)
 bot.use(detailsMenu.bot)
 
 menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
-	hide: async context => {
+	async hide(context) {
 		const nonExisting = await allEvents.nonExisting(Object.keys(context.userconfig.mine.events))
 		return nonExisting.length === 0
 	},
-	do: async context => {
+	async do(context) {
 		const nonExisting = new Set(await allEvents.nonExisting(Object.keys(context.userconfig.mine.events)))
 		for (const name of nonExisting) {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -102,7 +102,7 @@ function getEventOptions(context: MyContext): Record<string, string> {
 menu.chooseIntoSubmenu('d', getEventOptions, detailsMenu.menu, {
 	columns: 1,
 	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
+	setPage(context, page) {
 		context.session.page = page
 	},
 })

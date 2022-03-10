@@ -27,13 +27,13 @@ export const menu = new MenuTemplate<MyContext>(context => {
 })
 
 menu.switchToChat('Teilen…', context => generateShortChangeText(getChangeFromContext(context)!), {
-	hide: context => {
+	hide(context) {
 		const change = getChangeFromContext(context)
 		return !change
 	},
 })
 menu.interact('⚠️ Änderung entfernen', 'r', {
-	do: async context => {
+	async do(context) {
 		const change = getChangeFromContext(context)
 		context.userconfig.mine.changes = context.userconfig.mine.changes
 			.filter(o => o.name !== change?.name || o.date !== change?.date)

@@ -54,7 +54,7 @@ const question = new StatelessQuestion<MyContext>('events-add-filter', async (co
 bot.use(question.middleware())
 
 menu.interact(filterButtonText(context => context.session.eventfilter), 'filter', {
-	do: async (context, path) => {
+	async do(context, path) {
 		await question.replyWithMarkdown(context, 'Wonach möchtest du die Veranstaltungen filtern?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
@@ -64,7 +64,7 @@ menu.interact(filterButtonText(context => context.session.eventfilter), 'filter'
 menu.interact('Filter aufheben', 'filter-clear', {
 	joinLastRow: true,
 	hide: context => (context.session.eventfilter ?? DEFAULT_FILTER) === DEFAULT_FILTER,
-	do: context => {
+	do(context) {
 		delete context.session.eventfilter
 		return true
 	},
@@ -87,7 +87,7 @@ async function eventOptions(context: MyContext): Promise<Record<string, string>>
 menu.choose('a', eventOptions, {
 	maxRows: MAX_RESULT_ROWS,
 	columns: RESULT_COLUMNS,
-	do: async (context, key) => {
+	async do(context, key) {
 		const event = key.replace(/;/g, '/')
 		const isExisting = await allEventsExists(event)
 		const isAlreadyInCalendar = Object.keys(context.userconfig.mine.events)
@@ -108,7 +108,7 @@ menu.choose('a', eventOptions, {
 		return true
 	},
 	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
+	setPage(context, page) {
 		context.session.page = page
 	},
 })

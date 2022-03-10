@@ -19,7 +19,7 @@ menu.submenu('➕ Änderung hinzufügen', 'a', changeAdd.menu)
 menu.chooseIntoSubmenu('d', getChangesOptions, changeDetails.menu, {
 	columns: 1,
 	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
+	setPage(context, page) {
 		context.session.page = page
 	},
 })

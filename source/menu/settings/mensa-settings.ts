@@ -38,7 +38,7 @@ const mainMensaMenu = new MenuTemplate<MyContext>({text: '*Mensa Einstellungen*\
 menu.submenu(mainMensaButtonText, 'main', mainMensaMenu)
 mainMensaMenu.select('set', getCanteenList, {
 	columns: 1,
-	set: (context, mensa) => {
+	set(context, mensa) {
 		const oldMain = context.userconfig.mine.mensa.main
 		context.userconfig.mine.mensa.main = mensa
 		if (context.userconfig.mine.mensa.more) {
@@ -57,7 +57,7 @@ mainMensaMenu.select('set', getCanteenList, {
 	},
 	isSet: (context, mensa) => mensa === context.userconfig.mine.mensa.main,
 	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
+	setPage(context, page) {
 		context.session.page = page
 	},
 })
@@ -86,7 +86,7 @@ menu.submenu(moreMensaButtonText, 'more', moreMenu, {
 moreMenu.select('more', getCanteenList, {
 	columns: 1,
 	isSet: (context, mensa) => isAdditionalMensa(context, mensa),
-	set: async (context, mensa) => {
+	async set(context, mensa) {
 		if (context.userconfig.mine.mensa.main === mensa) {
 			await context.answerCallbackQuery({text: mensa + ' ist bereits deine Hauptmensa'})
 			return false
@@ -103,7 +103,7 @@ moreMenu.select('more', getCanteenList, {
 
 		return true
 	},
-	formatState: (context, mensa, state) => {
+	formatState(context, mensa, state) {
 		if (context.userconfig.mine.mensa.main === mensa) {
 			return '🍽 ' + mensa
 		}
@@ -111,7 +111,7 @@ moreMenu.select('more', getCanteenList, {
 		return enabledEmoji(state) + ' ' + mensa
 	},
 	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
+	setPage(context, page) {
 		context.session.page = page
 	},
 })
@@ -124,7 +124,7 @@ const priceOptions = {
 }
 
 menu.select('price', priceOptions, {
-	set: (context, price) => {
+	set(context, price) {
 		context.userconfig.mine.mensa.price = price as MensaPriceClass
 		return true
 	},
@@ -188,7 +188,7 @@ function specialWishOptions(context: MyContext): Record<string, string> {
 specialWishMenu.select('w', specialWishOptions, {
 	columns: 1,
 	isSet: (context, wish) => Boolean(context.userconfig.mine.mensa[wish as keyof MealWishes]),
-	set: (context, wish, newState) => {
+	set(context, wish, newState) {
 		if (newState) {
 			context.userconfig.mine.mensa[wish as keyof MealWishes] = true
 		} else {
@@ -200,7 +200,7 @@ specialWishMenu.select('w', specialWishOptions, {
 	},
 })
 specialWishMenu.interact('warm… nicht versalzen… kein Spüli…', 'warm', {
-	do: async context => {
+	async do(context) {
 		await context.answerCallbackQuery({text: 'das wär mal was… 😈'})
 		return false
 	},
@@ -209,7 +209,7 @@ specialWishMenu.interact('warm… nicht versalzen… kein Spüli…', 'warm', {
 specialWishMenu.manualRow(backMainButtons)
 
 menu.toggle('zeige Inhaltsstoffe', 'showAdditives', {
-	set: (context, newState) => {
+	set(context, newState) {
 		if (newState) {
 			context.userconfig.mine.mensa.showAdditives = true
 		} else {

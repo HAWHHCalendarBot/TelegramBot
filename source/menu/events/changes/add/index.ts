@@ -82,7 +82,7 @@ function generationDataIsValid(context: MyContext): boolean {
 
 menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 	hide: hidePickDateStep,
-	do: context => {
+	do(context) {
 		// Set everything that has to be set to be valid.
 		// When the user dont like the data they can change it but they are not able to create invalid data.
 		context.session.generateChange!.add = true
@@ -122,22 +122,22 @@ async function possibleTimesToCreateChangeToOptions(context: MyContext): Promise
 menu.choose('date', possibleTimesToCreateChangeToOptions, {
 	columns: 2,
 	hide: hidePickDateStep,
-	do: (context, key) => {
+	do(context, key) {
 		context.session.generateChange!.date = key
 		return true
 	},
 	getCurrentPage: context => context.session.page,
-	setPage: (context, page) => {
+	setPage(context, page) {
 		context.session.page = page
 	},
 })
 
 menu.interact('🚫 Entfällt', 'remove', {
-	do: async context => {
+	async do(context) {
 		context.session.generateChange!.remove = true
 		return finish(context)
 	},
-	hide: context => {
+	hide(context) {
 		if (hideGenerateChangeStep(context)) {
 			return true
 		}
@@ -179,7 +179,7 @@ function questionButtonText(property: 'namesuffix' | 'room', emoji: string, fall
 
 menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuffix', {
 	hide: hideGenerateChangeStep,
-	do: async (context, path) => {
+	async do(context, path) {
 		await namesuffixQuestion.replyWithMarkdown(context, 'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
@@ -188,7 +188,7 @@ menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuf
 
 menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
 	hide: hideGenerateChangeStep,
-	do: async (context, path) => {
+	async do(context, path) {
 		await roomQuestion.replyWithMarkdown(context, 'In welchen Raum wurde der Termin verschoben?', getMenuOfPath(path))
 		await deleteMenuFromContext(context)
 		return false
@@ -235,7 +235,7 @@ async function finish(context: MyContext): Promise<string | boolean> {
 
 menu.interact('🛑 Abbrechen', 'abort', {
 	joinLastRow: true,
-	do: context => {
+	do(context) {
 		delete context.session.generateChange
 		return '..'
 	},

@@ -27,7 +27,7 @@ function createTimeSelectionSubmenuButton(menu: MenuTemplate<MyContext>, time: '
 	subMenu.select('h', HOUR_OPTIONS, {
 		columns: 3,
 		isSet: (context, key) => Number(context.session.generateChange![time]?.split(':')[0]) === Number(key),
-		set: (context, key) => {
+		set(context, key) {
 			const {minute} = getCurrent(context, time)
 			context.session.generateChange![time] = formatTime(key, minute)
 			return true
@@ -38,7 +38,7 @@ function createTimeSelectionSubmenuButton(menu: MenuTemplate<MyContext>, time: '
 		columns: 4,
 		buttonText: (_, number) => ':' + numberToTwoDigit(number),
 		isSet: (context, key) => Number(context.session.generateChange![time]?.split(':')[1]) === Number(key),
-		set: (context, key) => {
+		set(context, key) {
 			const {hour} = getCurrent(context, time)
 			context.session.generateChange![time] = formatTime(hour, key)
 			return true

@@ -54,7 +54,7 @@ export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
 menu.interact('Generieren…', 'g', {
-	do: async context => {
+	async do(context) {
 		// 10^8 -> 10 ** 8
 		const fromTime = Date.now() % (10 ** 8)
 		await setSuffix(context, String(fromTime))
@@ -73,7 +73,7 @@ const manualSuffixQuestion = new StatelessQuestion<MyContext>('subscribe-suffix-
 bot.use(manualSuffixQuestion.middleware())
 
 menu.interact('Manuell setzen…', 's', {
-	do: async (context, path) => {
+	async do(context, path) {
 		await manualSuffixQuestion.replyWithMarkdown(
 			context,
 			`Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeichen werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`,

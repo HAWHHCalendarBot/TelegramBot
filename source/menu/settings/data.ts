@@ -74,7 +74,7 @@ bot.use(deleteAllQuestion.middleware())
 
 menu.interact('⚠️ Alles löschen ⚠️', 'delete-all', {
 	hide: async context => !(await getActualUserconfigContent(context)),
-	do: async (context, path) => {
+	async do(context, path) {
 		await deleteAllQuestion.replyWithMarkdown(context, deleteQuestion, getMenuOfPath(path))
 		return false
 	},
