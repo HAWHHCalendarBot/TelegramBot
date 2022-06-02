@@ -67,6 +67,6 @@ function menuBody(time: 'starttime' | 'endtime'): string {
 function getCurrent(context: MyContext, time: 'starttime' | 'endtime'): {hour: number; minute: number} {
 	const current = context.session.generateChange![time]
 	const fallback = time === 'starttime' ? '8:00' : '16:00'
-	const [hour, minute] = (current ?? fallback).split(':').map(o => Number(o))
+	const [hour, minute] = (current ?? fallback).split(':').map(Number)
 	return {hour: hour!, minute: minute!}
 }

@@ -104,7 +104,7 @@ export class Chatconfig {
 		const files = await fsPromises.readdir(this.folder)
 		const ids = files
 			.map(s => s.replace('.json', ''))
-			.map(o => Number(o))
+			.map(Number)
 		return ids
 	}
 

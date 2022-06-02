@@ -120,6 +120,7 @@ function mensaSelectOption(context: MyContext): string[] {
 	const {main, more} = context.userconfig.mine.mensa
 	return [main, ...(more ?? [])]
 		.filter(o => o !== current)
+		// eslint-disable-next-line unicorn/prefer-native-coercion-functions
 		.filter((o): o is string => Boolean(o))
 }
 
