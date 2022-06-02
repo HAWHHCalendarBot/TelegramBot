@@ -36,7 +36,7 @@
 	},
 	"devDependencies": {
 		"@grammyjs/types": "^2.2.6",
-		"@sindresorhus/tsconfig": "^2.0.0",
+		"@sindresorhus/tsconfig": "^3.0.1",
 		"@types/json-stable-stringify": "^1.0.32",
 		"@types/node": "^16.9.6",
 		"ava": "^4.0.0",
