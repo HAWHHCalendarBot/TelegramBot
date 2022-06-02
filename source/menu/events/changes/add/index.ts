@@ -1,6 +1,6 @@
+import {arrayFilterUnique} from 'array-filter-unique'
 import {Composer} from 'grammy'
 import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext, getMenuOfPath} from 'grammy-inline-menu'
-import arrayFilterUnique from 'array-filter-unique'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
