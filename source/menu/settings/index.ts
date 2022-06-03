@@ -25,9 +25,9 @@ websiteStalkerMenu.url('Telegram Channel', 'https://t.me/HAWHHWebsiteStalker')
 websiteStalkerMenu.url('GitHub Repository', 'https://github.com/HAWHHCalendarBot/study-website-stalker')
 websiteStalkerMenu.manualRow(backMainButtons)
 
-menu.submenu('🍽 Mensa', 'm', mensaSettingsMenu)
+menu.submenu('⚙️🍽 Mensa', 'm', mensaSettingsMenu)
 
-menu.submenu('✏️ Anzeigeart entfernter Termine', 'showRemoved', removedStyleMenu)
+menu.submenu('⚙️✏️ Anzeigeart entfernter Termine', 'showRemoved', removedStyleMenu)
 
 menu.submenu('💾 Gespeicherte Daten über dich', 'data', dataMenu)
 
