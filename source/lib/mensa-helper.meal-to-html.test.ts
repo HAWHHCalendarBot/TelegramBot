@@ -41,7 +41,6 @@ test('example guest without Additives', t => {
 test('example student with Additives', t => {
 	let expected = '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)'
 	expected += '\n2,45 € vegetarisch'
-	expected += '\nLa: Milch/-erzeugnisse (einschl. Laktose)'
 	const result = mealToHtml(example, 'student', true)
 	t.is(result, expected)
 })

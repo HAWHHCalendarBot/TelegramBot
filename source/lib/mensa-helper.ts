@@ -1,3 +1,4 @@
+import {arrayFilterUnique} from 'array-filter-unique'
 import {Meal} from './meal.js'
 import {MealWishes, MensaPriceClass, MensaSettings} from './types.js'
 
@@ -33,7 +34,17 @@ export function generateMealText(meals: readonly Meal[], mensaSettings: Readonly
 		return hintText + '\nDie Mensa hat heute nichts für dich.'
 	}
 
-	return hintText + '\n' + mealTexts.join('\n\n')
+	let text = ''
+	text += hintText
+	text += '\n'
+	text += mealTexts.join('\n\n')
+
+	if (mensaSettings.showAdditives) {
+		text += '\n\n'
+		text += mealAdditivesToHtml(filtered)
+	}
+
+	return text
 }
 
 export function mealNameToHtml(name: string, showAdditives: boolean | undefined): string {
@@ -45,6 +56,16 @@ export function mealNameToHtml(name: string, showAdditives: boolean | undefined)
 
 	const fullName = `<b>${parsedName}</b>`
 	return fullName.replace(/<b><\/b>/g, '')
+}
+
+export function mealAdditivesToHtml(meals: readonly Meal[]): string {
+	return meals
+		.flatMap(meal =>
+			Object.entries(meal.Additives).map(([short, full]) => `${short}: ${full}`),
+		)
+		.sort()
+		.filter(arrayFilterUnique())
+		.join('\n')
 }
 
 export function mealToHtml(meal: Meal, priceClass: MensaPriceClass | undefined, showAdditives: boolean | undefined): string {
@@ -92,12 +113,6 @@ export function mealToHtml(meal: Meal, priceClass: MensaPriceClass | undefined, 
 
 	if (infos.length > 0) {
 		text += ' ' + infos.join(' ')
-	}
-
-	if (showAdditives) {
-		for (const [short, full] of Object.entries(meal.Additives)) {
-			text += `\n${short}: ${full}`
-		}
 	}
 
 	return text
