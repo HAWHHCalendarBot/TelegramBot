@@ -73,21 +73,21 @@ test('has meal', t => {
 	t.regex(result, /Gurkensalat/)
 })
 
-test('even amount of markdown bold markers without showAdditives', t => {
+test('even amount of bold markers without showAdditives', t => {
 	const result = generateMealText([example], {
 		showAdditives: false,
 	})
 	t.log(result)
-	const occurrences = result.match(/\*/g)?.length
+	const occurrences = result.match(/<\/?b>/g)?.length
 	t.is(occurrences, 2)
 })
 
-test('even amount of markdown bold markers with showAdditives', t => {
+test('even amount of bold markers with showAdditives', t => {
 	const result = generateMealText([example], {
 		showAdditives: true,
 	})
 	t.log(result)
-	const occurrences = result.match(/\*/g)?.length
+	const occurrences = result.match(/<\/?b>/g)?.length
 	t.is(occurrences, 4)
 })
 
@@ -97,7 +97,7 @@ test('Name without showAdditives', t => {
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '*4 Röstiecken, Kräuterquark, Gurkensalat*')
+	t.is(lines[0], '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>')
 })
 
 test('Name with showAdditives', t => {
@@ -106,7 +106,7 @@ test('Name with showAdditives', t => {
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '*4 Röstiecken, Kräuterquark* (La), *Gurkensalat* (La)')
+	t.is(lines[0], '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)')
 })
 
 test('Name with brackets without showAdditives', t => {
@@ -115,7 +115,7 @@ test('Name with brackets without showAdditives', t => {
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '*Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne, Kartoffeltwister*')
+	t.is(lines[0], '<b>Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne, Kartoffeltwister</b>')
 })
 
 test('Name with brackets with showAdditives', t => {
@@ -124,5 +124,5 @@ test('Name with brackets with showAdditives', t => {
 	}).trim()
 	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '*Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne* (1, 2, Gl, Ei, La), *Kartoffeltwister* (Gl)')
+	t.is(lines[0], '<b>Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne</b> (1, 2, Gl, Ei, La), <b>Kartoffeltwister</b> (Gl)')
 })

@@ -2,7 +2,7 @@ import test from 'ava'
 
 import {Meal} from './meal.js'
 
-import {mealToMarkdown} from './mensa-helper.js'
+import {mealToHtml} from './mensa-helper.js'
 
 const example: Meal = {
 	Additives: {
@@ -25,23 +25,23 @@ const example: Meal = {
 }
 
 test('example student without Additives', t => {
-	let expected = '*4 Röstiecken, Kräuterquark, Gurkensalat*'
+	let expected = '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>'
 	expected += '\n2,45 € vegetarisch'
-	const result = mealToMarkdown(example, 'student', false)
+	const result = mealToHtml(example, 'student', false)
 	t.is(result, expected)
 })
 
 test('example guest without Additives', t => {
-	let expected = '*4 Röstiecken, Kräuterquark, Gurkensalat*'
+	let expected = '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>'
 	expected += '\n4,70 € vegetarisch'
-	const result = mealToMarkdown(example, 'guest', false)
+	const result = mealToHtml(example, 'guest', false)
 	t.is(result, expected)
 })
 
-test('exmaple student with Additives', t => {
-	let expected = '*4 Röstiecken, Kräuterquark* (La), *Gurkensalat* (La)'
+test('example student with Additives', t => {
+	let expected = '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)'
 	expected += '\n2,45 € vegetarisch'
 	expected += '\nLa: Milch/-erzeugnisse (einschl. Laktose)'
-	const result = mealToMarkdown(example, 'student', true)
+	const result = mealToHtml(example, 'student', true)
 	t.is(result, expected)
 })

@@ -69,7 +69,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	const weekday = weekdays[date.getDay()]!
 	const {year, month, day} = getYearMonthDay(date)
 	let text = ''
-	text += `Mensa *${mensa}*`
+	text += `Mensa <b>${mensa}</b>`
 	text += '\n'
 	text += `${weekday} ${day}.${month}.${year}`
 	text += '\n'
@@ -77,7 +77,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	const meals = await getMealsOfDay(mensa, year, month, day)
 	text += generateMealText(meals, mensaSettings)
 
-	return {text, parse_mode: 'Markdown'}
+	return {text, parse_mode: 'HTML'}
 }
 
 function parseDateString(actionCode: string): Readonly<Date> {

@@ -20,7 +20,7 @@ export function generateMealText(meals: readonly Meal[], mensaSettings: Readonly
 	const hints = []
 
 	const filtered = filterMeals(meals, mensaSettings)
-	const mealTexts = filtered.map(m => mealToMarkdown(m, mensaSettings.price, mensaSettings.showAdditives))
+	const mealTexts = filtered.map(m => mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives))
 
 	if (meals.length !== filtered.length) {
 		hints.push('⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.')
@@ -36,19 +36,19 @@ export function generateMealText(meals: readonly Meal[], mensaSettings: Readonly
 	return hintText + '\n' + mealTexts.join('\n\n')
 }
 
-export function mealToMarkdown(meal: Meal, priceClass: MensaPriceClass | undefined, showAdditives: boolean | undefined): string {
+export function mealToHtml(meal: Meal, priceClass: MensaPriceClass | undefined, showAdditives: boolean | undefined): string {
 	const parsedName = meal.Name
 	// Remove / un-bold additives at the end
-		.replace(/ \(([\d\w, ]+)\)$/g, showAdditives ? '* ($1)' : '')
+		.replace(/ \(([\d\w, ]+)\)$/g, showAdditives ? '</b> ($1)' : '')
 	// Remove / un-bold additives within the name
-		.replace(/ \(([\d\w, ]+)\), /g, showAdditives ? '* ($1), *' : ', ')
-	// When not ) at the end, end with *
-		.replace(/[^)]$/, '$&*')
+		.replace(/ \(([\d\w, ]+)\), /g, showAdditives ? '</b> ($1), <b>' : ', ')
+	// When not ) at the end, end with un-bold
+		.replace(/[^)]$/, '$&</b>')
 
 	const price = priceClass === 'student' ? meal.PriceStudent : (priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest)
 	const priceString = price.toLocaleString('de-DE', {minimumFractionDigits: 2}).replace('.', ',')
 
-	let text = `*${parsedName}\n`
+	let text = `<b>${parsedName}\n`
 	text += `${priceString} €`
 
 	const infos = []
