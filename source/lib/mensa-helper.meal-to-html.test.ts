@@ -2,7 +2,7 @@ import test from 'ava'
 
 import {Meal} from './meal.js'
 
-import {mealToHtml} from './mensa-helper.js'
+import {mealToHtml, mealNameToHtml} from './mensa-helper.js'
 
 const example: Meal = {
 	Additives: {
@@ -43,5 +43,17 @@ test('example student with Additives', t => {
 	expected += '\n2,45 € vegetarisch'
 	expected += '\nLa: Milch/-erzeugnisse (einschl. Laktose)'
 	const result = mealToHtml(example, 'student', true)
+	t.is(result, expected)
+})
+
+test('example name with end bracket without Additives', t => {
+	const expected = '<b>Soja Bolognese mit Gemüse, bunte Fusilli (VEGAN)</b>'
+	const result = mealNameToHtml('Soja Bolognese mit Gemüse (So,Sl), bunte Fusilli (VEGAN) (Gl)', false)
+	t.is(result, expected)
+})
+
+test('example name with end bracket with Additives', t => {
+	const expected = '<b>Soja Bolognese mit Gemüse</b> (So,Sl), <b>bunte Fusilli (VEGAN)</b> (Gl)'
+	const result = mealNameToHtml('Soja Bolognese mit Gemüse (So,Sl), bunte Fusilli (VEGAN) (Gl)', true)
 	t.is(result, expected)
 })
