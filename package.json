@@ -24,8 +24,9 @@
 		"node": ">=16"
 	},
 	"dependencies": {
-		"@grammyjs/i18n": "^0.5.0",
+		"@grammyjs/fluent": "^1.0.3",
 		"@grammyjs/stateless-question": "^3.0.0",
+		"@moebius/fluent": "^1.1.0",
 		"array-filter-unique": "^3.0.0",
 		"got": "^12.0.0",
 		"grammy": "^1.3.4",
@@ -49,11 +50,7 @@
 		"rules": {
 			"@typescript-eslint/naming-convention": "off",
 			"ava/no-ignored-test-files": "off",
-			"node/prefer-global/process": "off",
-			"import/extensions": [
-				"error",
-				"ignorePackages"
-			]
+			"node/prefer-global/process": "off"
 		}
 	}
 }

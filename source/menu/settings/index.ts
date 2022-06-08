@@ -15,7 +15,7 @@ bot.use(dataBot)
 
 function websiteStalkerBody(ctx: MyContext): Body {
 	let text = '*Einstellungen*\nWebsite Stalker\n\n'
-	text += ctx.i18n.t('website-stalker.help').trim()
+	text += ctx.t('website-stalker-help')
 	return {text, parse_mode: 'Markdown'}
 }
 

@@ -61,8 +61,7 @@ const deleteAllQuestion = new StatelessQuestion<MyContext>('delete-everything', 
 	if ('text' in context.message && context.message.text === deleteConfirmString) {
 		// @ts-expect-error delete readonly
 		delete context.userconfig.mine
-		// @ts-expect-error write readonly
-		context.session = {}
+		context.session = undefined
 		await context.reply('Deine Daten werden gelöscht…')
 	} else {
 		await context.reply('Du hast mir aber einen Schrecken eingejagt! 🙀')

@@ -1,5 +1,5 @@
-import {Api, Context as BaseContext} from 'grammy'
-import {I18nContext} from '@grammyjs/i18n'
+import {Api, Context as BaseContext, SessionFlavor} from 'grammy'
+import {FluentContextFlavor} from '@grammyjs/fluent'
 
 import {ContextProperty} from './chatconfig.js'
 
@@ -10,13 +10,10 @@ export function unreachable(unreachable: never): never {
 export type OtherSendMessage = Parameters<Api['sendMessage']>[2]
 
 export interface ContextFlavour {
-	readonly i18n: I18nContext;
-	readonly match: RegExpExecArray | undefined;
-	readonly session: Session;
 	readonly userconfig: ContextProperty;
 }
 
-export type MyContext = BaseContext & ContextFlavour
+export type MyContext = BaseContext & SessionFlavor<Session> & FluentContextFlavor & ContextFlavour
 
 export interface Session {
 	adminBroadcast?: number; // Message ID

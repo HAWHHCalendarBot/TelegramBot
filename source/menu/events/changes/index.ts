@@ -18,15 +18,15 @@ menu.submenu('➕ Änderung hinzufügen', 'a', changeAdd.menu)
 
 menu.chooseIntoSubmenu('d', getChangesOptions, changeDetails.menu, {
 	columns: 1,
-	getCurrentPage: context => context.session.page,
-	setPage(context, page) {
-		context.session.page = page
+	getCurrentPage: ctx => ctx.session.page,
+	setPage(ctx, page) {
+		ctx.session.page = page
 	},
 })
 
-function getChangesOptions(context: MyContext): Record<string, string> {
-	const event = context.match![1]!.replace(/;/, '/')
-	const changes = context.userconfig.mine.changes
+function getChangesOptions(ctx: MyContext): Record<string, string> {
+	const event = ctx.match![1]!.replace(/;/, '/')
+	const changes = ctx.userconfig.mine.changes
 		.filter(o => o.name === event)
 
 	const result: Record<string, string> = {}
@@ -38,15 +38,15 @@ function getChangesOptions(context: MyContext): Record<string, string> {
 	return result
 }
 
-function menuBody(context: MyContext): Body {
-	const event = context.match![1]!.replace(/;/, '/')
+function menuBody(ctx: MyContext): Body {
+	const event = ctx.match![1]!.replace(/;/, '/')
 
 	let text = ''
 	text += format.bold('Veranstaltungsänderungen')
 	text += '\n'
 	text += format.escape(event)
 	text += '\n\n'
-	text += format.escape(context.i18n.t('changes.help'))
+	text += format.escape(ctx.t('changes-help'))
 
 	return {text, parse_mode: format.parse_mode}
 }

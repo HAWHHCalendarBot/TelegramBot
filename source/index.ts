@@ -1,11 +1,12 @@
 import {Bot, session} from 'grammy'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
-import {I18n} from '@grammyjs/i18n'
+import {useFluent} from '@grammyjs/fluent'
 
 import {Chatconfig} from './lib/chatconfig.js'
 import {MyContext, Session} from './lib/types.js'
 
 import {bot as migrateStuffBot} from './migrate-stuff.js'
+import {fluent, loadLocales} from './translation.js'
 
 import * as changesInline from './parts/changes-inline.js'
 import * as easterEggs from './parts/easter-eggs.js'
@@ -21,12 +22,11 @@ if (!token) {
 
 const bot = new Bot<MyContext>(token)
 
-const i18n = new I18n({
-	defaultLanguage: 'de',
-	defaultLanguageOnMissing: true,
-	directory: 'locales',
-})
-bot.use(i18n.middleware())
+bot.use(useFluent({
+	defaultLocale: 'de',
+	fluent,
+	localeNegotiator: ctx => ctx.from?.language_code ?? 'de',
+}))
 
 if (process.env['NODE_ENV'] !== 'production') {
 	bot.use(generateUpdateMiddleware())
@@ -59,16 +59,11 @@ bot.use(async (ctx, next) => {
 	}
 })
 
-bot.use(session())
-bot.use(async (ctx, next) => {
-	if (!ctx.session) {
-		const defaultSession: Session = {}
-		// @ts-expect-error write to readonly
-		ctx.session = defaultSession
-	}
-
-	await next()
-})
+bot.use(session<Session, MyContext>({
+	initial() {
+		return {}
+	},
+}))
 
 const chatconfig = new Chatconfig('userconfig')
 bot.use(chatconfig)
@@ -86,6 +81,8 @@ bot.catch((error: any) => {
 })
 
 async function startup() {
+	await loadLocales()
+
 	await bot.api.setMyCommands([
 		{command: 'start', description: 'öffne das Menü'},
 		{command: 'mensa', description: 'zeige das heutige Mensaessen deiner Mensa'},

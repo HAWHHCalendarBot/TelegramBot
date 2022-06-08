@@ -13,7 +13,7 @@ export const menu = new MenuTemplate<MyContext>(generateBody('overview'))
 bot.use(suffixMenu.bot)
 
 const appleMenu = new MenuTemplate(generateBody('apple'))
-appleMenu.url('Kalender abonnieren', context => `https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(context)}`)
+appleMenu.url('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`)
 appleMenu.manualRow(backMainButtons)
 menu.submenu('🍏 iOS / macOS', 'apple', appleMenu)
 
@@ -30,7 +30,7 @@ googleMenu.navigate('abonnieren mit dem HAW-Mailer (Exchange)', '../exchange/')
 googleMenu.manualRow(backMainButtons)
 
 const freestyleMenu = new MenuTemplate(generateBody('freestyle'))
-freestyleMenu.url('Kalender abonnieren', context => `https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(context)}`)
+freestyleMenu.url('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`)
 freestyleMenu.manualRow(backMainButtons)
 menu.submenu('Freestyle 😎', 'freestyle', freestyleMenu)
 
@@ -38,11 +38,12 @@ menu.submenu('⚙️ URL Privacy', 'suffix', suffixMenu.menu)
 
 menu.manualRow(backMainButtons)
 
-function generateBody(resourceKeySuffix: string): (context: MyContext) => Body {
-	return context => ({
-		parse_mode: 'Markdown',
-		text: context.i18n.t('subscribe.' + resourceKeySuffix, {
-			url: getUrlFromContext(context),
+function generateBody(resourceKeySuffix: string): (ctx: MyContext) => Body {
+	return ctx => ({
+		parse_mode: 'HTML',
+		text: ctx.t('subscribe-' + resourceKeySuffix, {
+			firstname: ctx.from!.first_name,
+			url: getUrlFromContext(ctx),
 		}),
 	})
 }
