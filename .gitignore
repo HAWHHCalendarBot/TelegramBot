@@ -1,12 +1,8 @@
 botfather-settings/userpic.png
 
 # node
-.nyc_output
-/*-*.*.*.tgz
-coverage
 dist
 node_modules
-yarn.lock
 
 # botfiles
 additionalEvents

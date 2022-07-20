@@ -1,6 +1,7 @@
 .*
 *.md
 **/*.test.*
+**/test.*
 botfather-settings
 coverage
 dist
