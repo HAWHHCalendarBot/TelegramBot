@@ -1,7 +1,7 @@
 import {Composer} from 'grammy'
 import {html as format} from 'telegram-format'
 import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'grammy-inline-menu'
-import {User} from '@grammyjs/types'
+import {User} from 'grammy/types'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
