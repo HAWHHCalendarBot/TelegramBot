@@ -1,10 +1,9 @@
 import {Composer} from 'grammy'
-import {Body, MenuTemplate} from 'grammy-inline-menu'
-
+import {MenuTemplate} from 'grammy-inline-menu'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getUrlFromContext} from '../../lib/calendar-helper.js'
-import {MyContext} from '../../lib/types.js'
-
+import type {MyContext} from '../../lib/types.js'
 import * as suffixMenu from './suffix.js'
 
 export const bot = new Composer<MyContext>()

@@ -1,4 +1,8 @@
-function generateNumberArray(start: number, end: number, interval = 1): number[] {
+function generateNumberArray(
+	start: number,
+	end: number,
+	interval = 1,
+): number[] {
 	const array: number[] = []
 	for (let i = start; i <= end; i += interval) {
 		array.push(i)
@@ -7,7 +11,20 @@ function generateNumberArray(start: number, end: number, interval = 1): number[]
 	return array
 }
 
-export const MONTH_NAMES: readonly string[] = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+export const MONTH_NAMES: readonly string[] = [
+	'Januar',
+	'Februar',
+	'März',
+	'April',
+	'Mai',
+	'Juni',
+	'Juli',
+	'August',
+	'September',
+	'Oktober',
+	'November',
+	'Dezember',
+]
 
 export const DAY_OPTIONS: readonly number[] = generateNumberArray(1, 31)
 export const HOUR_OPTIONS: readonly number[] = generateNumberArray(7, 21)

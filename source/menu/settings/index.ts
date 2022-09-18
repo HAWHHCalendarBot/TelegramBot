@@ -1,15 +1,17 @@
 import {Composer} from 'grammy'
-import {MenuTemplate, Body} from 'grammy-inline-menu'
-
+import {MenuTemplate} from 'grammy-inline-menu'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
-import {MyContext} from '../../lib/types.js'
-
-import {menu as dataMenu, bot as dataBot} from './data.js'
+import type {MyContext} from '../../lib/types.js'
+import {bot as dataBot, menu as dataMenu} from './data.js'
 import {menu as mensaSettingsMenu} from './mensa-settings.js'
 import {menu as removedStyleMenu} from './removed-style.js'
 
 export const bot = new Composer<MyContext>()
-export const menu = new MenuTemplate<MyContext>({text: '*Einstellungen*', parse_mode: 'Markdown'})
+export const menu = new MenuTemplate<MyContext>({
+	text: '*Einstellungen*',
+	parse_mode: 'Markdown',
+})
 
 bot.use(dataBot)
 

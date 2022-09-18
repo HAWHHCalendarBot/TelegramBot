@@ -1,19 +1,29 @@
-import {MenuTemplate, Body} from 'grammy-inline-menu'
-
+import {MenuTemplate} from 'grammy-inline-menu'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../lib/inline-menu.js'
 import {generateMealText} from '../lib/mensa-helper.js'
 import {getMealsOfDay} from '../lib/mensa-meals.js'
-import {MyContext} from '../lib/types.js'
 import * as mensaGit from '../lib/mensa-git.js'
+import type {MyContext} from '../lib/types.js'
 
-const weekdays: readonly string[] = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag']
+const WEEKDAYS: readonly string[] = [
+	'Sonntag',
+	'Montag',
+	'Dienstag',
+	'Mittwoch',
+	'Donnerstag',
+	'Freitag',
+	'Samstag',
+]
 const DAY_IN_MS = 1000 * 60 * 60 * 24
 
 setInterval(async () => mensaGit.pull(), 1000 * 60 * 30) // Every 30 minutes
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 mensaGit.pull()
 
-function getYearMonthDay(date: Readonly<Date>): Readonly<{year: number; month: number; day: number}> {
+function getYearMonthDay(
+	date: Readonly<Date>,
+): Readonly<{year: number; month: number; day: number}> {
 	const year = date.getFullYear()
 	const month = date.getMonth() + 1
 	const day = date.getDate()
@@ -38,7 +48,9 @@ function dateEqual(first: Readonly<Date>, second: Readonly<Date>): boolean {
 
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
-function getCurrentSettings(context: MyContext): Readonly<{mensa?: string; date: Date}> {
+function getCurrentSettings(
+	context: MyContext,
+): Readonly<{mensa?: string; date: Date}> {
 	let {mensa, date} = context.session.mensa ?? {}
 	if (!mensa) {
 		mensa = context.userconfig.mine.mensa.main
@@ -66,7 +78,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 		return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.'
 	}
 
-	const weekday = weekdays[date.getDay()]!
+	const weekday = WEEKDAYS[date.getDay()]!
 	const {year, month, day} = getYearMonthDay(date)
 	let text = ''
 	text += `Mensa <b>${mensa}</b>`
@@ -105,7 +117,7 @@ function daySelectOptions(context: MyContext): Record<string, string> {
 
 	const result: Record<string, string> = {}
 	for (const date of dateOptions) {
-		const weekday = weekdays[date.getDay()]!
+		const weekday = WEEKDAYS[date.getDay()]!
 			.slice(0, 2)
 		const day = date.getDate()
 		const key = generateDateString(date)

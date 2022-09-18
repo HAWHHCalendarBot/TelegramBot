@@ -1,14 +1,12 @@
 import {arrayFilterUnique} from 'array-filter-unique'
 import {Composer} from 'grammy'
-import {MenuTemplate, replyMenuToContext, Body, deleteMenuFromContext, getMenuOfPath} from 'grammy-inline-menu'
+import {deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-
+import type {Body} from 'grammy-inline-menu'
 import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
-import {loadEvents, generateChangeText} from '../../../../lib/change-helper.js'
-import {MyContext, Change} from '../../../../lib/types.js'
-
+import {generateChangeText, loadEvents} from '../../../../lib/change-helper.js'
 import * as changeDetails from '../details.js'
-
+import type {Change, MyContext} from '../../../../lib/types.js'
 import {createTimeSelectionSubmenuButtons} from './time-selector.js'
 import {createDatePickerButtons} from './date-selector.js'
 
@@ -87,13 +85,18 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 		// When the user dont like the data they can change it but they are not able to create invalid data.
 		context.session.generateChange!.add = true
 		context.session.generateChange!.date = formatDateToStoredChangeDate(new Date())
-		context.session.generateChange!.starttime = new Date().toLocaleTimeString('de-DE', {hour12: false, hour: '2-digit', minute: '2-digit'})
+		context.session.generateChange!.starttime = new Date().toLocaleTimeString(
+			'de-DE',
+			{hour12: false, hour: '2-digit', minute: '2-digit'},
+		)
 		context.session.generateChange!.endtime = '23:45'
 		return true
 	},
 })
 
-async function possibleTimesToCreateChangeToOptions(context: MyContext): Promise<Record<string, string>> {
+async function possibleTimesToCreateChangeToOptions(
+	context: MyContext,
+): Promise<Record<string, string>> {
 	const name = context.match![1]!.replace(/;/g, '/')
 	const {date} = context.session.generateChange ?? {}
 
@@ -169,7 +172,11 @@ const roomQuestion = new StatelessQuestion<MyContext>('change-add-room', async (
 bot.use(namesuffixQuestion.middleware())
 bot.use(roomQuestion.middleware())
 
-function questionButtonText(property: 'namesuffix' | 'room', emoji: string, fallback: string): (context: MyContext) => string {
+function questionButtonText(
+	property: 'namesuffix' | 'room',
+	emoji: string,
+	fallback: string,
+): (context: MyContext) => string {
 	return context => {
 		const value = context.session.generateChange![property]
 		const text = value ?? fallback
@@ -180,7 +187,11 @@ function questionButtonText(property: 'namesuffix' | 'room', emoji: string, fall
 menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuffix', {
 	hide: hideGenerateChangeStep,
 	async do(context, path) {
-		await namesuffixQuestion.replyWithMarkdown(context, 'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.', getMenuOfPath(path))
+		await namesuffixQuestion.replyWithMarkdown(
+			context,
+			'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.',
+			getMenuOfPath(path),
+		)
 		await deleteMenuFromContext(context)
 		return false
 	},
@@ -189,7 +200,11 @@ menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuf
 menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
 	hide: hideGenerateChangeStep,
 	async do(context, path) {
-		await roomQuestion.replyWithMarkdown(context, 'In welchen Raum wurde der Termin verschoben?', getMenuOfPath(path))
+		await roomQuestion.replyWithMarkdown(
+			context,
+			'In welchen Raum wurde der Termin verschoben?',
+			getMenuOfPath(path),
+		)
 		await deleteMenuFromContext(context)
 		return false
 	},

@@ -1,9 +1,7 @@
 import {promises as fsPromises} from 'node:fs'
-
 import {html as format} from 'telegram-format'
-
-import {Change, EventEntryInternal, EventEntryFileContent} from './types.js'
 import {formatDateToHumanReadable, parseDateTimeToDate} from './calendar-helper.js'
+import type {Change, EventEntryFileContent, EventEntryInternal} from './types.js'
 
 export function generateChangeDescription(change: Change): string {
 	let text = ''
@@ -58,7 +56,9 @@ export function generateShortChangeText(change: Change): string {
 	return `${change.name} ${formatDateToHumanReadable(change.date)}`
 }
 
-export async function loadEvents(eventname: string): Promise<EventEntryInternal[]> {
+export async function loadEvents(
+	eventname: string,
+): Promise<EventEntryInternal[]> {
 	try {
 		const filename = eventname.replace('/', '-')
 		const content = await fsPromises.readFile(`eventfiles/${filename}.json`, 'utf8')

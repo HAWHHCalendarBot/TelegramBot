@@ -1,9 +1,8 @@
 import {MenuTemplate} from 'grammy-inline-menu'
-
 import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
 import {DAY_OPTIONS, generateMonthOptions, generateYearOptions, MONTH_NAMES} from '../../../../lib/event-creation-menu-options.js'
 import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
-import {MyContext} from '../../../../lib/types.js'
+import type {MyContext} from '../../../../lib/types.js'
 
 const menuText = 'Wann findet der Termin statt?'
 
@@ -16,7 +15,10 @@ function getCurrent(context: MyContext): Date {
 	return new Date()
 }
 
-export function createDatePickerButtons(menu: MenuTemplate<MyContext>, hide: (context: MyContext) => boolean): void {
+export function createDatePickerButtons(
+	menu: MenuTemplate<MyContext>,
+	hide: (context: MyContext) => boolean,
+): void {
 	menu.submenu(context => getCurrent(context).getDate().toString(), 'd', dayMenu, {hide})
 	menu.submenu(monthText, 'm', monthMenu, {hide, joinLastRow: true})
 	menu.submenu(context => getCurrent(context).getFullYear().toString(), 'y', yearMenu, {hide, joinLastRow: true})

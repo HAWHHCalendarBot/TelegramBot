@@ -1,15 +1,21 @@
 import {MenuTemplate} from 'grammy-inline-menu'
-
 import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
 import {HOUR_OPTIONS, MINUTE_OPTIONS} from '../../../../lib/event-creation-menu-options.js'
-import {MyContext} from '../../../../lib/types.js'
+import type {MyContext} from '../../../../lib/types.js'
 
-export function createTimeSelectionSubmenuButtons(menu: MenuTemplate<MyContext>, hide: (context: MyContext) => boolean): void {
+export function createTimeSelectionSubmenuButtons(
+	menu: MenuTemplate<MyContext>,
+	hide: (context: MyContext) => boolean,
+): void {
 	createTimeSelectionSubmenuButton(menu, 'starttime', hide)
 	createTimeSelectionSubmenuButton(menu, 'endtime', hide)
 }
 
-function createTimeSelectionSubmenuButton(menu: MenuTemplate<MyContext>, time: 'starttime' | 'endtime', hide: (context: MyContext) => boolean): void {
+function createTimeSelectionSubmenuButton(
+	menu: MenuTemplate<MyContext>,
+	time: 'starttime' | 'endtime',
+	hide: (context: MyContext) => boolean,
+): void {
 	function buttonText(context: MyContext): string {
 		const prefix = time === 'starttime' ? '▶️ ' : '⏹ '
 		const alreadySet = context.session.generateChange![time]
@@ -64,7 +70,10 @@ function menuBody(time: 'starttime' | 'endtime'): string {
 	return 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?'
 }
 
-function getCurrent(context: MyContext, time: 'starttime' | 'endtime'): {hour: number; minute: number} {
+function getCurrent(
+	context: MyContext,
+	time: 'starttime' | 'endtime',
+): {hour: number; minute: number} {
 	const current = context.session.generateChange![time]
 	const fallback = time === 'starttime' ? '8:00' : '16:00'
 	const [hour, minute] = (current ?? fallback).split(':').map(Number)

@@ -1,7 +1,6 @@
-import {Api, Context as BaseContext, SessionFlavor} from 'grammy'
-import {FluentContextFlavor} from '@grammyjs/fluent'
-
-import {ContextProperty} from './chatconfig.js'
+import type {Api, Context as BaseContext, SessionFlavor} from 'grammy'
+import type {FluentContextFlavor} from '@grammyjs/fluent'
+import type {ContextProperty} from './chatconfig.js'
 
 export function unreachable(unreachable: never): never {
 	throw new Error('Should have been unreachable but looks like it wasnt: ' + JSON.stringify(unreachable))
@@ -9,13 +8,17 @@ export function unreachable(unreachable: never): never {
 
 export type OtherSendMessage = Parameters<Api['sendMessage']>[2]
 
-export interface ContextFlavour {
+export type ContextFlavour = {
 	readonly userconfig: ContextProperty;
 }
 
-export type MyContext = BaseContext & SessionFlavor<Session> & FluentContextFlavor & ContextFlavour
+export type MyContext =
+	& BaseContext
+	& SessionFlavor<Session>
+	& FluentContextFlavor
+	& ContextFlavour
 
-export interface Session {
+export type Session = {
 	adminBroadcast?: number; // Message ID
 	adminuserquicklook?: number; // User ID
 	adminuserquicklookfilter?: string;
@@ -28,7 +31,7 @@ export interface Session {
 	};
 }
 
-export interface Userconfig {
+export type Userconfig = {
 	readonly admin?: true;
 	calendarfileSuffix: string;
 	changes: Change[];
@@ -43,12 +46,12 @@ export interface Userconfig {
 
 export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji'
 
-export interface EventDetails {
+export type EventDetails = {
 	alertMinutesBefore?: number;
 	notes?: string;
 }
 
-export interface Change {
+export type Change = {
 	add?: true;
 	name: string;
 	date: string;
@@ -61,7 +64,7 @@ export interface Change {
 
 export type MensaPriceClass = 'student' | 'attendant' | 'guest'
 
-export interface MealWishes {
+export type MealWishes = {
 	lactoseFree?: boolean;
 	noBeef?: boolean;
 	noFish?: boolean;
@@ -74,14 +77,14 @@ export interface MealWishes {
 	vegetarian?: boolean;
 }
 
-export interface MensaSettings extends MealWishes {
+export type MensaSettings = MealWishes & {
 	main?: string;
 	more?: string[];
 	price?: MensaPriceClass;
 	showAdditives?: boolean;
 }
 
-export interface EventEntryFileContent {
+export type EventEntryFileContent = {
 	readonly Name: string;
 	readonly Location: string;
 	readonly Description: string;
@@ -89,7 +92,7 @@ export interface EventEntryFileContent {
 	readonly EndTime: string;
 }
 
-export interface EventEntryInternal {
+export type EventEntryInternal = {
 	readonly Name: string;
 	readonly Location: string;
 	readonly Description: string;

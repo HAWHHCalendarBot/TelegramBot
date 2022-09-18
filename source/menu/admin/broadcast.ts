@@ -1,9 +1,8 @@
 import {Composer} from 'grammy'
-import {MenuTemplate, replyMenuToContext, getMenuOfPath} from 'grammy-inline-menu'
+import {getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-
 import {backMainButtons} from '../../lib/inline-menu.js'
-import {MyContext} from '../../lib/types.js'
+import type {MyContext} from '../../lib/types.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>('Broadcast')
@@ -23,7 +22,11 @@ bot.use(broadcastQuestion.middleware())
 
 menu.interact(broadcastButtonText, 'set', {
 	async do(context, path) {
-		await broadcastQuestion.replyWithMarkdown(context, 'Hey admin! Was willst du broadcasten?', getMenuOfPath(path))
+		await broadcastQuestion.replyWithMarkdown(
+			context,
+			'Hey admin! Was willst du broadcasten?',
+			getMenuOfPath(path),
+		)
 		return false
 	},
 })
@@ -41,7 +44,10 @@ menu.interact('📤 Versende Broadcast', 'send', {
 	},
 })
 
-async function handleOngoingBroadcast(context: MyContext, messageId: number): Promise<void> {
+async function handleOngoingBroadcast(
+	context: MyContext,
+	messageId: number,
+): Promise<void> {
 	let text: string
 	try {
 		await context.userconfig.forwardBroadcast(context.from!.id, messageId)

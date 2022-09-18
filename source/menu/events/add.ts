@@ -1,12 +1,12 @@
 import {Composer} from 'grammy'
+import {deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 import {html as format} from 'telegram-format'
-import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'grammy-inline-menu'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
-import {count as allEventsCount, find as allEventsFind, exists as allEventsExists} from '../../lib/all-events.js'
-import {filterButtonText, DEFAULT_FILTER} from '../../lib/inline-menu-filter.js'
-import {MyContext} from '../../lib/types.js'
+import {count as allEventsCount, exists as allEventsExists, find as allEventsFind} from '../../lib/all-events.js'
+import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js'
+import type {MyContext} from '../../lib/types.js'
 
 const MAX_RESULT_ROWS = 10
 const RESULT_COLUMNS = 2
@@ -55,7 +55,11 @@ bot.use(question.middleware())
 
 menu.interact(filterButtonText(context => context.session.eventfilter), 'filter', {
 	async do(context, path) {
-		await question.replyWithMarkdown(context, 'Wonach möchtest du die Veranstaltungen filtern?', getMenuOfPath(path))
+		await question.replyWithMarkdown(
+			context,
+			'Wonach möchtest du die Veranstaltungen filtern?',
+			getMenuOfPath(path),
+		)
 		await deleteMenuFromContext(context)
 		return false
 	},
@@ -70,7 +74,9 @@ menu.interact('Filter aufheben', 'filter-clear', {
 	},
 })
 
-async function eventOptions(context: MyContext): Promise<Record<string, string>> {
+async function eventOptions(
+	context: MyContext,
+): Promise<Record<string, string>> {
 	try {
 		const all = await findEvents(context)
 		const result: Record<string, string> = {}

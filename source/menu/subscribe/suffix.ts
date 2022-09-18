@@ -1,10 +1,10 @@
 import {Composer} from 'grammy'
-import {MenuTemplate, Body, replyMenuToContext, deleteMenuFromContext, getMenuOfPath} from 'grammy-inline-menu'
+import {deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
-import {MyContext} from '../../lib/types.js'
 import {getUrlFromContext} from '../../lib/calendar-helper.js'
+import type {MyContext} from '../../lib/types.js'
 
 function menuBody(context: MyContext): Body {
 	const {calendarfileSuffix} = context.userconfig.mine

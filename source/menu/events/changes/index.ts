@@ -1,11 +1,10 @@
 import {Composer} from 'grammy'
 import {html as format} from 'telegram-format'
-import {MenuTemplate, Body} from 'grammy-inline-menu'
-
+import {MenuTemplate} from 'grammy-inline-menu'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../../lib/inline-menu.js'
 import {formatDateToHumanReadable} from '../../../lib/calendar-helper.js'
-import {MyContext} from '../../../lib/types.js'
-
+import type {MyContext} from '../../../lib/types.js'
 import * as changeDetails from './details.js'
 import * as changeAdd from './add/index.js'
 

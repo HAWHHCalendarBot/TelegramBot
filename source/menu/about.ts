@@ -1,10 +1,10 @@
-import {MenuTemplate, Body} from 'grammy-inline-menu'
 import {html as format} from 'telegram-format'
-
+import {MenuTemplate} from 'grammy-inline-menu'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../lib/inline-menu.js'
 import {getCanteenList} from '../lib/mensa-meals.js'
-import {MyContext} from '../lib/types.js'
 import * as allEvents from '../lib/all-events.js'
+import type {MyContext} from '../lib/types.js'
 
 export const menu = new MenuTemplate(menuBody)
 

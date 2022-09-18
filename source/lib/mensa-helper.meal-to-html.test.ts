@@ -1,8 +1,6 @@
 import test from 'ava'
-
-import {Meal} from './meal.js'
-
-import {mealToHtml, mealNameToHtml} from './mensa-helper.js'
+import {mealNameToHtml, mealToHtml} from './mensa-helper.js'
+import type {Meal} from './meal.js'
 
 const example: Meal = {
 	Additives: {

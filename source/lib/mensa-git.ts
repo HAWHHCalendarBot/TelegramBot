@@ -15,6 +15,8 @@ export async function pull(): Promise<void> {
 	} catch {}
 }
 
-async function gitCommand(command: string): Promise<{stdout: string; stderr: string}> {
+async function gitCommand(
+	command: string,
+): Promise<{stdout: string; stderr: string}> {
 	return run(`git -C mensa-data ${command}`)
 }

@@ -1,8 +1,6 @@
 import {Composer} from 'grammy'
-import {MenuTemplate, MenuMiddleware} from 'grammy-inline-menu'
-
-import {MyContext} from '../lib/types.js'
-
+import {MenuMiddleware, MenuTemplate} from 'grammy-inline-menu'
+import type {MyContext} from '../lib/types.js'
 import * as about from './about.js'
 import * as admin from './admin/index.js'
 import * as events from './events/index.js'

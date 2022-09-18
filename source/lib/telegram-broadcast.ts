@@ -1,11 +1,15 @@
-import {Api} from 'grammy'
-
-import {OtherSendMessage} from './types.js'
+import type {Api} from 'grammy'
 import {sequentialLoop, sleep} from './async.js'
+import type {OtherSendMessage} from './types.js'
 
 const SLEEP_MS = 250
 
-export async function broadcast(telegram: Api, targetIds: readonly number[], text: string, extra: OtherSendMessage): Promise<number[]> {
+export async function broadcast(
+	telegram: Api,
+	targetIds: readonly number[],
+	text: string,
+	extra: OtherSendMessage,
+): Promise<number[]> {
 	const goneUserIds: number[] = []
 
 	await sequentialLoop(targetIds, async id => {
@@ -23,7 +27,12 @@ export async function broadcast(telegram: Api, targetIds: readonly number[], tex
 	return goneUserIds
 }
 
-export async function forwardBroadcast(telegram: Api, targetIds: readonly number[], originChat: string | number, messageId: number): Promise<number[]> {
+export async function forwardBroadcast(
+	telegram: Api,
+	targetIds: readonly number[],
+	originChat: string | number,
+	messageId: number,
+): Promise<number[]> {
 	const goneUserIds: number[] = []
 
 	await sequentialLoop(targetIds, async id => {
@@ -43,5 +52,5 @@ export async function forwardBroadcast(telegram: Api, targetIds: readonly number
 
 function isUserGoneError(errorDescription: string): boolean {
 	return errorDescription.includes('user is deactivated')
-        || errorDescription.includes('bot was blocked by the user')
+		|| errorDescription.includes('bot was blocked by the user')
 }

@@ -1,4 +1,7 @@
-export async function sequentialLoop<Argument, Result>(inputs: readonly Argument[], func: (input: Argument) => Promise<Result>): Promise<Result[]> {
+export async function sequentialLoop<Argument, Result>(
+	inputs: readonly Argument[],
+	func: (input: Argument) => Promise<Result>,
+): Promise<Result[]> {
 	const results: Result[] = []
 
 	for (const arg of inputs) {

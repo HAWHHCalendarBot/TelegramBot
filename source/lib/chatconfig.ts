@@ -1,19 +1,17 @@
 import {promises as fsPromises} from 'node:fs'
-
-import {Api, MiddlewareFn} from 'grammy'
-import {User} from 'grammy/types'
 import stringify from 'json-stable-stringify'
-
-import {MyContext, OtherSendMessage, Userconfig} from './types.js'
+import type {Api, MiddlewareFn} from 'grammy'
+import type {User} from 'grammy/types'
 import {sequentialLoop} from './async.js'
 import * as telegramBroadcast from './telegram-broadcast.js'
+import type {MyContext, OtherSendMessage, Userconfig} from './types.js'
 
-interface ChatConfigFileContent {
+type ChatConfigFileContent = {
 	chat: User;
 	config: Userconfig;
 }
 
-export interface ContextProperty {
+export type ContextProperty = {
 	readonly all: (filter?: (o: ChatConfigFileContent) => boolean) => Promise<readonly ChatConfigFileContent[]>;
 	readonly allIds: () => Promise<number[]>;
 	readonly broadcast: (text: string, extra: OtherSendMessage, filter?: (o: ChatConfigFileContent) => boolean) => Promise<void>;
@@ -93,7 +91,11 @@ export class Chatconfig {
 			config,
 		}
 
-		await fsPromises.writeFile(this.filenameFromId(from.id), stringify(json, {space: 2}) + '\n', 'utf8')
+		await fsPromises.writeFile(
+			this.filenameFromId(from.id),
+			stringify(json, {space: 2}) + '\n',
+			'utf8',
+		)
 	}
 
 	async removeConfig(id: number): Promise<void> {
@@ -108,7 +110,9 @@ export class Chatconfig {
 		return ids
 	}
 
-	async all(filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<readonly ChatConfigFileContent[]> {
+	async all(
+		filter: (o: ChatConfigFileContent) => boolean = () => true,
+	): Promise<readonly ChatConfigFileContent[]> {
 		const ids = await this.allIds()
 
 		const fileContents = await Promise.all(ids.map(async id =>
@@ -122,14 +126,24 @@ export class Chatconfig {
 		return configs
 	}
 
-	async broadcast(telegram: Api, text: string, extra: OtherSendMessage, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
+	async broadcast(
+		telegram: Api,
+		text: string,
+		extra: OtherSendMessage,
+		filter: (o: ChatConfigFileContent) => boolean = () => true,
+	): Promise<void> {
 		const allConfigs = await this.all(filter)
 		const allIds = allConfigs.map(config => config.chat.id)
 		const failedIds = await telegramBroadcast.broadcast(telegram, allIds, text, extra)
 		await sequentialLoop(failedIds, async id => this.removeConfig(id))
 	}
 
-	async forwardBroadcast(telegram: Api, originChat: string | number, messageId: number, filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<void> {
+	async forwardBroadcast(
+		telegram: Api,
+		originChat: string | number,
+		messageId: number,
+		filter: (o: ChatConfigFileContent) => boolean = () => true,
+	): Promise<void> {
 		const allConfigs = await this.all(filter)
 		const allIds = allConfigs.map(config => config.chat.id)
 		const failedIds = await telegramBroadcast.forwardBroadcast(telegram, allIds, originChat, messageId)
@@ -140,7 +154,9 @@ export class Chatconfig {
 		return `${this.folder}/${id}.json`
 	}
 
-	private configFromWholeConfig(content: ChatConfigFileContent | undefined): Userconfig {
+	private configFromWholeConfig(
+		content: ChatConfigFileContent | undefined,
+	): Userconfig {
 		const config: Userconfig = content?.config ?? {
 			calendarfileSuffix: '',
 			changes: [],

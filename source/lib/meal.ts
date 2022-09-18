@@ -1,13 +1,13 @@
 // See: https://github.com/HAWHHCalendarBot/mensa-crawler/blob/master/source/meal.ts
 type PriceInEuro = number
 
-export interface MealPrices {
+export type MealPrices = {
 	readonly PriceAttendant: PriceInEuro;
 	readonly PriceGuest: PriceInEuro;
 	readonly PriceStudent: PriceInEuro;
 }
 
-export interface MealContents {
+export type MealContents = {
 	readonly Alcohol: boolean;
 	readonly Beef: boolean;
 	readonly Fish: boolean;
@@ -18,7 +18,7 @@ export interface MealContents {
 	readonly Vegetarian: boolean;
 }
 
-export interface Meal extends MealContents, MealPrices {
+export type Meal = MealContents & MealPrices & {
 	readonly Name: string;
 	readonly Category: string;
 	readonly Date: string;

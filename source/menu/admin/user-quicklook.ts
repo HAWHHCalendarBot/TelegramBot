@@ -1,13 +1,13 @@
 import {Composer} from 'grammy'
+import {deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 import {html as format} from 'telegram-format'
-import {MenuTemplate, replyMenuToContext, deleteMenuFromContext, Body, getMenuOfPath} from 'grammy-inline-menu'
-import {User} from 'grammy/types'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-
+import type {Body} from 'grammy-inline-menu'
+import type {User} from 'grammy/types'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js'
 import {getUrl} from '../../lib/calendar-helper.js'
-import {MyContext} from '../../lib/types.js'
+import type {MyContext} from '../../lib/types.js'
 
 function nameOfUser({first_name, last_name, username}: User): string {
 	let name = first_name
@@ -61,7 +61,11 @@ bot.use(question.middleware())
 
 menu.interact(filterButtonText(context => context.session.adminuserquicklookfilter), 'filter', {
 	async do(context, path) {
-		await question.replyWithMarkdown(context, 'Wonach möchtest du die Nutzer filtern?', getMenuOfPath(path))
+		await question.replyWithMarkdown(
+			context,
+			'Wonach möchtest du die Nutzer filtern?',
+			getMenuOfPath(path),
+		)
 		await deleteMenuFromContext(context)
 		return false
 	},
@@ -77,7 +81,9 @@ menu.interact('Filter aufheben', 'filter-clear', {
 	},
 })
 
-async function userOptions(context: MyContext): Promise<Record<number, string>> {
+async function userOptions(
+	context: MyContext,
+): Promise<Record<number, string>> {
 	const filter = context.session.adminuserquicklookfilter ?? DEFAULT_FILTER
 	const filterRegex = new RegExp(filter, 'i')
 	const allConfigs = await context.userconfig.all(

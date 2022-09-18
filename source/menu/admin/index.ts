@@ -1,9 +1,7 @@
 import {Composer} from 'grammy'
 import {MenuTemplate} from 'grammy-inline-menu'
-
 import {backMainButtons} from '../../lib/inline-menu.js'
-import {MyContext} from '../../lib/types.js'
-
+import type {MyContext} from '../../lib/types.js'
 import * as broadcastMenu from './broadcast.js'
 import * as userMenu from './user-quicklook.js'
 

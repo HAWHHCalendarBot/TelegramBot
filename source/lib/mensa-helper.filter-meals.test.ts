@@ -1,8 +1,6 @@
 import test from 'ava'
-
-import {Meal} from './meal.js'
-
 import {filterMeals} from './mensa-helper.js'
+import type {Meal} from './meal.js'
 
 const BASE_MEAL = {
 	Additives: {},

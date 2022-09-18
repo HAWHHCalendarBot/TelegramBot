@@ -1,8 +1,9 @@
-import {MenuTemplate, Body} from 'grammy-inline-menu'
-
+import {MenuTemplate} from 'grammy-inline-menu'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getCanteenList} from '../../lib/mensa-meals.js'
-import {MyContext, MealWishes, MensaPriceClass, unreachable} from '../../lib/types.js'
+import {unreachable} from '../../lib/types.js'
+import type {MealWishes, MensaPriceClass, MyContext} from '../../lib/types.js'
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫'
@@ -21,7 +22,10 @@ const settingName: Readonly<Record<keyof MealWishes, string>> = {
 	noPoultry: 'kein Geflügel',
 }
 
-export const menu = new MenuTemplate<MyContext>({text: '*Mensa Einstellungen*', parse_mode: 'Markdown'})
+export const menu = new MenuTemplate<MyContext>({
+	text: '*Mensa Einstellungen*',
+	parse_mode: 'Markdown',
+})
 
 function mainMensaButtonText(context: MyContext): string {
 	const {main} = context.userconfig.mine.mensa
@@ -34,7 +38,10 @@ function mainMensaButtonText(context: MyContext): string {
 	return text
 }
 
-const mainMensaMenu = new MenuTemplate<MyContext>({text: '*Mensa Einstellungen*\nHauptmensa', parse_mode: 'Markdown'})
+const mainMensaMenu = new MenuTemplate<MyContext>({
+	text: '*Mensa Einstellungen*\nHauptmensa',
+	parse_mode: 'Markdown',
+})
 menu.submenu(mainMensaButtonText, 'main', mainMensaMenu)
 mainMensaMenu.select('set', getCanteenList, {
 	columns: 1,
@@ -79,7 +86,10 @@ function moreMensaButtonText(context: MyContext): string {
 	return text
 }
 
-const moreMenu = new MenuTemplate<MyContext>({text: '*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist', parse_mode: 'Markdown'})
+const moreMenu = new MenuTemplate<MyContext>({
+	text: '*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist',
+	parse_mode: 'Markdown',
+})
 menu.submenu(moreMensaButtonText, 'more', moreMenu, {
 	hide: context => !context.userconfig.mine.mensa.main,
 })

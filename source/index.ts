@@ -1,17 +1,13 @@
 import {Bot, session} from 'grammy'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
 import {useFluent} from '@grammyjs/fluent'
-
-import {Chatconfig} from './lib/chatconfig.js'
-import {MyContext, Session} from './lib/types.js'
-
+import {bot as menu} from './menu/index.js'
 import {bot as migrateStuffBot} from './migrate-stuff.js'
+import {Chatconfig} from './lib/chatconfig.js'
 import {fluent, loadLocales} from './translation.js'
-
 import * as changesInline from './parts/changes-inline.js'
 import * as easterEggs from './parts/easter-eggs.js'
-
-import {bot as menu} from './menu/index.js'
+import type {MyContext, Session} from './lib/types.js'
 
 process.title = 'calendarbot-tgbot'
 
@@ -43,7 +39,12 @@ bot.use(async (ctx, next) => {
 			return
 		}
 
-		console.error('try to send error to user', ctx.update, error, (error as any)?.on?.payload)
+		console.error(
+			'try to send error to user',
+			ctx.update,
+			error,
+			(error as any)?.on?.payload,
+		)
 		let text = '🔥 Da ist wohl ein Fehler aufgetreten…'
 		text += '\n'
 		text += 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️'
@@ -55,7 +56,10 @@ bot.use(async (ctx, next) => {
 		text += '`'
 
 		const target = (ctx.chat ?? ctx.from!).id
-		await ctx.api.sendMessage(target, text, {parse_mode: 'Markdown', disable_web_page_preview: true})
+		await ctx.api.sendMessage(target, text, {
+			parse_mode: 'Markdown',
+			disable_web_page_preview: true,
+		})
 	}
 })
 

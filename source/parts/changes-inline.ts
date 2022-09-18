@@ -1,13 +1,15 @@
 import {Composer} from 'grammy'
 import {html as format} from 'telegram-format'
-import {InlineQueryResultArticle, User} from 'grammy/types'
-
-import {Change, MyContext} from '../lib/types.js'
+import type {InlineQueryResultArticle, User} from 'grammy/types'
 import {generateChangeDescription, generateChangeText, generateChangeTextHeader, generateShortChangeText} from '../lib/change-helper.js'
+import type {Change, MyContext} from '../lib/types.js'
 
 export const bot = new Composer<MyContext>()
 
-function generateInlineQueryResultFromChange(change: Change, from: User): InlineQueryResultArticle {
+function generateInlineQueryResultFromChange(
+	change: Change,
+	from: User,
+): InlineQueryResultArticle {
 	const id = `${change.name}#${change.date}#${from.id}`
 	return {
 		description: generateChangeDescription(change),
@@ -49,14 +51,16 @@ bot.on('inline_query', async context => {
 	})
 })
 
-interface ChangeRelatedInfos {
+type ChangeRelatedInfos = {
 	name: string;
 	date: string;
 	fromId: number;
 	change: Change;
 }
 
-async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRelatedInfos | undefined> {
+async function getChangeFromContextMatch(
+	context: MyContext,
+): Promise<ChangeRelatedInfos | undefined> {
 	const name = context.match![1]!
 	const date = context.match![2]!
 	const fromId = Number(context.match![3]!)
@@ -74,7 +78,9 @@ async function getChangeFromContextMatch(context: MyContext): Promise<ChangeRela
 		}
 
 		return {
-			name, date, fromId,
+			name,
+			date,
+			fromId,
 			change: searchedChange,
 		}
 	} catch {

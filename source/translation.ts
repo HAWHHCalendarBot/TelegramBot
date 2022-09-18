@@ -11,7 +11,10 @@ export async function loadLocales() {
 
 	for (const locale of locales) {
 		// eslint-disable-next-line no-await-in-loop
-		await fluent.addTranslation({locales: locale, filePath: `locales/${locale}.ftl`})
+		await fluent.addTranslation({
+			locales: locale,
+			filePath: `locales/${locale}.ftl`,
+		})
 	}
 
 	AVAILABLE_LOCALES = locales

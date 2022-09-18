@@ -1,7 +1,6 @@
 import {Composer} from 'grammy'
-
 import {getCanteenList} from './lib/mensa-meals.js'
-import {MyContext, EventDetails} from './lib/types.js'
+import type {EventDetails, MyContext} from './lib/types.js'
 
 export const bot = new Composer<MyContext>()
 
@@ -29,7 +28,7 @@ bot.use(async (ctx, next) => {
 		ctx.userconfig.mine.events = map
 	}
 
-	if (ctx.userconfig.mine.websiteStalkerUpdate || ctx.userconfig.mine.stisysUpdate) {
+	if (Boolean(ctx.userconfig.mine.websiteStalkerUpdate) || Boolean(ctx.userconfig.mine.stisysUpdate)) {
 		await ctx.reply('Das beobachten von StISys ist nicht mehr Teil dieses Bots und wurde in den Channel @HAWHHWebsiteStalker verlagert.')
 	}
 

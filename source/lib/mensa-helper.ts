@@ -1,8 +1,11 @@
 import {arrayFilterUnique} from 'array-filter-unique'
-import {Meal} from './meal.js'
-import {MealWishes, MensaPriceClass, MensaSettings} from './types.js'
+import type {Meal} from './meal.js'
+import type {MealWishes, MensaPriceClass, MensaSettings} from './types.js'
 
-export function filterMeals(meals: readonly Meal[], specialWishes: Readonly<MealWishes>): Meal[] {
+export function filterMeals(
+	meals: readonly Meal[],
+	specialWishes: Readonly<MealWishes>,
+): Meal[] {
 	return meals
 		.filter(m => !specialWishes.noBeef || !m.Beef)
 		.filter(m => !specialWishes.noFish || !m.Fish)
@@ -13,7 +16,10 @@ export function filterMeals(meals: readonly Meal[], specialWishes: Readonly<Meal
 		.filter(m => !specialWishes.vegetarian || m.Vegan || m.Vegetarian)
 }
 
-export function generateMealText(meals: readonly Meal[], mensaSettings: Readonly<MensaSettings>): string {
+export function generateMealText(
+	meals: readonly Meal[],
+	mensaSettings: Readonly<MensaSettings>,
+): string {
 	if (meals.length === 0) {
 		return 'Die Mensa bietet heute nichts an.'
 	}
@@ -47,7 +53,10 @@ export function generateMealText(meals: readonly Meal[], mensaSettings: Readonly
 	return text
 }
 
-export function mealNameToHtml(name: string, showAdditives: boolean | undefined): string {
+export function mealNameToHtml(
+	name: string,
+	showAdditives: boolean | undefined,
+): string {
 	const parsedName = name
 	// Remove / un-bold additives at the end
 		.replace(/ \(([\d\w, ]+)\)$/g, showAdditives ? '</b> ($1)<b>' : '')
@@ -68,10 +77,16 @@ export function mealAdditivesToHtml(meals: readonly Meal[]): string {
 		.join('\n')
 }
 
-export function mealToHtml(meal: Meal, priceClass: MensaPriceClass | undefined, showAdditives: boolean | undefined): string {
+export function mealToHtml(
+	meal: Meal,
+	priceClass: MensaPriceClass | undefined,
+	showAdditives: boolean | undefined,
+): string {
 	const name = mealNameToHtml(meal.Name, showAdditives)
 
-	const price = priceClass === 'student' ? meal.PriceStudent : (priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest)
+	const price = priceClass === 'student'
+		? meal.PriceStudent
+		: (priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest)
 	const priceString = price.toLocaleString('de-DE', {minimumFractionDigits: 2}).replace('.', ',')
 
 	let text = `${name}\n`

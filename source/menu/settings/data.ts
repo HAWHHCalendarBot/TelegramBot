@@ -1,12 +1,14 @@
 import {Composer} from 'grammy'
-import {MenuTemplate, Body, replyMenuToContext, getMenuOfPath} from 'grammy-inline-menu'
-import {StatelessQuestion} from '@grammyjs/stateless-question'
+import {getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 import {html as format} from 'telegram-format'
-
+import {StatelessQuestion} from '@grammyjs/stateless-question'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
-import {MyContext, Userconfig} from '../../lib/types.js'
+import type {MyContext, Userconfig} from '../../lib/types.js'
 
-async function getActualUserconfigContent(context: MyContext): Promise<Userconfig | undefined> {
+async function getActualUserconfigContent(
+	context: MyContext,
+): Promise<Userconfig | undefined> {
 	if (!context.userconfig.mine) {
 		return undefined
 	}
@@ -36,16 +38,22 @@ async function menuBody(context: MyContext): Promise<Body> {
 	text += '\n\n'
 	text += format.bold('Persistente Einstellungen im Bot')
 	text += '\n'
-	text +=	'Damit dein Kalender generiert oder deine Mensa Einstellungen gespeichert werden können, werden einige Daten persistent auf dem Server hinterlegt.'
+	text += 'Damit dein Kalender generiert oder deine Mensa Einstellungen gespeichert werden können, werden einige Daten persistent auf dem Server hinterlegt.'
 	text += '\n'
-	text += format.monospaceBlock(JSON.stringify(context.userconfig.mine, null, 2), 'json')
+	text += format.monospaceBlock(
+		JSON.stringify(context.userconfig.mine, null, 2),
+		'json',
+	)
 
 	text += '\n\n'
 	text += format.bold('Temporäre Daten des Bots')
 	text += '\n'
 	text += 'Diese Daten werden nur temporär gehalten und sind nur bis zum Neustart des Servers im RAM hinterlegt.'
 	text += '\n'
-	text += format.monospaceBlock(JSON.stringify(context.session, null, 2), 'json')
+	text += format.monospaceBlock(
+		JSON.stringify(context.session, null, 2),
+		'json',
+	)
 
 	return {text, parse_mode: format.parse_mode}
 }

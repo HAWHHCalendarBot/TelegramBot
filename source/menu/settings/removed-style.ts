@@ -1,7 +1,7 @@
-import {MenuTemplate, Body} from 'grammy-inline-menu'
-
+import {MenuTemplate} from 'grammy-inline-menu'
+import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
-import {MyContext, RemovedEventsDisplayStyle} from '../../lib/types.js'
+import type {MyContext, RemovedEventsDisplayStyle} from '../../lib/types.js'
 
 const removedEventsOptions = {
 	cancelled: '👌 Standard',

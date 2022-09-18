@@ -1,6 +1,5 @@
 import {promises as fsPromises} from 'node:fs'
-
-import {Meal} from './meal.js'
+import type {Meal} from './meal.js'
 
 export async function getCanteenList(): Promise<string[]> {
 	const found = await fsPromises.readdir('mensa-data', {withFileTypes: true})
@@ -11,7 +10,12 @@ export async function getCanteenList(): Promise<string[]> {
 	return dirs
 }
 
-function getFilename(mensa: string, year: number, month: number, day: number): string {
+function getFilename(
+	mensa: string,
+	year: number,
+	month: number,
+	day: number,
+): string {
 	let filename = `mensa-data/${mensa}/`
 	filename += year.toLocaleString(undefined, {minimumIntegerDigits: 4, useGrouping: false})
 	filename += month.toLocaleString(undefined, {minimumIntegerDigits: 2})
@@ -20,7 +24,12 @@ function getFilename(mensa: string, year: number, month: number, day: number): s
 	return filename
 }
 
-export async function getMealsOfDay(mensa: string, year: number, month: number, day: number): Promise<Meal[]> {
+export async function getMealsOfDay(
+	mensa: string,
+	year: number,
+	month: number,
+	day: number,
+): Promise<Meal[]> {
 	try {
 		const filename = getFilename(mensa, year, month, day)
 		const content = await fsPromises.readFile(filename, 'utf8')
