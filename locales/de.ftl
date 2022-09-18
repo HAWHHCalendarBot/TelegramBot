@@ -61,3 +61,12 @@ subscribe-freestyle =
   <code>https://{$url}</code>
 
   Viel Erfolg 😎
+
+subscribe-suffix =
+  Die Kalender liegen für jeden frei zugänglich im Internet. Wenn die URL nur aus deiner Telegram Nutzer ID (<code>{$userId}</code>) bestehen würde, könnte jeder mit dieser ID deinen Kalender einsehen.
+  Wird der URL eine zufällige Zeichenkette angefügt (aktuell <code>{$calendarfileSuffix}</code>), muss diese erraten werden und erhöht so deine Privatsphäre. Eine Zeichenkette, die deiner Kalender URL angefügt wird, kannst du entweder generieren lassen (<i>Generieren…</i>) oder <i>Manuell setzen…</i>. Jedoch musst du nach jedem Ändern dieser Einstellung deinen Kalender neu abonnieren, da sich die URL ändert.
+
+  Deine Nutzer ID (<code>{$userId}</code>) ist nicht deine Telefonnummer oder Teil deines Usernamens und innerhalb von Telegram eindeutig. Wenn man eine Nachricht von dir hat oder in einer Gruppe mit dir ist, kann man deine Nutzer ID erhalten.
+
+  Deine URL lautet:
+  <code>https://{$url}</code>

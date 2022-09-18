@@ -8,21 +8,17 @@ import type {MyContext} from '../../lib/types.js'
 
 function menuBody(context: MyContext): Body {
 	const {calendarfileSuffix} = context.userconfig.mine
-
-	let text = 'Die Kalender liegen für jeden frei zugänglich im Internet. '
-	text += `Wenn die URL nur aus deiner Telegram Nutzer ID (\`${context.from!.id}\`) bestehen würde, könnte jeder mit dieser ID deinen Kalender einsehen.`
-	text += `\nWird der URL eine zufällige Zeichenkette angefügt (aktuell \`${calendarfileSuffix}\`), muss diese erraten werden und erhöht so deine Privatsphäre.`
-	text += ' Eine Zeichenkette, die deiner Kalender URL angefügt wird, kannst du entweder generieren lassen (_Generieren…_) oder _Manuell setzen…_.'
-	text += ' Jedoch musst du nach jedem Ändern dieser Einstellung deinen Kalender neu abonnieren, da sich die URL ändert.'
-
-	text += '\n\n'
-	text += `Deine Nutzer ID (\`${context.from!.id}\`) ist nicht deine Telefonnummer oder Teil deines Usernamens und innerhalb von Telegram eindeutig.`
-	text += ' Wenn man eine Nachricht von dir hat oder in einer Gruppe mit dir ist, kann man deine Nutzer ID erhalten.'
-
-	text += '\n\n'
-	text += 'Deine URL lautet:'
-	text += `\n\`https://${getUrlFromContext(context)}\``
-	return {text, parse_mode: 'Markdown'}
+	return {
+		parse_mode: 'HTML',
+		text: context.t('subscribe-suffix', {
+			calendarfileSuffix,
+			url: getUrlFromContext(context),
+			userId: context.from!.id.toString(),
+		})
+			// Remove Isolate Characters which are inserted automatically by Fluent.
+			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
+			.replace(/[\u2068\u2069]+/g, ''),
+	}
 }
 
 const SUFFIX_MAX_LENGTH = 15
