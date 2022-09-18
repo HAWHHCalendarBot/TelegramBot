@@ -1,10 +1,9 @@
 import {Bot, session} from 'grammy'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
-import {useFluent} from '@grammyjs/fluent'
+import {I18n} from '@grammyjs/i18n'
 import {bot as menu} from './menu/index.js'
 import {bot as migrateStuffBot} from './migrate-stuff.js'
 import {Chatconfig} from './lib/chatconfig.js'
-import {fluent, loadLocales} from './translation.js'
 import * as changesInline from './parts/changes-inline.js'
 import * as easterEggs from './parts/easter-eggs.js'
 import type {MyContext, Session} from './lib/types.js'
@@ -18,11 +17,12 @@ if (!token) {
 
 const bot = new Bot<MyContext>(token)
 
-bot.use(useFluent({
+export const i18n = new I18n({
 	defaultLocale: 'de',
-	fluent,
+	directory: 'locales',
 	localeNegotiator: ctx => ctx.from?.language_code ?? 'de',
-}))
+})
+bot.use(i18n.middleware())
 
 if (process.env['NODE_ENV'] !== 'production') {
 	bot.use(generateUpdateMiddleware())
@@ -85,8 +85,6 @@ bot.catch((error: any) => {
 })
 
 async function startup() {
-	await loadLocales()
-
 	await bot.api.setMyCommands([
 		{command: 'start', description: 'öffne das Menü'},
 		{command: 'mensa', description: 'zeige das heutige Mensaessen deiner Mensa'},

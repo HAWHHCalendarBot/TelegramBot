@@ -1,5 +1,5 @@
 import type {Api, Context as BaseContext, SessionFlavor} from 'grammy'
-import type {FluentContextFlavor} from '@grammyjs/fluent'
+import type {I18nFlavor} from '@grammyjs/i18n'
 import type {ContextProperty} from './chatconfig.js'
 
 export function unreachable(unreachable: never): never {
@@ -14,8 +14,8 @@ export type ContextFlavour = {
 
 export type MyContext =
 	& BaseContext
+	& I18nFlavor
 	& SessionFlavor<Session>
-	& FluentContextFlavor
 	& ContextFlavour
 
 export type Session = {
