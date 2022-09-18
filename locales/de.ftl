@@ -2,14 +2,14 @@ changes-help =
   Wenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen. Dein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.
   Außerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.
 
-  ⚠️ Du bist in der Lage, unlogische Veranstaltungstermine zu kreieren. Beispielsweise kannst du einen Termin so verändern, dass er aufhört bevor er beginnt. Den Bot interessiert das nicht, der tut genau das, was du ihm sagst. Dein Kalenderprogramm ist damit dann allerdings häufig nicht so glücklich…
+  ⚠️ Du bist in der Lage, unlogische Veranstaltungstermine zu kreieren. Beispielsweise kannst du einen Termin so verändern, dass dieser aufhört bevor er beginnt. Den Bot interessiert das nicht und tut nur genau das, was du sagst. Dein Kalenderprogramm ist damit dann allerdings häufig nicht so glücklich…
 
 website-stalker-help =
   Der website-stalker prüft regelmäßig auf Änderungen an relevanten Webseiten.
 
   Hier wird beispielsweise StISys auf Änderungen betrachtet und wenn sich etwas ändert, kannst du direkt benachrichtigt werden. Folge dazu dem Telegram Kanal @HAWHHWebsiteStalker.
 
-  Alternativ kannst du die Änderungen auch als RSS Feed mit deinem Feed Reader abonnieren. Abonniere dazu folgende URL: https://github.com/HAWHHCalendarBot/study-website-stalker/commits/main.atom
+  Alternativ kannst du die Änderungen auch als RSS-Feed mit deinem Feedreader abonnieren. Abonniere dazu folgende URL: https://github.com/HAWHHCalendarBot/study-website-stalker/commits/main.atom
 
 
 subscribe-overview =
@@ -20,42 +20,42 @@ subscribe-overview =
 
 subscribe-apple =
   <b>Kalender abonnieren mit iOS / macOS</b>
-  Auf den ersten Button klicken und die URL in Safari öffnen. Auf der nun geöffneten Website auf das Kalender Icon klicken und bestätigen. Done.
+  Auf den ersten Button klicken und die URL in Safari öffnen. Auf der nun geöffneten Website auf das Kalender Icon klicken und bestätigen. Fertig.
 
-  Unter <b>macOS</b> den Haken bei Remove Alerts raus nehmen, damit die Erinnerungen im Kalender bleiben und nicht entfernt werden.
+  Unter <b>macOS</b> den Haken bei <i>Remove Alerts</i> herausnehmen, damit die Erinnerungen im Kalender bleiben und nicht entfernt werden.
   Unter <b>iOS</b> ist dies bereits der Standard und funktioniert direkt.
 
 subscribe-exchange =
   <b>Kalender abonnieren mit dem HAW-Mailer</b>
-  Im <a href="https://www.haw-hamburg.de/online-services/haw-mailer.html">HAW-Mailer</a> oben links auf die Kalender Ansicht wechseln. Dann in der Menüleiste oben mittig auf das Drop Down Menu von "Kalender hinzufügen" auf "Aus dem Internet". Im aufgehenden Fenster in das Textfeld "Link zum Kalender" die folgende URL einfügen:
+  Im <a href="https://www.haw-hamburg.de/online-services/haw-mailer.html">HAW-Mailer</a> oben links auf die Kalender Ansicht wechseln. Dann in der Menüleiste oben mittig auf das Drop-Down-Menü von "Kalender hinzufügen" auf "Aus dem Internet". Im aufgehenden Fenster in das Textfeld "Link zum Kalender" die folgende URL einfügen:
   <code>https://{$url}</code>
 
-  Der Kalender wird nun alle paar Stunden vom HAW-Mailer aktualisiert. Wenn du dein Handy mit dem HAW-Mailer (Exchange) synchronisierst, ist der Kalender nun ebenfalls enthalten. Funktioniert mit iOS, Android und Gnome Online Accounts sehr entspannt und du hast gleich deine HAW E-Mails mit dabei.
+  Der Kalender wird nun alle paar Stunden vom HAW-Mailer aktualisiert. Wenn du dein Handy mit dem HAW-Mailer (Exchange) synchronisierst, ist der Kalender ebenfalls enthalten. Funktioniert mit iOS, Android und Gnome Online Accounts sehr entspannt und du hast gleich deine HAW E-Mails mit dabei.
 
-  Erinnerungen scheinen nicht zu funktionieren, da diese automatisch beim Abonnieren entfernt werden. Ein Deaktivieren des automatischen Löschens dieser habe ich leider bisher nicht gefunden. Hinweise gern an @EdJoPaTo ;)
+  Erinnerungen scheinen nicht zu funktionieren, da diese automatisch beim Abonnieren entfernt werden. Ein Deaktivieren des automatischen Löschens dieser habe ich leider bisher nicht gefunden. Hinweise gern an @EdJoPaTo 😇
 
 subscribe-google =
   <b>Kalender abonnieren mit dem Google Kalender</b>
   ⚠️ Der Google Kalender ist manchmal etwas… anstrengend. Erklärung unten.
-  🔅 Alternativvorschlag: Kannst du vielleicht auch über den HAW-Mailer synchronisieren? Dann hast du auch gleich deine HAW E-Mails ;)
+  🔅 Alternativvorschlag: Kannst du vielleicht auch über den HAW-Mailer synchronisieren? Dann hast du auch gleich deine HAW E-Mails.
 
-  In der linken Seitenleiste im <a href="https://calendar.google.com/">Google Kalender</a> gibt es den Eintrag "Weitere Kalender". Dort auf das kleine Dropdown Dreieck klicken und den Menüpunkt "per URL" auswählen. Hier muss die folgende URL hinein kopiert werden:
+  In der linken Seitenleiste im <a href="https://calendar.google.com/">Google Kalender</a> gibt es den Eintrag "Weitere Kalender". Dort auf das kleine Dropdown Dreieck klicken und den Menüpunkt "per URL" auswählen. Hier muss die folgende URL hineinkopiert werden:
   <code>https://{$url}</code>
 
   Nach dem Bestätigen einen Moment warten, bis der Kalender im Google Kalender erschienen ist.
 
-  Wenn dein Kalender nun "@HAWHHCalendarBot ({$firstname})" heißt, wie er eigentlich heißen soll, bist du ein glücklicher Sonderfall Googles und du bist fertig. Wenn dein Kalender jedoch den Namen der URL trägt, muss der Kalender umbenannt werden, damit er auf Android Geräte synchronisiert wird. (Google 🙄) Verwende einen einfachen Namen dafür, den Google nicht überfordernd findet.
+  Wenn dein Kalender "@HAWHHCalendarBot ({$firstname})" heißt, wie er eigentlich heißen soll, bist du ein glücklicher Sonderfall Googles und du bist fertig. Wenn dein Kalender jedoch den Namen der URL trägt, muss der Kalender umbenannt werden, damit dieser auf Android-Geräte synchronisiert wird. Verwende einen einfachen Namen dafür, den Google nicht überfordernd findet.
 
-  Fun Fact: Auf iOS Geräte wird der Google Kalender immer fehlerfrei synchronisiert, egal wie er heißt.
+  Fun Fact: Auf iOS-Geräte wird der Google Kalender unabhängig vom Namen fehlerfrei synchronisiert.
 
-  Erinnerungen scheinen nicht zu funktionieren, da diese automatisch beim Abonnieren entfernt werden. Ein Deaktivieren des automatischen Löschens dieser habe ich leider bisher nicht gefunden. Hinweise gern an @EdJoPaTo ;)
+  Erinnerungen scheinen nicht zu funktionieren, da diese automatisch beim Abonnieren entfernt werden. Ein Deaktivieren des automatischen Löschens dieser habe ich leider bisher nicht gefunden. Hinweise gern an @EdJoPaTo 😇
 
   ⚠️ In der Vergangenheit hat der Google Kalender jeweils zwischen 30 Minuten und 40 Stunden gebraucht, um einen Kalender zu aktualisieren. Außerdem cacht Google (meiner Meinung nach) ein wenig zu viel, was für teilweise interessantes/sonderbares Verhalten gesorgt hat.
 
 subscribe-freestyle =
   <b>Kalender abonnieren Freestyle Edition</b> 😎
   Wenn dein Kalender Standards unterstützt, benutz den ersten Button an dieser Nachricht und öffne die Website.
-  Klicke auf das Kalender Icon. Der Browser fragt dich nun, mit welchem Tool er den webcal:// Link öffnen soll. Wähle dein Kalenderprogramm.
+  Klicke auf das Kalender Icon. Der Browser fragt nun, mit welchem Tool der <code>webcal://</code> Link geöffnet werden soll. Wähle dein Kalenderprogramm.
 
   Wenn das nicht funktioniert, finde einen Weg die folgende URL zu abonnieren. Achte dabei darauf, das du nicht importierst, sondern abonnierst. Nur dann aktualisiert sich der Kalender selbstständig bei Änderungen im Bot.
   <code>https://{$url}</code>
