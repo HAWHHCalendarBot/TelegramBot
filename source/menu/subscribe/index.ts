@@ -1,5 +1,5 @@
 import {Composer} from 'grammy'
-import {MenuTemplate, Body} from 'grammy-inline-menu'
+import {Body, MenuTemplate} from 'grammy-inline-menu'
 
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getUrlFromContext} from '../../lib/calendar-helper.js'
@@ -44,6 +44,9 @@ function generateBody(resourceKeySuffix: string): (ctx: MyContext) => Body {
 		text: ctx.t('subscribe-' + resourceKeySuffix, {
 			firstname: ctx.from!.first_name,
 			url: getUrlFromContext(ctx),
-		}),
+		})
+			// Remove Isolate Characters which are inserted automatically by Fluent.
+			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
+			.replace(/[\u2068\u2069]+/g, ''),
 	})
 }
