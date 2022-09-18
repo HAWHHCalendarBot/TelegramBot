@@ -20,7 +20,6 @@ const bot = new Bot<MyContext>(token)
 export const i18n = new I18n({
 	defaultLocale: 'de',
 	directory: 'locales',
-	localeNegotiator: ctx => ctx.from?.language_code ?? 'de',
 })
 bot.use(i18n.middleware())
 
