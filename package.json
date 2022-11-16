@@ -39,7 +39,7 @@
 		"@types/node": "^18.6.3",
 		"ava": "^5.0.1",
 		"typescript": "^4.2.3",
-		"xo": "^0.52.3"
+		"xo": "^0.53.0"
 	},
 	"xo": {
 		"semicolon": false,

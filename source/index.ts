@@ -78,24 +78,17 @@ bot.use(easterEggs.bot)
 
 bot.use(menu)
 
-bot.catch((error: any) => {
-	// Should not occur as the error middleware is in place
-	console.error('grammY Error', error)
+await bot.api.setMyCommands([
+	{command: 'start', description: 'öffne das Menü'},
+	{
+		command: 'mensa',
+		description: 'zeige das heutige Mensaessen deiner Mensa',
+	},
+	{command: 'settings', description: 'setze Einstellungen des Bots'},
+])
+
+await bot.start({
+	onStart(botInfo) {
+		console.log(new Date(), 'Bot starts as', botInfo.username)
+	},
 })
-
-async function startup() {
-	await bot.api.setMyCommands([
-		{command: 'start', description: 'öffne das Menü'},
-		{command: 'mensa', description: 'zeige das heutige Mensaessen deiner Mensa'},
-		{command: 'settings', description: 'setze Einstellungen des Bots'},
-	])
-
-	await bot.start({
-		onStart(botInfo) {
-			console.log(new Date(), 'Bot starts as', botInfo.username)
-		},
-	})
-}
-
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-startup()
