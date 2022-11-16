@@ -171,15 +171,22 @@ function showWishAsOption(context: MyContext, wish: keyof MealWishes): boolean {
 		case 'noGelatine':
 		case 'noLamb':
 		case 'noPig':
-		case 'noPoultry':
+		case 'noPoultry': {
 			return !wishes.vegan && !wishes.vegetarian
+		}
+
 		case 'vegetarian':
-		case 'lactoseFree':
+		case 'lactoseFree': {
 			return !wishes.vegan
-		case 'vegan':
+		}
+
+		case 'vegan': {
 			return true
-		default:
+		}
+
+		default: {
 			unreachable(wish)
+		}
 	}
 }
 
