@@ -16,7 +16,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	const canteenCount = canteens.length
 	const eventCount = await allEvents.count()
 
-	const websiteLink = format.url('calendarbot.hawhh.de', 'https://calendarbot.hawhh.de')
+	const websiteLink = format.url('hawhh.de/calendarbot/', 'https://hawhh.de/calendarbot/')
 	const githubIssues = format.url('GitHub', 'https://github.com/HAWHHCalendarBot/telegrambot/issues')
 
 	let text = ''
@@ -31,7 +31,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true}
 }
 
-menu.url('calendarbot.hawhh.de', 'https://calendarbot.hawhh.de')
+menu.url('hawhh.de/calendarbot/', 'https://hawhh.de/calendarbot/')
 
 menu.url('😌 PayPal Spende', 'https://www.paypal.com/donate?hosted_button_id=L2EMBSGTEXK42')
 

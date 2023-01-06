@@ -1,15 +1,7 @@
 {
-	"name": "hawhhcalendarbot-telegrambot",
 	"version": "9.1.1",
 	"private": true,
-	"description": "A bot to configure your personal calendar of HAW Hamburg lectures",
 	"license": "AGPLv3",
-	"homepage": "https://calendarbot.hawhh.de",
-	"author": {
-		"name": "EdJoPaTo",
-		"email": "calendarbot@hawhh.de",
-		"url": "https://calendarbot.hawhh.de"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/HAWHHCalendarBot/telegrambot.git"
