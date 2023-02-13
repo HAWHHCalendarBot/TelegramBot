@@ -11,7 +11,7 @@ function generateNumberArray(
 	return array
 }
 
-export const MONTH_NAMES: readonly string[] = [
+export const MONTH_NAMES = [
 	'Januar',
 	'Februar',
 	'März',
@@ -24,14 +24,15 @@ export const MONTH_NAMES: readonly string[] = [
 	'Oktober',
 	'November',
 	'Dezember',
-]
+] as const
+type MonthName = typeof MONTH_NAMES[number]
 
 export const DAY_OPTIONS: readonly number[] = generateNumberArray(1, 31)
 export const HOUR_OPTIONS: readonly number[] = generateNumberArray(7, 21)
 export const MINUTE_OPTIONS: readonly number[] = generateNumberArray(0, 55, 5)
 
-export function generateMonthOptions(): Record<number, string> {
-	const result: Record<number, string> = {}
+export function generateMonthOptions(): Record<number, MonthName> {
+	const result: Record<number, MonthName> = {}
 	for (const [i, name] of MONTH_NAMES.entries()) {
 		result[i + 1] = name
 	}
