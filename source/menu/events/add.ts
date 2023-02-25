@@ -79,12 +79,7 @@ async function eventOptions(
 ): Promise<Record<string, string>> {
 	try {
 		const all = await findEvents(context)
-		const result: Record<string, string> = {}
-		for (const event of all) {
-			result[event.replace(/\//g, ';')] = event
-		}
-
-		return result
+		return Object.fromEntries(all.map(event => [event.replace(/\//g, ';'), event]))
 	} catch {
 		return {}
 	}

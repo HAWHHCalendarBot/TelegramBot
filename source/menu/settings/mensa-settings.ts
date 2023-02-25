@@ -3,13 +3,13 @@ import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getCanteenList} from '../../lib/mensa-meals.js'
 import {unreachable} from '../../lib/types.js'
-import type {MealWishes, MensaPriceClass, MyContext} from '../../lib/types.js'
+import type {MealWish, MensaPriceClass, MyContext} from '../../lib/types.js'
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫'
 }
 
-const settingName: Readonly<Record<keyof MealWishes, string>> = {
+const settingName: Readonly<Record<MealWish, string>> = {
 	vegan: 'vegan',
 	vegetarian: 'vegetarisch',
 	lactoseFree: 'laktosefrei',
@@ -21,6 +21,7 @@ const settingName: Readonly<Record<keyof MealWishes, string>> = {
 	noPig: 'kein Schweinefleisch',
 	noPoultry: 'kein Geflügel',
 }
+const MealWishOptions = Object.keys(settingName) as readonly MealWish[]
 
 export const menu = new MenuTemplate<MyContext>({
 	text: '*Mensa Einstellungen*',
@@ -147,7 +148,7 @@ function specialWishMenuBody(context: MyContext): Body {
 	text += '\nWelche Sonderwünsche hast du zu deinem Essen?'
 	text += '\n\n'
 
-	const wishes = (Object.keys(settingName) as Array<keyof MealWishes>)
+	const wishes = MealWishOptions
 		.filter(o => context.userconfig.mine.mensa[o])
 
 	text += wishes.length > 0
@@ -162,7 +163,7 @@ menu.submenu('Extrawünsche Essen', 's', specialWishMenu, {
 	hide: context => !context.userconfig.mine.mensa.main,
 })
 
-function showWishAsOption(context: MyContext, wish: keyof MealWishes): boolean {
+function showWishAsOption(context: MyContext, wish: MealWish): boolean {
 	const wishes = context.userconfig.mine.mensa
 	switch (wish) {
 		case 'noBeef':
@@ -191,26 +192,18 @@ function showWishAsOption(context: MyContext, wish: keyof MealWishes): boolean {
 }
 
 function specialWishOptions(context: MyContext): Record<string, string> {
-	const allWishes = Object.keys(settingName) as Array<keyof MealWishes>
-	const options: Record<string, string> = {}
-	for (const wish of allWishes) {
-		if (showWishAsOption(context, wish)) {
-			options[wish] = settingName[wish]
-		}
-	}
-
-	return options
+	return Object.fromEntries(MealWishOptions.filter(wish => showWishAsOption(context, wish)).map(wish => [wish, settingName[wish]]))
 }
 
 specialWishMenu.select('w', specialWishOptions, {
 	columns: 1,
-	isSet: (context, wish) => Boolean(context.userconfig.mine.mensa[wish as keyof MealWishes]),
+	isSet: (context, wish) => Boolean(context.userconfig.mine.mensa[wish as MealWish]),
 	set(context, wish, newState) {
 		if (newState) {
-			context.userconfig.mine.mensa[wish as keyof MealWishes] = true
+			context.userconfig.mine.mensa[wish as MealWish] = true
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete context.userconfig.mine.mensa[wish as keyof MealWishes]
+			delete context.userconfig.mine.mensa[wish as MealWish]
 		}
 
 		return true

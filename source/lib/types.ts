@@ -76,6 +76,7 @@ export type MealWishes = {
 	vegan?: boolean;
 	vegetarian?: boolean;
 }
+export type MealWish = keyof MealWishes
 
 export type MensaSettings = MealWishes & {
 	main?: string;

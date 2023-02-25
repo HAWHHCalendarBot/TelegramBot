@@ -27,14 +27,10 @@ function getChangesOptions(ctx: MyContext): Record<string, string> {
 	const event = ctx.match![1]!.replace(/;/, '/')
 	const changes = ctx.userconfig.mine.changes
 		.filter(o => o.name === event)
-
-	const result: Record<string, string> = {}
-	for (const change of changes) {
-		const key = changeDetails.generateChangeAction(change)
-		result[key] = formatDateToHumanReadable(change.date)
-	}
-
-	return result
+	return Object.fromEntries(changes.map(change => [
+		changeDetails.generateChangeAction(change),
+		formatDateToHumanReadable(change.date),
+	]))
 }
 
 function menuBody(ctx: MyContext): Body {

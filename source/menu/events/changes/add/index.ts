@@ -114,12 +114,7 @@ async function possibleTimesToCreateChangeToOptions(
 		.map(o => formatDateToStoredChangeDate(o))
 		.filter(o => !existingChangeDates.has(o))
 		.filter(arrayFilterUnique())
-	const options: Record<string, string> = {}
-	for (const date of dates) {
-		options[date] = formatDateToHumanReadable(date)
-	}
-
-	return options
+	return Object.fromEntries(dates.map(date => [date, formatDateToHumanReadable(date)]))
 }
 
 menu.choose('date', possibleTimesToCreateChangeToOptions, {

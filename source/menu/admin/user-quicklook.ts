@@ -97,12 +97,7 @@ async function userOptions(
 		return nameA.localeCompare(nameB)
 	})
 
-	const result: Record<number, string> = {}
-	for (const chat of allChats) {
-		result[chat.id] = nameOfUser(chat)
-	}
-
-	return result
+	return Object.fromEntries(allChats.map(chat => [chat.id, nameOfUser(chat)]))
 }
 
 menu.select('u', userOptions, {

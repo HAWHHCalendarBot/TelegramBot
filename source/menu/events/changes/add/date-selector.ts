@@ -1,6 +1,6 @@
 import {MenuTemplate} from 'grammy-inline-menu'
 import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
-import {DAY_OPTIONS, generateMonthOptions, generateYearOptions, MONTH_NAMES} from '../../../../lib/event-creation-menu-options.js'
+import {DAY_OPTIONS, generateYearOptions, MONTH_NAMES, MONTH_OPTIONS} from '../../../../lib/event-creation-menu-options.js'
 import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
 import type {MyContext} from '../../../../lib/types.js'
 
@@ -44,7 +44,7 @@ dayMenu.select('', DAY_OPTIONS, {
 	},
 })
 
-monthMenu.select('', generateMonthOptions(), {
+monthMenu.select('', MONTH_OPTIONS, {
 	columns: 2,
 	isSet: (context, month) => getCurrent(context).getMonth() + 1 === Number(month),
 	async set(context, month) {
