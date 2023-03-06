@@ -27,7 +27,7 @@ if (process.env['NODE_ENV'] !== 'production') {
 	bot.use(generateUpdateMiddleware())
 }
 
-bot.command(['start', 'help'], async ctx => {
+async function startMessage(ctx: MyContext) {
 	const name = ctx.from?.first_name ?? 'du'
 	let text = `Hey ${name}!`
 	text += '\n\n'
@@ -38,7 +38,9 @@ bot.command(['start', 'help'], async ctx => {
 			[{text: '🦑 Quellcode', url: 'https://github.com/HAWHHCalendarBot'}],
 		]},
 	})
-})
+}
+
+bot.command(['start', 'help'], startMessage)
 
 bot.use(async (ctx, next) => {
 	try {
@@ -90,6 +92,12 @@ bot.use(changesInline.bot)
 bot.use(easterEggs.bot)
 
 bot.use(menu)
+
+// Fallback for the old main menu
+bot.callbackQuery(/^\//, async ctx => {
+	await ctx.answerCallbackQuery()
+	await startMessage(ctx)
+})
 
 const COMMANDS = {
 	mensa: 'zeige das heutige Mensaessen deiner Mensa',
