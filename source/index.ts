@@ -27,6 +27,19 @@ if (process.env['NODE_ENV'] !== 'production') {
 	bot.use(generateUpdateMiddleware())
 }
 
+bot.command(['start', 'help'], async ctx => {
+	const name = ctx.from?.first_name ?? 'du'
+	let text = `Hey ${name}!`
+	text += '\n\n'
+	text += ctx.t('help')
+	await ctx.reply(text, {
+		reply_markup: {inline_keyboard: [
+			[{text: 'hawhh.de/calendarbot/', url: 'https://hawhh.de/calendarbot/'}],
+			[{text: '🦑 Quellcode', url: 'https://github.com/HAWHHCalendarBot'}],
+		]},
+	})
+})
+
 bot.use(async (ctx, next) => {
 	try {
 		if (next) {
@@ -78,14 +91,16 @@ bot.use(easterEggs.bot)
 
 bot.use(menu)
 
-await bot.api.setMyCommands([
-	{command: 'start', description: 'öffne das Menü'},
-	{
-		command: 'mensa',
-		description: 'zeige das heutige Mensaessen deiner Mensa',
-	},
-	{command: 'settings', description: 'setze Einstellungen des Bots'},
-])
+const COMMANDS = {
+	mensa: 'zeige das heutige Mensaessen deiner Mensa',
+	events: 'verwalte deine aktuellen Veranstaltungen',
+	subscribe: 'abboniere deinen persönlichen Kalender',
+	help: 'kurze Beschreibung, was dieser Bot kann',
+	about: 'Infos und Statistiken über den Bot',
+	privacy: 'über dich gespeicherte Daten',
+	stop: 'stoppe den Bot und lösche alle Daten über dich',
+} as const
+await bot.api.setMyCommands(Object.entries(COMMANDS).map(([command, description]) => ({command, description})))
 
 await bot.start({
 	onStart(botInfo) {

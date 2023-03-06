@@ -1,9 +1,8 @@
 import {html as format} from 'telegram-format'
 import {MenuTemplate} from 'grammy-inline-menu'
 import type {Body} from 'grammy-inline-menu'
-import {backMainButtons} from '../lib/inline-menu.js'
-import {getCanteenList} from '../lib/mensa-meals.js'
 import * as allEvents from '../lib/all-events.js'
+import {getCanteenList} from '../lib/mensa-meals.js'
 import type {MyContext} from '../lib/types.js'
 
 export const menu = new MenuTemplate(menuBody)
@@ -37,5 +36,3 @@ menu.url('😌 PayPal Spende', 'https://www.paypal.com/donate?hosted_button_id=L
 
 menu.url('🦑 Quellcode', 'https://github.com/HAWHHCalendarBot')
 menu.url('🦑 Änderungshistorie', 'https://github.com/HAWHHCalendarBot/TelegramBot/releases', {joinLastRow: true})
-
-menu.manualRow(backMainButtons)

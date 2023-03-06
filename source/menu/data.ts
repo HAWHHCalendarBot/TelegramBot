@@ -3,8 +3,7 @@ import {getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-men
 import {html as format} from 'telegram-format'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
 import type {Body} from 'grammy-inline-menu'
-import {backMainButtons} from '../../lib/inline-menu.js'
-import type {MyContext, Userconfig} from '../../lib/types.js'
+import type {MyContext, Userconfig} from '../lib/types.js'
 
 async function getActualUserconfigContent(
 	context: MyContext,
@@ -65,6 +64,8 @@ const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Eins
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
 
+menu.url('🦑 Quellcode', 'https://github.com/HAWHHCalendarBot')
+
 const deleteAllQuestion = new StatelessQuestion<MyContext>('delete-everything', async (context, path) => {
 	if ('text' in context.message && context.message.text === deleteConfirmString) {
 		// @ts-expect-error delete readonly
@@ -86,5 +87,3 @@ menu.interact('⚠️ Alles löschen ⚠️', 'delete-all', {
 		return false
 	},
 })
-
-menu.manualRow(backMainButtons)

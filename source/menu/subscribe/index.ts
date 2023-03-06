@@ -4,6 +4,7 @@ import type {Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getUrlFromContext} from '../../lib/calendar-helper.js'
 import type {MyContext} from '../../lib/types.js'
+import {menu as removedStyleMenu} from './removed-style.js'
 import * as suffixMenu from './suffix.js'
 
 export const bot = new Composer<MyContext>()
@@ -34,8 +35,7 @@ freestyleMenu.manualRow(backMainButtons)
 menu.submenu('Freestyle 😎', 'freestyle', freestyleMenu)
 
 menu.submenu('⚙️ URL Privacy', 'suffix', suffixMenu.menu)
-
-menu.manualRow(backMainButtons)
+menu.submenu('⚙️ Anzeigeart entfernter Termine', 'showRemoved', removedStyleMenu)
 
 function generateBody(resourceKeySuffix: string): (ctx: MyContext) => Body {
 	return ctx => ({

@@ -1,40 +1,50 @@
 import {Composer} from 'grammy'
-import {MenuMiddleware, MenuTemplate} from 'grammy-inline-menu'
+import {MenuMiddleware} from 'grammy-inline-menu'
 import type {MyContext} from '../lib/types.js'
 import * as about from './about.js'
 import * as admin from './admin/index.js'
+import * as data from './data.js'
 import * as events from './events/index.js'
-import * as mensa from './mensa.js'
-import * as settings from './settings/index.js'
+import * as mensa from './mensa/index.js'
 import * as subscribe from './subscribe/index.js'
 
 export const bot = new Composer<MyContext>()
-const menu = new MenuTemplate<MyContext>(context => `Hey ${context.from!.first_name}!`)
 
-bot.use(admin.bot)
+const mensaMiddleware = new MenuMiddleware('mensa/', mensa.menu)
+bot.command('mensa', async ctx => mensaMiddleware.replyToContext(ctx))
+bot.use(mensaMiddleware)
+
+const eventMiddleware = new MenuMiddleware('e/', events.menu)
+bot.command('events', async ctx => eventMiddleware.replyToContext(ctx))
 bot.use(events.bot)
-bot.use(settings.bot)
+bot.use(eventMiddleware)
+
+const subscribeMiddleware = new MenuMiddleware('subscribe/', subscribe.menu)
+bot.command('subscribe', async ctx => {
+	// eslint-disable-next-line unicorn/prefer-ternary
+	if (Object.keys(ctx.userconfig.mine.events).length === 0) {
+		await ctx.reply(ctx.t('subscribe-empty'))
+	} else {
+		await subscribeMiddleware.replyToContext(ctx)
+	}
+})
 bot.use(subscribe.bot)
+bot.use(subscribeMiddleware)
 
-menu.submenu('🏢 Veranstaltungen', 'e', events.menu)
-menu.submenu('📲 Kalender abonnieren', 'subscribe', subscribe.menu, {
-	hide: context => Object.keys(context.userconfig.mine.events).length === 0,
-})
+const aboutMiddleware = new MenuMiddleware('about/', about.menu)
+bot.command('about', async ctx => aboutMiddleware.replyToContext(ctx))
+bot.use(aboutMiddleware)
 
-menu.submenu('🍽 Mensa', 'mensa', mensa.menu)
+const dataMiddleware = new MenuMiddleware('data/', data.menu)
+bot.command(['data', 'privacy', 'stop'], async ctx => dataMiddleware.replyToContext(ctx))
+bot.use(data.bot)
+bot.use(dataMiddleware)
 
-menu.submenu('😇 Admin Area', 'admin', admin.menu, {
-	hide: admin.hide,
-})
-
-menu.submenu('ℹ️📈 Über den Bot', 'about', about.menu)
-menu.submenu('⚙️ Einstellungen', 'settings', settings.menu, {joinLastRow: true})
-
-const middleware = new MenuMiddleware('/', menu)
-
-bot.command('start', async context => middleware.replyToContext(context))
-bot.command('mensa', async context => middleware.replyToContext(context, '/mensa/'))
-bot.command('settings', async context => middleware.replyToContext(context, '/settings/'))
-bot.command('stop', async context => middleware.replyToContext(context, '/settings/data/'))
-
-bot.use(middleware)
+const adminComposer = new Composer<MyContext>()
+const adminMiddleware = new MenuMiddleware('admin/', admin.menu)
+adminComposer.command('admin', async ctx => adminMiddleware.replyToContext(ctx))
+adminComposer.use(admin.bot)
+adminComposer.use(adminMiddleware)
+// False positive
+// eslint-disable-next-line unicorn/no-array-method-this-argument
+bot.filter(ctx => Boolean(ctx.userconfig.mine.admin), adminComposer)

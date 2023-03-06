@@ -1,10 +1,10 @@
 import {MenuTemplate} from 'grammy-inline-menu'
 import type {Body} from 'grammy-inline-menu'
-import {backMainButtons} from '../lib/inline-menu.js'
-import {generateMealText} from '../lib/mensa-helper.js'
-import {getMealsOfDay} from '../lib/mensa-meals.js'
-import * as mensaGit from '../lib/mensa-git.js'
-import type {MyContext} from '../lib/types.js'
+import {generateMealText} from '../../lib/mensa-helper.js'
+import {getMealsOfDay} from '../../lib/mensa-meals.js'
+import * as mensaGit from '../../lib/mensa-git.js'
+import type {MyContext} from '../../lib/types.js'
+import {menu as mensaSettingsMenu} from './settings.js'
 
 const WEEKDAYS: readonly string[] = [
 	'Sonntag',
@@ -163,4 +163,4 @@ menu.choose('m', mensaSelectOption, {
 	},
 })
 
-menu.manualRow(backMainButtons)
+menu.submenu('⚙️ Mensa Einstellungen', 'settings', mensaSettingsMenu)
