@@ -19,6 +19,18 @@ website-stalker-help =
 
   Alternativ kannst du die Änderungen auch als RSS-Feed mit deinem Feedreader abonnieren. Abonniere dazu folgende URL: https://github.com/HAWHHCalendarBot/study-website-stalker/commits/main.atom
 
+privacy-overview =
+  Auf dem Server wird geloggt, wenn Aktionen von Nutzern zu einem neu Bauen von Kalendern oder ungewollten Fehlern führen. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.
+  Der Quellcode dieses Bots ist auf <a href="https://github.com/HAWHHCalendarBot">GitHub</a> verfügbar.
+
+privacy-telegram =
+  Jeder Telegram Bot kann diese User Infos abrufen, wenn du mit ihm interagierst. Um dies zu verhindern, blockiere den Bot.
+
+privacy-persistent =
+  Damit dein Kalender generiert oder deine Mensa Einstellungen gespeichert werden können, werden einige Daten persistent auf dem Server hinterlegt. Wenn du alle Daten über dich löschen lassen möchtest, wähle "Alles löschen".
+
+privacy-tmp =
+  Diese Daten werden nur temporär gehalten und sind nur bis zum Neustart des Servers im RAM hinterlegt.
 
 subscribe-overview =
   <b>Kalender abonnieren</b>

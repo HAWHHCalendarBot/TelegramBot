@@ -16,45 +16,38 @@ async function getActualUserconfigContent(
 	return userconfig?.config
 }
 
+const PRIVACY_SECTIONS = {
+	telegram: 'Telegram',
+	persistent: 'Persistent',
+	tmp: 'Temporär',
+}
+type PrivacySection = keyof typeof PRIVACY_SECTIONS
+
 async function menuBody(context: MyContext): Promise<Body> {
-	const github = format.url('GitHub', 'https://github.com/HAWHHCalendarBot')
+	const part = privacyInfoPart(context, context.session.privacySection ?? 'persistent')
 
-	let text = ''
-
-	text += '\nAuf dem Server wird geloggt, wenn Aktionen von Nutzern zu einem neu Bauen von Kalendern oder ungewollten Fehlern führen. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.'
-	text += `\nDer Quellcode dieses Bots ist auf ${github} verfügbar.`
-	text += '\n'
-	text += '\nDie folgenden Daten werden auf dem Server über dich gespeichert. Wenn du alle Daten über dich löschen lassen möchtest, wähle "Alles löschen".'
-
+	let text = context.t('privacy-overview')
 	text += '\n\n'
-	text += format.bold('Telegram User Info')
+	text += format.bold(part.title)
 	text += '\n'
-	text += 'Jeder Telegram Bot kann diese User Infos abrufen, wenn du mit ihm interagierst.'
-	text += ' Um dies zu verhindern, blockiere den Bot.'
+	text += part.text
 	text += '\n'
-	text += format.monospaceBlock(JSON.stringify(context.from, null, 2), 'json')
+	text += format.monospaceBlock(JSON.stringify(part.data, null, 1), 'json')
 
-	text += '\n\n'
-	text += format.bold('Persistente Einstellungen im Bot')
-	text += '\n'
-	text += 'Damit dein Kalender generiert oder deine Mensa Einstellungen gespeichert werden können, werden einige Daten persistent auf dem Server hinterlegt.'
-	text += '\n'
-	text += format.monospaceBlock(
-		JSON.stringify(context.userconfig.mine, null, 2),
-		'json',
-	)
+	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true}
+}
 
-	text += '\n\n'
-	text += format.bold('Temporäre Daten des Bots')
-	text += '\n'
-	text += 'Diese Daten werden nur temporär gehalten und sind nur bis zum Neustart des Servers im RAM hinterlegt.'
-	text += '\n'
-	text += format.monospaceBlock(
-		JSON.stringify(context.session, null, 2),
-		'json',
-	)
+function privacyInfoPart(ctx: MyContext, section: PrivacySection) {
+	const text = ctx.t('privacy-' + section)
+	if (section === 'telegram') {
+		return {text, title: 'Telegram User Info', data: ctx.from}
+	}
 
-	return {text, parse_mode: format.parse_mode}
+	if (section === 'persistent') {
+		return {text, title: 'Persistente Einstellungen im Bot', data: ctx.userconfig.mine}
+	}
+
+	return {text, title: 'Temporäre Daten des Bots', data: ctx.session}
 }
 
 const deleteConfirmString = 'Ja, ich will!'
@@ -63,6 +56,14 @@ const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Eins
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)
+
+menu.select('section', PRIVACY_SECTIONS, {
+	isSet: (ctx, key) => (ctx.session.privacySection ?? 'persistent') === key,
+	set(ctx, key) {
+		ctx.session.privacySection = key as PrivacySection
+		return true
+	},
+})
 
 menu.url('🦑 Quellcode', 'https://github.com/HAWHHCalendarBot')
 

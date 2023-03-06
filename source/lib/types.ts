@@ -25,6 +25,7 @@ export type Session = {
 	eventfilter?: string;
 	generateChange?: Partial<Change>;
 	page?: number;
+	privacySection?: 'telegram' | 'persistent' | 'tmp';
 	mensa?: {
 		mensa?: string;
 		date?: number;
