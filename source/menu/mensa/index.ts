@@ -81,7 +81,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	const weekday = WEEKDAYS[date.getDay()]!
 	const {year, month, day} = getYearMonthDay(date)
 	let text = ''
-	text += `Mensa <b>${mensa}</b>`
+	text += `<b>${mensa}</b>`
 	text += '\n'
 	text += `${weekday} ${day}.${month}.${year}`
 	text += '\n'
