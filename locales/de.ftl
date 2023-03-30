@@ -50,7 +50,7 @@ subscribe-apple =
 
 subscribe-exchange =
   <b>Kalender abonnieren mit dem HAW-Mailer</b>
-  Im <a href="https://www.haw-hamburg.de/online-services/haw-mailer.html">HAW-Mailer</a> oben links auf die Kalender Ansicht wechseln. Dann in der Menüleiste oben mittig auf das Drop-Down-Menü von "Kalender hinzufügen" auf "Aus dem Internet". Im aufgehenden Fenster in das Textfeld "Link zum Kalender" die folgende URL einfügen:
+  Im <a href="https://outlook.office.com/calendar">HAW-Mailer-Kalender</a> links in der Menüleiste mittig auf "Kalender hinzufügen". Dann im aufgehenden Fenster links mittig auf "Aus dem Internet abbonieren". In das Textfeld "Beispiel: webcal://www.contoso.com/calendar.ics" die folgende URL einfügen:
   <code>https://{$url}</code>
 
   Der Kalender wird nun alle paar Stunden vom HAW-Mailer aktualisiert. Wenn du dein Handy mit dem HAW-Mailer (Exchange) synchronisierst, ist der Kalender ebenfalls enthalten. Funktioniert mit iOS, Android und Gnome Online Accounts sehr entspannt und du hast gleich deine HAW E-Mails mit dabei.
