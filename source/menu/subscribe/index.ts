@@ -18,15 +18,15 @@ appleMenu.manualRow(backMainButtons)
 menu.submenu('🍏 iOS / macOS', 'apple', appleMenu)
 
 const exchangeMenu = new MenuTemplate(generateBody('exchange'))
-exchangeMenu.url('HAW Mailer', 'https://www.haw-hamburg.de/online-services/haw-mailer.html')
+exchangeMenu.url('Office.com', 'https://outlook.office.com/calendar')
 exchangeMenu.manualRow(backMainButtons)
-menu.submenu('🗂 HAW Mailer (Exchange)', 'exchange', exchangeMenu)
+menu.submenu('🗂 Office.com (HAW Account)', 'exchange', exchangeMenu)
 
 const googleMenu = new MenuTemplate(generateBody('google'))
 menu.submenu('🍰 Google Kalender', 'google', googleMenu)
 googleMenu.url('Google Calendar', 'https://calendar.google.com/')
 googleMenu.url('Google Sync Settings', 'https://www.google.com/calendar/syncselect')
-googleMenu.navigate('abonnieren mit dem HAW-Mailer (Exchange)', '../exchange/')
+googleMenu.navigate('abonnieren mit dem Office.com HAW Account', '../exchange/')
 googleMenu.manualRow(backMainButtons)
 
 const freestyleMenu = new MenuTemplate(generateBody('freestyle'))

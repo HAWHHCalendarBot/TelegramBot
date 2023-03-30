@@ -49,11 +49,11 @@ subscribe-apple =
   Unter <b>iOS</b> ist dies bereits der Standard und funktioniert direkt.
 
 subscribe-exchange =
-  <b>Kalender abonnieren mit dem HAW-Mailer</b>
-  Im <a href="https://outlook.office.com/calendar">HAW-Mailer-Kalender</a> links in der Menüleiste mittig auf "Kalender hinzufügen". Dann im aufgehenden Fenster links mittig auf "Aus dem Internet abbonieren". In das Textfeld "Beispiel: webcal://www.contoso.com/calendar.ics" die folgende URL einfügen:
+  <b>Kalender abonnieren mit Office.com HAW Account</b>
+  Im <a href="https://outlook.office.com/calendar">Office.com-Kalender</a> links in der Menüleiste mittig auf "Kalender hinzufügen". Dann im aufgehenden Fenster links mittig auf "Aus dem Internet abbonieren". In das Textfeld "Beispiel: webcal://www.contoso.com/calendar.ics" die folgende URL einfügen:
   <code>https://{$url}</code>
 
-  Der Kalender wird nun alle paar Stunden vom HAW-Mailer aktualisiert. Wenn du dein Handy mit dem HAW-Mailer (Exchange) synchronisierst, ist der Kalender ebenfalls enthalten. Funktioniert mit iOS, Android und Gnome Online Accounts sehr entspannt und du hast gleich deine HAW E-Mails mit dabei.
+  Der Kalender wird nun alle paar Stunden von Office.com aktualisiert. Wenn du dein Handy mit dem Office.com Account (Exchange) synchronisierst, ist der Kalender ebenfalls enthalten. Funktioniert mit iOS, Android und Gnome Online Accounts sehr entspannt und du hast gleich deine HAW E-Mails mit dabei.
 
   Erinnerungen scheinen nicht zu funktionieren, da diese automatisch beim Abonnieren entfernt werden. Ein Deaktivieren des automatischen Löschens dieser habe ich leider bisher nicht gefunden. Hinweise gern an @EdJoPaTo 😇
 
