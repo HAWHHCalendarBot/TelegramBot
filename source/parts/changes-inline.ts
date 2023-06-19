@@ -46,8 +46,10 @@ bot.on('inline_query', async context => {
 	await context.answerInlineQuery(results, {
 		cache_time: 20,
 		is_personal: true,
-		switch_pm_parameter: 'changes',
-		switch_pm_text: 'Zum Bot',
+		button: {
+			start_parameter: 'changes',
+			text: 'Zum Bot',
+		},
 	})
 })
 
