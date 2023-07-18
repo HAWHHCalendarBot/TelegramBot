@@ -9,7 +9,7 @@ const example = {
 	Alcohol: false,
 	Beef: false,
 	Category: 'Food',
-	Date: '/Date(1536883200000+0000)/',
+	Date: '2018-09-14',
 	Fish: false,
 	LactoseFree: false,
 	Name: '4 Röstiecken, Kräuterquark (La), Gurkensalat (La)',

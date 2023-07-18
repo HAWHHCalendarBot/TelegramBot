@@ -13,6 +13,7 @@ const settingName = {
 	vegan: 'vegan',
 	vegetarian: 'vegetarisch',
 	lactoseFree: 'laktosefrei',
+	noAlcohol: 'kein Alkohol',
 	noBeef: 'kein Rindfleisch',
 	noFish: 'kein Fisch',
 	noGame: 'kein Wild',
@@ -181,6 +182,7 @@ function showWishAsOption(context: MyContext, wish: MealWish): boolean {
 			return !wishes.vegan
 		}
 
+		case 'noAlcohol':
 		case 'vegan': {
 			return true
 		}

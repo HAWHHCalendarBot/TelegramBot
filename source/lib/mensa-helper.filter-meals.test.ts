@@ -5,7 +5,7 @@ import type {Meal} from './meal.js'
 const BASE_MEAL = {
 	Additives: {},
 	Category: 'Test Meal',
-	Date: '2021-05-18T07:39Z',
+	Date: '2021-05-18',
 	PriceAttendant: 0,
 	PriceGuest: 0,
 	PriceStudent: 0,

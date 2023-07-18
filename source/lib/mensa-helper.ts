@@ -7,13 +7,17 @@ export function filterMeals(
 	specialWishes: Readonly<MealWishes>,
 ): Meal[] {
 	return meals
+		.filter(m => !specialWishes.noAlcohol || !m.Alcohol)
 		.filter(m => !specialWishes.noBeef || !m.Beef)
 		.filter(m => !specialWishes.noFish || !m.Fish)
+		.filter(m => !specialWishes.noGame || !m.Game)
+		.filter(m => !specialWishes.noGelatine || !m.Gelatine)
+		.filter(m => !specialWishes.noLamb || !m.Lamb)
 		.filter(m => !specialWishes.noPig || !m.Pig)
 		.filter(m => !specialWishes.noPoultry || !m.Poultry)
 		.filter(m => !specialWishes.lactoseFree || m.LactoseFree)
 		.filter(m => !specialWishes.vegan || m.Vegan)
-		.filter(m => !specialWishes.vegetarian || m.Vegan || m.Vegetarian)
+		.filter(m => !specialWishes.vegetarian || Boolean(m.Vegan) || m.Vegetarian)
 }
 
 export function generateMealText(

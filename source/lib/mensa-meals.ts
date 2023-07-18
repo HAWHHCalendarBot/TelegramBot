@@ -16,12 +16,10 @@ function getFilename(
 	month: number,
 	day: number,
 ): string {
-	let filename = `mensa-data/${mensa}/`
-	filename += year.toLocaleString(undefined, {minimumIntegerDigits: 4, useGrouping: false})
-	filename += month.toLocaleString(undefined, {minimumIntegerDigits: 2})
-	filename += day.toLocaleString(undefined, {minimumIntegerDigits: 2})
-	filename += '.json'
-	return filename
+	const y = year.toLocaleString(undefined, {minimumIntegerDigits: 4, useGrouping: false})
+	const m = month.toLocaleString(undefined, {minimumIntegerDigits: 2})
+	const d = day.toLocaleString(undefined, {minimumIntegerDigits: 2})
+	return `mensa-data/${mensa}/${y}/${m}/${d}.json`
 }
 
 export async function getMealsOfDay(

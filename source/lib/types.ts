@@ -67,6 +67,7 @@ export type MensaPriceClass = 'student' | 'attendant' | 'guest'
 
 export type MealWishes = {
 	lactoseFree?: boolean;
+	noAlcohol?: boolean;
 	noBeef?: boolean;
 	noFish?: boolean;
 	noGame?: boolean;
