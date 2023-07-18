@@ -6,7 +6,7 @@ const removedEventsOptions = {
 	cancelled: '👌 Standard',
 	removed: '🗑 komplett entfernen',
 	emoji: '🚫 erzwungen',
-}
+} as const satisfies Record<RemovedEventsDisplayStyle, string>
 
 export const menu = new MenuTemplate<MyContext>(ctx => ({
 	text: ctx.t('subscribe-removed-setting'),

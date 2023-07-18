@@ -2,7 +2,7 @@ import test from 'ava'
 import {mealNameToHtml, mealToHtml} from './mensa-helper.js'
 import type {Meal} from './meal.js'
 
-const example: Meal = {
+const example = {
 	Additives: {
 		La: 'Milch/-erzeugnisse (einschl. Laktose)',
 	},
@@ -20,7 +20,7 @@ const example: Meal = {
 	PriceStudent: 2.45,
 	Vegan: false,
 	Vegetarian: true,
-}
+} as const satisfies Meal
 
 test('example student without Additives', t => {
 	let expected = '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>'

@@ -9,7 +9,7 @@ function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫'
 }
 
-const settingName: Readonly<Record<MealWish, string>> = {
+const settingName = {
 	vegan: 'vegan',
 	vegetarian: 'vegetarisch',
 	lactoseFree: 'laktosefrei',
@@ -20,7 +20,7 @@ const settingName: Readonly<Record<MealWish, string>> = {
 	noLamb: 'kein Lamm',
 	noPig: 'kein Schweinefleisch',
 	noPoultry: 'kein Geflügel',
-}
+} as const satisfies Record<MealWish, string>
 const MealWishOptions = Object.keys(settingName) as readonly MealWish[]
 
 export const menu = new MenuTemplate<MyContext>({
@@ -132,7 +132,7 @@ const priceOptions = {
 	student: 'Student',
 	attendant: 'Angestellt',
 	guest: 'Gast',
-}
+} as const satisfies Record<MensaPriceClass, string>
 
 menu.select('price', priceOptions, {
 	set(context, price) {

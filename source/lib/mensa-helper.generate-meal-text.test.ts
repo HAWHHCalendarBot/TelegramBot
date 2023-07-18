@@ -2,7 +2,7 @@ import test from 'ava'
 import {generateMealText} from './mensa-helper.js'
 import type {Meal} from './meal.js'
 
-const example: Meal = {
+const example = {
 	Additives: {
 		La: 'Milch/-erzeugnisse (einschl. Laktose)',
 	},
@@ -20,10 +20,10 @@ const example: Meal = {
 	PriceStudent: 2.45,
 	Vegan: false,
 	Vegetarian: true,
-}
+} as const satisfies Meal
 
 // Shortened
-const bracketsInNameExample: Meal = {
+const bracketsInNameExample = {
 	Additives: {
 		1: 'Farbstoffe',
 		2: 'Konservierungsstoffe',
@@ -45,7 +45,7 @@ const bracketsInNameExample: Meal = {
 	PriceStudent: 3.5,
 	Vegan: false,
 	Vegetarian: false,
-}
+} as const satisfies Meal
 
 test('shows hint when something is filtered', t => {
 	const result = generateMealText([example], {

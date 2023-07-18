@@ -20,7 +20,7 @@ const PRIVACY_SECTIONS = {
 	telegram: 'Telegram',
 	persistent: 'Persistent',
 	tmp: 'Temporär',
-}
+} as const
 type PrivacySection = keyof typeof PRIVACY_SECTIONS
 
 async function menuBody(context: MyContext): Promise<Body> {

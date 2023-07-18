@@ -9,9 +9,9 @@ const BASE_MEAL = {
 	PriceAttendant: 0,
 	PriceGuest: 0,
 	PriceStudent: 0,
-}
+} as const
 
-const TEST_MEALS: readonly Meal[] = [
+const TEST_MEALS = [
 	{
 		...BASE_MEAL,
 		Alcohol: false,
@@ -68,7 +68,7 @@ const TEST_MEALS: readonly Meal[] = [
 		Vegan: false,
 		Vegetarian: false,
 	},
-]
+] as const satisfies readonly Meal[]
 
 test('filterfrei', t => {
 	const filtered = filterMeals(TEST_MEALS, {})

@@ -24,7 +24,7 @@ export function generateMealText(
 		return 'Die Mensa bietet heute nichts an.'
 	}
 
-	const hints = []
+	const hints: string[] = []
 
 	const filtered = filterMeals(meals, mensaSettings)
 	const mealTexts = filtered.map(m => mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives))
@@ -92,7 +92,7 @@ export function mealToHtml(
 	let text = `${name}\n`
 	text += `${priceString} €`
 
-	const infos = []
+	const infos: string[] = []
 
 	if (meal.Pig) {
 		infos.push('🐷')

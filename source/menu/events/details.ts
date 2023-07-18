@@ -84,7 +84,7 @@ const alertChoices = {
 	60: '1 Stunde',
 	120: '2 Stunden',
 	1337: '1337 Minuten',
-}
+} as const
 
 alertMenu.choose('t', alertChoices, {
 	columns: 3,

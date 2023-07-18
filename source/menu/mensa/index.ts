@@ -6,7 +6,7 @@ import * as mensaGit from '../../lib/mensa-git.js'
 import type {MyContext} from '../../lib/types.js'
 import {menu as mensaSettingsMenu} from './settings.js'
 
-const WEEKDAYS: readonly string[] = [
+const WEEKDAYS = [
 	'Sonntag',
 	'Montag',
 	'Dienstag',
@@ -14,7 +14,7 @@ const WEEKDAYS: readonly string[] = [
 	'Donnerstag',
 	'Freitag',
 	'Samstag',
-]
+] as const
 const DAY_IN_MS = 1000 * 60 * 60 * 24
 
 setInterval(async () => mensaGit.pull(), 1000 * 60 * 30) // Every 30 minutes
@@ -108,7 +108,7 @@ function daySelectOptions(context: MyContext): Record<string, string> {
 		return {}
 	}
 
-	const dateOptions = []
+	const dateOptions: Date[] = []
 	const daysInFuture = 6
 
 	for (let i = 0; i < daysInFuture; i++) {
