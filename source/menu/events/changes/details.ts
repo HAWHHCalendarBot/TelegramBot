@@ -8,7 +8,7 @@ export function generateChangeAction(change: Change): string {
 }
 
 function getChangeFromContext(context: MyContext): Change | undefined {
-	const name = context.match![1]!.replace(/;/g, '/')
+	const name = context.match![1]!.replaceAll(';', '/')
 	const date = context.match![2]!
 
 	return context.userconfig.mine.changes

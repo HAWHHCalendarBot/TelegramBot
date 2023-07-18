@@ -79,7 +79,7 @@ async function eventOptions(
 ): Promise<Record<string, string>> {
 	try {
 		const all = await findEvents(context)
-		return Object.fromEntries(all.map(event => [event.replace(/\//g, ';'), event]))
+		return Object.fromEntries(all.map(event => [event.replaceAll('/', ';'), event]))
 	} catch {
 		return {}
 	}
@@ -89,7 +89,7 @@ menu.choose('a', eventOptions, {
 	maxRows: MAX_RESULT_ROWS,
 	columns: RESULT_COLUMNS,
 	async do(context, key) {
-		const event = key.replace(/;/g, '/')
+		const event = key.replaceAll(';', '/')
 		const isExisting = await allEventsExists(event)
 		const isAlreadyInCalendar = Object.keys(context.userconfig.mine.events)
 			.includes(event)

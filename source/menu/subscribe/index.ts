@@ -46,6 +46,6 @@ function generateBody(resourceKeySuffix: string): (ctx: MyContext) => Body {
 		})
 			// Remove Isolate Characters which are inserted automatically by Fluent.
 			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
-			.replace(/[\u2068\u2069]+/g, ''),
+			.replaceAll(/[\u2068\u2069]+/g, ''),
 	})
 }

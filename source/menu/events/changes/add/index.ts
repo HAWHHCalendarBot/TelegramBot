@@ -24,7 +24,7 @@ function menuBody(context: MyContext): Body {
 	}
 
 	if (context.match) {
-		context.session.generateChange.name = context.match[1]!.replace(/;/g, '/')
+		context.session.generateChange.name = context.match[1]!.replaceAll(';', '/')
 	}
 
 	const {name, date, add} = context.session.generateChange
@@ -97,7 +97,7 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 async function possibleTimesToCreateChangeToOptions(
 	context: MyContext,
 ): Promise<Record<string, string>> {
-	const name = context.match![1]!.replace(/;/g, '/')
+	const name = context.match![1]!.replaceAll(';', '/')
 	const {date} = context.session.generateChange ?? {}
 
 	if (date) {

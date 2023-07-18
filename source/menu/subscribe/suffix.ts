@@ -17,7 +17,7 @@ function menuBody(context: MyContext): Body {
 		})
 			// Remove Isolate Characters which are inserted automatically by Fluent.
 			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
-			.replace(/[\u2068\u2069]+/g, ''),
+			.replaceAll(/[\u2068\u2069]+/g, ''),
 	}
 }
 
@@ -26,7 +26,7 @@ const SUFFIX_MIN_LENGTH = 3
 
 async function setSuffix(context: MyContext, value: string): Promise<void> {
 	value = String(value)
-		.replace(/[^\w\d]/g, '')
+		.replaceAll(/[^\w\d]/g, '')
 		.slice(0, SUFFIX_MAX_LENGTH)
 	if (value.length < SUFFIX_MIN_LENGTH) {
 		return

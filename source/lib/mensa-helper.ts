@@ -59,12 +59,12 @@ export function mealNameToHtml(
 ): string {
 	const parsedName = name
 	// Remove / un-bold additives at the end
-		.replace(/ \(([\d\w, ]+)\)$/g, showAdditives ? '</b> ($1)<b>' : '')
+		.replaceAll(/ \(([\d\w, ]+)\)$/g, showAdditives ? '</b> ($1)<b>' : '')
 	// Remove / un-bold additives within the name
-		.replace(/ \(([\d\w, ]+)\), /g, showAdditives ? '</b> ($1), <b>' : ', ')
+		.replaceAll(/ \(([\d\w, ]+)\), /g, showAdditives ? '</b> ($1), <b>' : ', ')
 
 	const fullName = `<b>${parsedName}</b>`
-	return fullName.replace(/<b><\/b>/g, '')
+	return fullName.replaceAll('<b></b>', '')
 }
 
 export function mealAdditivesToHtml(meals: readonly Meal[]): string {

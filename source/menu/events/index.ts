@@ -92,7 +92,7 @@ function getEventOptions(context: MyContext): Record<string, string> {
 			title += '🗒'
 		}
 
-		result[name.replace(/\//g, ';')] = title.trim()
+		result[name.replaceAll('/', ';')] = title.trim()
 	}
 
 	return result
