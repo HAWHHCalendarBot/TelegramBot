@@ -15,17 +15,46 @@ if (!token) {
 	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)')
 }
 
-const bot = new Bot<MyContext>(token)
+const baseBot = new Bot<MyContext>(token)
+
+if (process.env['NODE_ENV'] !== 'production') {
+	baseBot.use(generateUpdateMiddleware())
+}
+
+const bot = baseBot.errorBoundary(async ({error, ctx}) => {
+	if (error instanceof Error && error.message.includes('Too Many Requests')) {
+		console.warn('grammY Too Many Requests error. Skip.', error)
+		return
+	}
+
+	console.error(
+		'try to send error to user',
+		ctx.update,
+		error,
+		(error as any)?.on?.payload,
+	)
+	let text = '🔥 Da ist wohl ein Fehler aufgetreten…'
+	text += '\n'
+	text += 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️'
+
+	text += '\n'
+	text += '\nError: `'
+	const errorText = error instanceof Error ? error.message : String(error)
+	text += errorText.replace(token, '')
+	text += '`'
+
+	const target = (ctx.chat ?? ctx.from!).id
+	await ctx.api.sendMessage(target, text, {
+		parse_mode: 'Markdown',
+		disable_web_page_preview: true,
+	})
+})
 
 export const i18n = new I18n({
 	defaultLocale: 'de',
 	directory: 'locales',
 })
-bot.use(i18n.middleware())
-
-if (process.env['NODE_ENV'] !== 'production') {
-	bot.use(generateUpdateMiddleware())
-}
+bot.use(i18n)
 
 async function startMessage(ctx: MyContext) {
 	const name = ctx.from?.first_name ?? 'du'
@@ -41,41 +70,6 @@ async function startMessage(ctx: MyContext) {
 }
 
 bot.command(['start', 'help'], startMessage)
-
-bot.use(async (ctx, next) => {
-	try {
-		if (next) {
-			await next()
-		}
-	} catch (error: unknown) {
-		if (error instanceof Error && error.message.includes('Too Many Requests')) {
-			console.warn('grammY Too Many Requests error. Skip.', error)
-			return
-		}
-
-		console.error(
-			'try to send error to user',
-			ctx.update,
-			error,
-			(error as any)?.on?.payload,
-		)
-		let text = '🔥 Da ist wohl ein Fehler aufgetreten…'
-		text += '\n'
-		text += 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️'
-
-		text += '\n'
-		text += '\nError: `'
-		const errorText = error instanceof Error ? error.message : String(error)
-		text += errorText.replace(token, '')
-		text += '`'
-
-		const target = (ctx.chat ?? ctx.from!).id
-		await ctx.api.sendMessage(target, text, {
-			parse_mode: 'Markdown',
-			disable_web_page_preview: true,
-		})
-	}
-})
 
 bot.use(session<Session, MyContext>({
 	initial() {
@@ -108,9 +102,9 @@ const COMMANDS = {
 	privacy: 'über dich gespeicherte Daten',
 	stop: 'stoppe den Bot und lösche alle Daten über dich',
 } as const
-await bot.api.setMyCommands(Object.entries(COMMANDS).map(([command, description]) => ({command, description})))
+await baseBot.api.setMyCommands(Object.entries(COMMANDS).map(([command, description]) => ({command, description})))
 
-await bot.start({
+await baseBot.start({
 	onStart(botInfo) {
 		console.log(new Date(), 'Bot starts as', botInfo.username)
 	},
