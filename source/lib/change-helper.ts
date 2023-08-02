@@ -70,7 +70,7 @@ export async function loadEvents(
 		}))
 
 		return parsed
-	} catch (error: unknown) {
+	} catch (error) {
 		console.error('ERROR while loading events for change date picker', error)
 		return []
 	}

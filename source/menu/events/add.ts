@@ -28,7 +28,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 		text += filter === DEFAULT_FILTER
 			? `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
 			: `Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`
-	} catch (error: unknown) {
+	} catch (error) {
 		const errorText = error instanceof Error ? error.message : String(error)
 		text += 'Filter Error: '
 		text += format.monospace(errorText)
