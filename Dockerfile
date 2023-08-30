@@ -31,4 +31,4 @@ COPY locales locales
 COPY --from=builder /build/dist ./
 
 ENTRYPOINT ["node", "--enable-source-maps"]
-CMD ["index.js"]
+CMD ["hawhh-calendarbot-telegrambot.js"]

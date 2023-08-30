@@ -1,3 +1,4 @@
+import {env} from 'node:process'
 import {Bot, session} from 'grammy'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
 import {I18n} from '@grammyjs/i18n'
@@ -8,16 +9,14 @@ import * as changesInline from './parts/changes-inline.js'
 import * as easterEggs from './parts/easter-eggs.js'
 import type {MyContext, Session} from './lib/types.js'
 
-process.title = 'calendarbot-tgbot'
-
-const token = process.env['BOT_TOKEN']
+const token = env['BOT_TOKEN']
 if (!token) {
 	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)')
 }
 
 const baseBot = new Bot<MyContext>(token)
 
-if (process.env['NODE_ENV'] !== 'production') {
+if (env['NODE_ENV'] !== 'production') {
 	baseBot.use(generateUpdateMiddleware())
 }
 

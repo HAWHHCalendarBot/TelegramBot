@@ -7,7 +7,7 @@
 		"url": "https://github.com/HAWHHCalendarBot/telegrambot.git"
 	},
 	"scripts": {
-		"start": "tsc --sourceMap && node --enable-source-maps dist/index.js",
+		"start": "tsc --sourceMap && node --enable-source-maps dist/hawhh-calendarbot-telegrambot.js",
 		"test": "tsc --sourceMap && xo && ava"
 	},
 	"type": "module",
@@ -36,8 +36,7 @@
 		"semicolon": false,
 		"rules": {
 			"@typescript-eslint/naming-convention": "off",
-			"ava/no-ignored-test-files": "off",
-			"n/prefer-global/process": "off"
+			"ava/no-ignored-test-files": "off"
 		}
 	}
 }
