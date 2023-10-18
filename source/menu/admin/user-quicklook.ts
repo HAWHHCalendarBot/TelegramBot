@@ -1,12 +1,11 @@
-import {Composer} from 'grammy'
-import {deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
-import {html as format} from 'telegram-format'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-import type {Body} from 'grammy-inline-menu'
+import {Composer} from 'grammy'
+import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu'
 import type {User} from 'grammy/types'
-import {backMainButtons} from '../../lib/inline-menu.js'
-import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js'
+import {html as format} from 'telegram-format'
 import {getUrl} from '../../lib/calendar-helper.js'
+import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js'
+import {backMainButtons} from '../../lib/inline-menu.js'
 import type {MyContext} from '../../lib/types.js'
 
 function nameOfUser({first_name, last_name, username}: User): string {

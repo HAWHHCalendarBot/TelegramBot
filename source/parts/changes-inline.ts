@@ -1,6 +1,6 @@
 import {Composer} from 'grammy'
-import {html as format} from 'telegram-format'
 import type {InlineQueryResultArticle, User} from 'grammy/types'
+import {html as format} from 'telegram-format'
 import {generateChangeDescription, generateChangeText, generateChangeTextHeader, generateShortChangeText} from '../lib/change-helper.js'
 import type {Change, MyContext} from '../lib/types.js'
 

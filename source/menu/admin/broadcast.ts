@@ -1,6 +1,6 @@
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 import {Composer} from 'grammy'
 import {getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
-import {StatelessQuestion} from '@grammyjs/stateless-question'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import type {MyContext} from '../../lib/types.js'
 

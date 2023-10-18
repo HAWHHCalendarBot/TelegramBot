@@ -1,12 +1,11 @@
 import {Composer} from 'grammy'
+import {MenuTemplate, type Body} from 'grammy-inline-menu'
 import {html as format} from 'telegram-format'
-import {MenuTemplate} from 'grammy-inline-menu'
-import type {Body} from 'grammy-inline-menu'
-import {backMainButtons} from '../../../lib/inline-menu.js'
 import {formatDateToHumanReadable} from '../../../lib/calendar-helper.js'
+import {backMainButtons} from '../../../lib/inline-menu.js'
 import type {MyContext} from '../../../lib/types.js'
-import * as changeDetails from './details.js'
 import * as changeAdd from './add/index.js'
+import * as changeDetails from './details.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)

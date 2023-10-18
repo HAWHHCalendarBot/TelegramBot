@@ -1,7 +1,7 @@
 import {MenuTemplate} from 'grammy-inline-menu'
-import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
-import {DAY_OPTIONS, generateYearOptions, MONTH_NAMES, MONTH_OPTIONS} from '../../../../lib/event-creation-menu-options.js'
 import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
+import {DAY_OPTIONS, generateYearOptions, MONTH_NAMES, MONTH_OPTIONS} from '../../../../lib/event-creation-menu-options.js'
+import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
 import type {MyContext} from '../../../../lib/types.js'
 
 const menuText = 'Wann findet der Termin statt?'

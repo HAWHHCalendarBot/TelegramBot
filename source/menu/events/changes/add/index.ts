@@ -1,14 +1,13 @@
+import {StatelessQuestion} from '@grammyjs/stateless-question'
 import {arrayFilterUnique} from 'array-filter-unique'
 import {Composer} from 'grammy'
-import {deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
-import {StatelessQuestion} from '@grammyjs/stateless-question'
-import type {Body} from 'grammy-inline-menu'
+import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu'
 import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
 import {generateChangeText, loadEvents} from '../../../../lib/change-helper.js'
-import * as changeDetails from '../details.js'
 import type {Change, MyContext} from '../../../../lib/types.js'
-import {createTimeSelectionSubmenuButtons} from './time-selector.js'
+import * as changeDetails from '../details.js'
 import {createDatePickerButtons} from './date-selector.js'
+import {createTimeSelectionSubmenuButtons} from './time-selector.js'
 
 export const bot = new Composer<MyContext>()
 export const menu = new MenuTemplate<MyContext>(menuBody)

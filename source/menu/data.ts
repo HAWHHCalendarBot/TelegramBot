@@ -1,8 +1,7 @@
-import {Composer} from 'grammy'
-import {getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
-import {html as format} from 'telegram-format'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-import type {Body} from 'grammy-inline-menu'
+import {Composer} from 'grammy'
+import {MenuTemplate, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu'
+import {html as format} from 'telegram-format'
 import type {MyContext, Userconfig} from '../lib/types.js'
 
 async function getActualUserconfigContent(

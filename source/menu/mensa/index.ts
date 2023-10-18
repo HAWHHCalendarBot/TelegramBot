@@ -1,8 +1,7 @@
-import {MenuTemplate} from 'grammy-inline-menu'
-import type {Body} from 'grammy-inline-menu'
+import {MenuTemplate, type Body} from 'grammy-inline-menu'
+import * as mensaGit from '../../lib/mensa-git.js'
 import {generateMealText} from '../../lib/mensa-helper.js'
 import {getMealsOfDay} from '../../lib/mensa-meals.js'
-import * as mensaGit from '../../lib/mensa-git.js'
 import type {MyContext} from '../../lib/types.js'
 import {menu as mensaSettingsMenu} from './settings.js'
 

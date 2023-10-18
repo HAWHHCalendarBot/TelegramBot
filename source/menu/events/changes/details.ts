@@ -1,6 +1,6 @@
 import {MenuTemplate} from 'grammy-inline-menu'
-import {backMainButtons} from '../../../lib/inline-menu.js'
 import {generateChangeText, generateShortChangeText} from '../../../lib/change-helper.js'
+import {backMainButtons} from '../../../lib/inline-menu.js'
 import type {Change, MyContext} from '../../../lib/types.js'
 
 export function generateChangeAction(change: Change): string {

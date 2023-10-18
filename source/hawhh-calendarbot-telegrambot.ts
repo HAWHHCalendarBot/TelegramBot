@@ -1,13 +1,13 @@
 import {env} from 'node:process'
+import {I18n} from '@grammyjs/i18n'
 import {Bot, session} from 'grammy'
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time'
-import {I18n} from '@grammyjs/i18n'
+import {Chatconfig} from './lib/chatconfig.js'
+import type {MyContext, Session} from './lib/types.js'
 import {bot as menu} from './menu/index.js'
 import {bot as migrateStuffBot} from './migrate-stuff.js'
-import {Chatconfig} from './lib/chatconfig.js'
 import * as changesInline from './parts/changes-inline.js'
 import * as easterEggs from './parts/easter-eggs.js'
-import type {MyContext, Session} from './lib/types.js'
 
 const token = env['BOT_TOKEN']
 if (!token) {

@@ -1,9 +1,8 @@
-import {Composer} from 'grammy'
-import {deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 import {StatelessQuestion} from '@grammyjs/stateless-question'
-import type {Body} from 'grammy-inline-menu'
-import {backMainButtons} from '../../lib/inline-menu.js'
+import {Composer} from 'grammy'
+import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu'
 import {getUrlFromContext} from '../../lib/calendar-helper.js'
+import {backMainButtons} from '../../lib/inline-menu.js'
 import type {MyContext} from '../../lib/types.js'
 
 function menuBody(context: MyContext): Body {

@@ -1,9 +1,7 @@
-import {MenuTemplate} from 'grammy-inline-menu'
-import type {Body} from 'grammy-inline-menu'
+import {MenuTemplate, type Body} from 'grammy-inline-menu'
 import {backMainButtons} from '../../lib/inline-menu.js'
 import {getCanteenList} from '../../lib/mensa-meals.js'
-import {unreachable} from '../../lib/types.js'
-import type {MealWish, MensaPriceClass, MyContext} from '../../lib/types.js'
+import {unreachable, type MealWish, type MensaPriceClass, type MyContext} from '../../lib/types.js'
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫'
