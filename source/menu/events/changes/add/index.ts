@@ -212,7 +212,7 @@ menu.interact('✅ Fertig stellen', 'finish', {
 
 async function finish(context: MyContext): Promise<string | boolean> {
 	const change = context.session.generateChange!
-	change.name = context.match![1]!.replace(/;/, '/')
+	change.name = context.match![1]!.replaceAll(';', '/')
 
 	if (change.add) {
 		const date = new Date(Date.parse(change.date!))

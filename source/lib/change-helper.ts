@@ -60,7 +60,7 @@ export async function loadEvents(
 	eventname: string,
 ): Promise<EventEntryInternal[]> {
 	try {
-		const filename = eventname.replace('/', '-')
+		const filename = eventname.replaceAll('/', '-')
 		const content = await fsPromises.readFile(`eventfiles/${filename}.json`, 'utf8')
 		const array = JSON.parse(content) as EventEntryFileContent[]
 		const parsed = array.map((o): EventEntryInternal => ({

@@ -24,7 +24,7 @@ menu.chooseIntoSubmenu('d', getChangesOptions, changeDetails.menu, {
 })
 
 function getChangesOptions(ctx: MyContext): Record<string, string> {
-	const event = ctx.match![1]!.replace(/;/, '/')
+	const event = ctx.match![1]!.replaceAll(';', '/')
 	const changes = ctx.userconfig.mine.changes
 		.filter(o => o.name === event)
 	return Object.fromEntries(changes.map(change => [
@@ -34,7 +34,7 @@ function getChangesOptions(ctx: MyContext): Record<string, string> {
 }
 
 function menuBody(ctx: MyContext): Body {
-	const event = ctx.match![1]!.replace(/;/, '/')
+	const event = ctx.match![1]!.replaceAll(';', '/')
 
 	let text = ''
 	text += format.bold('Veranstaltungsänderungen')

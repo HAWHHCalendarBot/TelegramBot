@@ -39,7 +39,7 @@ const bot = baseBot.errorBoundary(async ({error, ctx}) => {
 	text += '\n'
 	text += '\nError: `'
 	const errorText = error instanceof Error ? error.message : String(error)
-	text += errorText.replace(token, '')
+	text += errorText.replaceAll(token, '')
 	text += '`'
 
 	const target = (ctx.chat ?? ctx.from!).id

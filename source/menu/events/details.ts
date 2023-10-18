@@ -14,7 +14,7 @@ bot.use(changesMenu.bot)
 
 function getNameFromPath(path: string): string {
 	const match = /\/d:([^/]+)\//.exec(path)!
-	return match[1]!.replace(/;/, '/')
+	return match[1]!.replaceAll(';', '/')
 }
 
 function menuBody(context: MyContext, path: string): Body {
@@ -141,14 +141,14 @@ menu.interact('Notiz löschen', 'remove-notes', {
 })
 
 function removeBody(context: MyContext): Body {
-	const event = context.match![1]!.replace(/;/, '/')
+	const event = context.match![1]!.replaceAll(';', '/')
 	return event + '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?'
 }
 
 const removeMenu = new MenuTemplate<MyContext>(removeBody)
 removeMenu.interact('Ja ich will!', 'y', {
 	async do(context) {
-		const event = context.match![1]!.replace(/;/, '/')
+		const event = context.match![1]!.replaceAll(';', '/')
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		delete context.userconfig.mine.events[event]
 

@@ -30,10 +30,10 @@ function generateInlineQueryResultFromChange(
 
 function escapeRegexSpecificChars(input: string): string {
 	return input
-		.replace('[', '\\[')
-		.replace(']', '\\]')
-		.replace('(', '\\(')
-		.replace(')', '\\)')
+		.replaceAll('[', '\\[')
+		.replaceAll(']', '\\]')
+		.replaceAll('(', '\\(')
+		.replaceAll(')', '\\)')
 }
 
 bot.on('inline_query', async context => {
