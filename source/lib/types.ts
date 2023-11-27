@@ -1,22 +1,22 @@
-import type {Api, Context as BaseContext, SessionFlavor} from 'grammy'
-import type {I18nFlavor} from '@grammyjs/i18n'
-import type {ContextProperty} from './chatconfig.js'
+import type {Api, Context as BaseContext, SessionFlavor} from 'grammy';
+import type {I18nFlavor} from '@grammyjs/i18n';
+import type {ContextProperty} from './chatconfig.js';
 
 export function unreachable(unreachable: never): never {
-	throw new Error('Should have been unreachable but looks like it wasnt: ' + JSON.stringify(unreachable))
+	throw new Error('Should have been unreachable but looks like it wasnt: ' + JSON.stringify(unreachable));
 }
 
-export type OtherSendMessage = Parameters<Api['sendMessage']>[2]
+export type OtherSendMessage = Parameters<Api['sendMessage']>[2];
 
 export type ContextFlavour = {
 	readonly userconfig: ContextProperty;
-}
+};
 
 export type MyContext =
 	& BaseContext
 	& I18nFlavor
 	& SessionFlavor<Session>
-	& ContextFlavour
+	& ContextFlavour;
 
 export type Session = {
 	adminBroadcast?: number; // Message ID
@@ -30,7 +30,7 @@ export type Session = {
 		mensa?: string;
 		date?: number;
 	};
-}
+};
 
 export type Userconfig = {
 	readonly admin?: true;
@@ -43,14 +43,14 @@ export type Userconfig = {
 	stisysUpdate?: boolean;
 	/** @deprecated use channel https://t.me/HAWHHWebsiteStalker instead */
 	websiteStalkerUpdate?: true;
-}
+};
 
-export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji'
+export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji';
 
 export type EventDetails = {
 	alertMinutesBefore?: number;
 	notes?: string;
-}
+};
 
 export type Change = {
 	add?: true;
@@ -61,9 +61,9 @@ export type Change = {
 	starttime?: string;
 	endtime?: string;
 	room?: string;
-}
+};
 
-export type MensaPriceClass = 'student' | 'attendant' | 'guest'
+export type MensaPriceClass = 'student' | 'attendant' | 'guest';
 
 export type MealWishes = {
 	lactoseFree?: boolean;
@@ -77,15 +77,15 @@ export type MealWishes = {
 	noPoultry?: boolean;
 	vegan?: boolean;
 	vegetarian?: boolean;
-}
-export type MealWish = keyof MealWishes
+};
+export type MealWish = keyof MealWishes;
 
 export type MensaSettings = MealWishes & {
 	main?: string;
 	more?: string[];
 	price?: MensaPriceClass;
 	showAdditives?: boolean;
-}
+};
 
 export type EventEntryFileContent = {
 	readonly Name: string;
@@ -93,7 +93,7 @@ export type EventEntryFileContent = {
 	readonly Description: string;
 	readonly StartTime: string;
 	readonly EndTime: string;
-}
+};
 
 export type EventEntryInternal = {
 	readonly Name: string;
@@ -101,4 +101,4 @@ export type EventEntryInternal = {
 	readonly Description: string;
 	readonly StartTime: Date;
 	readonly EndTime: Date;
-}
+};

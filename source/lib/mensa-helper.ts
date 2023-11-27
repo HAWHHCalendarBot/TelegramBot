@@ -1,6 +1,6 @@
-import {arrayFilterUnique} from 'array-filter-unique'
-import type {Meal} from './meal.js'
-import type {MealWishes, MensaPriceClass, MensaSettings} from './types.js'
+import {arrayFilterUnique} from 'array-filter-unique';
+import type {Meal} from './meal.js';
+import type {MealWishes, MensaPriceClass, MensaSettings} from './types.js';
 
 export function filterMeals(
 	meals: readonly Meal[],
@@ -17,7 +17,7 @@ export function filterMeals(
 		.filter(m => !specialWishes.noPoultry || !m.Poultry)
 		.filter(m => !specialWishes.lactoseFree || m.LactoseFree)
 		.filter(m => !specialWishes.vegan || m.Vegan)
-		.filter(m => !specialWishes.vegetarian || Boolean(m.Vegan) || m.Vegetarian)
+		.filter(m => !specialWishes.vegetarian || Boolean(m.Vegan) || m.Vegetarian);
 }
 
 export function generateMealText(
@@ -25,36 +25,36 @@ export function generateMealText(
 	mensaSettings: Readonly<MensaSettings>,
 ): string {
 	if (meals.length === 0) {
-		return 'Die Mensa bietet heute nichts an.'
+		return 'Die Mensa bietet heute nichts an.';
 	}
 
-	const hints: string[] = []
+	const hints: string[] = [];
 
-	const filtered = filterMeals(meals, mensaSettings)
-	const mealTexts = filtered.map(m => mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives))
+	const filtered = filterMeals(meals, mensaSettings);
+	const mealTexts = filtered.map(m => mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives));
 
 	if (meals.length !== filtered.length) {
-		hints.push('⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.')
+		hints.push('⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.');
 	}
 
 	const hintText = hints
 		.map(o => o + '\n')
-		.join('\n')
+		.join('\n');
 	if (mealTexts.length === 0) {
-		return hintText + '\nDie Mensa hat heute nichts für dich.'
+		return hintText + '\nDie Mensa hat heute nichts für dich.';
 	}
 
-	let text = ''
-	text += hintText
-	text += '\n'
-	text += mealTexts.join('\n\n')
+	let text = '';
+	text += hintText;
+	text += '\n';
+	text += mealTexts.join('\n\n');
 
 	if (mensaSettings.showAdditives) {
-		text += '\n\n'
-		text += mealAdditivesToHtml(filtered)
+		text += '\n\n';
+		text += mealAdditivesToHtml(filtered);
 	}
 
-	return text
+	return text;
 }
 
 export function mealNameToHtml(
@@ -65,10 +65,10 @@ export function mealNameToHtml(
 	// Remove / un-bold additives at the end
 		.replaceAll(/ \(([\d\w, ]+)\)$/g, showAdditives ? '</b> ($1)<b>' : '')
 	// Remove / un-bold additives within the name
-		.replaceAll(/ \(([\d\w, ]+)\), /g, showAdditives ? '</b> ($1), <b>' : ', ')
+		.replaceAll(/ \(([\d\w, ]+)\), /g, showAdditives ? '</b> ($1), <b>' : ', ');
 
-	const fullName = `<b>${parsedName}</b>`
-	return fullName.replaceAll('<b></b>', '')
+	const fullName = `<b>${parsedName}</b>`;
+	return fullName.replaceAll('<b></b>', '');
 }
 
 export function mealAdditivesToHtml(meals: readonly Meal[]): string {
@@ -78,7 +78,7 @@ export function mealAdditivesToHtml(meals: readonly Meal[]): string {
 		)
 		.sort()
 		.filter(arrayFilterUnique())
-		.join('\n')
+		.join('\n');
 }
 
 export function mealToHtml(
@@ -86,53 +86,53 @@ export function mealToHtml(
 	priceClass: MensaPriceClass | undefined,
 	showAdditives: boolean | undefined,
 ): string {
-	const name = mealNameToHtml(meal.Name, showAdditives)
+	const name = mealNameToHtml(meal.Name, showAdditives);
 
 	const price = priceClass === 'student'
 		? meal.PriceStudent
-		: (priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest)
-	const priceString = price.toLocaleString('de-DE', {minimumFractionDigits: 2}).replace('.', ',')
+		: (priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest);
+	const priceString = price.toLocaleString('de-DE', {minimumFractionDigits: 2}).replace('.', ',');
 
-	let text = `${name}\n`
-	text += `${priceString} €`
+	let text = `${name}\n`;
+	text += `${priceString} €`;
 
-	const infos: string[] = []
+	const infos: string[] = [];
 
 	if (meal.Pig) {
-		infos.push('🐷')
+		infos.push('🐷');
 	}
 
 	if (meal.Beef) {
-		infos.push('🐮')
+		infos.push('🐮');
 	}
 
 	if (meal.Poultry) {
-		infos.push('🐔')
+		infos.push('🐔');
 	}
 
 	if (meal.Fish) {
-		infos.push('🐟')
+		infos.push('🐟');
 	}
 
 	if (meal.Alcohol) {
-		infos.push('🍷')
+		infos.push('🍷');
 	}
 
 	if (meal.LactoseFree) {
-		infos.push('laktosefrei')
+		infos.push('laktosefrei');
 	}
 
 	if (meal.Vegan) {
-		infos.push('vegan')
+		infos.push('vegan');
 	}
 
 	if (meal.Vegetarian) {
-		infos.push('vegetarisch')
+		infos.push('vegetarisch');
 	}
 
 	if (infos.length > 0) {
-		text += ' ' + infos.join(' ')
+		text += ' ' + infos.join(' ');
 	}
 
-	return text
+	return text;
 }

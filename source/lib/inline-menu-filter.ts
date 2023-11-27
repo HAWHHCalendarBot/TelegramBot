@@ -1,15 +1,15 @@
-export const DEFAULT_FILTER = '.+'
+export const DEFAULT_FILTER = '.+';
 
 export function filterButtonText<T>(
 	getCurrentFilterFunction: (context: T) => string | undefined,
 ): (context: T) => string {
 	return context => {
-		let text = '🔎 Filter'
-		const currentFilter = getCurrentFilterFunction(context)
+		let text = '🔎 Filter';
+		const currentFilter = getCurrentFilterFunction(context);
 		if (currentFilter && currentFilter !== '.+') {
-			text += ': ' + currentFilter
+			text += ': ' + currentFilter;
 		}
 
-		return text
-	}
+		return text;
+	};
 }

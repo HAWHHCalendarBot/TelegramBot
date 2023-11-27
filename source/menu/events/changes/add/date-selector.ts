@@ -1,70 +1,70 @@
-import {MenuTemplate} from 'grammy-inline-menu'
-import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js'
-import {DAY_OPTIONS, generateYearOptions, MONTH_NAMES, MONTH_OPTIONS} from '../../../../lib/event-creation-menu-options.js'
-import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js'
-import type {MyContext} from '../../../../lib/types.js'
+import {MenuTemplate} from 'grammy-inline-menu';
+import {formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js';
+import {DAY_OPTIONS, generateYearOptions, MONTH_NAMES, MONTH_OPTIONS} from '../../../../lib/event-creation-menu-options.js';
+import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js';
+import type {MyContext} from '../../../../lib/types.js';
 
-const menuText = 'Wann findet der Termin statt?'
+const menuText = 'Wann findet der Termin statt?';
 
 function getCurrent(context: MyContext): Date {
-	const {date} = context.session.generateChange!
+	const {date} = context.session.generateChange!;
 	if (date) {
-		return new Date(Date.parse(date + 'Z'))
+		return new Date(Date.parse(date + 'Z'));
 	}
 
-	return new Date()
+	return new Date();
 }
 
 export function createDatePickerButtons(
 	menu: MenuTemplate<MyContext>,
 	hide: (context: MyContext) => boolean,
 ): void {
-	menu.submenu(context => getCurrent(context).getDate().toString(), 'd', dayMenu, {hide})
-	menu.submenu(monthText, 'm', monthMenu, {hide, joinLastRow: true})
-	menu.submenu(context => getCurrent(context).getFullYear().toString(), 'y', yearMenu, {hide, joinLastRow: true})
+	menu.submenu(context => getCurrent(context).getDate().toString(), 'd', dayMenu, {hide});
+	menu.submenu(monthText, 'm', monthMenu, {hide, joinLastRow: true});
+	menu.submenu(context => getCurrent(context).getFullYear().toString(), 'y', yearMenu, {hide, joinLastRow: true});
 }
 
-const dayMenu = new MenuTemplate<MyContext>(menuText)
-const monthMenu = new MenuTemplate<MyContext>(menuText)
-const yearMenu = new MenuTemplate<MyContext>(menuText)
+const dayMenu = new MenuTemplate<MyContext>(menuText);
+const monthMenu = new MenuTemplate<MyContext>(menuText);
+const yearMenu = new MenuTemplate<MyContext>(menuText);
 
 function monthText(context: MyContext) {
-	const current = getCurrent(context)
-	return MONTH_NAMES[current.getMonth()]!
+	const current = getCurrent(context);
+	return MONTH_NAMES[current.getMonth()]!;
 }
 
 dayMenu.select('', DAY_OPTIONS, {
 	columns: 7,
 	isSet: (context, date) => getCurrent(context).getDate() === Number(date),
 	async set(context, date) {
-		const current = getCurrent(context)
-		current.setDate(Number(date))
-		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
-		return '..'
+		const current = getCurrent(context);
+		current.setDate(Number(date));
+		context.session.generateChange!.date = formatDateToStoredChangeDate(current);
+		return '..';
 	},
-})
+});
 
 monthMenu.select('', MONTH_OPTIONS, {
 	columns: 2,
 	isSet: (context, month) => getCurrent(context).getMonth() + 1 === Number(month),
 	async set(context, month) {
-		const current = getCurrent(context)
-		current.setMonth(Number(month) - 1)
-		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
-		return '..'
+		const current = getCurrent(context);
+		current.setMonth(Number(month) - 1);
+		context.session.generateChange!.date = formatDateToStoredChangeDate(current);
+		return '..';
 	},
-})
+});
 
 yearMenu.select('', generateYearOptions(), {
 	isSet: (context, year) => getCurrent(context).getFullYear() === Number(year),
 	async set(context, year) {
-		const current = getCurrent(context)
-		current.setFullYear(Number(year))
-		context.session.generateChange!.date = formatDateToStoredChangeDate(current)
-		return '..'
+		const current = getCurrent(context);
+		current.setFullYear(Number(year));
+		context.session.generateChange!.date = formatDateToStoredChangeDate(current);
+		return '..';
 	},
-})
+});
 
-dayMenu.navigate(BACK_BUTTON_TEXT, '..')
-monthMenu.navigate(BACK_BUTTON_TEXT, '..')
-yearMenu.navigate(BACK_BUTTON_TEXT, '..')
+dayMenu.navigate(BACK_BUTTON_TEXT, '..');
+monthMenu.navigate(BACK_BUTTON_TEXT, '..');
+yearMenu.navigate(BACK_BUTTON_TEXT, '..');
