@@ -1,6 +1,7 @@
-import test from 'ava'
-import {generateMealText} from './mensa-helper.js'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import type {Meal} from './meal.js'
+import {generateMealText} from './mensa-helper.js'
 
 const example = {
 	Additives: {
@@ -37,7 +38,8 @@ const bracketsInNameExample = {
 	Date: '2019-04-30',
 	Fish: false,
 	LactoseFree: false,
-	Name: 'Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne (1, 2, Gl, Ei, La), Kartoffeltwister (Gl)',
+	Name:
+    'Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne (1, 2, Gl, Ei, La), Kartoffeltwister (Gl)',
 	Pig: false,
 	Poultry: false,
 	PriceAttendant: 4.5,
@@ -47,80 +49,83 @@ const bracketsInNameExample = {
 	Vegetarian: false,
 } as const satisfies Meal
 
-test('shows hint when something is filtered', t => {
+await test('generate-meal-test shows hint when something is filtered', () => {
 	const result = generateMealText([example], {
 		vegan: true,
 	})
-	t.regex(result, /Sonderwünsche/)
+	strictEqual(result.includes('Sonderwünsche'), true)
 })
 
-test('does not show hint when nothing is filtered while having filters', t => {
+await test('generate-meal-test does not show hint when nothing is filtered while having filters', () => {
 	const result = generateMealText([example], {
 		noPig: true,
 	})
-	t.notRegex(result, /Sonderwünsche/)
+	strictEqual(result.includes('Sonderwünsche'), false)
 })
 
-test('show no meals today', t => {
+await test('generate-meal-test show no meals today', () => {
 	const result = generateMealText([], {})
-	t.regex(result, /bietet heute nichts an/)
+	strictEqual(result.includes('bietet heute nichts an'), true)
 })
 
-test('has meal', t => {
+await test('generate-meal-test has meal', () => {
 	const result = generateMealText([example], {})
-	t.regex(result, /Gurkensalat/)
+	strictEqual(result.includes('Gurkensalat'), true)
 })
 
-test('even amount of bold markers without showAdditives', t => {
+await test('generate-meal-test even amount of bold markers without showAdditives', () => {
 	const result = generateMealText([example], {
 		showAdditives: false,
 	})
-	t.log(result)
 	const occurrences = result.match(/<\/?b>/g)?.length
-	t.is(occurrences, 2)
+	strictEqual(occurrences, 2)
 })
 
-test('even amount of bold markers with showAdditives', t => {
+await test('generate-meal-test even amount of bold markers with showAdditives', () => {
 	const result = generateMealText([example], {
 		showAdditives: true,
 	})
-	t.log(result)
 	const occurrences = result.match(/<\/?b>/g)?.length
-	t.is(occurrences, 4)
+	strictEqual(occurrences, 4)
 })
 
-test('Name without showAdditives', t => {
+await test('generate-meal-test Name without showAdditives', () => {
 	const result = generateMealText([example], {
 		showAdditives: false,
 	}).trim()
-	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>')
+	strictEqual(lines[0], '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>')
 })
 
-test('Name with showAdditives', t => {
+await test('generate-meal-test Name with showAdditives', () => {
 	const result = generateMealText([example], {
 		showAdditives: true,
 	}).trim()
-	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)')
+	strictEqual(
+		lines[0],
+		'<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)',
+	)
 })
 
-test('Name with brackets without showAdditives', t => {
+await test('generate-meal-test Name with brackets without showAdditives', () => {
 	const result = generateMealText([bracketsInNameExample], {
 		showAdditives: false,
 	}).trim()
-	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '<b>Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne, Kartoffeltwister</b>')
+	strictEqual(
+		lines[0],
+		'<b>Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne, Kartoffeltwister</b>',
+	)
 })
 
-test('Name with brackets with showAdditives', t => {
+await test('generate-meal-test Name with brackets with showAdditives', () => {
 	const result = generateMealText([bracketsInNameExample], {
 		showAdditives: true,
 	}).trim()
-	t.log(result)
 	const lines = result.split('\n')
-	t.is(lines[0], '<b>Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne</b> (1, 2, Gl, Ei, La), <b>Kartoffeltwister</b> (Gl)')
+	strictEqual(
+		lines[0],
+		'<b>Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne</b> (1, 2, Gl, Ei, La), <b>Kartoffeltwister</b> (Gl)',
+	)
 })

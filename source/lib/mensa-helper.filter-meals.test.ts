@@ -1,6 +1,7 @@
-import test from 'ava'
-import {filterMeals} from './mensa-helper.js'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import type {Meal} from './meal.js'
+import {filterMeals} from './mensa-helper.js'
 
 const BASE_MEAL = {
 	Additives: {},
@@ -23,7 +24,8 @@ const TEST_MEALS = [
 		Poultry: false,
 		Vegan: false,
 		Vegetarian: false,
-	}, {
+	},
+	{
 		...BASE_MEAL,
 		Alcohol: false,
 		Beef: false,
@@ -34,7 +36,8 @@ const TEST_MEALS = [
 		Poultry: false,
 		Vegan: false,
 		Vegetarian: true,
-	}, {
+	},
+	{
 		...BASE_MEAL,
 		Alcohol: false,
 		Beef: false,
@@ -45,7 +48,8 @@ const TEST_MEALS = [
 		Poultry: false,
 		Vegan: false,
 		Vegetarian: false,
-	}, {
+	},
+	{
 		...BASE_MEAL,
 		Alcohol: false,
 		Beef: false,
@@ -56,7 +60,8 @@ const TEST_MEALS = [
 		Poultry: false,
 		Vegan: true,
 		Vegetarian: false,
-	}, {
+	},
+	{
 		...BASE_MEAL,
 		Alcohol: false,
 		Beef: true,
@@ -70,36 +75,36 @@ const TEST_MEALS = [
 	},
 ] as const satisfies readonly Meal[]
 
-test('filterfrei', t => {
+await test('filter-meals filterfrei', () => {
 	const filtered = filterMeals(TEST_MEALS, {})
-	t.is(filtered.length, TEST_MEALS.length)
+	strictEqual(filtered.length, TEST_MEALS.length)
 })
 
-test('vegan', t => {
+await test('filter-meals vegan', () => {
 	const filtered = filterMeals(TEST_MEALS, {vegan: true})
-	t.deepEqual(filtered.map(o => o.Name), [
+	deepStrictEqual(filtered.map(o => o.Name), [
 		'Pasta',
 	])
 })
 
-test('vegetarisch', t => {
+await test('filter-meals vegetarisch', () => {
 	const filtered = filterMeals(TEST_MEALS, {vegetarian: true})
-	t.deepEqual(filtered.map(o => o.Name), [
+	deepStrictEqual(filtered.map(o => o.Name), [
 		'Pasta Sahne',
 		'Pasta',
 	])
 })
 
-test('laktosefrei', t => {
+await test('filter-meals laktosefrei', () => {
 	const filtered = filterMeals(TEST_MEALS, {lactoseFree: true})
-	t.deepEqual(filtered.map(o => o.Name), [
+	deepStrictEqual(filtered.map(o => o.Name), [
 		'Pasta',
 	])
 })
 
-test('ohne Schwein', t => {
+await test('filter-meals ohne Schwein', () => {
 	const filtered = filterMeals(TEST_MEALS, {noPig: true})
-	t.deepEqual(filtered.map(o => o.Name), [
+	deepStrictEqual(filtered.map(o => o.Name), [
 		'Fisch',
 		'Pasta Sahne',
 		'Pasta',
@@ -107,9 +112,9 @@ test('ohne Schwein', t => {
 	])
 })
 
-test('ohne Rind', t => {
+await test('filter-meals ohne Rind', () => {
 	const filtered = filterMeals(TEST_MEALS, {noBeef: true})
-	t.deepEqual(filtered.map(o => o.Name), [
+	deepStrictEqual(filtered.map(o => o.Name), [
 		'Fisch',
 		'Pasta Sahne',
 		'Pasta Speck',
@@ -117,9 +122,9 @@ test('ohne Rind', t => {
 	])
 })
 
-test('ohne Geflügel', t => {
+await test('filter-meals ohne Geflügel', () => {
 	const filtered = filterMeals(TEST_MEALS, {noPoultry: true})
-	t.deepEqual(filtered.map(o => o.Name), [
+	deepStrictEqual(filtered.map(o => o.Name), [
 		'Fisch',
 		'Pasta Sahne',
 		'Pasta Speck',
@@ -128,9 +133,9 @@ test('ohne Geflügel', t => {
 	])
 })
 
-test('ohne Fisch', t => {
+await test('filter-meals ohne Fisch', () => {
 	const filtered = filterMeals(TEST_MEALS, {noFish: true})
-	t.deepEqual(filtered.map(o => o.Name), [
+	deepStrictEqual(filtered.map(o => o.Name), [
 		'Pasta Sahne',
 		'Pasta Speck',
 		'Pasta',

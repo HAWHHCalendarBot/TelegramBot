@@ -1,6 +1,7 @@
-import test from 'ava'
-import {mealNameToHtml, mealToHtml} from './mensa-helper.js'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import type {Meal} from './meal.js'
+import {mealNameToHtml, mealToHtml} from './mensa-helper.js'
 
 const example = {
 	Additives: {
@@ -22,35 +23,43 @@ const example = {
 	Vegetarian: true,
 } as const satisfies Meal
 
-test('example student without Additives', t => {
+await test('meal-to-html example student without Additives', () => {
 	let expected = '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>'
 	expected += '\n2,45 € vegetarisch'
 	const result = mealToHtml(example, 'student', false)
-	t.is(result, expected)
+	strictEqual(result, expected)
 })
 
-test('example guest without Additives', t => {
+await test('meal-to-html example guest without Additives', () => {
 	let expected = '<b>4 Röstiecken, Kräuterquark, Gurkensalat</b>'
 	expected += '\n4,70 € vegetarisch'
 	const result = mealToHtml(example, 'guest', false)
-	t.is(result, expected)
+	strictEqual(result, expected)
 })
 
-test('example student with Additives', t => {
-	let expected = '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)'
+await test('meal-to-html example student with Additives', () => {
+	let expected
+    = '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)'
 	expected += '\n2,45 € vegetarisch'
 	const result = mealToHtml(example, 'student', true)
-	t.is(result, expected)
+	strictEqual(result, expected)
 })
 
-test('example name with end bracket without Additives', t => {
+await test('meal-to-html example name with end bracket without Additives', () => {
 	const expected = '<b>Soja Bolognese mit Gemüse, bunte Fusilli (VEGAN)</b>'
-	const result = mealNameToHtml('Soja Bolognese mit Gemüse (So,Sl), bunte Fusilli (VEGAN) (Gl)', false)
-	t.is(result, expected)
+	const result = mealNameToHtml(
+		'Soja Bolognese mit Gemüse (So,Sl), bunte Fusilli (VEGAN) (Gl)',
+		false,
+	)
+	strictEqual(result, expected)
 })
 
-test('example name with end bracket with Additives', t => {
-	const expected = '<b>Soja Bolognese mit Gemüse</b> (So,Sl), <b>bunte Fusilli (VEGAN)</b> (Gl)'
-	const result = mealNameToHtml('Soja Bolognese mit Gemüse (So,Sl), bunte Fusilli (VEGAN) (Gl)', true)
-	t.is(result, expected)
+await test('meal-to-html example name with end bracket with Additives', () => {
+	const expected
+    = '<b>Soja Bolognese mit Gemüse</b> (So,Sl), <b>bunte Fusilli (VEGAN)</b> (Gl)'
+	const result = mealNameToHtml(
+		'Soja Bolognese mit Gemüse (So,Sl), bunte Fusilli (VEGAN) (Gl)',
+		true,
+	)
+	strictEqual(result, expected)
 })
