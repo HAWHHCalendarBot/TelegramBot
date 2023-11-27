@@ -39,7 +39,7 @@ const bracketsInNameExample = {
 	Fish: false,
 	LactoseFree: false,
 	Name:
-    'Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne (1, 2, Gl, Ei, La), Kartoffeltwister (Gl)',
+		'Hamburger (100%Rind) mit gegrilltem Spargel und Parmesanspäne (1, 2, Gl, Ei, La), Kartoffeltwister (Gl)',
 	Pig: false,
 	Poultry: false,
 	PriceAttendant: 4.5,

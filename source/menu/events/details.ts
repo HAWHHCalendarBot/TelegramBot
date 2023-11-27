@@ -1,6 +1,12 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
-import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu';
+import {
+	type Body,
+	deleteMenuFromContext,
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
+} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext} from '../../lib/types.js';
@@ -19,7 +25,8 @@ function getNameFromPath(path: string): string {
 function menuBody(context: MyContext, path: string): Body {
 	const name = getNameFromPath(path);
 	const event = context.userconfig.mine.events[name]!;
-	const changes = context.userconfig.mine.changes.filter(o => o.name === name).length;
+	const changes
+		= context.userconfig.mine.changes.filter(o => o.name === name).length;
 
 	let text = format.bold('Veranstaltung');
 	text += '\n';
@@ -53,7 +60,11 @@ function menuBody(context: MyContext, path: string): Body {
 		text += '\n\n';
 	}
 
-	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true};
+	return {
+		text,
+		parse_mode: format.parse_mode,
+		disable_web_page_preview: true,
+	};
 }
 
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
@@ -103,23 +114,28 @@ alertMenu.manualRow(backMainButtons);
 
 menu.submenu('⏰ Erinnerung', 'alert', alertMenu);
 
-const noteQuestion = new StatelessQuestion<MyContext>('event-notes', async (context, path) => {
-	const name = getNameFromPath(path);
-	if ('text' in context.message) {
-		const notes = context.message.text;
+const noteQuestion = new StatelessQuestion<MyContext>(
+	'event-notes',
+	async (context, path) => {
+		const name = getNameFromPath(path);
+		if ('text' in context.message) {
+			const notes = context.message.text;
 
-		context.userconfig.mine.events[name]!.notes = notes;
-	}
+			context.userconfig.mine.events[name]!.notes = notes;
+		}
 
-	await replyMenuToContext(menu, context, path);
-});
+		await replyMenuToContext(menu, context, path);
+	},
+);
 
 bot.use(noteQuestion.middleware());
 
 menu.interact('🗒 Schreibe Notiz', 'set-notes', {
 	async do(context, path) {
 		const name = getNameFromPath(path);
-		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${format.escape(name)} stehen haben?`;
+		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${
+			format.escape(name)
+		} stehen haben?`;
 		await noteQuestion.replyWithHTML(context, text, getMenuOfPath(path));
 		await deleteMenuFromContext(context);
 		return false;
@@ -141,7 +157,8 @@ menu.interact('Notiz löschen', 'remove-notes', {
 
 function removeBody(context: MyContext): Body {
 	const event = context.match![1]!.replaceAll(';', '/');
-	return event + '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?';
+	return event
+		+ '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?';
 }
 
 const removeMenu = new MenuTemplate<MyContext>(removeBody);
@@ -153,9 +170,13 @@ removeMenu.interact('Ja ich will!', 'y', {
 
 		// Only keep changes of events the user still has
 		context.userconfig.mine.changes = context.userconfig.mine.changes
-			.filter(o => Object.keys(context.userconfig.mine.events).includes(o.name));
+			.filter(o =>
+				Object.keys(context.userconfig.mine.events).includes(o.name),
+			);
 
-		await context.answerCallbackQuery({text: `${event} wurde aus deinem Kalender entfernt.`});
+		await context.answerCallbackQuery(
+			`${event} wurde aus deinem Kalender entfernt.`,
+		);
 		return true;
 	},
 });

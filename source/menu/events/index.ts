@@ -1,5 +1,5 @@
 import {Composer} from 'grammy';
-import {MenuTemplate, type Body} from 'grammy-inline-menu';
+import {type Body, MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import * as allEvents from '../../lib/all-events.js';
 import {backMainButtons} from '../../lib/inline-menu.js';
@@ -38,10 +38,18 @@ async function menuBody(context: MyContext): Promise<Body> {
 	}
 
 	text += '\n\n';
-	const additionalEventsLink = format.url('AdditionalEvents', 'https://github.com/HAWHHCalendarBot/AdditionalEvents');
-	text += `Du bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Wirf mal einen Blick auf ${additionalEventsLink} oder schreib @EdJoPaTo an. ;)`;
+	const additionalEventsLink = format.url(
+		'AdditionalEvents',
+		'https://github.com/HAWHHCalendarBot/AdditionalEvents',
+	);
+	text
+		+= `Du bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Wirf mal einen Blick auf ${additionalEventsLink} oder schreib @EdJoPaTo an. ;)`;
 
-	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true};
+	return {
+		text,
+		parse_mode: format.parse_mode,
+		disable_web_page_preview: true,
+	};
 }
 
 export const bot = new Composer<MyContext>();
@@ -52,11 +60,15 @@ bot.use(detailsMenu.bot);
 
 menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 	async hide(context) {
-		const nonExisting = await allEvents.nonExisting(Object.keys(context.userconfig.mine.events));
+		const nonExisting = await allEvents.nonExisting(
+			Object.keys(context.userconfig.mine.events),
+		);
 		return nonExisting.length === 0;
 	},
 	async do(context) {
-		const nonExisting = new Set(await allEvents.nonExisting(Object.keys(context.userconfig.mine.events)));
+		const nonExisting = new Set(
+			await allEvents.nonExisting(Object.keys(context.userconfig.mine.events)),
+		);
 		for (const name of nonExisting) {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 			delete context.userconfig.mine.events[name];
@@ -64,7 +76,9 @@ menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 
 		// Only keep changes of events the user still has
 		context.userconfig.mine.changes = context.userconfig.mine.changes
-			.filter(o => Object.keys(context.userconfig.mine.events).includes(o.name));
+			.filter(o =>
+				Object.keys(context.userconfig.mine.events).includes(o.name),
+			);
 
 		return true;
 	},
@@ -76,7 +90,9 @@ function getEventOptions(context: MyContext): Record<string, string> {
 	const {changes} = context.userconfig.mine;
 	const result: Record<string, string> = {};
 
-	for (const [name, details] of Object.entries(context.userconfig.mine.events)) {
+	for (
+		const [name, details] of Object.entries(context.userconfig.mine.events)
+	) {
 		let title = name + ' ';
 
 		if (changes.some(o => o.name === name)) {

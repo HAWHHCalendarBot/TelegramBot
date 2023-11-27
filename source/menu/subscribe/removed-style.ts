@@ -19,7 +19,8 @@ menu.select('s', removedEventsOptions, {
 		context.userconfig.mine.removedEvents = key as RemovedEventsDisplayStyle;
 		return true;
 	},
-	isSet: (context, key) => (context.userconfig.mine.removedEvents ?? 'cancelled') === key,
+	isSet: (context, key) =>
+		(context.userconfig.mine.removedEvents ?? 'cancelled') === key,
 });
 
 menu.manualRow(backMainButtons);

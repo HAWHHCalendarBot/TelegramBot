@@ -1,9 +1,22 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
-import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu';
+import {
+	type Body,
+	deleteMenuFromContext,
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
+} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {count as allEventsCount, exists as allEventsExists, find as allEventsFind} from '../../lib/all-events.js';
-import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js';
+import {
+	count as allEventsCount,
+	exists as allEventsExists,
+	find as allEventsFind,
+} from '../../lib/all-events.js';
+import {
+	DEFAULT_FILTER,
+	filterButtonText,
+} from '../../lib/inline-menu-filter.js';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext} from '../../lib/types.js';
 
@@ -42,13 +55,16 @@ async function findEvents(context: MyContext): Promise<readonly string[]> {
 	return allEventsFind(filter, ignore);
 }
 
-const question = new StatelessQuestion<MyContext>('events-add-filter', async (context, path) => {
-	if ('text' in context.message) {
-		context.session.eventfilter = context.message.text;
-	}
+const question = new StatelessQuestion<MyContext>(
+	'events-add-filter',
+	async (context, path) => {
+		if ('text' in context.message) {
+			context.session.eventfilter = context.message.text;
+		}
 
-	await replyMenuToContext(menu, context, path);
-});
+		await replyMenuToContext(menu, context, path);
+	},
+);
 
 bot.use(question.middleware());
 
@@ -66,7 +82,8 @@ menu.interact(filterButtonText(context => context.session.eventfilter), 'filter'
 
 menu.interact('Filter aufheben', 'filter-clear', {
 	joinLastRow: true,
-	hide: context => (context.session.eventfilter ?? DEFAULT_FILTER) === DEFAULT_FILTER,
+	hide: context =>
+		(context.session.eventfilter ?? DEFAULT_FILTER) === DEFAULT_FILTER,
 	do(context) {
 		delete context.session.eventfilter;
 		return true;
@@ -78,7 +95,9 @@ async function eventOptions(
 ): Promise<Record<string, string>> {
 	try {
 		const all = await findEvents(context);
-		return Object.fromEntries(all.map(event => [event.replaceAll('/', ';'), event]));
+		return Object.fromEntries(
+			all.map(event => [event.replaceAll('/', ';'), event]),
+		);
 	} catch {
 		return {};
 	}
@@ -94,17 +113,21 @@ menu.choose('a', eventOptions, {
 			.includes(event);
 
 		if (!isExisting) {
-			await context.answerCallbackQuery({text: `${event} existiert nicht!`});
+			await context.answerCallbackQuery(`${event} existiert nicht!`);
 			return true;
 		}
 
 		if (isAlreadyInCalendar) {
-			await context.answerCallbackQuery({text: `${event} ist bereits in deinem Kalender!`});
+			await context.answerCallbackQuery(
+				`${event} ist bereits in deinem Kalender!`,
+			);
 			return true;
 		}
 
 		context.userconfig.mine.events[event] = {};
-		await context.answerCallbackQuery({text: `${event} wurde zu deinem Kalender hinzugefügt.`});
+		await context.answerCallbackQuery(
+			`${event} wurde zu deinem Kalender hinzugefügt.`,
+		);
 		return true;
 	},
 	getCurrentPage: context => context.session.page,

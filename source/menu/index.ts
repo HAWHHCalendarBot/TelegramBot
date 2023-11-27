@@ -36,13 +36,19 @@ bot.command('about', async ctx => aboutMiddleware.replyToContext(ctx));
 bot.use(aboutMiddleware);
 
 const dataMiddleware = new MenuMiddleware('data/', data.menu);
-bot.command(['data', 'privacy', 'stop'], async ctx => dataMiddleware.replyToContext(ctx));
+bot.command(
+	['data', 'privacy', 'stop'],
+	async ctx => dataMiddleware.replyToContext(ctx),
+);
 bot.use(data.bot);
 bot.use(dataMiddleware);
 
 const adminComposer = new Composer<MyContext>();
 const adminMiddleware = new MenuMiddleware('admin/', admin.menu);
-adminComposer.command('admin', async ctx => adminMiddleware.replyToContext(ctx));
+adminComposer.command(
+	'admin',
+	async ctx => adminMiddleware.replyToContext(ctx),
+);
 adminComposer.use(admin.bot);
 adminComposer.use(adminMiddleware);
 // False positive

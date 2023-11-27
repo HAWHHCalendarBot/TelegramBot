@@ -1,9 +1,21 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {arrayFilterUnique} from 'array-filter-unique';
 import {Composer} from 'grammy';
-import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu';
-import {formatDateToHumanReadable, formatDateToStoredChangeDate} from '../../../../lib/calendar-helper.js';
-import {generateChangeText, loadEvents} from '../../../../lib/change-helper.js';
+import {
+	type Body,
+	deleteMenuFromContext,
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
+} from 'grammy-inline-menu';
+import {
+	formatDateToHumanReadable,
+	formatDateToStoredChangeDate,
+} from '../../../../lib/calendar-helper.js';
+import {
+	generateChangeText,
+	loadEvents,
+} from '../../../../lib/change-helper.js';
 import type {Change, MyContext} from '../../../../lib/types.js';
 import * as changeDetails from '../details.js';
 import {createDatePickerButtons} from './date-selector.js';
@@ -23,7 +35,8 @@ function menuBody(context: MyContext): Body {
 	}
 
 	if (context.match) {
-		context.session.generateChange.name = context.match[1]!.replaceAll(';', '/');
+		context.session.generateChange.name = context.match[1]!
+			.replaceAll(';', '/');
 	}
 
 	const {name, date, add} = context.session.generateChange;
@@ -33,7 +46,8 @@ function menuBody(context: MyContext): Body {
 		text = 'Zu welchem Termin willst du eine Änderung hinzufügen?';
 		const changes = changesOfEvent(context, name!);
 		if (changes.length > 0) {
-			text += '\n\nFolgende Termine habe bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.';
+			text
+				+= '\n\nFolgende Termine habe bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.';
 			text += '\n';
 
 			const dates = changes.map(o => o.date);
@@ -83,7 +97,9 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 		// Set everything that has to be set to be valid.
 		// When the user dont like the data they can change it but they are not able to create invalid data.
 		context.session.generateChange!.add = true;
-		context.session.generateChange!.date = formatDateToStoredChangeDate(new Date());
+		context.session.generateChange!.date = formatDateToStoredChangeDate(
+			new Date(),
+		);
 		context.session.generateChange!.starttime = new Date().toLocaleTimeString(
 			'de-DE',
 			{hour12: false, hour: '2-digit', minute: '2-digit'},
@@ -104,8 +120,9 @@ async function possibleTimesToCreateChangeToOptions(
 		return {};
 	}
 
-	const existingChangeDates = new Set(changesOfEvent(context, name)
-		.map(o => o.date));
+	const existingChangeDates = new Set(
+		changesOfEvent(context, name).map(o => o.date),
+	);
 
 	const events = await loadEvents(name);
 	const dates = events
@@ -113,7 +130,9 @@ async function possibleTimesToCreateChangeToOptions(
 		.map(o => formatDateToStoredChangeDate(o))
 		.filter(o => !existingChangeDates.has(o))
 		.filter(arrayFilterUnique());
-	return Object.fromEntries(dates.map(date => [date, formatDateToHumanReadable(date)]));
+	return Object.fromEntries(
+		dates.map(date => [date, formatDateToHumanReadable(date)]),
+	);
 }
 
 menu.choose('date', possibleTimesToCreateChangeToOptions, {
@@ -147,21 +166,27 @@ createDatePickerButtons(menu, hideGenerateAddStep);
 
 createTimeSelectionSubmenuButtons(menu, hideGenerateChangeStep);
 
-const namesuffixQuestion = new StatelessQuestion<MyContext>('change-add-suffix', async (context, path) => {
-	if ('text' in context.message) {
-		context.session.generateChange!.namesuffix = context.message.text;
-	}
+const namesuffixQuestion = new StatelessQuestion<MyContext>(
+	'change-add-suffix',
+	async (context, path) => {
+		if ('text' in context.message) {
+			context.session.generateChange!.namesuffix = context.message.text;
+		}
 
-	await replyMenuToContext(menu, context, path);
-});
+		await replyMenuToContext(menu, context, path);
+	},
+);
 
-const roomQuestion = new StatelessQuestion<MyContext>('change-add-room', async (context, path) => {
-	if ('text' in context.message) {
-		context.session.generateChange!.room = context.message.text;
-	}
+const roomQuestion = new StatelessQuestion<MyContext>(
+	'change-add-room',
+	async (context, path) => {
+		if ('text' in context.message) {
+			context.session.generateChange!.room = context.message.text;
+		}
 
-	await replyMenuToContext(menu, context, path);
-});
+		await replyMenuToContext(menu, context, path);
+	},
+);
 
 bot.use(namesuffixQuestion.middleware());
 bot.use(roomQuestion.middleware());
@@ -227,11 +252,17 @@ async function finish(context: MyContext): Promise<string | boolean> {
 	}
 
 	const {name, date} = change;
-	if (context.userconfig.mine.changes.some(o => o.name === name && o.date === date)) {
+	if (
+		context.userconfig.mine.changes.some(o =>
+			o.name === name && o.date === date,
+		)
+	) {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
 		// Also the user can add an additional date that they already have 'used'
-		await context.answerCallbackQuery({text: 'Du hast bereits eine Veranstaltungsänderung für diesen Termin.'});
+		await context.answerCallbackQuery(
+			'Du hast bereits eine Veranstaltungsänderung für diesen Termin.',
+		);
 		return true;
 	}
 

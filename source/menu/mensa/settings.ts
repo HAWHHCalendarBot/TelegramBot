@@ -1,7 +1,12 @@
-import {MenuTemplate, type Body} from 'grammy-inline-menu';
+import {type Body, MenuTemplate} from 'grammy-inline-menu';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import {getCanteenList} from '../../lib/mensa-meals.js';
-import {unreachable, type MealWish, type MensaPriceClass, type MyContext} from '../../lib/types.js';
+import {
+	type MealWish,
+	type MensaPriceClass,
+	type MyContext,
+	unreachable,
+} from '../../lib/types.js';
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫';
@@ -49,7 +54,8 @@ mainMensaMenu.select('set', getCanteenList, {
 		const oldMain = context.userconfig.mine.mensa.main;
 		context.userconfig.mine.mensa.main = mensa;
 		if (context.userconfig.mine.mensa.more) {
-			context.userconfig.mine.mensa.more = context.userconfig.mine.mensa.more.filter(o => o !== mensa);
+			context.userconfig.mine.mensa.more = context.userconfig.mine.mensa.more
+				.filter(o => o !== mensa);
 		}
 
 		if (oldMain) {
@@ -87,7 +93,8 @@ function moreMensaButtonText(context: MyContext): string {
 }
 
 const moreMenu = new MenuTemplate<MyContext>({
-	text: '*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist',
+	text:
+		'*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist',
 	parse_mode: 'Markdown',
 });
 menu.submenu(moreMensaButtonText, 'more', moreMenu, {
@@ -98,7 +105,9 @@ moreMenu.select('more', getCanteenList, {
 	isSet: (context, mensa) => isAdditionalMensa(context, mensa),
 	async set(context, mensa) {
 		if (context.userconfig.mine.mensa.main === mensa) {
-			await context.answerCallbackQuery({text: mensa + ' ist bereits deine Hauptmensa'});
+			await context.answerCallbackQuery(
+				mensa + ' ist bereits deine Hauptmensa',
+			);
 			return false;
 		}
 
@@ -192,12 +201,17 @@ function showWishAsOption(context: MyContext, wish: MealWish): boolean {
 }
 
 function specialWishOptions(context: MyContext): Record<string, string> {
-	return Object.fromEntries(MealWishOptions.filter(wish => showWishAsOption(context, wish)).map(wish => [wish, settingName[wish]]));
+	return Object.fromEntries(
+		MealWishOptions
+			.filter(wish => showWishAsOption(context, wish))
+			.map(wish => [wish, settingName[wish]]),
+	);
 }
 
 specialWishMenu.select('w', specialWishOptions, {
 	columns: 1,
-	isSet: (context, wish) => Boolean(context.userconfig.mine.mensa[wish as MealWish]),
+	isSet: (context, wish) =>
+		Boolean(context.userconfig.mine.mensa[wish as MealWish]),
 	set(context, wish, newState) {
 		if (newState) {
 			context.userconfig.mine.mensa[wish as MealWish] = true;
@@ -211,7 +225,7 @@ specialWishMenu.select('w', specialWishOptions, {
 });
 specialWishMenu.interact('warm… nicht versalzen… kein Spüli…', 'warm', {
 	async do(context) {
-		await context.answerCallbackQuery({text: 'das wär mal was… 😈'});
+		await context.answerCallbackQuery('das wär mal was… 😈');
 		return false;
 	},
 });

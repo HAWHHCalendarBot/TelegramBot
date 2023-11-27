@@ -1,7 +1,14 @@
-import {promises as fsPromises} from 'node:fs';
+import {readFile} from 'node:fs/promises';
 import {html as format} from 'telegram-format';
-import {formatDateToHumanReadable, parseDateTimeToDate} from './calendar-helper.js';
-import type {Change, EventEntryFileContent, EventEntryInternal} from './types.js';
+import {
+	formatDateToHumanReadable,
+	parseDateTimeToDate,
+} from './calendar-helper.js';
+import type {
+	Change,
+	EventEntryFileContent,
+	EventEntryInternal,
+} from './types.js';
 
 export function generateChangeDescription(change: Change): string {
 	let text = '';
@@ -61,7 +68,7 @@ export async function loadEvents(
 ): Promise<EventEntryInternal[]> {
 	try {
 		const filename = eventname.replaceAll('/', '-');
-		const content = await fsPromises.readFile(`eventfiles/${filename}.json`, 'utf8');
+		const content = await readFile(`eventfiles/${filename}.json`, 'utf8');
 		const array = JSON.parse(content) as EventEntryFileContent[];
 		const parsed = array.map((o): EventEntryInternal => ({
 			...o,

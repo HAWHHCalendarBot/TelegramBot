@@ -12,7 +12,11 @@ export const menu = new MenuTemplate<MyContext>(generateBody('overview'));
 bot.use(suffixMenu.bot);
 
 const appleMenu = new MenuTemplate(generateBody('apple'));
-appleMenu.url('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`);
+appleMenu.url(
+	'Kalender abonnieren',
+	ctx =>
+		`https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`,
+);
 appleMenu.manualRow(backMainButtons);
 menu.submenu('🍏 iOS / macOS', 'apple', appleMenu);
 
@@ -24,12 +28,19 @@ menu.submenu('🗂 Office.com (HAW Account)', 'exchange', exchangeMenu);
 const googleMenu = new MenuTemplate(generateBody('google'));
 menu.submenu('🍰 Google Kalender', 'google', googleMenu);
 googleMenu.url('Google Calendar', 'https://calendar.google.com/');
-googleMenu.url('Google Sync Settings', 'https://www.google.com/calendar/syncselect');
+googleMenu.url(
+	'Google Sync Settings',
+	'https://www.google.com/calendar/syncselect',
+);
 googleMenu.navigate('abonnieren mit dem Office.com HAW Account', '../exchange/');
 googleMenu.manualRow(backMainButtons);
 
 const freestyleMenu = new MenuTemplate(generateBody('freestyle'));
-freestyleMenu.url('Kalender abonnieren', ctx => `https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`);
+freestyleMenu.url(
+	'Kalender abonnieren',
+	ctx =>
+		`https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`,
+);
 freestyleMenu.manualRow(backMainButtons);
 menu.submenu('Freestyle 😎', 'freestyle', freestyleMenu);
 

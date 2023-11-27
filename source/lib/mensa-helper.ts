@@ -17,7 +17,9 @@ export function filterMeals(
 		.filter(m => !specialWishes.noPoultry || !m.Poultry)
 		.filter(m => !specialWishes.lactoseFree || m.LactoseFree)
 		.filter(m => !specialWishes.vegan || m.Vegan)
-		.filter(m => !specialWishes.vegetarian || Boolean(m.Vegan) || m.Vegetarian);
+		.filter(m =>
+			!specialWishes.vegetarian || Boolean(m.Vegan) || m.Vegetarian,
+		);
 }
 
 export function generateMealText(
@@ -31,10 +33,14 @@ export function generateMealText(
 	const hints: string[] = [];
 
 	const filtered = filterMeals(meals, mensaSettings);
-	const mealTexts = filtered.map(m => mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives));
+	const mealTexts = filtered.map(m =>
+		mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives),
+	);
 
 	if (meals.length !== filtered.length) {
-		hints.push('⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.');
+		hints.push(
+			'⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.',
+		);
 	}
 
 	const hintText = hints
@@ -62,9 +68,9 @@ export function mealNameToHtml(
 	showAdditives: boolean | undefined,
 ): string {
 	const parsedName = name
-	// Remove / un-bold additives at the end
+		// Remove / un-bold additives at the end
 		.replaceAll(/ \(([\d\w, ]+)\)$/g, showAdditives ? '</b> ($1)<b>' : '')
-	// Remove / un-bold additives within the name
+		// Remove / un-bold additives within the name
 		.replaceAll(/ \(([\d\w, ]+)\), /g, showAdditives ? '</b> ($1), <b>' : ', ');
 
 	const fullName = `<b>${parsedName}</b>`;
@@ -91,7 +97,9 @@ export function mealToHtml(
 	const price = priceClass === 'student'
 		? meal.PriceStudent
 		: (priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest);
-	const priceString = price.toLocaleString('de-DE', {minimumFractionDigits: 2}).replace('.', ',');
+	const priceString = price.toLocaleString('de-DE', {
+		minimumFractionDigits: 2,
+	}).replace('.', ',');
 
 	let text = `${name}\n`;
 	text += `${priceString} €`;

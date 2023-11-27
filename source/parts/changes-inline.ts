@@ -1,7 +1,12 @@
 import {Composer} from 'grammy';
 import type {InlineQueryResultArticle, User} from 'grammy/types';
 import {html as format} from 'telegram-format';
-import {generateChangeDescription, generateChangeText, generateChangeTextHeader, generateShortChangeText} from '../lib/change-helper.js';
+import {
+	generateChangeDescription,
+	generateChangeText,
+	generateChangeTextHeader,
+	generateShortChangeText,
+} from '../lib/change-helper.js';
 import type {Change, MyContext} from '../lib/types.js';
 
 export const bot = new Composer<MyContext>();
@@ -37,11 +42,16 @@ function escapeRegexSpecificChars(input: string): string {
 }
 
 bot.on('inline_query', async context => {
-	const regex = new RegExp(escapeRegexSpecificChars(context.inlineQuery.query), 'i');
+	const regex = new RegExp(
+		escapeRegexSpecificChars(context.inlineQuery.query),
+		'i',
+	);
 
 	const filtered = context.userconfig.mine.changes
 		.filter(o => regex.test(generateShortChangeText(o)));
-	const results = filtered.map(c => generateInlineQueryResultFromChange(c, context.from));
+	const results = filtered.map(c =>
+		generateInlineQueryResultFromChange(c, context.from),
+	);
 
 	await context.answerInlineQuery(results, {
 		cache_time: 20,
@@ -68,13 +78,16 @@ async function getChangeFromContextMatch(
 	const fromId = Number(context.match![3]!);
 
 	if (!Object.keys(context.userconfig.mine.events).includes(name)) {
-		await context.answerCallbackQuery({text: 'Du besuchst diese Veranstaltung garnicht. 🤔'});
+		await context.answerCallbackQuery(
+			'Du besuchst diese Veranstaltung garnicht. 🤔',
+		);
 		return undefined;
 	}
 
 	try {
 		const fromconfig = await context.userconfig.loadConfig(fromId);
-		const searchedChange = fromconfig.changes.find(o => o.name === name && o.date === date);
+		const searchedChange = fromconfig.changes
+			.find(o => o.name === name && o.date === date);
 		if (!searchedChange) {
 			throw new Error('User does not have this change');
 		}
@@ -86,7 +99,9 @@ async function getChangeFromContextMatch(
 			change: searchedChange,
 		};
 	} catch {
-		await context.editMessageText('Die Veranstaltungsänderung existiert nicht mehr. 😔');
+		await context.editMessageText(
+			'Die Veranstaltungsänderung existiert nicht mehr. 😔',
+		);
 		return undefined;
 	}
 }
@@ -100,7 +115,7 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 	const {name, date, fromId, change} = meta;
 
 	if (context.from?.id === Number(fromId)) {
-		await context.answerCallbackQuery({text: 'Das ist deine eigene Änderung 😉'});
+		await context.answerCallbackQuery('Das ist deine eigene Änderung 😉');
 		return;
 	}
 
@@ -109,8 +124,9 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 		.filter(o => o.name === name && o.date === date);
 
 	if (myChangeToThisEvent.length > 0) {
-		const warning = '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.';
-		await context.answerCallbackQuery({text: warning});
+		const warning
+			= '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.';
+		await context.answerCallbackQuery(warning);
 
 		const currentChange = myChangeToThisEvent[0]!;
 
@@ -124,7 +140,10 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 		text += '\n' + format.escape(generateChangeDescription(change));
 
 		const inline_keyboard = [[
-			{text: 'Überschreiben', callback_data: `c:af:${name}#${date}#${fromId}`},
+			{
+				text: 'Überschreiben',
+				callback_data: `c:af:${name}#${date}#${fromId}`,
+			},
 			{text: 'Abbrechen', callback_data: 'c:cancel'},
 		]];
 
@@ -136,10 +155,13 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 	}
 
 	context.userconfig.mine.changes.push(change);
-	await context.answerCallbackQuery({text: 'Die Änderung wurde hinzugefügt'});
+	await context.answerCallbackQuery('Die Änderung wurde hinzugefügt');
 });
 
-bot.callbackQuery('c:cancel', async context => context.editMessageText('Ich habe nichts verändert. 🙂'));
+bot.callbackQuery(
+	'c:cancel',
+	async context => context.editMessageText('Ich habe nichts verändert. 🙂'),
+);
 
 // Action: change add force
 bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async context => {

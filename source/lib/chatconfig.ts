@@ -1,7 +1,7 @@
-import {promises as fsPromises} from 'node:fs';
-import stringify from 'json-stable-stringify';
+import {readdir, readFile, unlink, writeFile} from 'node:fs/promises';
 import type {Api, MiddlewareFn} from 'grammy';
 import type {User} from 'grammy/types';
+import stringify from 'json-stable-stringify';
 import {sequentialLoop} from './async.js';
 import * as telegramBroadcast from './telegram-broadcast.js';
 import type {MyContext, OtherSendMessage, Userconfig} from './types.js';
@@ -12,10 +12,20 @@ type ChatConfigFileContent = {
 };
 
 export type ContextProperty = {
-	readonly all: (filter?: (o: ChatConfigFileContent) => boolean) => Promise<readonly ChatConfigFileContent[]>;
+	readonly all: (
+		filter?: (o: ChatConfigFileContent) => boolean,
+	) => Promise<readonly ChatConfigFileContent[]>;
 	readonly allIds: () => Promise<number[]>;
-	readonly broadcast: (text: string, extra: OtherSendMessage, filter?: (o: ChatConfigFileContent) => boolean) => Promise<void>;
-	readonly forwardBroadcast: (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => Promise<void>;
+	readonly broadcast: (
+		text: string,
+		extra: OtherSendMessage,
+		filter?: (o: ChatConfigFileContent) => boolean,
+	) => Promise<void>;
+	readonly forwardBroadcast: (
+		originChat: string | number,
+		messageId: number,
+		filter?: (o: ChatConfigFileContent) => boolean,
+	) => Promise<void>;
 	readonly load: (id: number) => Promise<ChatConfigFileContent | undefined>;
 	readonly loadConfig: (id: number) => Promise<Userconfig>;
 
@@ -41,10 +51,19 @@ export class Chatconfig {
 			const configOfUser = this.configFromWholeConfig(wholeconfig);
 
 			const contextProperty: ContextProperty = {
-				all: async (filter?: (o: ChatConfigFileContent) => boolean) => this.all(filter),
+				all: async (filter?: (o: ChatConfigFileContent) => boolean) =>
+					this.all(filter),
 				allIds: async () => this.allIds(),
-				broadcast: async (text: string, extra: OtherSendMessage, filter?: (o: ChatConfigFileContent) => boolean) => this.broadcast(ctx.api, text, extra, filter),
-				forwardBroadcast: async (originChat: string | number, messageId: number, filter?: (o: ChatConfigFileContent) => boolean) => this.forwardBroadcast(ctx.api, originChat, messageId, filter),
+				broadcast: async (
+					text: string,
+					extra: OtherSendMessage,
+					filter?: (o: ChatConfigFileContent) => boolean,
+				) => this.broadcast(ctx.api, text, extra, filter),
+				forwardBroadcast: async (
+					originChat: string | number,
+					messageId: number,
+					filter?: (o: ChatConfigFileContent) => boolean,
+				) => this.forwardBroadcast(ctx.api, originChat, messageId, filter),
 				load: async (id: number) => this.load(id),
 				loadConfig: async (id: number) => this.loadConfig(id),
 				mine: configOfUser,
@@ -73,7 +92,10 @@ export class Chatconfig {
 
 	async load(id: number): Promise<ChatConfigFileContent | undefined> {
 		try {
-			const content = await fsPromises.readFile(this.filenameFromId(id), 'utf8');
+			const content = await readFile(
+				this.filenameFromId(id),
+				'utf8',
+			);
 			return JSON.parse(content) as ChatConfigFileContent;
 		} catch {
 			return undefined;
@@ -91,7 +113,7 @@ export class Chatconfig {
 			config,
 		};
 
-		await fsPromises.writeFile(
+		await writeFile(
 			this.filenameFromId(from.id),
 			stringify(json, {space: 2}) + '\n',
 			'utf8',
@@ -99,11 +121,11 @@ export class Chatconfig {
 	}
 
 	async removeConfig(id: number): Promise<void> {
-		await fsPromises.unlink(this.filenameFromId(id));
+		await unlink(this.filenameFromId(id));
 	}
 
 	async allIds(): Promise<number[]> {
-		const files = await fsPromises.readdir(this.folder);
+		const files = await readdir(this.folder);
 		const ids = files
 			.map(s => s.replace('.json', ''))
 			.map(Number);
@@ -115,9 +137,9 @@ export class Chatconfig {
 	): Promise<readonly ChatConfigFileContent[]> {
 		const ids = await this.allIds();
 
-		const fileContents = await Promise.all(ids.map(async id =>
-			fsPromises.readFile(this.filenameFromId(id), 'utf8'),
-		));
+		const fileContents = await Promise.all(
+			ids.map(async id => readFile(this.filenameFromId(id), 'utf8')),
+		);
 
 		const configs = fileContents
 			.map(o => JSON.parse(o) as ChatConfigFileContent)
@@ -134,7 +156,12 @@ export class Chatconfig {
 	): Promise<void> {
 		const allConfigs = await this.all(filter);
 		const allIds = allConfigs.map(config => config.chat.id);
-		const failedIds = await telegramBroadcast.broadcast(telegram, allIds, text, extra);
+		const failedIds = await telegramBroadcast.broadcast(
+			telegram,
+			allIds,
+			text,
+			extra,
+		);
 		await sequentialLoop(failedIds, async id => this.removeConfig(id));
 	}
 
@@ -146,7 +173,12 @@ export class Chatconfig {
 	): Promise<void> {
 		const allConfigs = await this.all(filter);
 		const allIds = allConfigs.map(config => config.chat.id);
-		const failedIds = await telegramBroadcast.forwardBroadcast(telegram, allIds, originChat, messageId);
+		const failedIds = await telegramBroadcast.forwardBroadcast(
+			telegram,
+			allIds,
+			originChat,
+			messageId,
+		);
 		await sequentialLoop(failedIds, async id => this.removeConfig(id));
 	}
 

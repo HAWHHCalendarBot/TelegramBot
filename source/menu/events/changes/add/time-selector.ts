@@ -1,5 +1,8 @@
 import {MenuTemplate} from 'grammy-inline-menu';
-import {HOUR_OPTIONS, MINUTE_OPTIONS} from '../../../../lib/event-creation-menu-options.js';
+import {
+	HOUR_OPTIONS,
+	MINUTE_OPTIONS,
+} from '../../../../lib/event-creation-menu-options.js';
 import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js';
 import type {MyContext} from '../../../../lib/types.js';
 
@@ -32,7 +35,9 @@ function createTimeSelectionSubmenuButton(
 
 	subMenu.select('h', HOUR_OPTIONS, {
 		columns: 3,
-		isSet: (context, key) => Number(context.session.generateChange![time]?.split(':')[0]) === Number(key),
+		isSet: (context, key) =>
+			Number(context.session.generateChange![time]?.split(':')[0])
+				=== Number(key),
 		set(context, key) {
 			const {minute} = getCurrent(context, time);
 			context.session.generateChange![time] = formatTime(key, minute);
@@ -43,7 +48,9 @@ function createTimeSelectionSubmenuButton(
 	subMenu.select('m', MINUTE_OPTIONS, {
 		columns: 4,
 		buttonText: (_, number) => ':' + numberToTwoDigit(number),
-		isSet: (context, key) => Number(context.session.generateChange![time]?.split(':')[1]) === Number(key),
+		isSet: (context, key) =>
+			Number(context.session.generateChange![time]?.split(':')[1])
+				=== Number(key),
 		set(context, key) {
 			const {hour} = getCurrent(context, time);
 			context.session.generateChange![time] = formatTime(hour, key);

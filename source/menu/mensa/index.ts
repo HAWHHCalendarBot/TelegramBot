@@ -1,4 +1,4 @@
-import {MenuTemplate, type Body} from 'grammy-inline-menu';
+import {type Body, MenuTemplate} from 'grammy-inline-menu';
 import * as mensaGit from '../../lib/mensa-git.js';
 import {generateMealText} from '../../lib/mensa-helper.js';
 import {getMealsOfDay} from '../../lib/mensa-meals.js';
@@ -137,7 +137,8 @@ function mensaSelectOption(context: MyContext): string[] {
 
 menu.select('t', daySelectOptions, {
 	columns: 3,
-	isSet: (context, key) => dateEqual(getCurrentSettings(context).date, parseDateString(key)),
+	isSet: (context, key) =>
+		dateEqual(getCurrentSettings(context).date, parseDateString(key)),
 	set(context, key) {
 		if (!context.session.mensa) {
 			context.session.mensa = {};
@@ -146,7 +147,8 @@ menu.select('t', daySelectOptions, {
 		context.session.mensa.date = parseDateString(key).getTime();
 		return true;
 	},
-	formatState: (_, textResult, state) => state ? `🕚 ${textResult}` : textResult,
+	formatState: (_, textResult, state) =>
+		state ? `🕚 ${textResult}` : textResult,
 });
 
 menu.choose('m', mensaSelectOption, {

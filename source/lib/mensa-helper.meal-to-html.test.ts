@@ -39,7 +39,7 @@ await test('meal-to-html example guest without Additives', () => {
 
 await test('meal-to-html example student with Additives', () => {
 	let expected
-    = '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)';
+		= '<b>4 Röstiecken, Kräuterquark</b> (La), <b>Gurkensalat</b> (La)';
 	expected += '\n2,45 € vegetarisch';
 	const result = mealToHtml(example, 'student', true);
 	strictEqual(result, expected);
@@ -56,7 +56,7 @@ await test('meal-to-html example name with end bracket without Additives', () =>
 
 await test('meal-to-html example name with end bracket with Additives', () => {
 	const expected
-    = '<b>Soja Bolognese mit Gemüse</b> (So,Sl), <b>bunte Fusilli (VEGAN)</b> (Gl)';
+		= '<b>Soja Bolognese mit Gemüse</b> (So,Sl), <b>bunte Fusilli (VEGAN)</b> (Gl)';
 	const result = mealNameToHtml(
 		'Soja Bolognese mit Gemüse (So,Sl), bunte Fusilli (VEGAN) (Gl)',
 		true,

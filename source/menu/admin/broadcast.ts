@@ -1,6 +1,10 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
-import {getMenuOfPath, MenuTemplate, replyMenuToContext} from 'grammy-inline-menu';
+import {
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
+} from 'grammy-inline-menu';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext} from '../../lib/types.js';
 
@@ -13,10 +17,13 @@ function broadcastButtonText(context: MyContext): string {
 		: '✏️ Setze Nachricht…';
 }
 
-const broadcastQuestion = new StatelessQuestion<MyContext>('admin-broadcast', async (context, path) => {
-	context.session.adminBroadcast = context.message.message_id;
-	await replyMenuToContext(menu, context, path);
-});
+const broadcastQuestion = new StatelessQuestion<MyContext>(
+	'admin-broadcast',
+	async (context, path) => {
+		context.session.adminBroadcast = context.message.message_id;
+		await replyMenuToContext(menu, context, path);
+	},
+);
 
 bot.use(broadcastQuestion.middleware());
 
@@ -64,7 +71,11 @@ async function handleOngoingBroadcast(
 	});
 
 	if (context.callbackQuery?.data) {
-		await replyMenuToContext(menu, context, getMenuOfPath(context.callbackQuery.data));
+		await replyMenuToContext(
+			menu,
+			context,
+			getMenuOfPath(context.callbackQuery.data),
+		);
 	}
 }
 

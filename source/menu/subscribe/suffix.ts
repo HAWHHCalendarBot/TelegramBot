@@ -1,6 +1,12 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
-import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu';
+import {
+	type Body,
+	deleteMenuFromContext,
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
+} from 'grammy-inline-menu';
 import {getUrlFromContext} from '../../lib/calendar-helper.js';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext} from '../../lib/types.js';
@@ -57,13 +63,16 @@ menu.interact('Generieren…', 'g', {
 	},
 });
 
-const manualSuffixQuestion = new StatelessQuestion<MyContext>('subscribe-suffix-manual', async (context, path) => {
-	if (context.message.text) {
-		await setSuffix(context, context.message.text);
-	}
+const manualSuffixQuestion = new StatelessQuestion<MyContext>(
+	'subscribe-suffix-manual',
+	async (context, path) => {
+		if (context.message.text) {
+			await setSuffix(context, context.message.text);
+		}
 
-	await replyMenuToContext(menu, context, path);
-});
+		await replyMenuToContext(menu, context, path);
+	},
+);
 
 bot.use(manualSuffixQuestion.middleware());
 

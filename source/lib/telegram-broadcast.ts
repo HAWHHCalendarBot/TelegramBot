@@ -17,8 +17,12 @@ export async function broadcast(
 			await sleep(SLEEP_MS);
 			await telegram.sendMessage(id, text, extra);
 		} catch (error) {
-			console.warn('broadcast failed. Target:', id, error instanceof Error ? error.message : error);
-			if (isUserGoneError(error instanceof Error ? error.message : String(error))) {
+			console.warn(
+				'broadcast failed. Target:',
+				id,
+				error instanceof Error ? error.message : error,
+			);
+			if (isUserGoneError(error)) {
 				goneUserIds.push(id);
 			}
 		}
@@ -40,8 +44,12 @@ export async function forwardBroadcast(
 			await sleep(SLEEP_MS);
 			await telegram.forwardMessage(id, originChat, messageId);
 		} catch (error) {
-			console.warn('forwardBroadcast failed. Target:', id, error instanceof Error ? error.message : error);
-			if (isUserGoneError(error instanceof Error ? error.message : String(error))) {
+			console.warn(
+				'forwardBroadcast failed. Target:',
+				id,
+				error instanceof Error ? error.message : error,
+			);
+			if (isUserGoneError(error)) {
 				goneUserIds.push(id);
 			}
 		}
@@ -50,7 +58,10 @@ export async function forwardBroadcast(
 	return goneUserIds;
 }
 
-function isUserGoneError(errorDescription: string): boolean {
+function isUserGoneError(error: unknown): boolean {
+	const errorDescription = error instanceof Error
+		? error.message
+		: String(error);
 	return errorDescription.includes('user is deactivated')
 		|| errorDescription.includes('bot was blocked by the user');
 }

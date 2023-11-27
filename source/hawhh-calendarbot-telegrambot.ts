@@ -11,7 +11,9 @@ import * as easterEggs from './parts/easter-eggs.js';
 
 const token = env['BOT_TOKEN'];
 if (!token) {
-	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)');
+	throw new Error(
+		'You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)',
+	);
 }
 
 const baseBot = new Bot<MyContext>(token);
@@ -34,7 +36,8 @@ const bot = baseBot.errorBoundary(async ({error, ctx}) => {
 	);
 	let text = '🔥 Da ist wohl ein Fehler aufgetreten…';
 	text += '\n';
-	text += 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️';
+	text
+		+= 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️';
 
 	text += '\n';
 	text += '\nError: `';
@@ -61,10 +64,15 @@ async function startMessage(ctx: MyContext) {
 	text += '\n\n';
 	text += ctx.t('help');
 	await ctx.reply(text, {
-		reply_markup: {inline_keyboard: [
-			[{text: 'hawhh.de/calendarbot/', url: 'https://hawhh.de/calendarbot/'}],
-			[{text: '🦑 Quellcode', url: 'https://github.com/HAWHHCalendarBot'}],
-		]},
+		reply_markup: {
+			inline_keyboard: [
+				[{
+					text: 'hawhh.de/calendarbot/',
+					url: 'https://hawhh.de/calendarbot/',
+				}],
+				[{text: '🦑 Quellcode', url: 'https://github.com/HAWHHCalendarBot'}],
+			],
+		},
 	});
 }
 
@@ -101,7 +109,10 @@ const COMMANDS = {
 	privacy: 'über dich gespeicherte Daten',
 	stop: 'stoppe den Bot und lösche alle Daten über dich',
 } as const;
-await baseBot.api.setMyCommands(Object.entries(COMMANDS).map(([command, description]) => ({command, description})));
+await baseBot.api.setMyCommands(
+	Object.entries(COMMANDS)
+		.map(([command, description]) => ({command, description})),
+);
 
 await baseBot.start({
 	onStart(botInfo) {

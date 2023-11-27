@@ -1,6 +1,11 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
-import {MenuTemplate, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu';
+import {
+	type Body,
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
+} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import type {MyContext, Userconfig} from '../lib/types.js';
 
@@ -23,7 +28,10 @@ const PRIVACY_SECTIONS = {
 type PrivacySection = keyof typeof PRIVACY_SECTIONS;
 
 async function menuBody(context: MyContext): Promise<Body> {
-	const part = privacyInfoPart(context, context.session.privacySection ?? 'persistent');
+	const part = privacyInfoPart(
+		context,
+		context.session.privacySection ?? 'persistent',
+	);
 
 	let text = context.t('privacy-overview');
 	text += '\n\n';
@@ -33,7 +41,11 @@ async function menuBody(context: MyContext): Promise<Body> {
 	text += '\n';
 	text += format.monospaceBlock(JSON.stringify(part.data, null, 1), 'json');
 
-	return {text, parse_mode: format.parse_mode, disable_web_page_preview: true};
+	return {
+		text,
+		parse_mode: format.parse_mode,
+		disable_web_page_preview: true,
+	};
 }
 
 function privacyInfoPart(ctx: MyContext, section: PrivacySection) {
@@ -43,7 +55,11 @@ function privacyInfoPart(ctx: MyContext, section: PrivacySection) {
 	}
 
 	if (section === 'persistent') {
-		return {text, title: 'Persistente Einstellungen im Bot', data: ctx.userconfig.mine};
+		return {
+			text,
+			title: 'Persistente Einstellungen im Bot',
+			data: ctx.userconfig.mine,
+		};
 	}
 
 	return {text, title: 'Temporäre Daten des Bots', data: ctx.session};
@@ -51,7 +67,8 @@ function privacyInfoPart(ctx: MyContext, section: PrivacySection) {
 
 const deleteConfirmString = 'Ja, ich will!';
 
-const deleteQuestion = `Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "${deleteConfirmString}"`;
+const deleteQuestion
+	= `Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "${deleteConfirmString}"`;
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(menuBody);
@@ -66,24 +83,34 @@ menu.select('section', PRIVACY_SECTIONS, {
 
 menu.url('🦑 Quellcode', 'https://github.com/HAWHHCalendarBot');
 
-const deleteAllQuestion = new StatelessQuestion<MyContext>('delete-everything', async (context, path) => {
-	if ('text' in context.message && context.message.text === deleteConfirmString) {
-		// @ts-expect-error delete readonly
-		delete context.userconfig.mine;
-		context.session = undefined;
-		await context.reply('Deine Daten werden gelöscht…');
-	} else {
-		await context.reply('Du hast mir aber einen Schrecken eingejagt! 🙀');
-		await replyMenuToContext(menu, context, path);
-	}
-});
+const deleteAllQuestion = new StatelessQuestion<MyContext>(
+	'delete-everything',
+	async (context, path) => {
+		if (
+			'text' in context.message
+			&& context.message.text === deleteConfirmString
+		) {
+			// @ts-expect-error delete readonly
+			delete context.userconfig.mine;
+			context.session = undefined;
+			await context.reply('Deine Daten werden gelöscht…');
+		} else {
+			await context.reply('Du hast mir aber einen Schrecken eingejagt! 🙀');
+			await replyMenuToContext(menu, context, path);
+		}
+	},
+);
 
 bot.use(deleteAllQuestion.middleware());
 
 menu.interact('⚠️ Alles löschen ⚠️', 'delete-all', {
 	hide: async context => !(await getActualUserconfigContent(context)),
 	async do(context, path) {
-		await deleteAllQuestion.replyWithMarkdown(context, deleteQuestion, getMenuOfPath(path));
+		await deleteAllQuestion.replyWithMarkdown(
+			context,
+			deleteQuestion,
+			getMenuOfPath(path),
+		);
 		return false;
 	},
 });

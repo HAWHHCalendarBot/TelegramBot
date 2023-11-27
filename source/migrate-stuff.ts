@@ -28,8 +28,13 @@ bot.use(async (ctx, next) => {
 		ctx.userconfig.mine.events = map;
 	}
 
-	if (Boolean(ctx.userconfig.mine.websiteStalkerUpdate) || Boolean(ctx.userconfig.mine.stisysUpdate)) {
-		await ctx.reply('Das beobachten von StISys ist nicht mehr Teil dieses Bots und wurde in den Channel @HAWHHWebsiteStalker verlagert.');
+	if (
+		Boolean(ctx.userconfig.mine.websiteStalkerUpdate)
+		|| Boolean(ctx.userconfig.mine.stisysUpdate)
+	) {
+		await ctx.reply(
+			'Das beobachten von StISys ist nicht mehr Teil dieses Bots und wurde in den Channel @HAWHHWebsiteStalker verlagert.',
+		);
 	}
 
 	if (!ctx.userconfig.mine.mensa) {

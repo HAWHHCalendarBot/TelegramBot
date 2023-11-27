@@ -1,10 +1,19 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
-import {MenuTemplate, deleteMenuFromContext, getMenuOfPath, replyMenuToContext, type Body} from 'grammy-inline-menu';
+import {
+	type Body,
+	deleteMenuFromContext,
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
+} from 'grammy-inline-menu';
 import type {User} from 'grammy/types';
 import {html as format} from 'telegram-format';
 import {getUrl} from '../../lib/calendar-helper.js';
-import {DEFAULT_FILTER, filterButtonText} from '../../lib/inline-menu-filter.js';
+import {
+	DEFAULT_FILTER,
+	filterButtonText,
+} from '../../lib/inline-menu-filter.js';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext} from '../../lib/types.js';
 
@@ -26,11 +35,15 @@ async function menuBody(context: MyContext): Promise<Body> {
 		return 'Wähle einen Nutzer…';
 	}
 
-	const config = await context.userconfig.load(context.session.adminuserquicklook);
+	const config = await context.userconfig.load(
+		context.session.adminuserquicklook,
+	);
 
 	let text = '';
 	text += 'URL: ';
-	text += format.monospace('https://' + getUrl(context.session.adminuserquicklook, config!.config));
+	text += format.monospace(
+		'https://' + getUrl(context.session.adminuserquicklook, config!.config),
+	);
 	text += '\n\n';
 	text += format.monospaceBlock(JSON.stringify(config, null, 2), 'json');
 
@@ -41,20 +54,25 @@ export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(menuBody);
 
 menu.url('Kalender', async context => {
-	const config = await context.userconfig.loadConfig(context.session.adminuserquicklook!);
+	const config = await context.userconfig.loadConfig(
+		context.session.adminuserquicklook!,
+	);
 	return `https://${getUrl(context.session.adminuserquicklook!, config)}`;
 }, {
 	hide: context => !context.session.adminuserquicklook,
 });
 
-const question = new StatelessQuestion<MyContext>('admin-user-filter', async (context, path) => {
-	if ('text' in context.message) {
-		context.session.adminuserquicklookfilter = context.message.text;
-		delete context.session.adminuserquicklook;
-	}
+const question = new StatelessQuestion<MyContext>(
+	'admin-user-filter',
+	async (context, path) => {
+		if ('text' in context.message) {
+			context.session.adminuserquicklookfilter = context.message.text;
+			delete context.session.adminuserquicklook;
+		}
 
-	await replyMenuToContext(menu, context, path);
-});
+		await replyMenuToContext(menu, context, path);
+	},
+);
 
 bot.use(question.middleware());
 
@@ -72,7 +90,10 @@ menu.interact(filterButtonText(context => context.session.adminuserquicklookfilt
 
 menu.interact('Filter aufheben', 'filter-clear', {
 	joinLastRow: true,
-	hide: context => (context.session.adminuserquicklookfilter ?? DEFAULT_FILTER) === DEFAULT_FILTER,
+	hide(context) {
+		return (context.session.adminuserquicklookfilter ?? DEFAULT_FILTER)
+			=== DEFAULT_FILTER;
+	},
 	do(context) {
 		delete context.session.adminuserquicklookfilter;
 		delete context.session.adminuserquicklook;
@@ -96,13 +117,16 @@ async function userOptions(
 		return nameA.localeCompare(nameB);
 	});
 
-	return Object.fromEntries(allChats.map(chat => [chat.id, nameOfUser(chat)]));
+	return Object.fromEntries(
+		allChats.map(chat => [chat.id, nameOfUser(chat)]),
+	);
 }
 
 menu.select('u', userOptions, {
 	maxRows: 5,
 	columns: 2,
-	isSet: (context, selected) => context.session.adminuserquicklook === Number(selected),
+	isSet: (context, selected) =>
+		context.session.adminuserquicklook === Number(selected),
 	async set(context, selected) {
 		context.session.adminuserquicklook = Number(selected);
 		return true;

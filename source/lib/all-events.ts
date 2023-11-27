@@ -1,7 +1,7 @@
-import {promises as fsPromises} from 'node:fs';
+import {readFile} from 'node:fs/promises';
 
 async function getAll(): Promise<string[]> {
-	const data = await fsPromises.readFile('eventfiles/all.txt', 'utf8');
+	const data = await readFile('eventfiles/all.txt', 'utf8');
 	const list = data.split('\n').filter(element => element !== '');
 	return list;
 }
@@ -34,6 +34,8 @@ export async function find(
 ): Promise<readonly string[]> {
 	const allEvents = await getAll();
 	const regex = new RegExp(pattern, 'i');
-	const filtered = allEvents.filter(event => regex.test(event) && !ignore.includes(event));
+	const filtered = allEvents.filter(event =>
+		regex.test(event) && !ignore.includes(event),
+	);
 	return filtered;
 }

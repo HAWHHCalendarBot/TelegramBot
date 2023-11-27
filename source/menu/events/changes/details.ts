@@ -1,5 +1,8 @@
 import {MenuTemplate} from 'grammy-inline-menu';
-import {generateChangeText, generateShortChangeText} from '../../../lib/change-helper.js';
+import {
+	generateChangeText,
+	generateShortChangeText,
+} from '../../../lib/change-helper.js';
 import {backMainButtons} from '../../../lib/inline-menu.js';
 import type {Change, MyContext} from '../../../lib/types.js';
 
@@ -36,7 +39,7 @@ menu.interact('⚠️ Änderung entfernen', 'r', {
 		const change = getChangeFromContext(context);
 		context.userconfig.mine.changes = context.userconfig.mine.changes
 			.filter(o => o.name !== change?.name || o.date !== change?.date);
-		await context.answerCallbackQuery({text: 'Änderung wurde entfernt.'});
+		await context.answerCallbackQuery('Änderung wurde entfernt.');
 		return '..';
 	},
 });

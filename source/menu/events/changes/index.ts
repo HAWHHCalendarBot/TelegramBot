@@ -1,5 +1,5 @@
 import {Composer} from 'grammy';
-import {MenuTemplate, type Body} from 'grammy-inline-menu';
+import {type Body, MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import {formatDateToHumanReadable} from '../../../lib/calendar-helper.js';
 import {backMainButtons} from '../../../lib/inline-menu.js';
