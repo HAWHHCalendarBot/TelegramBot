@@ -48,7 +48,7 @@ const bot = baseBot.errorBoundary(async ({error, ctx}) => {
 	const target = (ctx.chat ?? ctx.from!).id;
 	await ctx.api.sendMessage(target, text, {
 		parse_mode: 'Markdown',
-		disable_web_page_preview: true,
+		link_preview_options: {is_disabled: true},
 	});
 });
 
