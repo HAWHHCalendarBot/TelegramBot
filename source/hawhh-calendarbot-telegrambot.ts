@@ -2,6 +2,7 @@ import {env} from 'node:process';
 import {I18n} from '@grammyjs/i18n';
 import {Bot, session} from 'grammy';
 import {generateUpdateMiddleware} from 'telegraf-middleware-console-time';
+import {html as format} from 'telegram-format';
 import {Chatconfig} from './lib/chatconfig.js';
 import type {MyContext, Session} from './lib/types.js';
 import {bot as menu} from './menu/index.js';
@@ -34,21 +35,24 @@ const bot = baseBot.errorBoundary(async ({error, ctx}) => {
 		error,
 		(error as any)?.on?.payload,
 	);
-	let text = '🔥 Da ist wohl ein Fehler aufgetreten…';
-	text += '\n';
-	text
-		+= 'Schreib mal @EdJoPaTo dazu an oder erstell ein [Issue auf GitHub](https://github.com/HAWHHCalendarBot/TelegramBot/issues). Dafür findet sich sicher eine Lösung. ☺️';
+	let text = `🔥 Da ist wohl ein Fehler aufgetreten…
 
-	text += '\n';
-	text += '\nError: `';
+Schreib mal @EdJoPaTo dazu an oder erstell ein ${
+	format.url(
+		'Issue auf GitHub',
+		'https://github.com/HAWHHCalendarBot/TelegramBot/issues',
+	)
+}. Dafür findet sich sicher eine Lösung. ☺️
+
+Error: `;
+
 	const errorText = error instanceof Error ? error.message : String(error);
-	text += errorText.replaceAll(token, '');
-	text += '`';
+	text += format.monospace(errorText.replaceAll(token, ''));
 
 	const target = (ctx.chat ?? ctx.from!).id;
 	await ctx.api.sendMessage(target, text, {
-		parse_mode: 'Markdown',
 		link_preview_options: {is_disabled: true},
+		parse_mode: format.parse_mode,
 	});
 });
 

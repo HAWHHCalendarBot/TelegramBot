@@ -29,7 +29,7 @@ bot.use(broadcastQuestion.middleware());
 
 menu.interact(broadcastButtonText, 'set', {
 	async do(context, path) {
-		await broadcastQuestion.replyWithMarkdown(
+		await broadcastQuestion.replyWithHTML(
 			context,
 			'Hey admin! Was willst du broadcasten?',
 			getMenuOfPath(path),

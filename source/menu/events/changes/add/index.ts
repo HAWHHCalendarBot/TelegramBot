@@ -206,7 +206,7 @@ function questionButtonText(
 menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuffix', {
 	hide: hideGenerateChangeStep,
 	async do(context, path) {
-		await namesuffixQuestion.replyWithMarkdown(
+		await namesuffixQuestion.replyWithHTML(
 			context,
 			'Welche Zusatzinfo möchtest du dem Termin geben? Dies sollte nur ein Wort oder eine kurze Info sein, wie zum Beispiel "Klausurvorbereitung". Diese Info wird dann dem Titel des Termins angehängt.',
 			getMenuOfPath(path),
@@ -219,7 +219,7 @@ menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuf
 menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
 	hide: hideGenerateChangeStep,
 	async do(context, path) {
-		await roomQuestion.replyWithMarkdown(
+		await roomQuestion.replyWithHTML(
 			context,
 			'In welchen Raum wurde der Termin verschoben?',
 			getMenuOfPath(path),

@@ -70,7 +70,7 @@ bot.use(question.middleware());
 
 menu.interact(filterButtonText(context => context.session.eventfilter), 'filter', {
 	async do(context, path) {
-		await question.replyWithMarkdown(
+		await question.replyWithHTML(
 			context,
 			'Wonach möchtest du die Veranstaltungen filtern?',
 			getMenuOfPath(path),

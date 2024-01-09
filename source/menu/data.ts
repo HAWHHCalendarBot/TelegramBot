@@ -66,7 +66,6 @@ function privacyInfoPart(ctx: MyContext, section: PrivacySection) {
 }
 
 const deleteConfirmString = 'Ja, ich will!';
-
 const deleteQuestion
 	= `Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "${deleteConfirmString}"`;
 
@@ -106,7 +105,7 @@ bot.use(deleteAllQuestion.middleware());
 menu.interact('⚠️ Alles löschen ⚠️', 'delete-all', {
 	hide: async context => !(await getActualUserconfigContent(context)),
 	async do(context, path) {
-		await deleteAllQuestion.replyWithMarkdown(
+		await deleteAllQuestion.replyWithHTML(
 			context,
 			deleteQuestion,
 			getMenuOfPath(path),

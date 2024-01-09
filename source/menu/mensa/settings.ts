@@ -1,4 +1,5 @@
 import {type Body, MenuTemplate} from 'grammy-inline-menu';
+import {html as format} from 'telegram-format';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import {getCanteenList} from '../../lib/mensa-meals.js';
 import {
@@ -28,8 +29,8 @@ const settingName = {
 const MealWishOptions = Object.keys(settingName) as readonly MealWish[];
 
 export const menu = new MenuTemplate<MyContext>({
-	text: '*Mensa Einstellungen*',
-	parse_mode: 'Markdown',
+	text: format.bold('Mensa Einstellungen'),
+	parse_mode: format.parse_mode,
 });
 
 function mainMensaButtonText(context: MyContext): string {
@@ -44,8 +45,8 @@ function mainMensaButtonText(context: MyContext): string {
 }
 
 const mainMensaMenu = new MenuTemplate<MyContext>({
-	text: '*Mensa Einstellungen*\nHauptmensa',
-	parse_mode: 'Markdown',
+	text: format.bold('Mensa Einstellungen') + '\nHauptmensa',
+	parse_mode: format.parse_mode,
 });
 menu.submenu(mainMensaButtonText, 'main', mainMensaMenu);
 mainMensaMenu.select('set', getCanteenList, {
@@ -93,9 +94,9 @@ function moreMensaButtonText(context: MyContext): string {
 }
 
 const moreMenu = new MenuTemplate<MyContext>({
-	text:
-		'*Mensa Einstellungen*\nWähle weitere Mensen, in den du gelegentlich bist',
-	parse_mode: 'Markdown',
+	text: format.bold('Mensa Einstellungen')
+		+ '\nWähle weitere Mensen, in den du gelegentlich bist',
+	parse_mode: format.parse_mode,
 });
 menu.submenu(moreMensaButtonText, 'more', moreMenu, {
 	hide: context => !context.userconfig.mine.mensa.main,
@@ -152,7 +153,7 @@ menu.select('price', priceOptions, {
 });
 
 function specialWishMenuBody(context: MyContext): Body {
-	let text = '*Mensa Einstellungen*';
+	let text = format.bold('Mensa Einstellungen');
 	text += '\nWelche Sonderwünsche hast du zu deinem Essen?';
 	text += '\n\n';
 
@@ -163,7 +164,7 @@ function specialWishMenuBody(context: MyContext): Body {
 		? 'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.'
 		: 'Aktuell siehst du alle ungefilterten Angebote.';
 
-	return {text, parse_mode: 'Markdown'};
+	return {text, parse_mode: format.parse_mode};
 }
 
 const specialWishMenu = new MenuTemplate<MyContext>(specialWishMenuBody);

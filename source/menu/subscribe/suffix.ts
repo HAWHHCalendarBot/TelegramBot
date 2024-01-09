@@ -78,7 +78,7 @@ bot.use(manualSuffixQuestion.middleware());
 
 menu.interact('Manuell setzen…', 's', {
 	async do(context, path) {
-		await manualSuffixQuestion.replyWithMarkdown(
+		await manualSuffixQuestion.replyWithHTML(
 			context,
 			`Gib mir Tiernamen! 🦁🦇🐌🦍\nOder andere zufällige Buchstaben und Zahlen Kombinationen.\nSonderzeichen werden heraus gefiltert. Muss mindestens ${SUFFIX_MIN_LENGTH} Zeichen lang sein. Romane werden leider auf ${SUFFIX_MAX_LENGTH} Zeichen gekürzt.`,
 			getMenuOfPath(path),

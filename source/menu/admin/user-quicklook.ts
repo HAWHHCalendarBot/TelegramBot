@@ -78,7 +78,7 @@ bot.use(question.middleware());
 
 menu.interact(filterButtonText(context => context.session.adminuserquicklookfilter), 'filter', {
 	async do(context, path) {
-		await question.replyWithMarkdown(
+		await question.replyWithHTML(
 			context,
 			'Wonach möchtest du die Nutzer filtern?',
 			getMenuOfPath(path),
