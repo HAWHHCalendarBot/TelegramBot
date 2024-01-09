@@ -157,10 +157,10 @@ function specialWishMenuBody(context: MyContext): Body {
 	text += '\nWelche Sonderwünsche hast du zu deinem Essen?';
 	text += '\n\n';
 
-	const wishes = MealWishOptions
-		.filter(o => context.userconfig.mine.mensa[o]);
+	const anyWishesSelected = MealWishOptions
+		.some(o => context.userconfig.mine.mensa[o]);
 
-	text += wishes.length > 0
+	text += anyWishesSelected
 		? 'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.'
 		: 'Aktuell siehst du alle ungefilterten Angebote.';
 
