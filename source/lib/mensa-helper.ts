@@ -39,7 +39,7 @@ export function generateMealText(
 
 	if (meals.length !== filtered.length) {
 		hints.push(
-			'⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den /settings einstellen.',
+			'⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den Mensa Einstellungen einstellen.',
 		);
 	}
 
