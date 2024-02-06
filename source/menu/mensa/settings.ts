@@ -28,6 +28,20 @@ const settingName = {
 } as const satisfies Record<MealWish, string>;
 const MealWishOptions = Object.keys(settingName) as readonly MealWish[];
 
+async function updateMore(context: MyContext, set: ReadonlySet<string>) {
+	const {main} = context.userconfig.mine.mensa;
+	const allAvailableCanteens = new Set(await getCanteenList());
+	const more = [...set]
+		.filter(canteen => canteen !== main)
+		.filter(canteen => allAvailableCanteens.has(canteen));
+
+	if (more.length > 0) {
+		context.userconfig.mine.mensa.more = more.sort();
+	} else {
+		delete context.userconfig.mine.mensa.more;
+	}
+}
+
 export const menu = new MenuTemplate<MyContext>({
 	text: format.bold('Mensa Einstellungen'),
 	parse_mode: format.parse_mode,
@@ -51,22 +65,16 @@ const mainMensaMenu = new MenuTemplate<MyContext>({
 menu.submenu(mainMensaButtonText, 'main', mainMensaMenu);
 mainMensaMenu.select('set', getCanteenList, {
 	columns: 1,
-	set(context, mensa) {
+	async set(context, mensa) {
+		const more = new Set(context.userconfig.mine.mensa.more ?? []);
+
 		const oldMain = context.userconfig.mine.mensa.main;
-		context.userconfig.mine.mensa.main = mensa;
-		if (context.userconfig.mine.mensa.more) {
-			context.userconfig.mine.mensa.more = context.userconfig.mine.mensa.more
-				.filter(o => o !== mensa);
-		}
-
 		if (oldMain) {
-			if (!context.userconfig.mine.mensa.more) {
-				context.userconfig.mine.mensa.more = [];
-			}
-
-			context.userconfig.mine.mensa.more.push(oldMain);
+			more.add(oldMain);
 		}
 
+		context.userconfig.mine.mensa.main = mensa;
+		await updateMore(context, more);
 		return '..';
 	},
 	isSet: (context, mensa) => mensa === context.userconfig.mine.mensa.main,
@@ -112,15 +120,14 @@ moreMenu.select('more', getCanteenList, {
 			return false;
 		}
 
-		const selected = context.userconfig.mine.mensa.more ?? [];
-		if (selected.includes(mensa)) {
-			context.userconfig.mine.mensa.more = selected.filter(o => o !== mensa);
+		const more = new Set(context.userconfig.mine.mensa.more ?? []);
+		if (more.has(mensa)) {
+			more.delete(mensa);
 		} else {
-			selected.push(mensa);
-			selected.sort();
-			context.userconfig.mine.mensa.more = selected;
+			more.add(mensa);
 		}
 
+		await updateMore(context, more);
 		return true;
 	},
 	formatState(context, mensa, state) {

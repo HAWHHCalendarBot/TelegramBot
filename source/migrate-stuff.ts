@@ -37,30 +37,23 @@ bot.use(async (ctx, next) => {
 		);
 	}
 
-	if (!ctx.userconfig.mine.mensa) {
-		ctx.userconfig.mine.mensa = {};
+	ctx.userconfig.mine.mensa ??= {};
+	let more = ctx.userconfig.mine.mensa.more ?? [];
+
+	if (more.length > 0) {
+		const allAvailableCanteens = new Set(await getCanteenList());
+		more = [...new Set(more)]
+			// Remove main from more
+			.filter(canteen => canteen !== ctx.userconfig.mine.mensa.main)
+			// Remove not anymore existing
+			.filter(canteen => allAvailableCanteens.has(canteen))
+			.sort();
 	}
 
-	// Sometimes people have the main mensa multiple times in the more list
-	// Maybe I fixed that bug with 0b25d01, but havnt checked yet
-	const {main} = ctx.userconfig.mine.mensa;
-	let {more} = ctx.userconfig.mine.mensa;
-	if (main && more && more.length > 0) {
-		const beforeCount = more.length;
-		ctx.userconfig.mine.mensa.more = more.filter(o => o !== main);
-		const afterCount = ctx.userconfig.mine.mensa.more.length;
-
-		if (beforeCount !== afterCount) {
-			console.log('migration: removed main mensa in more', ctx.from);
-		}
-	}
-
-	// Remove not anymore existing from more
-	more = ctx.userconfig.mine.mensa.more;
-	if (more && more.length > 0) {
-		const allAvailableCanteens = await getCanteenList();
-		ctx.userconfig.mine.mensa.more = more
-			.filter(o => allAvailableCanteens.includes(o));
+	if (more.length > 0) {
+		ctx.userconfig.mine.mensa.more = more;
+	} else {
+		delete ctx.userconfig.mine.mensa.more;
 	}
 
 	delete (ctx as any).userconfig.mine.additionalEvents;

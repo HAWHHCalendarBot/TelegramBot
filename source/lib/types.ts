@@ -85,7 +85,7 @@ export type MealWish = keyof MealWishes;
 
 export type MensaSettings = MealWishes & {
 	main?: string;
-	more?: string[];
+	more?: readonly string[];
 	price?: MensaPriceClass;
 	showAdditives?: boolean;
 };
