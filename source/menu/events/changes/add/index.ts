@@ -30,9 +30,7 @@ function changesOfEvent(context: MyContext, name: string) {
 }
 
 function menuBody(context: MyContext): Body {
-	if (!context.session.generateChange) {
-		context.session.generateChange = {};
-	}
+	context.session.generateChange ??= {};
 
 	if (context.match) {
 		context.session.generateChange.name = context.match[1]!
@@ -247,16 +245,12 @@ async function finish(context: MyContext): Promise<string | boolean> {
 		delete change.starttime;
 	}
 
-	if (!context.userconfig.mine.changes) {
-		context.userconfig.mine.changes = [];
-	}
+	context.userconfig.mine.changes ??= [];
 
 	const {name, date} = change;
-	if (
-		context.userconfig.mine.changes.some(o =>
-			o.name === name && o.date === date,
-		)
-	) {
+	const alreadyExists = context.userconfig.mine.changes
+		.some(o => o.name === name && o.date === date);
+	if (alreadyExists) {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
 		// Also the user can add an additional date that they already have 'used'

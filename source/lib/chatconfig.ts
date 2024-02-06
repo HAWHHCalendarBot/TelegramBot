@@ -1,4 +1,6 @@
-import {readdir, readFile, unlink, writeFile} from 'node:fs/promises';
+import {
+	readdir, readFile, unlink, writeFile,
+} from 'node:fs/promises';
 import type {Api, MiddlewareFn} from 'grammy';
 import type {User} from 'grammy/types';
 import stringify from 'json-stable-stringify';

@@ -6,7 +6,6 @@ import {
 	type MealWish,
 	type MensaPriceClass,
 	type MyContext,
-	unreachable,
 } from '../../lib/types.js';
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
@@ -181,6 +180,7 @@ menu.submenu('Extrawünsche Essen', 's', specialWishMenu, {
 
 function showWishAsOption(context: MyContext, wish: MealWish): boolean {
 	const wishes = context.userconfig.mine.mensa;
+	// eslint-disable-next-line default-case
 	switch (wish) {
 		case 'noBeef':
 		case 'noFish':
@@ -200,10 +200,6 @@ function showWishAsOption(context: MyContext, wish: MealWish): boolean {
 		case 'noAlcohol':
 		case 'vegan': {
 			return true;
-		}
-
-		default: {
-			unreachable(wish);
 		}
 	}
 }

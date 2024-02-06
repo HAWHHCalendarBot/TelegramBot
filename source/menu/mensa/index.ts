@@ -51,13 +51,8 @@ function getCurrentSettings(
 	context: MyContext,
 ): Readonly<{mensa?: string; date: Date}> {
 	let {mensa, date} = context.session.mensa ?? {};
-	if (!mensa) {
-		mensa = context.userconfig.mine.mensa.main;
-	}
-
-	if (!date) {
-		date = Date.now();
-	}
+	mensa ||= context.userconfig.mine.mensa.main;
+	date ??= Date.now();
 
 	const now = Date.now();
 	// When that date is more than a day ago, update it
@@ -140,10 +135,7 @@ menu.select('t', daySelectOptions, {
 	isSet: (context, key) =>
 		dateEqual(getCurrentSettings(context).date, parseDateString(key)),
 	set(context, key) {
-		if (!context.session.mensa) {
-			context.session.mensa = {};
-		}
-
+		context.session.mensa ??= {};
 		context.session.mensa.date = parseDateString(key).getTime();
 		return true;
 	},
@@ -155,10 +147,7 @@ menu.choose('m', mensaSelectOption, {
 	columns: 1,
 	buttonText: (_, key) => '🍽 ' + key,
 	do(context, key) {
-		if (!context.session.mensa) {
-			context.session.mensa = {};
-		}
-
+		context.session.mensa ??= {};
 		context.session.mensa.mensa = key;
 		return true;
 	},

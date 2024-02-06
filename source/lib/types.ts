@@ -2,16 +2,9 @@ import type {I18nFlavor} from '@grammyjs/i18n';
 import type {Api, Context as BaseContext, SessionFlavor} from 'grammy';
 import type {ContextProperty} from './chatconfig.js';
 
-export function unreachable(unreachable: never): never {
-	throw new Error(
-		'Should have been unreachable but looks like it wasnt: '
-			+ JSON.stringify(unreachable),
-	);
-}
-
 export type OtherSendMessage = Parameters<Api['sendMessage']>[2];
 
-export type ContextFlavour = {
+type ContextFlavour = {
 	readonly userconfig: ContextProperty;
 };
 

@@ -10,13 +10,8 @@ bot.use(async (ctx, next) => {
 		ctx.userconfig.mine.calendarfileSuffix = String(fromTime);
 	}
 
-	if (!ctx.userconfig.mine.changes) {
-		ctx.userconfig.mine.changes = [];
-	}
-
-	if (!ctx.userconfig.mine.events) {
-		ctx.userconfig.mine.events = {};
-	}
+	ctx.userconfig.mine.changes ??= [];
+	ctx.userconfig.mine.events ??= {};
 
 	if (Array.isArray(ctx.userconfig.mine.events)) {
 		const array = ctx.userconfig.mine.events as string[];
