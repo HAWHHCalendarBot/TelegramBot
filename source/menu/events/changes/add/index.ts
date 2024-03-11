@@ -2,7 +2,6 @@ import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {arrayFilterUnique} from 'array-filter-unique';
 import {Composer} from 'grammy';
 import {
-	type Body,
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
@@ -21,15 +20,13 @@ import * as changeDetails from '../details.js';
 import {createDatePickerButtons} from './date-selector.js';
 import {createTimeSelectionSubmenuButtons} from './time-selector.js';
 
-export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(menuBody);
-
 function changesOfEvent(context: MyContext, name: string) {
 	const allChanges = context.userconfig.mine.changes;
 	return allChanges.filter(o => o.name === name);
 }
 
-function menuBody(context: MyContext): Body {
+export const bot = new Composer<MyContext>();
+export const menu = new MenuTemplate<MyContext>(context => {
 	context.session.generateChange ??= {};
 
 	if (context.match) {
@@ -65,7 +62,7 @@ function menuBody(context: MyContext): Body {
 	}
 
 	return {text, parse_mode: 'HTML'};
-}
+});
 
 function hidePickDateStep(context: MyContext): boolean {
 	const {name, date} = context.session.generateChange ?? {};

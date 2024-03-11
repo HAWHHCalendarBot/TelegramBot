@@ -1,7 +1,6 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
 import {
-	type Body,
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
@@ -30,7 +29,8 @@ function nameOfUser({first_name, last_name, username}: User): string {
 	return name;
 }
 
-async function menuBody(context: MyContext): Promise<Body> {
+export const bot = new Composer<MyContext>();
+export const menu = new MenuTemplate<MyContext>(async context => {
 	if (!context.session.adminuserquicklook) {
 		return 'Wähle einen Nutzer…';
 	}
@@ -48,10 +48,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	text += format.monospaceBlock(JSON.stringify(config, null, 2), 'json');
 
 	return {text, parse_mode: format.parse_mode};
-}
-
-export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(menuBody);
+});
 
 menu.url('Kalender', async context => {
 	const config = await context.userconfig.loadConfig(

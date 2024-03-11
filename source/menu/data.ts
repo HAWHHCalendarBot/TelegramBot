@@ -1,7 +1,6 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
 import {
-	type Body,
 	getMenuOfPath,
 	MenuTemplate,
 	replyMenuToContext,
@@ -27,7 +26,8 @@ const PRIVACY_SECTIONS = {
 } as const;
 type PrivacySection = keyof typeof PRIVACY_SECTIONS;
 
-async function menuBody(context: MyContext): Promise<Body> {
+export const bot = new Composer<MyContext>();
+export const menu = new MenuTemplate<MyContext>(async context => {
 	const part = privacyInfoPart(
 		context,
 		context.session.privacySection ?? 'persistent',
@@ -46,7 +46,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
 	};
-}
+});
 
 function privacyInfoPart(ctx: MyContext, section: PrivacySection) {
 	const text = ctx.t('privacy-' + section);
@@ -68,9 +68,6 @@ function privacyInfoPart(ctx: MyContext, section: PrivacySection) {
 const deleteConfirmString = 'Ja, ich will!';
 const deleteQuestion
 	= `Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "${deleteConfirmString}"`;
-
-export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(menuBody);
 
 menu.select('section', PRIVACY_SECTIONS, {
 	isSet: (ctx, key) => (ctx.session.privacySection ?? 'persistent') === key,

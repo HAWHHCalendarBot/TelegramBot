@@ -1,12 +1,10 @@
-import {type Body, MenuTemplate} from 'grammy-inline-menu';
+import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import * as allEvents from '../lib/all-events.js';
 import {getCanteenList} from '../lib/mensa-meals.js';
 import type {MyContext} from '../lib/types.js';
 
-export const menu = new MenuTemplate(menuBody);
-
-async function menuBody(context: MyContext): Promise<Body> {
+export const menu = new MenuTemplate<MyContext>(async context => {
 	const userIds = await context.userconfig.allIds();
 	const userCount = userIds.length;
 
@@ -40,7 +38,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
 	};
-}
+});
 
 menu.url('hawhh.de/calendarbot/', 'https://hawhh.de/calendarbot/');
 

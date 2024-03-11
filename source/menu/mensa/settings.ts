@@ -1,4 +1,4 @@
-import {type Body, MenuTemplate} from 'grammy-inline-menu';
+import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import {getCanteenList} from '../../lib/mensa-meals.js';
@@ -158,7 +158,7 @@ menu.select('price', priceOptions, {
 	hide: context => !context.userconfig.mine.mensa.main,
 });
 
-function specialWishMenuBody(context: MyContext): Body {
+const specialWishMenu = new MenuTemplate<MyContext>(context => {
 	let text = format.bold('Mensa Einstellungen');
 	text += '\nWelche Sonderwünsche hast du zu deinem Essen?';
 	text += '\n\n';
@@ -171,9 +171,7 @@ function specialWishMenuBody(context: MyContext): Body {
 		: 'Aktuell siehst du alle ungefilterten Angebote.';
 
 	return {text, parse_mode: format.parse_mode};
-}
-
-const specialWishMenu = new MenuTemplate<MyContext>(specialWishMenuBody);
+});
 menu.submenu('Extrawünsche Essen', 's', specialWishMenu, {
 	hide: context => !context.userconfig.mine.mensa.main,
 });

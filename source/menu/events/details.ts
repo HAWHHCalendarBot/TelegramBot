@@ -1,7 +1,6 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
 import {
-	type Body,
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
@@ -12,21 +11,20 @@ import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext} from '../../lib/types.js';
 import * as changesMenu from './changes/index.js';
 
-export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(menuBody);
-
-bot.use(changesMenu.bot);
-
 function getNameFromPath(path: string): string {
 	const match = /\/d:([^/]+)\//.exec(path)!;
 	return match[1]!.replaceAll(';', '/');
 }
 
-function menuBody(context: MyContext, path: string): Body {
+export const bot = new Composer<MyContext>();
+bot.use(changesMenu.bot);
+
+export const menu = new MenuTemplate<MyContext>((context, path) => {
 	const name = getNameFromPath(path);
 	const event = context.userconfig.mine.events[name]!;
-	const changes
-		= context.userconfig.mine.changes.filter(o => o.name === name).length;
+	const changes = context.userconfig.mine.changes
+		.filter(o => o.name === name)
+		.length;
 
 	let text = format.bold('Veranstaltung');
 	text += '\n';
@@ -65,7 +63,7 @@ function menuBody(context: MyContext, path: string): Body {
 		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
 	};
-}
+});
 
 menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
 	hide: context => Object.keys(context.userconfig.mine.events).length === 0,
@@ -155,13 +153,11 @@ menu.interact('Notiz löschen', 'remove-notes', {
 	},
 });
 
-function removeBody(context: MyContext): Body {
+const removeMenu = new MenuTemplate<MyContext>(context => {
 	const event = context.match![1]!.replaceAll(';', '/');
 	return event
 		+ '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?';
-}
-
-const removeMenu = new MenuTemplate<MyContext>(removeBody);
+});
 removeMenu.interact('Ja ich will!', 'y', {
 	async do(context) {
 		const event = context.match![1]!.replaceAll(';', '/');

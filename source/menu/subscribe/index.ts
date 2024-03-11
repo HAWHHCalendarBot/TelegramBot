@@ -7,7 +7,7 @@ import {menu as removedStyleMenu} from './removed-style.js';
 import * as suffixMenu from './suffix.js';
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(generateBody('overview'));
+export const menu = new MenuTemplate(generateBody('overview'));
 
 bot.use(suffixMenu.bot);
 

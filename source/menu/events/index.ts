@@ -1,5 +1,5 @@
 import {Composer} from 'grammy';
-import {type Body, MenuTemplate} from 'grammy-inline-menu';
+import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import * as allEvents from '../../lib/all-events.js';
 import {backMainButtons} from '../../lib/inline-menu.js';
@@ -7,7 +7,8 @@ import type {MyContext} from '../../lib/types.js';
 import * as addMenu from './add.js';
 import * as detailsMenu from './details.js';
 
-async function menuBody(context: MyContext): Promise<Body> {
+export const bot = new Composer<MyContext>();
+export const menu = new MenuTemplate<MyContext>(async context => {
 	let text = format.bold('Veranstaltungen');
 	text += '\n\n';
 
@@ -50,10 +51,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
 	};
-}
-
-export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate(menuBody);
+});
 
 bot.use(addMenu.bot);
 bot.use(detailsMenu.bot);

@@ -1,7 +1,6 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
 import {
-	type Body,
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
@@ -24,9 +23,7 @@ const MAX_RESULT_ROWS = 10;
 const RESULT_COLUMNS = 2;
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(menuBody);
-
-async function menuBody(context: MyContext): Promise<Body> {
+export const menu = new MenuTemplate<MyContext>(async context => {
 	const total = await allEventsCount();
 
 	let text = format.bold('Veranstaltungen');
@@ -47,7 +44,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	}
 
 	return {text, parse_mode: format.parse_mode};
-}
+});
 
 async function findEvents(context: MyContext): Promise<readonly string[]> {
 	const filter = context.session.eventfilter ?? DEFAULT_FILTER;

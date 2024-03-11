@@ -26,7 +26,11 @@ function createTimeSelectionSubmenuButton(
 		return prefix + (alreadySet ?? fallback);
 	}
 
-	const subMenu = new MenuTemplate<MyContext>(menuBody(time));
+	const subMenu = new MenuTemplate<MyContext>(
+		time === 'starttime'
+			? 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?'
+			: 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?',
+	);
 
 	menu.submenu(buttonText, time, subMenu, {
 		joinLastRow: time === 'endtime',
@@ -67,14 +71,6 @@ function formatTime(hour: number | string, minute: number | string): string {
 
 function numberToTwoDigit(number: number | string): string {
 	return Number(number) < 10 ? `0${number}` : String(number);
-}
-
-function menuBody(time: 'starttime' | 'endtime'): string {
-	if (time === 'starttime') {
-		return 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?';
-	}
-
-	return 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?';
 }
 
 function getCurrent(

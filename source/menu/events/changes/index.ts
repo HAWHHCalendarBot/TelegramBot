@@ -1,5 +1,5 @@
 import {Composer} from 'grammy';
-import {type Body, MenuTemplate} from 'grammy-inline-menu';
+import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import {formatDateToHumanReadable} from '../../../lib/calendar-helper.js';
 import {backMainButtons} from '../../../lib/inline-menu.js';
@@ -8,7 +8,18 @@ import * as changeAdd from './add/index.js';
 import * as changeDetails from './details.js';
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(menuBody);
+export const menu = new MenuTemplate<MyContext>(ctx => {
+	const event = ctx.match![1]!.replaceAll(';', '/');
+
+	let text = '';
+	text += format.bold('Veranstaltungsänderungen');
+	text += '\n';
+	text += format.escape(event);
+	text += '\n\n';
+	text += format.escape(ctx.t('changes-help'));
+
+	return {text, parse_mode: format.parse_mode};
+});
 
 bot.use(changeAdd.bot);
 
@@ -30,19 +41,6 @@ function getChangesOptions(ctx: MyContext): Record<string, string> {
 		changeDetails.generateChangeAction(change),
 		formatDateToHumanReadable(change.date),
 	]));
-}
-
-function menuBody(ctx: MyContext): Body {
-	const event = ctx.match![1]!.replaceAll(';', '/');
-
-	let text = '';
-	text += format.bold('Veranstaltungsänderungen');
-	text += '\n';
-	text += format.escape(event);
-	text += '\n\n';
-	text += format.escape(ctx.t('changes-help'));
-
-	return {text, parse_mode: format.parse_mode};
 }
 
 menu.manualRow(backMainButtons);

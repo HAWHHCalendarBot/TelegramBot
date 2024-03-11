@@ -1,4 +1,4 @@
-import {type Body, MenuTemplate} from 'grammy-inline-menu';
+import {MenuTemplate} from 'grammy-inline-menu';
 import * as mensaGit from '../../lib/mensa-git.js';
 import {generateMealText} from '../../lib/mensa-helper.js';
 import {getMealsOfDay} from '../../lib/mensa-meals.js';
@@ -45,8 +45,6 @@ function dateEqual(first: Readonly<Date>, second: Readonly<Date>): boolean {
 	return stringifyEqual(getYearMonthDay(first), getYearMonthDay(second));
 }
 
-export const menu = new MenuTemplate<MyContext>(menuBody);
-
 function getCurrentSettings(
 	context: MyContext,
 ): Readonly<{mensa?: string; date: Date}> {
@@ -64,7 +62,7 @@ function getCurrentSettings(
 	return {mensa, date: new Date(date)};
 }
 
-async function menuBody(context: MyContext): Promise<Body> {
+export const menu = new MenuTemplate<MyContext>(async context => {
 	const {mensa, date} = getCurrentSettings(context);
 	const mensaSettings = context.userconfig.mine.mensa;
 
@@ -84,7 +82,7 @@ async function menuBody(context: MyContext): Promise<Body> {
 	text += generateMealText(meals, mensaSettings);
 
 	return {text, parse_mode: 'HTML'};
-}
+});
 
 function parseDateString(actionCode: string): Readonly<Date> {
 	const date = new Date(Date.parse(actionCode));

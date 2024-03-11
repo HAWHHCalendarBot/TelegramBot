@@ -1,7 +1,6 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
 import {
-	type Body,
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
@@ -11,7 +10,8 @@ import {getUrlFromContext} from '../../lib/calendar-helper.js';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext} from '../../lib/types.js';
 
-function menuBody(context: MyContext): Body {
+export const bot = new Composer<MyContext>();
+export const menu = new MenuTemplate<MyContext>(context => {
 	const {calendarfileSuffix} = context.userconfig.mine;
 	return {
 		parse_mode: 'HTML',
@@ -24,7 +24,7 @@ function menuBody(context: MyContext): Body {
 			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
 			.replaceAll(/[\u2068\u2069]+/g, ''),
 	};
-}
+});
 
 const SUFFIX_MAX_LENGTH = 15;
 const SUFFIX_MIN_LENGTH = 3;
@@ -50,9 +50,6 @@ async function sendHintText(context: MyContext): Promise<void> {
 
 	await context.reply(hintText);
 }
-
-export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(menuBody);
 
 menu.interact('Generieren…', 'g', {
 	async do(context) {
