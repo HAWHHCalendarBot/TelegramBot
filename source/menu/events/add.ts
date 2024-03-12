@@ -65,7 +65,8 @@ const question = new StatelessQuestion<MyContext>(
 
 bot.use(question.middleware());
 
-menu.interact(filterButtonText(context => context.session.eventfilter), 'filter', {
+menu.interact('filter', {
+	text: filterButtonText(context => context.session.eventfilter),
 	async do(context, path) {
 		await question.replyWithHTML(
 			context,
@@ -77,7 +78,8 @@ menu.interact(filterButtonText(context => context.session.eventfilter), 'filter'
 	},
 });
 
-menu.interact('Filter aufheben', 'filter-clear', {
+menu.interact('filter-clear', {
+	text: 'Filter aufheben',
 	joinLastRow: true,
 	hide: context =>
 		(context.session.eventfilter ?? DEFAULT_FILTER) === DEFAULT_FILTER,
@@ -87,22 +89,19 @@ menu.interact('Filter aufheben', 'filter-clear', {
 	},
 });
 
-async function eventOptions(
-	context: MyContext,
-): Promise<Record<string, string>> {
-	try {
-		const all = await findEvents(context);
-		return Object.fromEntries(
-			all.map(event => [event.replaceAll('/', ';'), event]),
-		);
-	} catch {
-		return {};
-	}
-}
-
-menu.choose('a', eventOptions, {
+menu.choose('a', {
 	maxRows: MAX_RESULT_ROWS,
 	columns: RESULT_COLUMNS,
+	async choices(context) {
+		try {
+			const all = await findEvents(context);
+			return Object.fromEntries(
+				all.map(event => [event.replaceAll('/', ';'), event]),
+			);
+		} catch {
+			return {};
+		}
+	},
 	async do(context, key) {
 		const event = key.replaceAll(';', '/');
 		const isExisting = await allEventsExists(event);

@@ -11,12 +11,6 @@ import type {MyContext} from '../../lib/types.js';
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>('Broadcast');
 
-function broadcastButtonText(context: MyContext): string {
-	return context.session.adminBroadcast
-		? '✏️ Ändere Nachricht…'
-		: '✏️ Setze Nachricht…';
-}
-
 const broadcastQuestion = new StatelessQuestion<MyContext>(
 	'admin-broadcast',
 	async (context, path) => {
@@ -27,7 +21,12 @@ const broadcastQuestion = new StatelessQuestion<MyContext>(
 
 bot.use(broadcastQuestion.middleware());
 
-menu.interact(broadcastButtonText, 'set', {
+menu.interact('set', {
+	text(context) {
+		return context.session.adminBroadcast
+			? '✏️ Ändere Nachricht…'
+			: '✏️ Setze Nachricht…';
+	},
 	async do(context, path) {
 		await broadcastQuestion.replyWithHTML(
 			context,
@@ -38,7 +37,8 @@ menu.interact(broadcastButtonText, 'set', {
 	},
 });
 
-menu.interact('📤 Versende Broadcast', 'send', {
+menu.interact('send', {
+	text: '📤 Versende Broadcast',
 	hide: context => !context.session.adminBroadcast,
 	async do(context) {
 		// eslint-disable-next-line @typescript-eslint/no-floating-promises

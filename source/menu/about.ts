@@ -40,16 +40,22 @@ export const menu = new MenuTemplate<MyContext>(async context => {
 	};
 });
 
-menu.url('hawhh.de/calendarbot/', 'https://hawhh.de/calendarbot/');
+menu.url({
+	text: 'hawhh.de/calendarbot/',
+	url: 'https://hawhh.de/calendarbot/',
+});
 
-menu.url(
-	'😌 PayPal Spende',
-	'https://www.paypal.com/donate?hosted_button_id=L2EMBSGTEXK42',
-);
+menu.url({
+	text: '😌 PayPal Spende',
+	url: 'https://www.paypal.com/donate?hosted_button_id=L2EMBSGTEXK42',
+});
 
-menu.url('🦑 Quellcode', 'https://github.com/HAWHHCalendarBot');
-menu.url(
-	'🦑 Änderungshistorie',
-	'https://github.com/HAWHHCalendarBot/TelegramBot/releases',
-	{joinLastRow: true},
-);
+menu.url({
+	text: '🦑 Quellcode',
+	url: 'https://github.com/HAWHHCalendarBot',
+});
+menu.url({
+	joinLastRow: true,
+	text: '🦑 Änderungshistorie',
+	url: 'https://github.com/HAWHHCalendarBot/TelegramBot/releases',
+});

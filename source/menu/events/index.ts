@@ -56,7 +56,8 @@ export const menu = new MenuTemplate<MyContext>(async context => {
 bot.use(addMenu.bot);
 bot.use(detailsMenu.bot);
 
-menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
+menu.interact('remove-old', {
+	text: '🗑 Entferne nicht mehr Existierende',
 	async hide(context) {
 		const nonExisting = await allEvents.nonExisting(
 			Object.keys(context.userconfig.mine.events),
@@ -82,37 +83,36 @@ menu.interact('🗑 Entferne nicht mehr Existierende', 'remove-old', {
 	},
 });
 
-menu.submenu('➕ Veranstaltung hinzufügen', 'a', addMenu.menu);
+menu.submenu('a', addMenu.menu, {text: '➕ Veranstaltung hinzufügen'});
 
-function getEventOptions(context: MyContext): Record<string, string> {
-	const {changes} = context.userconfig.mine;
-	const result: Record<string, string> = {};
-
-	for (
-		const [name, details] of Object.entries(context.userconfig.mine.events)
-	) {
-		let title = name + ' ';
-
-		if (changes.some(o => o.name === name)) {
-			title += '✏️';
-		}
-
-		if (details.alertMinutesBefore !== undefined) {
-			title += '⏰';
-		}
-
-		if (details.notes) {
-			title += '🗒';
-		}
-
-		result[name.replaceAll('/', ';')] = title.trim();
-	}
-
-	return result;
-}
-
-menu.chooseIntoSubmenu('d', getEventOptions, detailsMenu.menu, {
+menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 	columns: 1,
+	choices(context) {
+		const {changes} = context.userconfig.mine;
+		const result: Record<string, string> = {};
+
+		for (
+			const [name, details] of Object.entries(context.userconfig.mine.events)
+		) {
+			let title = name + ' ';
+
+			if (changes.some(o => o.name === name)) {
+				title += '✏️';
+			}
+
+			if (details.alertMinutesBefore !== undefined) {
+				title += '⏰';
+			}
+
+			if (details.notes) {
+				title += '🗒';
+			}
+
+			result[name.replaceAll('/', ';')] = title.trim();
+		}
+
+		return result;
+	},
 	getCurrentPage: context => context.session.page,
 	setPage(context, page) {
 		context.session.page = page;

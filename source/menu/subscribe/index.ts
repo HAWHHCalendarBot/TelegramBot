@@ -12,40 +12,50 @@ export const menu = new MenuTemplate(generateBody('overview'));
 bot.use(suffixMenu.bot);
 
 const appleMenu = new MenuTemplate(generateBody('apple'));
-appleMenu.url(
-	'Kalender abonnieren',
-	ctx =>
+appleMenu.url({
+	text: 'Kalender abonnieren',
+	url: ctx =>
 		`https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`,
-);
+});
 appleMenu.manualRow(backMainButtons);
-menu.submenu('🍏 iOS / macOS', 'apple', appleMenu);
+menu.submenu('apple', appleMenu, {text: '🍏 iOS / macOS'});
 
 const exchangeMenu = new MenuTemplate(generateBody('exchange'));
-exchangeMenu.url('Office.com', 'https://outlook.office.com/calendar');
+exchangeMenu.url({
+	text: 'Office.com',
+	url: 'https://outlook.office.com/calendar',
+});
 exchangeMenu.manualRow(backMainButtons);
-menu.submenu('🗂 Office.com (HAW Account)', 'exchange', exchangeMenu);
+menu.submenu('exchange', exchangeMenu, {text: '🗂 Office.com (HAW Account)'});
 
 const googleMenu = new MenuTemplate(generateBody('google'));
-menu.submenu('🍰 Google Kalender', 'google', googleMenu);
-googleMenu.url('Google Calendar', 'https://calendar.google.com/');
-googleMenu.url(
-	'Google Sync Settings',
-	'https://www.google.com/calendar/syncselect',
-);
-googleMenu.navigate('abonnieren mit dem Office.com HAW Account', '../exchange/');
+menu.submenu('google', googleMenu, {text: '🍰 Google Kalender'});
+googleMenu.url({
+	text: 'Google Calendar',
+	url: 'https://calendar.google.com/',
+});
+googleMenu.url({
+	text: 'Google Sync Settings',
+	url: 'https://www.google.com/calendar/syncselect',
+});
+googleMenu.navigate('../exchange/', {
+	text: 'abonnieren mit dem Office.com HAW Account',
+});
 googleMenu.manualRow(backMainButtons);
 
 const freestyleMenu = new MenuTemplate(generateBody('freestyle'));
-freestyleMenu.url(
-	'Kalender abonnieren',
-	ctx =>
+freestyleMenu.url({
+	text: 'Kalender abonnieren',
+	url: ctx =>
 		`https://calendarbot.hawhh.de/ics.html?url=${getUrlFromContext(ctx)}`,
-);
+});
 freestyleMenu.manualRow(backMainButtons);
-menu.submenu('Freestyle 😎', 'freestyle', freestyleMenu);
+menu.submenu('freestyle', freestyleMenu, {text: 'Freestyle 😎'});
 
-menu.submenu('⚙️ URL Privacy', 'suffix', suffixMenu.menu);
-menu.submenu('⚙️ Anzeigeart entfernter Termine', 'showRemoved', removedStyleMenu);
+menu.submenu('suffix', suffixMenu.menu, {text: '⚙️ URL Privacy'});
+menu.submenu('showRemoved', removedStyleMenu, {
+	text: '⚙️ Anzeigeart entfernter Termine',
+});
 
 function generateBody(resourceKeySuffix: string): (ctx: MyContext) => Body {
 	return ctx => ({

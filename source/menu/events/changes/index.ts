@@ -23,24 +23,23 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 
 bot.use(changeAdd.bot);
 
-menu.submenu('➕ Änderung hinzufügen', 'a', changeAdd.menu);
+menu.submenu('a', changeAdd.menu, {text: '➕ Änderung hinzufügen'});
 
-menu.chooseIntoSubmenu('d', getChangesOptions, changeDetails.menu, {
+menu.chooseIntoSubmenu('d', changeDetails.menu, {
 	columns: 1,
+	choices(ctx) {
+		const event = ctx.match![1]!.replaceAll(';', '/');
+		const changes = ctx.userconfig.mine.changes
+			.filter(o => o.name === event);
+		return Object.fromEntries(changes.map(change => [
+			changeDetails.generateChangeAction(change),
+			formatDateToHumanReadable(change.date),
+		]));
+	},
 	getCurrentPage: ctx => ctx.session.page,
 	setPage(ctx, page) {
 		ctx.session.page = page;
 	},
 });
-
-function getChangesOptions(ctx: MyContext): Record<string, string> {
-	const event = ctx.match![1]!.replaceAll(';', '/');
-	const changes = ctx.userconfig.mine.changes
-		.filter(o => o.name === event);
-	return Object.fromEntries(changes.map(change => [
-		changeDetails.generateChangeAction(change),
-		formatDateToHumanReadable(change.date),
-	]));
-}
 
 menu.manualRow(backMainButtons);

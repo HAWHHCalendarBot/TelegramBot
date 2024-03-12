@@ -65,7 +65,8 @@ export const menu = new MenuTemplate<MyContext>((context, path) => {
 	};
 });
 
-menu.submenu('✏️ Änderungen', 'c', changesMenu.menu, {
+menu.submenu('c', changesMenu.menu, {
+	text: '✏️ Änderungen',
 	hide: context => Object.keys(context.userconfig.mine.events).length === 0,
 });
 
@@ -74,7 +75,8 @@ const alertMenu = new MenuTemplate<MyContext>((_, path) => {
 	return `Wie lange im vorraus möchtest du an einen Termin der Veranstaltung ${name} erinnert werden?`;
 });
 
-alertMenu.interact('🔕 Garnicht', 'nope', {
+alertMenu.interact('nope', {
+	text: '🔕 Garnicht',
 	do(context, path) {
 		const name = getNameFromPath(path);
 		delete context.userconfig.mine.events[name]!.alertMinutesBefore;
@@ -82,20 +84,19 @@ alertMenu.interact('🔕 Garnicht', 'nope', {
 	},
 });
 
-const alertChoices = {
-	0: 'Beginn',
-	5: '5 Minuten',
-	10: '10 Minuten',
-	15: '15 Minuten',
-	30: '30 Minuten',
-	45: '45 Minuten',
-	60: '1 Stunde',
-	120: '2 Stunden',
-	1337: '1337 Minuten',
-} as const;
-
-alertMenu.choose('t', alertChoices, {
+alertMenu.choose('t', {
 	columns: 3,
+	choices: {
+		0: 'Beginn',
+		5: '5 Minuten',
+		10: '10 Minuten',
+		15: '15 Minuten',
+		30: '30 Minuten',
+		45: '45 Minuten',
+		60: '1 Stunde',
+		120: '2 Stunden',
+		1337: '1337 Minuten',
+	},
 	do(context, key) {
 		if (!context.callbackQuery?.data) {
 			throw new Error('how?');
@@ -110,7 +111,7 @@ alertMenu.choose('t', alertChoices, {
 
 alertMenu.manualRow(backMainButtons);
 
-menu.submenu('⏰ Erinnerung', 'alert', alertMenu);
+menu.submenu('alert', alertMenu, {text: '⏰ Erinnerung'});
 
 const noteQuestion = new StatelessQuestion<MyContext>(
 	'event-notes',
@@ -128,7 +129,8 @@ const noteQuestion = new StatelessQuestion<MyContext>(
 
 bot.use(noteQuestion.middleware());
 
-menu.interact('🗒 Schreibe Notiz', 'set-notes', {
+menu.interact('set-notes', {
+	text: '🗒 Schreibe Notiz',
 	async do(context, path) {
 		const name = getNameFromPath(path);
 		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${
@@ -140,7 +142,8 @@ menu.interact('🗒 Schreibe Notiz', 'set-notes', {
 	},
 });
 
-menu.interact('Notiz löschen', 'remove-notes', {
+menu.interact('remove-notes', {
+	text: 'Notiz löschen',
 	joinLastRow: true,
 	hide(context, path) {
 		const name = getNameFromPath(path);
@@ -158,7 +161,8 @@ const removeMenu = new MenuTemplate<MyContext>(context => {
 	return event
 		+ '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?';
 });
-removeMenu.interact('Ja ich will!', 'y', {
+removeMenu.interact('y', {
+	text: 'Ja ich will!',
 	async do(context) {
 		const event = context.match![1]!.replaceAll(';', '/');
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -176,8 +180,8 @@ removeMenu.interact('Ja ich will!', 'y', {
 		return true;
 	},
 });
-removeMenu.navigate('🛑 Abbrechen', '..', {joinLastRow: true});
+removeMenu.navigate('..', {joinLastRow: true, text: '🛑 Abbrechen'});
 
-menu.submenu('🗑 Veranstaltung entfernen', 'r', removeMenu);
+menu.submenu('r', removeMenu, {text: '🗑 Veranstaltung entfernen'});
 
 menu.manualRow(backMainButtons);

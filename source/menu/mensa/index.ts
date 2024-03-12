@@ -94,42 +94,33 @@ function generateDateString(date: Date): string {
 	return `${year}-${month}-${day}`;
 }
 
-function daySelectOptions(context: MyContext): Record<string, string> {
-	const {mensa} = getCurrentSettings(context);
-	if (!mensa) {
-		return {};
-	}
-
-	const dateOptions: Date[] = [];
-	const daysInFuture = 6;
-
-	for (let i = 0; i < daysInFuture; i++) {
-		dateOptions.push(new Date(Date.now() + (DAY_IN_MS * i)));
-	}
-
-	const result: Record<string, string> = {};
-	for (const date of dateOptions) {
-		const weekday = WEEKDAYS[date.getDay()]!
-			.slice(0, 2);
-		const day = date.getDate();
-		const key = generateDateString(date);
-		result[key] = `${weekday} ${day}.`;
-	}
-
-	return result;
-}
-
-function mensaSelectOption(context: MyContext): string[] {
-	const current = getCurrentSettings(context).mensa;
-	const {main, more} = context.userconfig.mine.mensa;
-	return [main, ...(more ?? [])]
-		.filter(o => o !== current)
-		// eslint-disable-next-line unicorn/prefer-native-coercion-functions
-		.filter((o): o is string => Boolean(o));
-}
-
-menu.select('t', daySelectOptions, {
+// Select day
+menu.select('t', {
 	columns: 3,
+	choices(context) {
+		const {mensa} = getCurrentSettings(context);
+		if (!mensa) {
+			return {};
+		}
+
+		const dateOptions: Date[] = [];
+		const daysInFuture = 6;
+
+		for (let i = 0; i < daysInFuture; i++) {
+			dateOptions.push(new Date(Date.now() + (DAY_IN_MS * i)));
+		}
+
+		const result: Record<string, string> = {};
+		for (const date of dateOptions) {
+			const weekday = WEEKDAYS[date.getDay()]!
+				.slice(0, 2);
+			const day = date.getDate();
+			const key = generateDateString(date);
+			result[key] = `${weekday} ${day}.`;
+		}
+
+		return result;
+	},
 	isSet: (context, key) =>
 		dateEqual(getCurrentSettings(context).date, parseDateString(key)),
 	set(context, key) {
@@ -141,8 +132,17 @@ menu.select('t', daySelectOptions, {
 		state ? `🕚 ${textResult}` : textResult,
 });
 
-menu.choose('m', mensaSelectOption, {
+// Select mensa
+menu.choose('m', {
 	columns: 1,
+	choices(context) {
+		const current = getCurrentSettings(context).mensa;
+		const {main, more} = context.userconfig.mine.mensa;
+		return [main, ...(more ?? [])]
+			.filter(o => o !== current)
+			// eslint-disable-next-line unicorn/prefer-native-coercion-functions
+			.filter((o): o is string => Boolean(o));
+	},
 	buttonText: (_, key) => '🍽 ' + key,
 	do(context, key) {
 		context.session.mensa ??= {};
@@ -151,4 +151,4 @@ menu.choose('m', mensaSelectOption, {
 	},
 });
 
-menu.submenu('⚙️ Mensa Einstellungen', 'settings', mensaSettingsMenu);
+menu.submenu('settings', mensaSettingsMenu, {text: '⚙️ Mensa Einstellungen'});

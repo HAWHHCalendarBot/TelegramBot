@@ -10,5 +10,5 @@ export const menu = new MenuTemplate<MyContext>('Hey Admin!');
 bot.use(broadcastMenu.bot);
 bot.use(userMenu.bot);
 
-menu.submenu('Broadcast', 'broadcast', broadcastMenu.menu);
-menu.submenu('User Quicklook', 'u', userMenu.menu);
+menu.submenu('broadcast', broadcastMenu.menu, {text: 'Broadcast'});
+menu.submenu('u', userMenu.menu, {text: 'User Quicklook'});

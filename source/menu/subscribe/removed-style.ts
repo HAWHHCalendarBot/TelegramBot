@@ -2,7 +2,7 @@ import {MenuTemplate} from 'grammy-inline-menu';
 import {backMainButtons} from '../../lib/inline-menu.js';
 import type {MyContext, RemovedEventsDisplayStyle} from '../../lib/types.js';
 
-const removedEventsOptions = {
+const CHOICES = {
 	cancelled: '👌 Standard',
 	removed: '🗑 komplett entfernen',
 	emoji: '🚫 erzwungen',
@@ -13,8 +13,9 @@ export const menu = new MenuTemplate<MyContext>(ctx => ({
 	text: ctx.t('subscribe-removed-setting'),
 }));
 
-menu.select('s', removedEventsOptions, {
+menu.select('s', {
 	columns: 1,
+	choices: CHOICES,
 	set(context, key) {
 		context.userconfig.mine.removedEvents = key as RemovedEventsDisplayStyle;
 		return true;

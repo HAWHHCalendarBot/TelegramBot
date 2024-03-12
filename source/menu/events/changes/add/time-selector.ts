@@ -19,26 +19,26 @@ function createTimeSelectionSubmenuButton(
 	time: 'starttime' | 'endtime',
 	hide: (context: MyContext) => boolean,
 ): void {
-	function buttonText(context: MyContext): string {
-		const prefix = time === 'starttime' ? '▶️ ' : '⏹ ';
-		const alreadySet = context.session.generateChange![time];
-		const fallback = time === 'starttime' ? 'Startzeit' : 'Endzeit';
-		return prefix + (alreadySet ?? fallback);
-	}
-
 	const subMenu = new MenuTemplate<MyContext>(
 		time === 'starttime'
 			? 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?'
 			: 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?',
 	);
 
-	menu.submenu(buttonText, time, subMenu, {
+	menu.submenu(time, subMenu, {
 		joinLastRow: time === 'endtime',
 		hide,
+		text(context) {
+			const prefix = time === 'starttime' ? '▶️ ' : '⏹ ';
+			const alreadySet = context.session.generateChange![time];
+			const fallback = time === 'starttime' ? 'Startzeit' : 'Endzeit';
+			return prefix + (alreadySet ?? fallback);
+		},
 	});
 
-	subMenu.select('h', HOUR_OPTIONS, {
+	subMenu.select('h', {
 		columns: 3,
+		choices: HOUR_OPTIONS,
 		isSet: (context, key) =>
 			Number(context.session.generateChange![time]?.split(':')[0])
 				=== Number(key),
@@ -49,8 +49,9 @@ function createTimeSelectionSubmenuButton(
 		},
 	});
 
-	subMenu.select('m', MINUTE_OPTIONS, {
+	subMenu.select('m', {
 		columns: 4,
+		choices: MINUTE_OPTIONS,
 		buttonText: (_, number) => ':' + numberToTwoDigit(number),
 		isSet: (context, key) =>
 			Number(context.session.generateChange![time]?.split(':')[1])
@@ -62,7 +63,7 @@ function createTimeSelectionSubmenuButton(
 		},
 	});
 
-	subMenu.navigate(BACK_BUTTON_TEXT, '..');
+	subMenu.navigate('..', {text: BACK_BUTTON_TEXT});
 }
 
 function formatTime(hour: number | string, minute: number | string): string {

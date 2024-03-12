@@ -86,7 +86,8 @@ function generationDataIsValid(context: MyContext): boolean {
 	return keys.length > 2;
 }
 
-menu.interact('➕ Zusätzlicher Termin', 'new-date', {
+menu.interact('new-date', {
+	text: '➕ Zusätzlicher Termin',
 	hide: hidePickDateStep,
 	do(context) {
 		// Set everything that has to be set to be valid.
@@ -104,35 +105,30 @@ menu.interact('➕ Zusätzlicher Termin', 'new-date', {
 	},
 });
 
-async function possibleTimesToCreateChangeToOptions(
-	context: MyContext,
-): Promise<Record<string, string>> {
-	const name = context.match![1]!.replaceAll(';', '/');
-	const {date} = context.session.generateChange ?? {};
-
-	if (date) {
-		// Date already selected
-		return {};
-	}
-
-	const existingChangeDates = new Set(
-		changesOfEvent(context, name).map(o => o.date),
-	);
-
-	const events = await loadEvents(name);
-	const dates = events
-		.map(o => o.StartTime)
-		.map(o => formatDateToStoredChangeDate(o))
-		.filter(o => !existingChangeDates.has(o))
-		.filter(arrayFilterUnique());
-	return Object.fromEntries(
-		dates.map(date => [date, formatDateToHumanReadable(date)]),
-	);
-}
-
-menu.choose('date', possibleTimesToCreateChangeToOptions, {
+menu.choose('date', {
 	columns: 2,
 	hide: hidePickDateStep,
+	async choices(context) {
+		const name = context.match![1]!.replaceAll(';', '/');
+		const {date} = context.session.generateChange ?? {};
+		if (date) {
+			// Date already selected
+			return {};
+		}
+
+		const existingChangeDates = new Set(
+			changesOfEvent(context, name).map(o => o.date),
+		);
+		const events = await loadEvents(name);
+		const dates = events
+			.map(o => o.StartTime)
+			.map(o => formatDateToStoredChangeDate(o))
+			.filter(o => !existingChangeDates.has(o))
+			.filter(arrayFilterUnique());
+		return Object.fromEntries(
+			dates.map(date => [date, formatDateToHumanReadable(date)]),
+		);
+	},
 	do(context, key) {
 		context.session.generateChange!.date = key;
 		return true;
@@ -143,7 +139,8 @@ menu.choose('date', possibleTimesToCreateChangeToOptions, {
 	},
 });
 
-menu.interact('🚫 Entfällt', 'remove', {
+menu.interact('remove', {
+	text: '🚫 Entfällt',
 	async do(context) {
 		context.session.generateChange!.remove = true;
 		return finish(context);
@@ -198,7 +195,8 @@ function questionButtonText(
 	};
 }
 
-menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuffix', {
+menu.interact('namesuffix', {
+	text: questionButtonText('namesuffix', '🗯', 'Namenszusatz'),
 	hide: hideGenerateChangeStep,
 	async do(context, path) {
 		await namesuffixQuestion.replyWithHTML(
@@ -211,7 +209,8 @@ menu.interact(questionButtonText('namesuffix', '🗯', 'Namenszusatz'), 'namesuf
 	},
 });
 
-menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
+menu.interact('room', {
+	text: questionButtonText('room', '📍', 'Raum'),
 	hide: hideGenerateChangeStep,
 	async do(context, path) {
 		await roomQuestion.replyWithHTML(
@@ -224,7 +223,8 @@ menu.interact(questionButtonText('room', '📍', 'Raum'), 'room', {
 	},
 });
 
-menu.interact('✅ Fertig stellen', 'finish', {
+menu.interact('finish', {
+	text: '✅ Fertig stellen',
 	do: finish,
 	hide: context => !generationDataIsValid(context),
 });
@@ -264,8 +264,9 @@ async function finish(context: MyContext): Promise<string | boolean> {
 	return `../d:${actionPart}/`;
 }
 
-menu.interact('🛑 Abbrechen', 'abort', {
+menu.interact('abort', {
 	joinLastRow: true,
+	text: '🛑 Abbrechen',
 	do(context) {
 		delete context.session.generateChange;
 		return '..';

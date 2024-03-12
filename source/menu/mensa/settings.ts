@@ -46,24 +46,24 @@ export const menu = new MenuTemplate<MyContext>({
 	text: format.bold('Mensa Einstellungen'),
 });
 
-function mainMensaButtonText(context: MyContext): string {
-	const {main} = context.userconfig.mine.mensa;
-
-	let text = 'Hauptmensa';
-	if (main) {
-		text += `: ${main}`;
-	}
-
-	return text;
-}
-
 const mainMensaMenu = new MenuTemplate<MyContext>({
 	parse_mode: format.parse_mode,
 	text: format.bold('Mensa Einstellungen') + '\nHauptmensa',
 });
-menu.submenu(mainMensaButtonText, 'main', mainMensaMenu);
-mainMensaMenu.select('set', getCanteenList, {
+menu.submenu('main', mainMensaMenu, {
+	text(context) {
+		const {main} = context.userconfig.mine.mensa;
+		let text = 'Hauptmensa';
+		if (main) {
+			text += `: ${main}`;
+		}
+
+		return text;
+	},
+});
+mainMensaMenu.select('set', {
 	columns: 1,
+	choices: getCanteenList,
 	async set(context, mensa) {
 		const more = new Set(context.userconfig.mine.mensa.more ?? []);
 
@@ -90,26 +90,26 @@ function isAdditionalMensa(context: MyContext, mensa: string): boolean {
 	return selected.includes(mensa);
 }
 
-function moreMensaButtonText(context: MyContext): string {
-	const selected = context.userconfig.mine.mensa.more ?? [];
-	let text = 'Weitere Mensen';
-	if (selected.length > 0) {
-		text += ` (${selected.length})`;
-	}
-
-	return text;
-}
-
 const moreMenu = new MenuTemplate<MyContext>({
 	parse_mode: format.parse_mode,
 	text: format.bold('Mensa Einstellungen')
 		+ '\nWähle weitere Mensen, in den du gelegentlich bist',
 });
-menu.submenu(moreMensaButtonText, 'more', moreMenu, {
+menu.submenu('more', moreMenu, {
 	hide: context => !context.userconfig.mine.mensa.main,
+	text(context) {
+		const selected = context.userconfig.mine.mensa.more ?? [];
+		let text = 'Weitere Mensen';
+		if (selected.length > 0) {
+			text += ` (${selected.length})`;
+		}
+
+		return text;
+	},
 });
-moreMenu.select('more', getCanteenList, {
+moreMenu.select('more', {
 	columns: 1,
+	choices: getCanteenList,
 	isSet: (context, mensa) => isAdditionalMensa(context, mensa),
 	async set(context, mensa) {
 		if (context.userconfig.mine.mensa.main === mensa) {
@@ -143,13 +143,14 @@ moreMenu.select('more', getCanteenList, {
 });
 moreMenu.manualRow(backMainButtons);
 
-const priceOptions = {
+const PRICE_OPTIONS = {
 	student: 'Student',
 	attendant: 'Angestellt',
 	guest: 'Gast',
 } as const satisfies Record<MensaPriceClass, string>;
 
-menu.select('price', priceOptions, {
+menu.select('price', {
+	choices: PRICE_OPTIONS,
 	set(context, price) {
 		context.userconfig.mine.mensa.price = price as MensaPriceClass;
 		return true;
@@ -172,7 +173,8 @@ const specialWishMenu = new MenuTemplate<MyContext>(context => {
 
 	return {text, parse_mode: format.parse_mode};
 });
-menu.submenu('Extrawünsche Essen', 's', specialWishMenu, {
+menu.submenu('s', specialWishMenu, {
+	text: 'Extrawünsche Essen',
 	hide: context => !context.userconfig.mine.mensa.main,
 });
 
@@ -201,16 +203,14 @@ function showWishAsOption(context: MyContext, wish: MealWish): boolean {
 	}
 }
 
-function specialWishOptions(context: MyContext): Record<string, string> {
-	return Object.fromEntries(
-		MealWishOptions
-			.filter(wish => showWishAsOption(context, wish))
-			.map(wish => [wish, settingName[wish]]),
-	);
-}
-
-specialWishMenu.select('w', specialWishOptions, {
+specialWishMenu.select('w', {
 	columns: 1,
+	choices: context =>
+		Object.fromEntries(
+			MealWishOptions
+				.filter(wish => showWishAsOption(context, wish))
+				.map(wish => [wish, settingName[wish]]),
+		),
 	isSet: (context, wish) =>
 		Boolean(context.userconfig.mine.mensa[wish as MealWish]),
 	set(context, wish, newState) {
@@ -224,7 +224,8 @@ specialWishMenu.select('w', specialWishOptions, {
 		return true;
 	},
 });
-specialWishMenu.interact('warm… nicht versalzen… kein Spüli…', 'warm', {
+specialWishMenu.interact('warm', {
+	text: 'warm… nicht versalzen… kein Spüli…',
 	async do(context) {
 		await context.answerCallbackQuery('das wär mal was… 😈');
 		return false;
@@ -233,7 +234,8 @@ specialWishMenu.interact('warm… nicht versalzen… kein Spüli…', 'warm', {
 
 specialWishMenu.manualRow(backMainButtons);
 
-menu.toggle('zeige Inhaltsstoffe', 'showAdditives', {
+menu.toggle('showAdditives', {
+	text: 'zeige Inhaltsstoffe',
 	set(context, newState) {
 		if (newState) {
 			context.userconfig.mine.mensa.showAdditives = true;

@@ -28,13 +28,16 @@ export const menu = new MenuTemplate<MyContext>(context => {
 	return {text, parse_mode: 'HTML'};
 });
 
-menu.switchToChat('Teilen…', context => generateShortChangeText(getChangeFromContext(context)!), {
+menu.switchToChat({
+	text: 'Teilen…',
+	query: context => generateShortChangeText(getChangeFromContext(context)!),
 	hide(context) {
 		const change = getChangeFromContext(context);
 		return !change;
 	},
 });
-menu.interact('⚠️ Änderung entfernen', 'r', {
+menu.interact('r', {
+	text: '⚠️ Änderung entfernen',
 	async do(context) {
 		const change = getChangeFromContext(context);
 		context.userconfig.mine.changes = context.userconfig.mine.changes

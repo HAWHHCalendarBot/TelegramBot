@@ -24,22 +24,29 @@ export function createDatePickerButtons(
 	menu: MenuTemplate<MyContext>,
 	hide: (context: MyContext) => boolean,
 ): void {
-	menu.submenu(context => getCurrent(context).getDate().toString(), 'd', dayMenu, {hide});
-	menu.submenu(monthText, 'm', monthMenu, {hide, joinLastRow: true});
-	menu.submenu(context => getCurrent(context).getFullYear().toString(), 'y', yearMenu, {hide, joinLastRow: true});
+	menu.submenu('d', dayMenu, {
+		hide,
+		text: context => getCurrent(context).getDate().toString(),
+	});
+	menu.submenu('m', monthMenu, {
+		joinLastRow: true,
+		hide,
+		text: context => MONTH_NAMES[getCurrent(context).getMonth()]!,
+	});
+	menu.submenu('y', yearMenu, {
+		joinLastRow: true,
+		hide,
+		text: context => getCurrent(context).getFullYear().toString(),
+	});
 }
 
 const dayMenu = new MenuTemplate<MyContext>(menuText);
 const monthMenu = new MenuTemplate<MyContext>(menuText);
 const yearMenu = new MenuTemplate<MyContext>(menuText);
 
-function monthText(context: MyContext) {
-	const current = getCurrent(context);
-	return MONTH_NAMES[current.getMonth()]!;
-}
-
-dayMenu.select('', DAY_OPTIONS, {
+dayMenu.select('', {
 	columns: 7,
+	choices: DAY_OPTIONS,
 	isSet: (context, date) => getCurrent(context).getDate() === Number(date),
 	async set(context, date) {
 		const current = getCurrent(context);
@@ -51,8 +58,9 @@ dayMenu.select('', DAY_OPTIONS, {
 	},
 });
 
-monthMenu.select('', MONTH_OPTIONS, {
+monthMenu.select('', {
 	columns: 2,
+	choices: MONTH_OPTIONS,
 	isSet: (context, month) =>
 		getCurrent(context).getMonth() + 1 === Number(month),
 	async set(context, month) {
@@ -65,7 +73,8 @@ monthMenu.select('', MONTH_OPTIONS, {
 	},
 });
 
-yearMenu.select('', generateYearOptions(), {
+yearMenu.select('', {
+	choices: generateYearOptions(),
 	isSet: (context, year) => getCurrent(context).getFullYear() === Number(year),
 	async set(context, year) {
 		const current = getCurrent(context);
@@ -77,6 +86,6 @@ yearMenu.select('', generateYearOptions(), {
 	},
 });
 
-dayMenu.navigate(BACK_BUTTON_TEXT, '..');
-monthMenu.navigate(BACK_BUTTON_TEXT, '..');
-yearMenu.navigate(BACK_BUTTON_TEXT, '..');
+dayMenu.navigate('..', {text: BACK_BUTTON_TEXT});
+monthMenu.navigate('..', {text: BACK_BUTTON_TEXT});
+yearMenu.navigate('..', {text: BACK_BUTTON_TEXT});

@@ -50,13 +50,15 @@ export const menu = new MenuTemplate<MyContext>(async context => {
 	return {text, parse_mode: format.parse_mode};
 });
 
-menu.url('Kalender', async context => {
-	const config = await context.userconfig.loadConfig(
-		context.session.adminuserquicklook!,
-	);
-	return `https://${getUrl(context.session.adminuserquicklook!, config)}`;
-}, {
+menu.url({
 	hide: context => !context.session.adminuserquicklook,
+	text: 'Kalender',
+	async url(context) {
+		const config = await context.userconfig.loadConfig(
+			context.session.adminuserquicklook!,
+		);
+		return `https://${getUrl(context.session.adminuserquicklook!, config)}`;
+	},
 });
 
 const question = new StatelessQuestion<MyContext>(
@@ -73,7 +75,8 @@ const question = new StatelessQuestion<MyContext>(
 
 bot.use(question.middleware());
 
-menu.interact(filterButtonText(context => context.session.adminuserquicklookfilter), 'filter', {
+menu.interact('filter', {
+	text: filterButtonText(context => context.session.adminuserquicklookfilter),
 	async do(context, path) {
 		await question.replyWithHTML(
 			context,
@@ -85,8 +88,9 @@ menu.interact(filterButtonText(context => context.session.adminuserquicklookfilt
 	},
 });
 
-menu.interact('Filter aufheben', 'filter-clear', {
+menu.interact('filter-clear', {
 	joinLastRow: true,
+	text: 'Filter aufheben',
 	hide(context) {
 		return (context.session.adminuserquicklookfilter ?? DEFAULT_FILTER)
 			=== DEFAULT_FILTER;
@@ -98,30 +102,25 @@ menu.interact('Filter aufheben', 'filter-clear', {
 	},
 });
 
-async function userOptions(
-	context: MyContext,
-): Promise<Record<number, string>> {
-	const filter = context.session.adminuserquicklookfilter ?? DEFAULT_FILTER;
-	const filterRegex = new RegExp(filter, 'i');
-	const allConfigs = await context.userconfig.all(
-		config => filterRegex.test(JSON.stringify(config)),
-	);
-	const allChats = allConfigs.map(o => o.chat);
-
-	allChats.sort((a, b) => {
-		const nameA = nameOfUser(a);
-		const nameB = nameOfUser(b);
-		return nameA.localeCompare(nameB);
-	});
-
-	return Object.fromEntries(
-		allChats.map(chat => [chat.id, nameOfUser(chat)]),
-	);
-}
-
-menu.select('u', userOptions, {
+menu.select('u', {
 	maxRows: 5,
 	columns: 2,
+	async choices(context) {
+		const filter = context.session.adminuserquicklookfilter ?? DEFAULT_FILTER;
+		const filterRegex = new RegExp(filter, 'i');
+		const allConfigs = await context.userconfig.all(
+			config => filterRegex.test(JSON.stringify(config)),
+		);
+		const allChats = allConfigs.map(o => o.chat);
+		allChats.sort((a, b) => {
+			const nameA = nameOfUser(a);
+			const nameB = nameOfUser(b);
+			return nameA.localeCompare(nameB);
+		});
+		return Object.fromEntries(
+			allChats.map(chat => [chat.id, nameOfUser(chat)]),
+		);
+	},
 	isSet: (context, selected) =>
 		context.session.adminuserquicklook === Number(selected),
 	async set(context, selected) {

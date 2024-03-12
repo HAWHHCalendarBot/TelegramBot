@@ -69,7 +69,8 @@ const deleteConfirmString = 'Ja, ich will!';
 const deleteQuestion
 	= `Bist du dir sicher, das du deinen Kalender und alle Einstellungen löschen willst?\n\nWenn du wirklich alles löschen willst, antworte mit "${deleteConfirmString}"`;
 
-menu.select('section', PRIVACY_SECTIONS, {
+menu.select('section', {
+	choices: PRIVACY_SECTIONS,
 	isSet: (ctx, key) => (ctx.session.privacySection ?? 'persistent') === key,
 	set(ctx, key) {
 		ctx.session.privacySection = key as PrivacySection;
@@ -77,7 +78,7 @@ menu.select('section', PRIVACY_SECTIONS, {
 	},
 });
 
-menu.url('🦑 Quellcode', 'https://github.com/HAWHHCalendarBot');
+menu.url({text: '🦑 Quellcode', url: 'https://github.com/HAWHHCalendarBot'});
 
 const deleteAllQuestion = new StatelessQuestion<MyContext>(
 	'delete-everything',
@@ -99,7 +100,8 @@ const deleteAllQuestion = new StatelessQuestion<MyContext>(
 
 bot.use(deleteAllQuestion.middleware());
 
-menu.interact('⚠️ Alles löschen ⚠️', 'delete-all', {
+menu.interact('delete-all', {
+	text: '⚠️ Alles löschen ⚠️',
 	hide: async context => !(await getActualUserconfigContent(context)),
 	async do(context, path) {
 		await deleteAllQuestion.replyWithHTML(

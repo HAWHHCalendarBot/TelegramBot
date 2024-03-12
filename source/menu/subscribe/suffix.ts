@@ -51,7 +51,8 @@ async function sendHintText(context: MyContext): Promise<void> {
 	await context.reply(hintText);
 }
 
-menu.interact('Generieren…', 'g', {
+menu.interact('g', {
+	text: 'Generieren…',
 	async do(context) {
 		// 10^8 -> 10 ** 8
 		const fromTime = Date.now() % (10 ** 8);
@@ -73,7 +74,8 @@ const manualSuffixQuestion = new StatelessQuestion<MyContext>(
 
 bot.use(manualSuffixQuestion.middleware());
 
-menu.interact('Manuell setzen…', 's', {
+menu.interact('s', {
+	text: 'Manuell setzen…',
 	async do(context, path) {
 		await manualSuffixQuestion.replyWithHTML(
 			context,
