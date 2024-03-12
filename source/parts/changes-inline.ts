@@ -148,8 +148,8 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async context => {
 		]];
 
 		await context.api.sendMessage(context.from.id, text, {
-			reply_markup: {inline_keyboard},
 			parse_mode: format.parse_mode,
+			reply_markup: {inline_keyboard},
 		});
 		return;
 	}

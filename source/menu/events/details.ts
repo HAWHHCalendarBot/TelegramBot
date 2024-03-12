@@ -59,9 +59,9 @@ export const menu = new MenuTemplate<MyContext>((context, path) => {
 	}
 
 	return {
-		text,
-		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
+		parse_mode: format.parse_mode,
+		text,
 	};
 });
 

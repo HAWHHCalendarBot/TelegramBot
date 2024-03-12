@@ -34,9 +34,9 @@ export const menu = new MenuTemplate<MyContext>(async context => {
 		+= `Du hast Probleme, Ideen oder Vorschläge, was ich noch können sollte? Dann wende dich an @EdJoPaTo oder erstelle ein Issue auf ${githubIssues}.`;
 
 	return {
-		text,
-		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
+		parse_mode: format.parse_mode,
+		text,
 	};
 });
 

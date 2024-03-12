@@ -42,8 +42,8 @@ async function updateMore(context: MyContext, set: ReadonlySet<string>) {
 }
 
 export const menu = new MenuTemplate<MyContext>({
-	text: format.bold('Mensa Einstellungen'),
 	parse_mode: format.parse_mode,
+	text: format.bold('Mensa Einstellungen'),
 });
 
 function mainMensaButtonText(context: MyContext): string {
@@ -58,8 +58,8 @@ function mainMensaButtonText(context: MyContext): string {
 }
 
 const mainMensaMenu = new MenuTemplate<MyContext>({
-	text: format.bold('Mensa Einstellungen') + '\nHauptmensa',
 	parse_mode: format.parse_mode,
+	text: format.bold('Mensa Einstellungen') + '\nHauptmensa',
 });
 menu.submenu(mainMensaButtonText, 'main', mainMensaMenu);
 mainMensaMenu.select('set', getCanteenList, {
@@ -101,9 +101,9 @@ function moreMensaButtonText(context: MyContext): string {
 }
 
 const moreMenu = new MenuTemplate<MyContext>({
+	parse_mode: format.parse_mode,
 	text: format.bold('Mensa Einstellungen')
 		+ '\nWähle weitere Mensen, in den du gelegentlich bist',
-	parse_mode: format.parse_mode,
 });
 menu.submenu(moreMensaButtonText, 'more', moreMenu, {
 	hide: context => !context.userconfig.mine.mensa.main,

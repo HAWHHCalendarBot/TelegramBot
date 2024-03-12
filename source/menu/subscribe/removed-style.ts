@@ -9,8 +9,8 @@ const removedEventsOptions = {
 } as const satisfies Record<RemovedEventsDisplayStyle, string>;
 
 export const menu = new MenuTemplate<MyContext>(ctx => ({
-	text: ctx.t('subscribe-removed-setting'),
 	parse_mode: 'HTML',
+	text: ctx.t('subscribe-removed-setting'),
 }));
 
 menu.select('s', removedEventsOptions, {

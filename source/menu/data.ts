@@ -42,9 +42,9 @@ export const menu = new MenuTemplate<MyContext>(async context => {
 	text += format.monospaceBlock(JSON.stringify(part.data, null, 1), 'json');
 
 	return {
-		text,
-		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
+		parse_mode: format.parse_mode,
+		text,
 	};
 });
 

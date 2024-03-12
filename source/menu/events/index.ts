@@ -47,9 +47,9 @@ export const menu = new MenuTemplate<MyContext>(async context => {
 		+= `Du bist Tutor und deine Veranstaltung fehlt im Kalenderbot? Wirf mal einen Blick auf ${additionalEventsLink} oder schreib @EdJoPaTo an. ;)`;
 
 	return {
-		text,
-		parse_mode: format.parse_mode,
 		disable_web_page_preview: true,
+		parse_mode: format.parse_mode,
+		text,
 	};
 });
 
