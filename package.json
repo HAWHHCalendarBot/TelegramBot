@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"@grammyjs/i18n": "^1.0.1",
-		"@grammyjs/stateless-question": "^3.0.0",
+		"@grammyjs/stateless-question": "^4.0.0",
 		"array-filter-unique": "^3.0.0",
 		"grammy": "^1.20.3",
 		"grammy-inline-menu": "^9.0.0",
