@@ -29,7 +29,7 @@
 		"@sindresorhus/tsconfig": "^5.0.0",
 		"@types/json-stable-stringify": "^1.0.32",
 		"@types/node": "^20.10.0",
-		"typescript": "^5.0.2",
+		"typescript": "^5.5.2",
 		"xo": "^0.58.0"
 	},
 	"xo": {
