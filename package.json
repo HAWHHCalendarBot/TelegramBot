@@ -19,7 +19,7 @@
 		"@grammyjs/i18n": "^1.0.1",
 		"@grammyjs/stateless-question": "^4.0.0",
 		"array-filter-unique": "^3.0.0",
-		"grammy": "^1.20.3",
+		"grammy": "^1.27.0",
 		"grammy-inline-menu": "^9.0.0",
 		"json-stable-stringify": "^1.0.1",
 		"telegraf-middleware-console-time": "^2.0.0",
@@ -28,9 +28,9 @@
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^6.0.0",
 		"@types/json-stable-stringify": "^1.0.32",
-		"@types/node": "^20.10.0",
-		"typescript": "^5.5.2",
-		"xo": "^0.58.0"
+		"@types/node": "^20.14.11",
+		"typescript": "^5.5.4",
+		"xo": "^0.59.1"
 	},
 	"xo": {
 		"rules": {
