@@ -1,23 +1,25 @@
 FROM docker.io/library/node:20-alpine AS builder
+RUN apk upgrade --no-cache
 WORKDIR /build
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --no-audit --no-fund --no-update-notifier
 COPY . ./
 RUN node_modules/.bin/tsc
 
 
 FROM docker.io/library/node:20-alpine AS packages
+RUN apk upgrade --no-cache
 WORKDIR /build
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm ci --no-audit --no-fund --no-update-notifier --omit=dev
 
 
-FROM docker.io/library/node:20-alpine
-ENV NODE_ENV=production
+FROM docker.io/library/node:20-alpine AS final
 RUN apk upgrade --no-cache \
-    && apk --no-cache add git
+	&& apk --no-cache add git
 
 WORKDIR /app
+ENV NODE_ENV=production
 ENV TZ=Europe/Berlin
 VOLUME /app/eventfiles
 VOLUME /app/mensa-data
