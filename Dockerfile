@@ -1,4 +1,4 @@
-FROM docker.io/library/node:20-alpine AS builder
+FROM docker.io/library/node:22-alpine AS builder
 RUN apk upgrade --no-cache
 WORKDIR /build
 COPY package.json package-lock.json ./
@@ -7,16 +7,16 @@ COPY . ./
 RUN node_modules/.bin/tsc
 
 
-FROM docker.io/library/node:20-alpine AS packages
+FROM docker.io/library/node:22-alpine AS packages
 RUN apk upgrade --no-cache
 WORKDIR /build
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund --no-update-notifier --omit=dev
 
 
-FROM docker.io/library/node:20-alpine AS final
+FROM docker.io/library/alpine:3.21 AS final
 RUN apk upgrade --no-cache \
-	&& apk --no-cache add git
+	&& apk add --no-cache nodejs git
 
 WORKDIR /app
 ENV NODE_ENV=production

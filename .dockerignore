@@ -2,13 +2,13 @@
 *.md
 **/*.test.*
 **/test.*
-botfather-settings
-coverage
 dist
 Dockerfile
-init-debug-environment.sh
 node_modules
 test
+
+botfather-settings
+init-debug-environment.sh
 
 # botfiles
 additionalEvents
