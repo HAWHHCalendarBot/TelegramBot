@@ -22,7 +22,7 @@
 		"grammy": "^1.31.0",
 		"grammy-inline-menu": "^9.2.0",
 		"json-stable-stringify": "^1.2.1",
-		"telegraf-middleware-console-time": "^2.0.0",
+		"telegraf-middleware-console-time": "^3.0.0",
 		"telegram-format": "^3.1.0"
 	},
 	"devDependencies": {
