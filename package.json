@@ -19,7 +19,7 @@
 		"@grammyjs/i18n": "^1.1.2",
 		"@grammyjs/stateless-question": "^4.0.0",
 		"array-filter-unique": "^3.0.0",
-		"grammy": "^1.31.0",
+		"grammy": "^1.36.1",
 		"grammy-inline-menu": "^9.2.0",
 		"json-stable-stringify": "^1.2.1",
 		"telegraf-middleware-console-time": "^3.0.0",
