@@ -8,14 +8,12 @@ import {
 import {html as format} from 'telegram-format';
 import type {MyContext, Userconfig} from '../lib/types.js';
 
-async function getActualUserconfigContent(
-	context: MyContext,
-): Promise<Userconfig | undefined> {
-	if (!context.userconfig.mine) {
+async function getActualUserconfigContent(ctx: MyContext): Promise<Userconfig | undefined> {
+	if (!ctx.userconfig.mine) {
 		return undefined;
 	}
 
-	const userconfig = await context.userconfig.load(context.from!.id);
+	const userconfig = await ctx.userconfig.load(ctx.from!.id);
 	return userconfig?.config;
 }
 
@@ -27,13 +25,10 @@ const PRIVACY_SECTIONS = {
 type PrivacySection = keyof typeof PRIVACY_SECTIONS;
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(async context => {
-	const part = privacyInfoPart(
-		context,
-		context.session.privacySection ?? 'persistent',
-	);
+export const menu = new MenuTemplate<MyContext>(async ctx => {
+	const part = privacyInfoPart(ctx, ctx.session.privacySection ?? 'persistent');
 
-	let text = context.t('privacy-overview');
+	let text = ctx.t('privacy-overview');
 	text += '\n\n';
 	text += format.bold(part.title);
 	text += '\n';
@@ -82,18 +77,15 @@ menu.url({text: '🦑 Quellcode', url: 'https://github.com/HAWHHCalendarBot'});
 
 const deleteAllQuestion = new StatelessQuestion<MyContext>(
 	'delete-everything',
-	async (context, path) => {
-		if (
-			'text' in context.message
-			&& context.message.text === deleteConfirmString
-		) {
+	async (ctx, path) => {
+		if (ctx.message.text === deleteConfirmString) {
 			// @ts-expect-error delete readonly
-			delete context.userconfig.mine;
-			context.session = undefined;
-			await context.reply('Deine Daten werden gelöscht…');
+			delete ctx.userconfig.mine;
+			ctx.session = undefined;
+			await ctx.reply('Deine Daten werden gelöscht…');
 		} else {
-			await context.reply('Du hast mir aber einen Schrecken eingejagt! 🙀');
-			await replyMenuToContext(menu, context, path);
+			await ctx.reply('Du hast mir aber einen Schrecken eingejagt! 🙀');
+			await replyMenuToContext(menu, ctx, path);
 		}
 	},
 );
@@ -102,10 +94,10 @@ bot.use(deleteAllQuestion.middleware());
 
 menu.interact('delete-all', {
 	text: '⚠️ Alles löschen ⚠️',
-	hide: async context => !(await getActualUserconfigContent(context)),
-	async do(context, path) {
+	hide: async ctx => !(await getActualUserconfigContent(ctx)),
+	async do(ctx, path) {
 		await deleteAllQuestion.replyWithHTML(
-			context,
+			ctx,
 			deleteQuestion,
 			getMenuOfPath(path),
 		);

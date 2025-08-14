@@ -10,16 +10,16 @@ export function generateChangeAction(change: Change): string {
 	return change.date;
 }
 
-function getChangeFromContext(context: MyContext): Change | undefined {
-	const name = context.match![1]!.replaceAll(';', '/');
-	const date = context.match![2]!;
+function getChangeFromContext(ctx: MyContext): Change | undefined {
+	const name = ctx.match![1]!.replaceAll(';', '/');
+	const date = ctx.match![2]!;
 
-	return context.userconfig.mine.changes
-		.find(c => c.name === name && c.date === date);
+	return ctx.userconfig.mine.changes.find(c =>
+		c.name === name && c.date === date);
 }
 
-export const menu = new MenuTemplate<MyContext>(context => {
-	const change = getChangeFromContext(context);
+export const menu = new MenuTemplate<MyContext>(ctx => {
+	const change = getChangeFromContext(ctx);
 	if (!change) {
 		return 'Change does not exist anymore';
 	}
@@ -30,19 +30,19 @@ export const menu = new MenuTemplate<MyContext>(context => {
 
 menu.switchToChat({
 	text: 'Teilen…',
-	query: context => generateShortChangeText(getChangeFromContext(context)!),
-	hide(context) {
-		const change = getChangeFromContext(context);
+	query: ctx => generateShortChangeText(getChangeFromContext(ctx)!),
+	hide(ctx) {
+		const change = getChangeFromContext(ctx);
 		return !change;
 	},
 });
 menu.interact('r', {
 	text: '⚠️ Änderung entfernen',
-	async do(context) {
-		const change = getChangeFromContext(context);
-		context.userconfig.mine.changes = context.userconfig.mine.changes
-			.filter(o => o.name !== change?.name || o.date !== change?.date);
-		await context.answerCallbackQuery('Änderung wurde entfernt.');
+	async do(ctx) {
+		const change = getChangeFromContext(ctx);
+		ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
+			o.name !== change?.name || o.date !== change?.date);
+		await ctx.answerCallbackQuery('Änderung wurde entfernt.');
 		return '..';
 	},
 });

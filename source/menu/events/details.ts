@@ -19,12 +19,11 @@ function getNameFromPath(path: string): string {
 export const bot = new Composer<MyContext>();
 bot.use(changesMenu.bot);
 
-export const menu = new MenuTemplate<MyContext>((context, path) => {
+export const menu = new MenuTemplate<MyContext>((ctx, path) => {
 	const name = getNameFromPath(path);
-	const event = context.userconfig.mine.events[name]!;
-	const changes = context.userconfig.mine.changes
-		.filter(o => o.name === name)
-		.length;
+	const event = ctx.userconfig.mine.events[name]!;
+	const changes = ctx.userconfig.mine.changes.filter(o =>
+		o.name === name).length;
 
 	let text = format.bold('Veranstaltung');
 	text += '\n';
@@ -67,7 +66,7 @@ export const menu = new MenuTemplate<MyContext>((context, path) => {
 
 menu.submenu('c', changesMenu.menu, {
 	text: '✏️ Änderungen',
-	hide: context => Object.keys(context.userconfig.mine.events).length === 0,
+	hide: ctx => Object.keys(ctx.userconfig.mine.events).length === 0,
 });
 
 const alertMenu = new MenuTemplate<MyContext>((_, path) => {
@@ -77,9 +76,9 @@ const alertMenu = new MenuTemplate<MyContext>((_, path) => {
 
 alertMenu.interact('nope', {
 	text: '🔕 Garnicht',
-	do(context, path) {
+	do(ctx, path) {
 		const name = getNameFromPath(path);
-		delete context.userconfig.mine.events[name]!.alertMinutesBefore;
+		delete ctx.userconfig.mine.events[name]!.alertMinutesBefore;
 		return '..';
 	},
 });
@@ -97,14 +96,14 @@ alertMenu.choose('t', {
 		120: '2 Stunden',
 		1337: '1337 Minuten',
 	},
-	do(context, key) {
-		if (!context.callbackQuery?.data) {
+	do(ctx, key) {
+		if (!ctx.callbackQuery?.data) {
 			throw new Error('how?');
 		}
 
-		const name = getNameFromPath(context.callbackQuery.data);
+		const name = getNameFromPath(ctx.callbackQuery.data);
 		const minutes = Number(key);
-		context.userconfig.mine.events[name]!.alertMinutesBefore = minutes;
+		ctx.userconfig.mine.events[name]!.alertMinutesBefore = minutes;
 		return '..';
 	},
 });
@@ -115,15 +114,15 @@ menu.submenu('alert', alertMenu, {text: '⏰ Erinnerung'});
 
 const noteQuestion = new StatelessQuestion<MyContext>(
 	'event-notes',
-	async (context, path) => {
+	async (ctx, path) => {
 		const name = getNameFromPath(path);
-		if ('text' in context.message) {
-			const notes = context.message.text;
+		if (ctx.message.text) {
+			const notes = ctx.message.text;
 
-			context.userconfig.mine.events[name]!.notes = notes;
+			ctx.userconfig.mine.events[name]!.notes = notes;
 		}
 
-		await replyMenuToContext(menu, context, path);
+		await replyMenuToContext(menu, ctx, path);
 	},
 );
 
@@ -131,13 +130,13 @@ bot.use(noteQuestion.middleware());
 
 menu.interact('set-notes', {
 	text: '🗒 Schreibe Notiz',
-	async do(context, path) {
+	async do(ctx, path) {
 		const name = getNameFromPath(path);
 		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${
 			format.escape(name)
 		} stehen haben?`;
-		await noteQuestion.replyWithHTML(context, text, getMenuOfPath(path));
-		await deleteMenuFromContext(context);
+		await noteQuestion.replyWithHTML(ctx, text, getMenuOfPath(path));
+		await deleteMenuFromContext(ctx);
 		return false;
 	},
 });
@@ -145,38 +144,36 @@ menu.interact('set-notes', {
 menu.interact('remove-notes', {
 	text: 'Notiz löschen',
 	joinLastRow: true,
-	hide(context, path) {
+	hide(ctx, path) {
 		const name = getNameFromPath(path);
-		return !context.userconfig.mine.events[name]!.notes;
+		return !ctx.userconfig.mine.events[name]!.notes;
 	},
-	do(context, path) {
+	do(ctx, path) {
 		const name = getNameFromPath(path);
-		delete context.userconfig.mine.events[name]!.notes;
+		delete ctx.userconfig.mine.events[name]!.notes;
 		return true;
 	},
 });
 
-const removeMenu = new MenuTemplate<MyContext>(context => {
-	const event = context.match![1]!.replaceAll(';', '/');
-	return event
-		+ '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?';
+const removeMenu = new MenuTemplate<MyContext>(ctx => {
+	const event = ctx.match![1]!.replaceAll(';', '/');
+	return (
+		event
+		+ '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?'
+	);
 });
 removeMenu.interact('y', {
 	text: 'Ja ich will!',
-	async do(context) {
-		const event = context.match![1]!.replaceAll(';', '/');
+	async do(ctx) {
+		const event = ctx.match![1]!.replaceAll(';', '/');
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-		delete context.userconfig.mine.events[event];
+		delete ctx.userconfig.mine.events[event];
 
 		// Only keep changes of events the user still has
-		context.userconfig.mine.changes = context.userconfig.mine.changes
-			.filter(o =>
-				Object.keys(context.userconfig.mine.events).includes(o.name),
-			);
+		ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
+			Object.keys(ctx.userconfig.mine.events).includes(o.name));
 
-		await context.answerCallbackQuery(
-			`${event} wurde aus deinem Kalender entfernt.`,
-		);
+		await ctx.answerCallbackQuery(`${event} wurde aus deinem Kalender entfernt.`);
 		return true;
 	},
 });

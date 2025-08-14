@@ -35,7 +35,6 @@ export async function find(
 	const allEvents = await getAll();
 	const regex = new RegExp(pattern, 'i');
 	const filtered = allEvents.filter(event =>
-		regex.test(event) && !ignore.includes(event),
-	);
+		regex.test(event) && !ignore.includes(event));
 	return filtered;
 }

@@ -29,8 +29,7 @@ menu.chooseIntoSubmenu('d', changeDetails.menu, {
 	columns: 1,
 	choices(ctx) {
 		const event = ctx.match![1]!.replaceAll(';', '/');
-		const changes = ctx.userconfig.mine.changes
-			.filter(o => o.name === event);
+		const changes = ctx.userconfig.mine.changes.filter(o => o.name === event);
 		return Object.fromEntries(changes.map(change => [
 			changeDetails.generateChangeAction(change),
 			formatDateToHumanReadable(change.date),

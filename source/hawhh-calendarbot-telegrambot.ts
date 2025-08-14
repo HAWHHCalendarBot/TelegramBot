@@ -12,9 +12,7 @@ import * as easterEggs from './parts/easter-eggs.js';
 
 const token = env['BOT_TOKEN'];
 if (!token) {
-	throw new Error(
-		'You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)',
-	);
+	throw new Error('You have to provide the bot-token from @BotFather via environment variable (BOT_TOKEN)');
 }
 
 const baseBot = new Bot<MyContext>(token);
@@ -70,10 +68,12 @@ async function startMessage(ctx: MyContext) {
 	await ctx.reply(text, {
 		reply_markup: {
 			inline_keyboard: [
-				[{
-					text: 'hawhh.de/calendarbot/',
-					url: 'https://hawhh.de/calendarbot/',
-				}],
+				[
+					{
+						text: 'hawhh.de/calendarbot/',
+						url: 'https://hawhh.de/calendarbot/',
+					},
+				],
 				[{text: '🦑 Quellcode', url: 'https://github.com/HAWHHCalendarBot'}],
 			],
 		},
@@ -113,10 +113,10 @@ const COMMANDS = {
 	privacy: 'über dich gespeicherte Daten',
 	stop: 'stoppe den Bot und lösche alle Daten über dich',
 } as const;
-await baseBot.api.setMyCommands(
-	Object.entries(COMMANDS)
-		.map(([command, description]) => ({command, description})),
-);
+await baseBot.api.setMyCommands(Object.entries(COMMANDS).map(([command, description]) => ({
+	command,
+	description,
+})));
 
 await baseBot.start({
 	onStart(botInfo) {

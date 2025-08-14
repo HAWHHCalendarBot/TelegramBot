@@ -63,9 +63,7 @@ export function generateShortChangeText(change: Change): string {
 	return `${change.name} ${formatDateToHumanReadable(change.date)}`;
 }
 
-export async function loadEvents(
-	eventname: string,
-): Promise<EventEntryInternal[]> {
+export async function loadEvents(eventname: string): Promise<EventEntryInternal[]> {
 	try {
 		const filename = eventname.replaceAll('/', '-');
 		const content = await readFile(`eventfiles/${filename}.json`, 'utf8');

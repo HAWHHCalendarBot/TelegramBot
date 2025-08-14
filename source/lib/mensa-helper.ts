@@ -18,8 +18,7 @@ export function filterMeals(
 		.filter(m => !specialWishes.lactoseFree || m.LactoseFree)
 		.filter(m => !specialWishes.vegan || m.Vegan)
 		.filter(m =>
-			!specialWishes.vegetarian || Boolean(m.Vegan) || m.Vegetarian,
-		);
+			!specialWishes.vegetarian || Boolean(m.Vegan) || m.Vegetarian);
 }
 
 export function generateMealText(
@@ -34,18 +33,13 @@ export function generateMealText(
 
 	const filtered = filterMeals(meals, mensaSettings);
 	const mealTexts = filtered.map(m =>
-		mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives),
-	);
+		mealToHtml(m, mensaSettings.price, mensaSettings.showAdditives));
 
 	if (meals.length !== filtered.length) {
-		hints.push(
-			'⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den Mensa Einstellungen einstellen.',
-		);
+		hints.push('⚠️ Durch deine Sonderwünsche siehst du nicht jede Mahlzeit. Dies kannst du in den Mensa Einstellungen einstellen.');
 	}
 
-	const hintText = hints
-		.map(o => o + '\n')
-		.join('\n');
+	const hintText = hints.map(o => o + '\n').join('\n');
 	if (mealTexts.length === 0) {
 		return hintText + '\nDie Mensa hat heute nichts für dich.';
 	}
@@ -80,8 +74,7 @@ export function mealNameToHtml(
 export function mealAdditivesToHtml(meals: readonly Meal[]): string {
 	return meals
 		.flatMap(meal =>
-			Object.entries(meal.Additives).map(([short, full]) => `${short}: ${full}`),
-		)
+			Object.entries(meal.Additives).map(([short, full]) => `${short}: ${full}`))
 		.sort()
 		.filter(arrayFilterUnique())
 		.join('\n');
@@ -97,9 +90,11 @@ export function mealToHtml(
 	const price = priceClass === 'student'
 		? meal.PriceStudent
 		: (priceClass === 'attendant' ? meal.PriceAttendant : meal.PriceGuest);
-	const priceString = price.toLocaleString('de-DE', {
-		minimumFractionDigits: 2,
-	}).replace('.', ',');
+	const priceString = price
+		.toLocaleString('de-DE', {
+			minimumFractionDigits: 2,
+		})
+		.replace('.', ',');
 
 	let text = `${name}\n`;
 	text += `${priceString} €`;

@@ -60,10 +60,11 @@ menu.submenu('showRemoved', removedStyleMenu, {
 function generateBody(resourceKeySuffix: string): (ctx: MyContext) => Body {
 	return ctx => ({
 		parse_mode: 'HTML',
-		text: ctx.t('subscribe-' + resourceKeySuffix, {
-			firstname: ctx.from!.first_name,
-			url: getUrlFromContext(ctx),
-		})
+		text: ctx
+			.t('subscribe-' + resourceKeySuffix, {
+				firstname: ctx.from!.first_name,
+				url: getUrlFromContext(ctx),
+			})
 			// Remove Isolate Characters which are inserted automatically by Fluent.
 			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
 			.replaceAll(/[\u2068\u2069]+/g, ''),

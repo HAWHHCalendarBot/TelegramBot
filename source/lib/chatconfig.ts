@@ -36,9 +36,7 @@ export type ContextProperty = {
 };
 
 export class Chatconfig {
-	constructor(
-		public readonly folder: string,
-	) {
+	constructor(public readonly folder: string) {
 		// Creating the folder is not needed. It should already be there
 	}
 
@@ -94,10 +92,7 @@ export class Chatconfig {
 
 	async load(id: number): Promise<ChatConfigFileContent | undefined> {
 		try {
-			const content = await readFile(
-				this.filenameFromId(id),
-				'utf8',
-			);
+			const content = await readFile(this.filenameFromId(id), 'utf8');
 			return JSON.parse(content) as ChatConfigFileContent;
 		} catch {
 			return undefined;
@@ -128,20 +123,14 @@ export class Chatconfig {
 
 	async allIds(): Promise<number[]> {
 		const files = await readdir(this.folder);
-		const ids = files
-			.map(s => s.replace('.json', ''))
-			.map(Number);
+		const ids = files.map(s => s.replace('.json', '')).map(Number);
 		return ids;
 	}
 
-	async all(
-		filter: (o: ChatConfigFileContent) => boolean = () => true,
-	): Promise<readonly ChatConfigFileContent[]> {
+	async all(filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<readonly ChatConfigFileContent[]> {
 		const ids = await this.allIds();
 
-		const fileContents = await Promise.all(
-			ids.map(async id => readFile(this.filenameFromId(id), 'utf8')),
-		);
+		const fileContents = await Promise.all(ids.map(async id => readFile(this.filenameFromId(id), 'utf8')));
 
 		const configs = fileContents
 			.map(o => JSON.parse(o) as ChatConfigFileContent)
@@ -188,9 +177,7 @@ export class Chatconfig {
 		return `${this.folder}/${id}.json`;
 	}
 
-	private configFromWholeConfig(
-		content: ChatConfigFileContent | undefined,
-	): Userconfig {
+	private configFromWholeConfig(content: ChatConfigFileContent | undefined): Userconfig {
 		const config: Userconfig = content?.config ?? {
 			calendarfileSuffix: '',
 			changes: [],

@@ -21,9 +21,12 @@ export type MealContents = {
 	readonly Vegetarian?: boolean;
 };
 
-export type Meal = MealContents & MealPrices & {
-	readonly Name: string;
-	readonly Category: string;
-	readonly Date: `${number}-${number}-${number}`;
-	readonly Additives: Readonly<Record<string, string>>;
-};
+export type Meal =
+	& MealContents
+	& MealPrices
+	& {
+		readonly Name: string;
+		readonly Category: string;
+		readonly Date: `${number}-${number}-${number}`;
+		readonly Additives: Readonly<Record<string, string>>;
+	};

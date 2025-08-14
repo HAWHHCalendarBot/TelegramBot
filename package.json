@@ -28,13 +28,14 @@
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^7.0.0",
 		"@types/node": "^20.19.2",
-		"typescript": "^5.8.3",
-		"xo": "^0.60.0"
+		"typescript": "^5.9.2",
+		"xo": "^1.2.1"
 	},
 	"xo": {
 		"rules": {
-			"unicorn/prevent-abbreviations": "off",
-			"@typescript-eslint/naming-convention": "off"
+			"@typescript-eslint/naming-convention": "off",
+			"@typescript-eslint/no-deprecated": "off",
+			"unicorn/prevent-abbreviations": "off"
 		}
 	}
 }

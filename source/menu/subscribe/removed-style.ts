@@ -16,12 +16,12 @@ export const menu = new MenuTemplate<MyContext>(ctx => ({
 menu.select('s', {
 	columns: 1,
 	choices: CHOICES,
-	set(context, key) {
-		context.userconfig.mine.removedEvents = key as RemovedEventsDisplayStyle;
+	set(ctx, key) {
+		ctx.userconfig.mine.removedEvents = key as RemovedEventsDisplayStyle;
 		return true;
 	},
-	isSet: (context, key) =>
-		(context.userconfig.mine.removedEvents ?? 'cancelled') === key,
+	isSet: (ctx, key) =>
+		(ctx.userconfig.mine.removedEvents ?? 'cancelled') === key,
 });
 
 menu.manualRow(backMainButtons);

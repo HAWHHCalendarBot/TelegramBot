@@ -13,23 +13,23 @@ export const menu = new MenuTemplate<MyContext>('Broadcast');
 
 const broadcastQuestion = new StatelessQuestion<MyContext>(
 	'admin-broadcast',
-	async (context, path) => {
-		context.session.adminBroadcast = context.message.message_id;
-		await replyMenuToContext(menu, context, path);
+	async (ctx, path) => {
+		ctx.session.adminBroadcast = ctx.message.message_id;
+		await replyMenuToContext(menu, ctx, path);
 	},
 );
 
 bot.use(broadcastQuestion.middleware());
 
 menu.interact('set', {
-	text(context) {
-		return context.session.adminBroadcast
+	text(ctx) {
+		return ctx.session.adminBroadcast
 			? '✏️ Ändere Nachricht…'
 			: '✏️ Setze Nachricht…';
 	},
-	async do(context, path) {
+	async do(ctx, path) {
 		await broadcastQuestion.replyWithHTML(
-			context,
+			ctx,
 			'Hey admin! Was willst du broadcasten?',
 			getMenuOfPath(path),
 		);
@@ -39,43 +39,39 @@ menu.interact('set', {
 
 menu.interact('send', {
 	text: '📤 Versende Broadcast',
-	hide: context => !context.session.adminBroadcast,
-	async do(context) {
+	hide: ctx => !ctx.session.adminBroadcast,
+	async do(ctx) {
 		// eslint-disable-next-line @typescript-eslint/no-floating-promises
-		handleOngoingBroadcast(context, context.session.adminBroadcast!);
+		handleOngoingBroadcast(ctx, ctx.session.adminBroadcast!);
 
-		delete context.session.adminBroadcast;
-		await context.editMessageText('wird versendet…');
+		delete ctx.session.adminBroadcast;
+		await ctx.editMessageText('wird versendet…');
 
 		return false;
 	},
 });
 
 async function handleOngoingBroadcast(
-	context: MyContext,
+	ctx: MyContext,
 	messageId: number,
 ): Promise<void> {
 	let text: string;
 	try {
-		await context.userconfig.forwardBroadcast(context.from!.id, messageId);
+		await ctx.userconfig.forwardBroadcast(ctx.from!.id, messageId);
 		text = 'Broadcast finished';
 	} catch (error) {
 		text = 'Broadcast failed: ' + String(error);
 	}
 
-	await context.reply(text, {
+	await ctx.reply(text, {
 		reply_to_message_id: messageId,
 		reply_markup: {
 			remove_keyboard: true,
 		},
 	});
 
-	if (context.callbackQuery?.data) {
-		await replyMenuToContext(
-			menu,
-			context,
-			getMenuOfPath(context.callbackQuery.data),
-		);
+	if (ctx.callbackQuery?.data) {
+		await replyMenuToContext(menu, ctx, getMenuOfPath(ctx.callbackQuery.data));
 	}
 }
 

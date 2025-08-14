@@ -62,6 +62,8 @@ function isUserGoneError(error: unknown): boolean {
 	const errorDescription = error instanceof Error
 		? error.message
 		: String(error);
-	return errorDescription.includes('user is deactivated')
-		|| errorDescription.includes('bot was blocked by the user');
+	return (
+		errorDescription.includes('user is deactivated')
+		|| errorDescription.includes('bot was blocked by the user')
+	);
 }

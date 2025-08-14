@@ -30,20 +30,16 @@ function nameOfUser({first_name, last_name, username}: User): string {
 }
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(async context => {
-	if (!context.session.adminuserquicklook) {
+export const menu = new MenuTemplate<MyContext>(async ctx => {
+	if (!ctx.session.adminuserquicklook) {
 		return 'Wähle einen Nutzer…';
 	}
 
-	const config = await context.userconfig.load(
-		context.session.adminuserquicklook,
-	);
+	const config = await ctx.userconfig.load(ctx.session.adminuserquicklook);
 
 	let text = '';
 	text += 'URL: ';
-	text += format.monospace(
-		'https://' + getUrl(context.session.adminuserquicklook, config!.config),
-	);
+	text += format.monospace('https://' + getUrl(ctx.session.adminuserquicklook, config!.config));
 	text += '\n\n';
 	text += format.monospaceBlock(JSON.stringify(config, null, 2), 'json');
 
@@ -51,39 +47,37 @@ export const menu = new MenuTemplate<MyContext>(async context => {
 });
 
 menu.url({
-	hide: context => !context.session.adminuserquicklook,
+	hide: ctx => !ctx.session.adminuserquicklook,
 	text: 'Kalender',
-	async url(context) {
-		const config = await context.userconfig.loadConfig(
-			context.session.adminuserquicklook!,
-		);
-		return `https://${getUrl(context.session.adminuserquicklook!, config)}`;
+	async url(ctx) {
+		const config = await ctx.userconfig.loadConfig(ctx.session.adminuserquicklook!);
+		return `https://${getUrl(ctx.session.adminuserquicklook!, config)}`;
 	},
 });
 
 const question = new StatelessQuestion<MyContext>(
 	'admin-user-filter',
-	async (context, path) => {
-		if ('text' in context.message) {
-			context.session.adminuserquicklookfilter = context.message.text;
-			delete context.session.adminuserquicklook;
+	async (ctx, path) => {
+		if (ctx.message.text) {
+			ctx.session.adminuserquicklookfilter = ctx.message.text;
+			delete ctx.session.adminuserquicklook;
 		}
 
-		await replyMenuToContext(menu, context, path);
+		await replyMenuToContext(menu, ctx, path);
 	},
 );
 
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: filterButtonText(context => context.session.adminuserquicklookfilter),
-	async do(context, path) {
+	text: filterButtonText(ctx => ctx.session.adminuserquicklookfilter),
+	async do(ctx, path) {
 		await question.replyWithHTML(
-			context,
+			ctx,
 			'Wonach möchtest du die Nutzer filtern?',
 			getMenuOfPath(path),
 		);
-		await deleteMenuFromContext(context);
+		await deleteMenuFromContext(ctx);
 		return false;
 	},
 });
@@ -91,13 +85,15 @@ menu.interact('filter', {
 menu.interact('filter-clear', {
 	joinLastRow: true,
 	text: 'Filter aufheben',
-	hide(context) {
-		return (context.session.adminuserquicklookfilter ?? DEFAULT_FILTER)
-			=== DEFAULT_FILTER;
+	hide(ctx) {
+		return (
+			(ctx.session.adminuserquicklookfilter ?? DEFAULT_FILTER)
+			=== DEFAULT_FILTER
+		);
 	},
-	do(context) {
-		delete context.session.adminuserquicklookfilter;
-		delete context.session.adminuserquicklook;
+	do(ctx) {
+		delete ctx.session.adminuserquicklookfilter;
+		delete ctx.session.adminuserquicklook;
 		return true;
 	},
 });
@@ -105,31 +101,27 @@ menu.interact('filter-clear', {
 menu.select('u', {
 	maxRows: 5,
 	columns: 2,
-	async choices(context) {
-		const filter = context.session.adminuserquicklookfilter ?? DEFAULT_FILTER;
+	async choices(ctx) {
+		const filter = ctx.session.adminuserquicklookfilter ?? DEFAULT_FILTER;
 		const filterRegex = new RegExp(filter, 'i');
-		const allConfigs = await context.userconfig.all(
-			config => filterRegex.test(JSON.stringify(config)),
-		);
+		const allConfigs = await ctx.userconfig.all(config =>
+			filterRegex.test(JSON.stringify(config)));
 		const allChats = allConfigs.map(o => o.chat);
 		allChats.sort((a, b) => {
 			const nameA = nameOfUser(a);
 			const nameB = nameOfUser(b);
 			return nameA.localeCompare(nameB);
 		});
-		return Object.fromEntries(
-			allChats.map(chat => [chat.id, nameOfUser(chat)]),
-		);
+		return Object.fromEntries(allChats.map(chat => [chat.id, nameOfUser(chat)]));
 	},
-	isSet: (context, selected) =>
-		context.session.adminuserquicklook === Number(selected),
-	async set(context, selected) {
-		context.session.adminuserquicklook = Number(selected);
+	isSet: (ctx, selected) => ctx.session.adminuserquicklook === Number(selected),
+	async set(ctx, selected) {
+		ctx.session.adminuserquicklook = Number(selected);
 		return true;
 	},
-	getCurrentPage: context => context.session.page,
-	setPage(context, page) {
-		context.session.page = page;
+	getCurrentPage: ctx => ctx.session.page,
+	setPage(ctx, page) {
+		ctx.session.page = page;
 	},
 });
 

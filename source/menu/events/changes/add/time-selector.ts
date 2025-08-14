@@ -8,7 +8,7 @@ import type {MyContext} from '../../../../lib/types.js';
 
 export function createTimeSelectionSubmenuButtons(
 	menu: MenuTemplate<MyContext>,
-	hide: (context: MyContext) => boolean,
+	hide: (ctx: MyContext) => boolean,
 ): void {
 	createTimeSelectionSubmenuButton(menu, 'starttime', hide);
 	createTimeSelectionSubmenuButton(menu, 'endtime', hide);
@@ -17,20 +17,18 @@ export function createTimeSelectionSubmenuButtons(
 function createTimeSelectionSubmenuButton(
 	menu: MenuTemplate<MyContext>,
 	time: 'starttime' | 'endtime',
-	hide: (context: MyContext) => boolean,
+	hide: (ctx: MyContext) => boolean,
 ): void {
-	const subMenu = new MenuTemplate<MyContext>(
-		time === 'starttime'
-			? 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?'
-			: 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?',
-	);
+	const subMenu = new MenuTemplate<MyContext>(time === 'starttime'
+		? 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?'
+		: 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?');
 
 	menu.submenu(time, subMenu, {
 		joinLastRow: time === 'endtime',
 		hide,
-		text(context) {
+		text(ctx) {
 			const prefix = time === 'starttime' ? '▶️ ' : '⏹ ';
-			const alreadySet = context.session.generateChange![time];
+			const alreadySet = ctx.session.generateChange![time];
 			const fallback = time === 'starttime' ? 'Startzeit' : 'Endzeit';
 			return prefix + (alreadySet ?? fallback);
 		},
@@ -39,12 +37,11 @@ function createTimeSelectionSubmenuButton(
 	subMenu.select('h', {
 		columns: 3,
 		choices: HOUR_OPTIONS,
-		isSet: (context, key) =>
-			Number(context.session.generateChange![time]?.split(':')[0])
-				=== Number(key),
-		set(context, key) {
-			const {minute} = getCurrent(context, time);
-			context.session.generateChange![time] = formatTime(key, minute);
+		isSet: (ctx, key) =>
+			Number(ctx.session.generateChange![time]?.split(':')[0]) === Number(key),
+		set(ctx, key) {
+			const {minute} = getCurrent(ctx, time);
+			ctx.session.generateChange![time] = formatTime(key, minute);
 			return true;
 		},
 	});
@@ -53,12 +50,11 @@ function createTimeSelectionSubmenuButton(
 		columns: 4,
 		choices: MINUTE_OPTIONS,
 		buttonText: (_, number) => ':' + numberToTwoDigit(number),
-		isSet: (context, key) =>
-			Number(context.session.generateChange![time]?.split(':')[1])
-				=== Number(key),
-		set(context, key) {
-			const {hour} = getCurrent(context, time);
-			context.session.generateChange![time] = formatTime(hour, key);
+		isSet: (ctx, key) =>
+			Number(ctx.session.generateChange![time]?.split(':')[1]) === Number(key),
+		set(ctx, key) {
+			const {hour} = getCurrent(ctx, time);
+			ctx.session.generateChange![time] = formatTime(hour, key);
 			return true;
 		},
 	});
@@ -75,10 +71,10 @@ function numberToTwoDigit(number: number | string): string {
 }
 
 function getCurrent(
-	context: MyContext,
+	ctx: MyContext,
 	time: 'starttime' | 'endtime',
 ): {hour: number; minute: number} {
-	const current = context.session.generateChange![time];
+	const current = ctx.session.generateChange![time];
 	const fallback = time === 'starttime' ? '8:00' : '16:00';
 	const [hour, minute] = (current ?? fallback).split(':').map(Number);
 	return {hour: hour!, minute: minute!};

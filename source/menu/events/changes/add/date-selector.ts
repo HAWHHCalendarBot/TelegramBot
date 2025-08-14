@@ -11,8 +11,8 @@ import type {MyContext} from '../../../../lib/types.js';
 
 const menuText = 'Wann findet der Termin statt?';
 
-function getCurrent(context: MyContext): Date {
-	const {date} = context.session.generateChange!;
+function getCurrent(ctx: MyContext): Date {
+	const {date} = ctx.session.generateChange!;
 	if (date) {
 		return new Date(Date.parse(date + 'Z'));
 	}
@@ -22,21 +22,21 @@ function getCurrent(context: MyContext): Date {
 
 export function createDatePickerButtons(
 	menu: MenuTemplate<MyContext>,
-	hide: (context: MyContext) => boolean,
+	hide: (ctx: MyContext) => boolean,
 ): void {
 	menu.submenu('d', dayMenu, {
 		hide,
-		text: context => getCurrent(context).getDate().toString(),
+		text: ctx => getCurrent(ctx).getDate().toString(),
 	});
 	menu.submenu('m', monthMenu, {
 		joinLastRow: true,
 		hide,
-		text: context => MONTH_NAMES[getCurrent(context).getMonth()]!,
+		text: ctx => MONTH_NAMES[getCurrent(ctx).getMonth()]!,
 	});
 	menu.submenu('y', yearMenu, {
 		joinLastRow: true,
 		hide,
-		text: context => getCurrent(context).getFullYear().toString(),
+		text: ctx => getCurrent(ctx).getFullYear().toString(),
 	});
 }
 
@@ -47,13 +47,11 @@ const yearMenu = new MenuTemplate<MyContext>(menuText);
 dayMenu.select('', {
 	columns: 7,
 	choices: DAY_OPTIONS,
-	isSet: (context, date) => getCurrent(context).getDate() === Number(date),
-	async set(context, date) {
-		const current = getCurrent(context);
+	isSet: (ctx, date) => getCurrent(ctx).getDate() === Number(date),
+	async set(ctx, date) {
+		const current = getCurrent(ctx);
 		current.setDate(Number(date));
-		context.session.generateChange!.date = formatDateToStoredChangeDate(
-			current,
-		);
+		ctx.session.generateChange!.date = formatDateToStoredChangeDate(current);
 		return '..';
 	},
 });
@@ -61,27 +59,22 @@ dayMenu.select('', {
 monthMenu.select('', {
 	columns: 2,
 	choices: MONTH_OPTIONS,
-	isSet: (context, month) =>
-		getCurrent(context).getMonth() + 1 === Number(month),
-	async set(context, month) {
-		const current = getCurrent(context);
+	isSet: (ctx, month) => getCurrent(ctx).getMonth() + 1 === Number(month),
+	async set(ctx, month) {
+		const current = getCurrent(ctx);
 		current.setMonth(Number(month) - 1);
-		context.session.generateChange!.date = formatDateToStoredChangeDate(
-			current,
-		);
+		ctx.session.generateChange!.date = formatDateToStoredChangeDate(current);
 		return '..';
 	},
 });
 
 yearMenu.select('', {
 	choices: generateYearOptions(),
-	isSet: (context, year) => getCurrent(context).getFullYear() === Number(year),
-	async set(context, year) {
-		const current = getCurrent(context);
+	isSet: (ctx, year) => getCurrent(ctx).getFullYear() === Number(year),
+	async set(ctx, year) {
+		const current = getCurrent(ctx);
 		current.setFullYear(Number(year));
-		context.session.generateChange!.date = formatDateToStoredChangeDate(
-			current,
-		);
+		ctx.session.generateChange!.date = formatDateToStoredChangeDate(current);
 		return '..';
 	},
 });

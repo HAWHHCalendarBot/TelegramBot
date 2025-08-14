@@ -11,8 +11,8 @@ export function getUrl(id: number, userconfig: Userconfig): string {
 	return full;
 }
 
-export function getUrlFromContext(context: MyContext): string {
-	return getUrl(context.from!.id, context.userconfig.mine);
+export function getUrlFromContext(ctx: MyContext): string {
+	return getUrl(ctx.from!.id, ctx.userconfig.mine);
 }
 
 export function formatDateToHumanReadable(isoDateString: string): string {

@@ -25,19 +25,19 @@ const settingName = {
 	noPig: 'kein Schweinefleisch',
 	noPoultry: 'kein Geflügel',
 } as const satisfies Record<MealWish, string>;
-const MealWishOptions = Object.keys(settingName) as readonly MealWish[];
+const MEAL_WISH_OPTIONS = Object.keys(settingName) as readonly MealWish[];
 
-async function updateMore(context: MyContext, set: ReadonlySet<string>) {
-	const {main} = context.userconfig.mine.mensa;
+async function updateMore(ctx: MyContext, set: ReadonlySet<string>) {
+	const {main} = ctx.userconfig.mine.mensa;
 	const allAvailableCanteens = new Set(await getCanteenList());
 	const more = [...set]
 		.filter(canteen => canteen !== main)
 		.filter(canteen => allAvailableCanteens.has(canteen));
 
 	if (more.length > 0) {
-		context.userconfig.mine.mensa.more = more.sort();
+		ctx.userconfig.mine.mensa.more = more.sort();
 	} else {
-		delete context.userconfig.mine.mensa.more;
+		delete ctx.userconfig.mine.mensa.more;
 	}
 }
 
@@ -51,8 +51,8 @@ const mainMensaMenu = new MenuTemplate<MyContext>({
 	text: format.bold('Mensa Einstellungen') + '\nHauptmensa',
 });
 menu.submenu('main', mainMensaMenu, {
-	text(context) {
-		const {main} = context.userconfig.mine.mensa;
+	text(ctx) {
+		const {main} = ctx.userconfig.mine.mensa;
 		let text = 'Hauptmensa';
 		if (main) {
 			text += `: ${main}`;
@@ -64,29 +64,29 @@ menu.submenu('main', mainMensaMenu, {
 mainMensaMenu.select('set', {
 	columns: 1,
 	choices: getCanteenList,
-	async set(context, mensa) {
-		const more = new Set(context.userconfig.mine.mensa.more ?? []);
+	async set(ctx, mensa) {
+		const more = new Set(ctx.userconfig.mine.mensa.more ?? []);
 
-		const oldMain = context.userconfig.mine.mensa.main;
+		const oldMain = ctx.userconfig.mine.mensa.main;
 		if (oldMain) {
 			more.add(oldMain);
 		}
 
-		context.userconfig.mine.mensa.main = mensa;
-		await updateMore(context, more);
+		ctx.userconfig.mine.mensa.main = mensa;
+		await updateMore(ctx, more);
 		return '..';
 	},
-	isSet: (context, mensa) => mensa === context.userconfig.mine.mensa.main,
-	getCurrentPage: context => context.session.page,
-	setPage(context, page) {
-		context.session.page = page;
+	isSet: (ctx, mensa) => mensa === ctx.userconfig.mine.mensa.main,
+	getCurrentPage: ctx => ctx.session.page,
+	setPage(ctx, page) {
+		ctx.session.page = page;
 	},
 });
 
 mainMensaMenu.manualRow(backMainButtons);
 
-function isAdditionalMensa(context: MyContext, mensa: string): boolean {
-	const selected = context.userconfig.mine.mensa.more ?? [];
+function isAdditionalMensa(ctx: MyContext, mensa: string): boolean {
+	const selected = ctx.userconfig.mine.mensa.more ?? [];
 	return selected.includes(mensa);
 }
 
@@ -96,9 +96,9 @@ const moreMenu = new MenuTemplate<MyContext>({
 		+ '\nWähle weitere Mensen, in den du gelegentlich bist',
 });
 menu.submenu('more', moreMenu, {
-	hide: context => !context.userconfig.mine.mensa.main,
-	text(context) {
-		const selected = context.userconfig.mine.mensa.more ?? [];
+	hide: ctx => !ctx.userconfig.mine.mensa.main,
+	text(ctx) {
+		const selected = ctx.userconfig.mine.mensa.more ?? [];
 		let text = 'Weitere Mensen';
 		if (selected.length > 0) {
 			text += ` (${selected.length})`;
@@ -110,35 +110,33 @@ menu.submenu('more', moreMenu, {
 moreMenu.select('more', {
 	columns: 1,
 	choices: getCanteenList,
-	isSet: (context, mensa) => isAdditionalMensa(context, mensa),
-	async set(context, mensa) {
-		if (context.userconfig.mine.mensa.main === mensa) {
-			await context.answerCallbackQuery(
-				mensa + ' ist bereits deine Hauptmensa',
-			);
+	isSet: (ctx, mensa) => isAdditionalMensa(ctx, mensa),
+	async set(ctx, mensa) {
+		if (ctx.userconfig.mine.mensa.main === mensa) {
+			await ctx.answerCallbackQuery(mensa + ' ist bereits deine Hauptmensa');
 			return false;
 		}
 
-		const more = new Set(context.userconfig.mine.mensa.more ?? []);
+		const more = new Set(ctx.userconfig.mine.mensa.more ?? []);
 		if (more.has(mensa)) {
 			more.delete(mensa);
 		} else {
 			more.add(mensa);
 		}
 
-		await updateMore(context, more);
+		await updateMore(ctx, more);
 		return true;
 	},
-	formatState(context, mensa, state) {
-		if (context.userconfig.mine.mensa.main === mensa) {
+	formatState(ctx, mensa, state) {
+		if (ctx.userconfig.mine.mensa.main === mensa) {
 			return '🍽 ' + mensa;
 		}
 
 		return enabledEmoji(state) + ' ' + mensa;
 	},
-	getCurrentPage: context => context.session.page,
-	setPage(context, page) {
-		context.session.page = page;
+	getCurrentPage: ctx => ctx.session.page,
+	setPage(ctx, page) {
+		ctx.session.page = page;
 	},
 });
 moreMenu.manualRow(backMainButtons);
@@ -151,21 +149,21 @@ const PRICE_OPTIONS = {
 
 menu.select('price', {
 	choices: PRICE_OPTIONS,
-	set(context, price) {
-		context.userconfig.mine.mensa.price = price as MensaPriceClass;
+	set(ctx, price) {
+		ctx.userconfig.mine.mensa.price = price as MensaPriceClass;
 		return true;
 	},
-	isSet: (context, price) => context.userconfig.mine.mensa.price === price,
-	hide: context => !context.userconfig.mine.mensa.main,
+	isSet: (ctx, price) => ctx.userconfig.mine.mensa.price === price,
+	hide: ctx => !ctx.userconfig.mine.mensa.main,
 });
 
-const specialWishMenu = new MenuTemplate<MyContext>(context => {
+const specialWishMenu = new MenuTemplate<MyContext>(ctx => {
 	let text = format.bold('Mensa Einstellungen');
 	text += '\nWelche Sonderwünsche hast du zu deinem Essen?';
 	text += '\n\n';
 
-	const anyWishesSelected = MealWishOptions
-		.some(o => context.userconfig.mine.mensa[o]);
+	const anyWishesSelected = MEAL_WISH_OPTIONS.some(o =>
+		ctx.userconfig.mine.mensa[o]);
 
 	text += anyWishesSelected
 		? 'Aktuell werden die Angebote für dich nach deinen Wünschen gefiltert.'
@@ -175,11 +173,11 @@ const specialWishMenu = new MenuTemplate<MyContext>(context => {
 });
 menu.submenu('s', specialWishMenu, {
 	text: 'Extrawünsche Essen',
-	hide: context => !context.userconfig.mine.mensa.main,
+	hide: ctx => !ctx.userconfig.mine.mensa.main,
 });
 
-function showWishAsOption(context: MyContext, wish: MealWish): boolean {
-	const wishes = context.userconfig.mine.mensa;
+function showWishAsOption(ctx: MyContext, wish: MealWish): boolean {
+	const wishes = ctx.userconfig.mine.mensa;
 	switch (wish) {
 		case 'noBeef':
 		case 'noFish':
@@ -205,20 +203,15 @@ function showWishAsOption(context: MyContext, wish: MealWish): boolean {
 
 specialWishMenu.select('w', {
 	columns: 1,
-	choices: context =>
-		Object.fromEntries(
-			MealWishOptions
-				.filter(wish => showWishAsOption(context, wish))
-				.map(wish => [wish, settingName[wish]]),
-		),
-	isSet: (context, wish) =>
-		Boolean(context.userconfig.mine.mensa[wish as MealWish]),
-	set(context, wish, newState) {
+	choices: ctx =>
+		Object.fromEntries(MEAL_WISH_OPTIONS.filter(wish => showWishAsOption(ctx, wish)).map(wish => [wish, settingName[wish]])),
+	isSet: (ctx, wish) => Boolean(ctx.userconfig.mine.mensa[wish as MealWish]),
+	set(ctx, wish, newState) {
 		if (newState) {
-			context.userconfig.mine.mensa[wish as MealWish] = true;
+			ctx.userconfig.mine.mensa[wish as MealWish] = true;
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete context.userconfig.mine.mensa[wish as MealWish];
+			delete ctx.userconfig.mine.mensa[wish as MealWish];
 		}
 
 		return true;
@@ -226,8 +219,8 @@ specialWishMenu.select('w', {
 });
 specialWishMenu.interact('warm', {
 	text: 'warm… nicht versalzen… kein Spüli…',
-	async do(context) {
-		await context.answerCallbackQuery('das wär mal was… 😈');
+	async do(ctx) {
+		await ctx.answerCallbackQuery('das wär mal was… 😈');
 		return false;
 	},
 });
@@ -236,17 +229,17 @@ specialWishMenu.manualRow(backMainButtons);
 
 menu.toggle('showAdditives', {
 	text: 'zeige Inhaltsstoffe',
-	set(context, newState) {
+	set(ctx, newState) {
 		if (newState) {
-			context.userconfig.mine.mensa.showAdditives = true;
+			ctx.userconfig.mine.mensa.showAdditives = true;
 		} else {
-			delete context.userconfig.mine.mensa.showAdditives;
+			delete ctx.userconfig.mine.mensa.showAdditives;
 		}
 
 		return true;
 	},
-	isSet: context => context.userconfig.mine.mensa.showAdditives === true,
-	hide: context => !context.userconfig.mine.mensa.main,
+	isSet: ctx => ctx.userconfig.mine.mensa.showAdditives === true,
+	hide: ctx => !ctx.userconfig.mine.mensa.main,
 });
 
 menu.manualRow(backMainButtons);

@@ -4,8 +4,8 @@ import * as allEvents from '../lib/all-events.js';
 import {getCanteenList} from '../lib/mensa-meals.js';
 import type {MyContext} from '../lib/types.js';
 
-export const menu = new MenuTemplate<MyContext>(async context => {
-	const userIds = await context.userconfig.allIds();
+export const menu = new MenuTemplate<MyContext>(async ctx => {
+	const userIds = await ctx.userconfig.allIds();
 	const userCount = userIds.length;
 
 	const canteens = await getCanteenList();

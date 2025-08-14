@@ -20,9 +20,7 @@ setInterval(async () => mensaGit.pull(), 1000 * 60 * 30); // Every 30 minutes
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 mensaGit.pull();
 
-function getYearMonthDay(
-	date: Readonly<Date>,
-): Readonly<{year: number; month: number; day: number}> {
+function getYearMonthDay(date: Readonly<Date>): Readonly<{year: number; month: number; day: number}> {
 	const year = date.getFullYear();
 	const month = date.getMonth() + 1;
 	const day = date.getDate();
@@ -45,26 +43,23 @@ function dateEqual(first: Readonly<Date>, second: Readonly<Date>): boolean {
 	return stringifyEqual(getYearMonthDay(first), getYearMonthDay(second));
 }
 
-function getCurrentSettings(
-	context: MyContext,
-): Readonly<{mensa?: string; date: Date}> {
-	let {mensa, date} = context.session.mensa ?? {};
-	mensa ||= context.userconfig.mine.mensa.main;
-	date ??= Date.now();
+function getCurrentSettings(ctx: MyContext): Readonly<{mensa?: string; date: Date}> {
+	let date = ctx.session.mensa?.date ?? Date.now();
+	let mensa = ctx.session.mensa?.mensa;
 
 	const now = Date.now();
 	// When that date is more than a day ago, update it
-	if ((now - date) > DAY_IN_MS) {
+	if (!mensa || (now - date) > DAY_IN_MS) {
 		date = Date.now();
-		mensa = context.userconfig.mine.mensa.main;
+		mensa = ctx.userconfig.mine.mensa.main;
 	}
 
 	return {mensa, date: new Date(date)};
 }
 
-export const menu = new MenuTemplate<MyContext>(async context => {
-	const {mensa, date} = getCurrentSettings(context);
-	const mensaSettings = context.userconfig.mine.mensa;
+export const menu = new MenuTemplate<MyContext>(async ctx => {
+	const {mensa, date} = getCurrentSettings(ctx);
+	const mensaSettings = ctx.userconfig.mine.mensa;
 
 	if (!mensa || mensa === 'undefined') {
 		return '⚠️ Du hast keine Mensa gesetzt, zu der du dein Angebot bekommen möchtest. Diese kannst du in den Einstellungen setzen.';
@@ -97,8 +92,8 @@ function generateDateString(date: Date): string {
 // Select day
 menu.select('t', {
 	columns: 3,
-	choices(context) {
-		const {mensa} = getCurrentSettings(context);
+	choices(ctx) {
+		const {mensa} = getCurrentSettings(ctx);
 		if (!mensa) {
 			return {};
 		}
@@ -112,8 +107,7 @@ menu.select('t', {
 
 		const result: Record<string, string> = {};
 		for (const date of dateOptions) {
-			const weekday = WEEKDAYS[date.getDay()]!
-				.slice(0, 2);
+			const weekday = WEEKDAYS[date.getDay()]!.slice(0, 2);
 			const day = date.getDate();
 			const key = generateDateString(date);
 			result[key] = `${weekday} ${day}.`;
@@ -121,11 +115,11 @@ menu.select('t', {
 
 		return result;
 	},
-	isSet: (context, key) =>
-		dateEqual(getCurrentSettings(context).date, parseDateString(key)),
-	set(context, key) {
-		context.session.mensa ??= {};
-		context.session.mensa.date = parseDateString(key).getTime();
+	isSet: (ctx, key) =>
+		dateEqual(getCurrentSettings(ctx).date, parseDateString(key)),
+	set(ctx, key) {
+		ctx.session.mensa ??= {};
+		ctx.session.mensa.date = parseDateString(key).getTime();
 		return true;
 	},
 	formatState: (_, textResult, state) =>
@@ -135,18 +129,18 @@ menu.select('t', {
 // Select mensa
 menu.choose('m', {
 	columns: 1,
-	choices(context) {
-		const current = getCurrentSettings(context).mensa;
-		const {main, more} = context.userconfig.mine.mensa;
+	choices(ctx) {
+		const current = getCurrentSettings(ctx).mensa;
+		const {main, more} = ctx.userconfig.mine.mensa;
 		return [main, ...(more ?? [])]
 			.filter(o => o !== current)
 			.filter(o => typeof o === 'string')
 			.filter(Boolean);
 	},
 	buttonText: (_, key) => '🍽 ' + key,
-	do(context, key) {
-		context.session.mensa ??= {};
-		context.session.mensa.mensa = key;
+	do(ctx, key) {
+		ctx.session.mensa ??= {};
+		ctx.session.mensa.mensa = key;
 		return true;
 	},
 });

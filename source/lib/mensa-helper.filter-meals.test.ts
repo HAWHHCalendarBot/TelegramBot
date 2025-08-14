@@ -82,63 +82,56 @@ await test('filter-meals filterfrei', () => {
 
 await test('filter-meals vegan', () => {
 	const filtered = filterMeals(TEST_MEALS, {vegan: true});
-	deepStrictEqual(filtered.map(o => o.Name), [
-		'Pasta',
-	]);
+	deepStrictEqual(
+		filtered.map(o => o.Name),
+		['Pasta'],
+	);
 });
 
 await test('filter-meals vegetarisch', () => {
 	const filtered = filterMeals(TEST_MEALS, {vegetarian: true});
-	deepStrictEqual(filtered.map(o => o.Name), [
-		'Pasta Sahne',
-		'Pasta',
-	]);
+	deepStrictEqual(
+		filtered.map(o => o.Name),
+		['Pasta Sahne', 'Pasta'],
+	);
 });
 
 await test('filter-meals laktosefrei', () => {
 	const filtered = filterMeals(TEST_MEALS, {lactoseFree: true});
-	deepStrictEqual(filtered.map(o => o.Name), [
-		'Pasta',
-	]);
+	deepStrictEqual(
+		filtered.map(o => o.Name),
+		['Pasta'],
+	);
 });
 
 await test('filter-meals ohne Schwein', () => {
 	const filtered = filterMeals(TEST_MEALS, {noPig: true});
-	deepStrictEqual(filtered.map(o => o.Name), [
-		'Fisch',
-		'Pasta Sahne',
-		'Pasta',
-		'Rindstuff',
-	]);
+	deepStrictEqual(
+		filtered.map(o => o.Name),
+		['Fisch', 'Pasta Sahne', 'Pasta', 'Rindstuff'],
+	);
 });
 
 await test('filter-meals ohne Rind', () => {
 	const filtered = filterMeals(TEST_MEALS, {noBeef: true});
-	deepStrictEqual(filtered.map(o => o.Name), [
-		'Fisch',
-		'Pasta Sahne',
-		'Pasta Speck',
-		'Pasta',
-	]);
+	deepStrictEqual(
+		filtered.map(o => o.Name),
+		['Fisch', 'Pasta Sahne', 'Pasta Speck', 'Pasta'],
+	);
 });
 
 await test('filter-meals ohne Geflügel', () => {
 	const filtered = filterMeals(TEST_MEALS, {noPoultry: true});
-	deepStrictEqual(filtered.map(o => o.Name), [
-		'Fisch',
-		'Pasta Sahne',
-		'Pasta Speck',
-		'Pasta',
-		'Rindstuff',
-	]);
+	deepStrictEqual(
+		filtered.map(o => o.Name),
+		['Fisch', 'Pasta Sahne', 'Pasta Speck', 'Pasta', 'Rindstuff'],
+	);
 });
 
 await test('filter-meals ohne Fisch', () => {
 	const filtered = filterMeals(TEST_MEALS, {noFish: true});
-	deepStrictEqual(filtered.map(o => o.Name), [
-		'Pasta Sahne',
-		'Pasta Speck',
-		'Pasta',
-		'Rindstuff',
-	]);
+	deepStrictEqual(
+		filtered.map(o => o.Name),
+		['Pasta Sahne', 'Pasta Speck', 'Pasta', 'Rindstuff'],
+	);
 });
