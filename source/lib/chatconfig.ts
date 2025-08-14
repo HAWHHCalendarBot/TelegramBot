@@ -4,9 +4,9 @@ import {
 import type {Api, MiddlewareFn} from 'grammy';
 import type {User} from 'grammy/types';
 import stringify from 'json-stable-stringify';
-import {sequentialLoop} from './async.js';
-import * as telegramBroadcast from './telegram-broadcast.js';
-import type {MyContext, OtherSendMessage, Userconfig} from './types.js';
+import {sequentialLoop} from './async.ts';
+import * as telegramBroadcast from './telegram-broadcast.ts';
+import type {MyContext, OtherSendMessage, Userconfig} from './types.ts';
 
 type ChatConfigFileContent = {
 	chat: User;
@@ -36,8 +36,11 @@ export type ContextProperty = {
 };
 
 export class Chatconfig {
-	constructor(public readonly folder: string) {
+	public readonly folder: string;
+
+	constructor(configFolder: string) {
 		// Creating the folder is not needed. It should already be there
+		this.folder = configFolder;
 	}
 
 	middleware(): MiddlewareFn<MyContext> {

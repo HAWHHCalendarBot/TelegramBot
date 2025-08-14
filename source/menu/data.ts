@@ -6,7 +6,7 @@ import {
 	replyMenuToContext,
 } from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import type {MyContext, Userconfig} from '../lib/types.js';
+import type {MyContext, Userconfig} from '../lib/types.ts';
 
 async function getActualUserconfigContent(ctx: MyContext): Promise<Userconfig | undefined> {
 	if (!ctx.userconfig.mine) {

@@ -1,8 +1,8 @@
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import * as allEvents from '../lib/all-events.js';
-import {getCanteenList} from '../lib/mensa-meals.js';
-import type {MyContext} from '../lib/types.js';
+import * as allEvents from '../lib/all-events.ts';
+import {getCanteenList} from '../lib/mensa-meals.ts';
+import type {MyContext} from '../lib/types.ts';
 
 export const menu = new MenuTemplate<MyContext>(async ctx => {
 	const userIds = await ctx.userconfig.allIds();

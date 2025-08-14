@@ -1,12 +1,12 @@
 import {Composer} from 'grammy';
 import {MenuMiddleware} from 'grammy-inline-menu';
-import type {MyContext} from '../lib/types.js';
-import * as about from './about.js';
-import * as admin from './admin/index.js';
-import * as data from './data.js';
-import * as events from './events/index.js';
-import * as mensa from './mensa/index.js';
-import * as subscribe from './subscribe/index.js';
+import type {MyContext} from '../lib/types.ts';
+import * as about from './about.ts';
+import * as admin from './admin/index.ts';
+import * as data from './data.ts';
+import * as events from './events/index.ts';
+import * as mensa from './mensa/index.ts';
+import * as subscribe from './subscribe/index.ts';
 
 export const bot = new Composer<MyContext>();
 

@@ -1,5 +1,5 @@
 import {readdir, readFile} from 'node:fs/promises';
-import type {Meal} from './meal.js';
+import type {Meal} from './meal.ts';
 
 export async function getCanteenList(): Promise<string[]> {
 	const found = await readdir('mensa-data', {withFileTypes: true});

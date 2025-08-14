@@ -3,12 +3,12 @@ import {html as format} from 'telegram-format';
 import {
 	formatDateToHumanReadable,
 	parseDateTimeToDate,
-} from './calendar-helper.js';
+} from './calendar-helper.ts';
 import type {
 	Change,
 	EventEntryFileContent,
 	EventEntryInternal,
-} from './types.js';
+} from './types.ts';
 
 export function generateChangeDescription(change: Change): string {
 	let text = '';

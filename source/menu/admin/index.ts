@@ -1,8 +1,8 @@
 import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
-import type {MyContext} from '../../lib/types.js';
-import * as broadcastMenu from './broadcast.js';
-import * as userMenu from './user-quicklook.js';
+import type {MyContext} from '../../lib/types.ts';
+import * as broadcastMenu from './broadcast.ts';
+import * as userMenu from './user-quicklook.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>('Hey Admin!');

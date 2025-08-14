@@ -6,8 +6,8 @@ import {
 	generateChangeText,
 	generateChangeTextHeader,
 	generateShortChangeText,
-} from '../lib/change-helper.js';
-import type {Change, MyContext} from '../lib/types.js';
+} from '../lib/change-helper.ts';
+import type {Change, MyContext} from '../lib/types.ts';
 
 export const bot = new Composer<MyContext>();
 

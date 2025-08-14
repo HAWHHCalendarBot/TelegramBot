@@ -1,6 +1,6 @@
 import {Composer} from 'grammy';
-import {getCanteenList} from './lib/mensa-meals.js';
-import type {EventDetails, MyContext} from './lib/types.js';
+import {getCanteenList} from './lib/mensa-meals.ts';
+import type {EventDetails, MyContext} from './lib/types.ts';
 
 export const bot = new Composer<MyContext>();
 

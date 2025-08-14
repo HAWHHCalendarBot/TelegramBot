@@ -1,7 +1,7 @@
 import {strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import type {Meal} from './meal.js';
-import {generateMealText} from './mensa-helper.js';
+import type {Meal} from './meal.ts';
+import {generateMealText} from './mensa-helper.ts';
 
 const example = {
 	Additives: {

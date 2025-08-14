@@ -1,6 +1,6 @@
 import type {I18nFlavor} from '@grammyjs/i18n';
 import type {Api, Context as BaseContext, SessionFlavor} from 'grammy';
-import type {ContextProperty} from './chatconfig.js';
+import type {ContextProperty} from './chatconfig.ts';
 
 export type OtherSendMessage = Parameters<Api['sendMessage']>[2];
 

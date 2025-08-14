@@ -8,13 +8,13 @@ import {
 } from 'grammy-inline-menu';
 import type {User} from 'grammy/types';
 import {html as format} from 'telegram-format';
-import {getUrl} from '../../lib/calendar-helper.js';
+import {getUrl} from '../../lib/calendar-helper.ts';
 import {
 	DEFAULT_FILTER,
 	filterButtonText,
-} from '../../lib/inline-menu-filter.js';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import type {MyContext} from '../../lib/types.js';
+} from '../../lib/inline-menu-filter.ts';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import type {MyContext} from '../../lib/types.ts';
 
 function nameOfUser({first_name, last_name, username}: User): string {
 	let name = first_name;

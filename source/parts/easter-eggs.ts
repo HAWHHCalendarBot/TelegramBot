@@ -1,5 +1,5 @@
 import {Composer} from 'grammy';
-import type {MyContext} from '../lib/types.js';
+import type {MyContext} from '../lib/types.ts';
 
 export const bot = new Composer<MyContext>();
 

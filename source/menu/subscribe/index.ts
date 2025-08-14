@@ -1,10 +1,10 @@
 import {Composer} from 'grammy';
 import {type Body, MenuTemplate} from 'grammy-inline-menu';
-import {getUrlFromContext} from '../../lib/calendar-helper.js';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import type {MyContext} from '../../lib/types.js';
-import {menu as removedStyleMenu} from './removed-style.js';
-import * as suffixMenu from './suffix.js';
+import {getUrlFromContext} from '../../lib/calendar-helper.ts';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import type {MyContext} from '../../lib/types.ts';
+import {menu as removedStyleMenu} from './removed-style.ts';
+import * as suffixMenu from './suffix.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate(generateBody('overview'));

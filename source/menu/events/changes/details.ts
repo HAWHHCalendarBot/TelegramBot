@@ -2,9 +2,9 @@ import {MenuTemplate} from 'grammy-inline-menu';
 import {
 	generateChangeText,
 	generateShortChangeText,
-} from '../../../lib/change-helper.js';
-import {backMainButtons} from '../../../lib/inline-menu.js';
-import type {Change, MyContext} from '../../../lib/types.js';
+} from '../../../lib/change-helper.ts';
+import {backMainButtons} from '../../../lib/inline-menu.ts';
+import type {Change, MyContext} from '../../../lib/types.ts';
 
 export function generateChangeAction(change: Change): string {
 	return change.date;

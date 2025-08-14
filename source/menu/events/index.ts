@@ -1,11 +1,11 @@
 import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import * as allEvents from '../../lib/all-events.js';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import type {MyContext} from '../../lib/types.js';
-import * as addMenu from './add.js';
-import * as detailsMenu from './details.js';
+import * as allEvents from '../../lib/all-events.ts';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import type {MyContext} from '../../lib/types.ts';
+import * as addMenu from './add.ts';
+import * as detailsMenu from './details.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async ctx => {

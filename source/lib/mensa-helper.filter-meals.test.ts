@@ -1,7 +1,7 @@
 import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import type {Meal} from './meal.js';
-import {filterMeals} from './mensa-helper.js';
+import type {Meal} from './meal.ts';
+import {filterMeals} from './mensa-helper.ts';
 
 const BASE_MEAL = {
 	Additives: {},

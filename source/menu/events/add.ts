@@ -11,13 +11,13 @@ import {
 	count as allEventsCount,
 	exists as allEventsExists,
 	find as allEventsFind,
-} from '../../lib/all-events.js';
+} from '../../lib/all-events.ts';
 import {
 	DEFAULT_FILTER,
 	filterButtonText,
-} from '../../lib/inline-menu-filter.js';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import type {MyContext} from '../../lib/types.js';
+} from '../../lib/inline-menu-filter.ts';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import type {MyContext} from '../../lib/types.ts';
 
 const MAX_RESULT_ROWS = 10;
 const RESULT_COLUMNS = 2;

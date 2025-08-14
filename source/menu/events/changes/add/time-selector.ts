@@ -2,9 +2,9 @@ import {MenuTemplate} from 'grammy-inline-menu';
 import {
 	HOUR_OPTIONS,
 	MINUTE_OPTIONS,
-} from '../../../../lib/event-creation-menu-options.js';
-import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.js';
-import type {MyContext} from '../../../../lib/types.js';
+} from '../../../../lib/event-creation-menu-options.ts';
+import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.ts';
+import type {MyContext} from '../../../../lib/types.ts';
 
 export function createTimeSelectionSubmenuButtons(
 	menu: MenuTemplate<MyContext>,

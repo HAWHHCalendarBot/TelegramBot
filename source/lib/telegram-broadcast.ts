@@ -1,6 +1,6 @@
 import type {Api} from 'grammy';
-import {sequentialLoop, sleep} from './async.js';
-import type {OtherSendMessage} from './types.js';
+import {sequentialLoop, sleep} from './async.ts';
+import type {OtherSendMessage} from './types.ts';
 
 const SLEEP_MS = 250;
 

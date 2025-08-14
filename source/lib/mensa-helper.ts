@@ -1,6 +1,6 @@
 import {arrayFilterUnique} from 'array-filter-unique';
-import type {Meal} from './meal.js';
-import type {MealWishes, MensaPriceClass, MensaSettings} from './types.js';
+import type {Meal} from './meal.ts';
+import type {MealWishes, MensaPriceClass, MensaSettings} from './types.ts';
 
 export function filterMeals(
 	meals: readonly Meal[],

@@ -7,9 +7,9 @@ import {
 	replyMenuToContext,
 } from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import type {MyContext} from '../../lib/types.js';
-import * as changesMenu from './changes/index.js';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import type {MyContext} from '../../lib/types.ts';
+import * as changesMenu from './changes/index.ts';
 
 function getNameFromPath(path: string): string {
 	const match = /\/d:([^/]+)\//.exec(path)!;

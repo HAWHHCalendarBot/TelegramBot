@@ -1,12 +1,12 @@
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import {getCanteenList} from '../../lib/mensa-meals.js';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import {getCanteenList} from '../../lib/mensa-meals.ts';
 import {
 	type MealWish,
 	type MensaPriceClass,
 	type MyContext,
-} from '../../lib/types.js';
+} from '../../lib/types.ts';
 
 function enabledEmoji(truthy: boolean | undefined): '✅' | '🚫' {
 	return truthy ? '✅' : '🚫';

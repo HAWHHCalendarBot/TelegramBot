@@ -1,6 +1,6 @@
 import {MenuTemplate} from 'grammy-inline-menu';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import type {MyContext, RemovedEventsDisplayStyle} from '../../lib/types.js';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import type {MyContext, RemovedEventsDisplayStyle} from '../../lib/types.ts';
 
 const CHOICES = {
 	cancelled: '👌 Standard',

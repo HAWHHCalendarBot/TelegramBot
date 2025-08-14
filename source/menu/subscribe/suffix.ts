@@ -6,9 +6,9 @@ import {
 	MenuTemplate,
 	replyMenuToContext,
 } from 'grammy-inline-menu';
-import {getUrlFromContext} from '../../lib/calendar-helper.js';
-import {backMainButtons} from '../../lib/inline-menu.js';
-import type {MyContext} from '../../lib/types.js';
+import {getUrlFromContext} from '../../lib/calendar-helper.ts';
+import {backMainButtons} from '../../lib/inline-menu.ts';
+import type {MyContext} from '../../lib/types.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(ctx => {

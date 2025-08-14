@@ -1,9 +1,9 @@
 import {MenuTemplate} from 'grammy-inline-menu';
-import * as mensaGit from '../../lib/mensa-git.js';
-import {generateMealText} from '../../lib/mensa-helper.js';
-import {getMealsOfDay} from '../../lib/mensa-meals.js';
-import type {MyContext} from '../../lib/types.js';
-import {menu as mensaSettingsMenu} from './settings.js';
+import * as mensaGit from '../../lib/mensa-git.ts';
+import {generateMealText} from '../../lib/mensa-helper.ts';
+import {getMealsOfDay} from '../../lib/mensa-meals.ts';
+import type {MyContext} from '../../lib/types.ts';
+import {menu as mensaSettingsMenu} from './settings.ts';
 
 const WEEKDAYS = [
 	'Sonntag',

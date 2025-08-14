@@ -10,15 +10,15 @@ import {
 import {
 	formatDateToHumanReadable,
 	formatDateToStoredChangeDate,
-} from '../../../../lib/calendar-helper.js';
+} from '../../../../lib/calendar-helper.ts';
 import {
 	generateChangeText,
 	loadEvents,
-} from '../../../../lib/change-helper.js';
-import type {Change, MyContext} from '../../../../lib/types.js';
-import * as changeDetails from '../details.js';
-import {createDatePickerButtons} from './date-selector.js';
-import {createTimeSelectionSubmenuButtons} from './time-selector.js';
+} from '../../../../lib/change-helper.ts';
+import type {Change, MyContext} from '../../../../lib/types.ts';
+import * as changeDetails from '../details.ts';
+import {createDatePickerButtons} from './date-selector.ts';
+import {createTimeSelectionSubmenuButtons} from './time-selector.ts';
 
 function changesOfEvent(ctx: MyContext, name: string) {
 	const allChanges = ctx.userconfig.mine.changes;
