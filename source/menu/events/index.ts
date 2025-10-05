@@ -3,31 +3,35 @@ import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import * as allEvents from '../../lib/all-events.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
-import type {MyContext} from '../../lib/types.ts';
+import type {EventId, MyContext} from '../../lib/types.ts';
+import {getEventName} from '../../lib/all-events.ts';
+import {getUserEventIdsFromContext} from '../../lib/calendar-helper.js';
 import * as addMenu from './add.ts';
 import * as detailsMenu from './details.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async ctx => {
+	delete ctx.session.eventPath;
+
 	let text = format.bold('Veranstaltungen');
 	text += '\n\n';
 
-	const events = Object.keys(ctx.userconfig.mine.events);
-	events.sort();
-	if (events.length > 0) {
-		const nonExisting = new Set(await allEvents.nonExisting(events));
+	const eventIds = getUserEventIdsFromContext(ctx);
+	if (eventIds.length > 0) {
+		const nonExisting = new Set(allEvents.nonExisting(eventIds));
 		text += 'Du hast folgende Veranstaltungen im Kalender:';
 		text += '\n';
-		text += events
-			.map(o => {
+		text += eventIds
+			.map(eventId => {
 				let line = '- ';
-				if (nonExisting.has(o)) {
+				if (nonExisting.has(eventId)) {
 					line += '⚠️ ';
 				}
 
-				line += format.escape(o);
+				line += format.escape(getEventName(eventId));
 				return line;
 			})
+			.sort((a, b) => a.localeCompare(b))
 			.join('\n');
 
 		if (nonExisting.size > 0) {
@@ -59,14 +63,14 @@ bot.use(detailsMenu.bot);
 menu.interact('remove-old', {
 	text: '🗑 Entferne nicht mehr Existierende',
 	async hide(ctx) {
-		const nonExisting = await allEvents.nonExisting(Object.keys(ctx.userconfig.mine.events));
+		const nonExisting = allEvents.nonExisting(getUserEventIdsFromContext(ctx));
 		return nonExisting.length === 0;
 	},
 	async do(ctx) {
-		const nonExisting = new Set(await allEvents.nonExisting(Object.keys(ctx.userconfig.mine.events)));
-		for (const name of nonExisting) {
+		const nonExisting = allEvents.nonExisting(getUserEventIdsFromContext(ctx));
+		for (const eventId of nonExisting) {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete ctx.userconfig.mine.events[name];
+			delete ctx.userconfig.mine.events[eventId];
 		}
 
 		return true;
@@ -80,8 +84,8 @@ menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 	choices(ctx) {
 		const result: Record<string, string> = {};
 
-		for (const [name, details] of Object.entries(ctx.userconfig.mine.events)) {
-			let title = name + ' ';
+		for (const [eventId, details] of Object.entries(ctx.userconfig.mine.events)) {
+			let title = getEventName(eventId as EventId) + ' ';
 
 			if (Object.keys(details.changes ?? {}).length > 0) {
 				title += '✏️';
@@ -95,7 +99,7 @@ menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 				title += '🗒';
 			}
 
-			result[name.replaceAll('/', ';')] = title.trim();
+			result[eventId] = title.trim();
 		}
 
 		return result;

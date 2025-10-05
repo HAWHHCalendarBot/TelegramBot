@@ -1,40 +1,106 @@
-import {readFile} from 'node:fs/promises';
+import {readFile, watch} from 'node:fs/promises';
+import type {
+	EventDirectory, EventId, Events,
+} from './types.ts';
 
-async function getAll(): Promise<string[]> {
-	const data = await readFile('eventfiles/all.txt', 'utf8');
-	const list = data.split('\n').filter(element => element !== '');
-	return list;
-}
+const DIRECTORY_FILE = 'eventfiles/directory.json';
 
-export async function count(): Promise<number> {
-	const allEvents = await getAll();
-	return allEvents.length;
-}
+const directory = await loadDirectory();
+const namesOfEvents: Record<string, string> = await generateMapping();
 
-export async function exists(name: string): Promise<boolean> {
-	const allEvents = await getAll();
-	return allEvents.includes(name);
-}
-
-export async function nonExisting(names: readonly string[]): Promise<string[]> {
-	const allEvents = new Set(await getAll());
-	const result: string[] = [];
-	for (const event of names) {
-		if (!allEvents.has(event)) {
-			result.push(event);
+async function watchForDirectoryChanges() {
+	const watcher = watch(DIRECTORY_FILE);
+	for await (const event of watcher) {
+		console.log(event);
+		if (event.eventType === 'change') {
+			await loadDirectory();
+			await generateMapping();
 		}
 	}
-
-	return result;
 }
 
-export async function find(
-	pattern: string | RegExp,
-	ignore: readonly string[] = [],
-): Promise<readonly string[]> {
-	const allEvents = await getAll();
-	const regex = new RegExp(pattern, 'i');
-	const filtered = allEvents.filter(event =>
-		regex.test(event) && !ignore.includes(event));
-	return filtered;
+await watchForDirectoryChanges();
+
+async function loadDirectory(): Promise<Partial<EventDirectory>> {
+	const directoryString = await readFile(DIRECTORY_FILE);
+	const directory = JSON.parse(directoryString.toString()) as Partial<EventDirectory>;
+	return directory;
+}
+
+async function generateMapping(): Promise<Record<string, string>> {
+	const namesOfEvents: Record<string, string> = {};
+
+	function collect(directory: Partial<EventDirectory>) {
+		for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
+			collect(subDirectory);
+		}
+
+		Object.assign(namesOfEvents, directory.events ?? {});
+	}
+
+	collect(directory);
+
+	return namesOfEvents;
+}
+
+function resolvePath(path: string[]): Partial<EventDirectory> {
+	let resolvedDirectory = directory;
+
+	for (const part of path) {
+		if (resolvedDirectory.subDirectories === undefined || !(part in resolvedDirectory.subDirectories)) {
+			throw new Error('Ungültiger Pfad');
+		}
+
+		resolvedDirectory = resolvedDirectory.subDirectories[part]!;
+	}
+
+	return resolvedDirectory;
+}
+
+export function getEventName(id: EventId): string {
+	return namesOfEvents[id] ?? id;
+}
+
+export function count(): number {
+	return Object.keys(namesOfEvents).length;
+}
+
+export function nonExisting(ids: readonly EventId[]): readonly EventId[] {
+	return ids.filter(id => !(id in namesOfEvents));
+}
+
+export function find(
+	pattern: string | RegExp | undefined,
+	startAt: string[] = [],
+): Readonly<EventDirectory> {
+	if (pattern !== undefined) {
+		const regex = new RegExp(pattern, 'i');
+		const accumulator: Events = {};
+
+		function collect(directory: Partial<EventDirectory>) {
+			for (const [eventId, name] of Object.entries(directory.events ?? {})) {
+				if (regex.test(name)) {
+					accumulator[eventId as EventId] = name;
+				}
+			}
+
+			for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
+				collect(subDirectory);
+			}
+		}
+
+		collect(resolvePath(startAt));
+
+		return {
+			subDirectories: {},
+			events: Object.fromEntries(Object.entries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
+		};
+	}
+
+	const directory = resolvePath(startAt);
+
+	return {
+		subDirectories: directory.subDirectories ?? {},
+		events: directory.events ?? {},
+	};
 }
