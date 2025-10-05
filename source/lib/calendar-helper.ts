@@ -15,6 +15,15 @@ export function getUrlFromContext(ctx: MyContext): string {
 	return getUrl(ctx.from!.id, ctx.userconfig.mine);
 }
 
+export function getEventNameFromContext(ctx: MyContext, eventId: string): string {
+	const name = ctx.userconfig.mine.events[eventId]?.name;
+	if (name === undefined) {
+		throw new Error('Konnte Veranstaltungsnamen nicht finden');
+	}
+
+	return name;
+}
+
 export function formatDateToHumanReadable(isoDateString: string): string {
 	const date = new Date(Date.parse(isoDateString + 'Z'));
 	return date.toLocaleString('de-DE', {
