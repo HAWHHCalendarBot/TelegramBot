@@ -1,6 +1,7 @@
 botfather-settings/userpic.png
 
 # node
+.env
 dist
 node_modules
 

@@ -8,7 +8,7 @@
 		"url": "https://github.com/HAWHHCalendarBot/telegrambot.git"
 	},
 	"scripts": {
-		"start": "tsc && node --enable-source-maps dist/hawhh-calendarbot-telegrambot.js",
+		"start": "tsc && node --env-file-if-exists=.env --enable-source-maps dist/TelegramBot.js",
 		"test": "tsc && xo && node --enable-source-maps --test"
 	},
 	"type": "module",
