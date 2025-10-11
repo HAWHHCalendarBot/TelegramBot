@@ -20,9 +20,9 @@ import * as changeDetails from '../details.ts';
 import {createDatePickerButtons} from './date-selector.ts';
 import {createTimeSelectionSubmenuButtons} from './time-selector.ts';
 
-function changesOfEvent(ctx: MyContext, name: string) {
+function changesOfEvent(ctx: MyContext, eventId: string) {
 	const allChanges = ctx.userconfig.mine.changes;
-	return allChanges.filter(o => o.name === name);
+	return allChanges.filter(o => o.eventId === eventId);
 }
 
 export const bot = new Composer<MyContext>();
@@ -30,15 +30,15 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 	ctx.session.generateChange ??= {};
 
 	if (ctx.match) {
-		ctx.session.generateChange.name = ctx.match[1]!.replaceAll(';', '/');
+		ctx.session.generateChange.eventId = ctx.match[1]!;
 	}
 
-	const {name, date, add} = ctx.session.generateChange;
+	const {eventId, date, add} = ctx.session.generateChange;
 	let text = '';
 
 	if (!date) {
 		text = 'Zu welchem Termin willst du eine Änderung hinzufügen?';
-		const changes = changesOfEvent(ctx, name!);
+		const changes = changesOfEvent(ctx, eventId!);
 		if (changes.length > 0) {
 			text
 				+= '\n\nFolgende Termine habe bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.';
@@ -54,7 +54,7 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 	}
 
 	if (date) {
-		text = generateChangeText(ctx.session.generateChange as Change);
+		text = generateChangeText(ctx, ctx.session.generateChange as Change);
 		text += add
 			? '\nSpezifiziere den zusätzlichen Termin.'
 			: '\nWelche Art von Änderung willst du vornehmen?';
@@ -64,23 +64,23 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 });
 
 function hidePickDateStep(ctx: MyContext): boolean {
-	const {name, date} = ctx.session.generateChange ?? {};
-	return !name || Boolean(date);
+	const {eventId, date} = ctx.session.generateChange ?? {};
+	return !eventId || Boolean(date);
 }
 
 function hideGenerateChangeStep(ctx: MyContext): boolean {
-	const {name, date} = ctx.session.generateChange ?? {};
-	return !name || !date;
+	const {eventId, date} = ctx.session.generateChange ?? {};
+	return !eventId || !date;
 }
 
 function hideGenerateAddStep(ctx: MyContext): boolean {
-	const {name, date, add} = ctx.session.generateChange ?? {};
-	return !name || !date || !add;
+	const {eventId, date, add} = ctx.session.generateChange ?? {};
+	return !eventId || !date || !add;
 }
 
 function generationDataIsValid(ctx: MyContext): boolean {
 	const keys = Object.keys(ctx.session.generateChange ?? []);
-	// Required (2): name and date
+	// Required (2): eventId and date
 	// There have to be other changes than that in order to do something.
 	return keys.length > 2;
 }
@@ -106,15 +106,15 @@ menu.choose('date', {
 	columns: 2,
 	hide: hidePickDateStep,
 	async choices(ctx) {
-		const name = ctx.match![1]!.replaceAll(';', '/');
+		const eventId = ctx.match![1]!;
 		const {date} = ctx.session.generateChange ?? {};
 		if (date) {
 			// Date already selected
 			return {};
 		}
 
-		const existingChangeDates = new Set(changesOfEvent(ctx, name).map(o => o.date));
-		const events = await loadEvents(name);
+		const existingChangeDates = new Set(changesOfEvent(ctx, eventId).map(o => o.date));
+		const events = await loadEvents(eventId);
 		const dates = events
 			.map(o => o.StartTime)
 			.map(o => formatDateToStoredChangeDate(o))
@@ -224,7 +224,7 @@ menu.interact('finish', {
 
 async function finish(ctx: MyContext): Promise<string | boolean> {
 	const change = ctx.session.generateChange!;
-	change.name = ctx.match![1]!.replaceAll(';', '/');
+	change.eventId = ctx.match![1]!;
 
 	if (change.add) {
 		const date = new Date(Date.parse(change.date!));
@@ -237,9 +237,9 @@ async function finish(ctx: MyContext): Promise<string | boolean> {
 
 	ctx.userconfig.mine.changes ??= [];
 
-	const {name, date} = change;
+	const {eventId, date} = change;
 	const alreadyExists = ctx.userconfig.mine.changes.some(o =>
-		o.name === name && o.date === date);
+		o.eventId === eventId && o.date === date);
 	if (alreadyExists) {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change

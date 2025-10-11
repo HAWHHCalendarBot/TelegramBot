@@ -2,12 +2,14 @@ import {readFile} from 'node:fs/promises';
 import {html as format} from 'telegram-format';
 import {
 	formatDateToHumanReadable,
+	getEventNameFromContext,
 	parseDateTimeToDate,
 } from './calendar-helper.ts';
 import type {
 	Change,
 	EventEntryFileContent,
 	EventEntryInternal,
+	MyContext,
 } from './types.ts';
 
 export function generateChangeDescription(change: Change): string {
@@ -35,8 +37,8 @@ export function generateChangeDescription(change: Change): string {
 	return text;
 }
 
-export function generateChangeText(change: Change): string {
-	let text = generateChangeTextHeader(change);
+export function generateChangeText(ctx: MyContext, change: Change): string {
+	let text = generateChangeTextHeader(ctx, change);
 
 	if (Object.keys(change).length > 2) {
 		text += '\nÄnderungen:\n';
@@ -46,11 +48,11 @@ export function generateChangeText(change: Change): string {
 	return text;
 }
 
-export function generateChangeTextHeader(change: Change): string {
+export function generateChangeTextHeader(ctx: MyContext, change: Change): string {
 	let text = '';
 	text += format.bold('Veranstaltungsänderung');
 	text += '\n';
-	text += format.bold(format.escape(change.name));
+	text += format.bold(format.escape(getEventNameFromContext(ctx, change.eventId)));
 	if (change.date) {
 		text += ` ${formatDateToHumanReadable(change.date)}`;
 	}
@@ -59,14 +61,13 @@ export function generateChangeTextHeader(change: Change): string {
 	return text;
 }
 
-export function generateShortChangeText(change: Change): string {
-	return `${change.name} ${formatDateToHumanReadable(change.date)}`;
+export function generateShortChangeText(ctx: MyContext, change: Change): string {
+	return `${getEventNameFromContext(ctx, change.eventId)} ${formatDateToHumanReadable(change.date)}`;
 }
 
-export async function loadEvents(eventname: string): Promise<EventEntryInternal[]> {
+export async function loadEvents(eventId: string): Promise<EventEntryInternal[]> {
 	try {
-		const filename = eventname.replaceAll('/', '-');
-		const content = await readFile(`eventfiles/${filename}.json`, 'utf8');
+		const content = await readFile(`eventfiles/${eventId}.json`, 'utf8');
 		const array = JSON.parse(content) as EventEntryFileContent[];
 		const parsed = array.map((o): EventEntryInternal => ({
 			...o,

@@ -4,28 +4,31 @@ import {html as format} from 'telegram-format';
 import * as allEvents from '../../lib/all-events.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {MyContext} from '../../lib/types.ts';
+import {getEventNameFromContext} from '../../lib/calendar-helper.ts';
 import * as addMenu from './add.ts';
 import * as detailsMenu from './details.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async ctx => {
+	delete ctx.session.eventPath;
+
 	let text = format.bold('Veranstaltungen');
 	text += '\n\n';
 
-	const events = Object.keys(ctx.userconfig.mine.events);
-	events.sort();
-	if (events.length > 0) {
-		const nonExisting = new Set(await allEvents.nonExisting(events));
+	const eventIds = Object.keys(ctx.userconfig.mine.events);
+	eventIds.sort();
+	if (eventIds.length > 0) {
+		const nonExisting = new Set(await allEvents.nonExisting(eventIds));
 		text += 'Du hast folgende Veranstaltungen im Kalender:';
 		text += '\n';
-		text += events
+		text += eventIds
 			.map(o => {
 				let line = '- ';
 				if (nonExisting.has(o)) {
 					line += '⚠️ ';
 				}
 
-				line += format.escape(o);
+				line += format.escape(getEventNameFromContext(ctx, o));
 				return line;
 			})
 			.join('\n');
@@ -64,14 +67,14 @@ menu.interact('remove-old', {
 	},
 	async do(ctx) {
 		const nonExisting = new Set(await allEvents.nonExisting(Object.keys(ctx.userconfig.mine.events)));
-		for (const name of nonExisting) {
+		for (const eventId of nonExisting) {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete ctx.userconfig.mine.events[name];
+			delete ctx.userconfig.mine.events[eventId];
 		}
 
 		// Only keep changes of events the user still has
 		ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
-			Object.keys(ctx.userconfig.mine.events).includes(o.name));
+			Object.keys(ctx.userconfig.mine.events).includes(o.eventId));
 
 		return true;
 	},
@@ -85,10 +88,10 @@ menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 		const {changes} = ctx.userconfig.mine;
 		const result: Record<string, string> = {};
 
-		for (const [name, details] of Object.entries(ctx.userconfig.mine.events)) {
-			let title = name + ' ';
+		for (const [eventId, details] of Object.entries(ctx.userconfig.mine.events)) {
+			let title = details.name + ' ';
 
-			if (changes.some(o => o.name === name)) {
+			if (changes.some(o => o.eventId === eventId)) {
 				title += '✏️';
 			}
 
@@ -100,7 +103,7 @@ menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 				title += '🗒';
 			}
 
-			result[name.replaceAll('/', ';')] = title.trim();
+			result[eventId] = title.trim();
 		}
 
 		return result;

@@ -11,11 +11,11 @@ export function generateChangeAction(change: Change): string {
 }
 
 function getChangeFromContext(ctx: MyContext): Change | undefined {
-	const name = ctx.match![1]!.replaceAll(';', '/');
+	const eventId = ctx.match![1]!;
 	const date = ctx.match![2]!;
 
 	return ctx.userconfig.mine.changes.find(c =>
-		c.name === name && c.date === date);
+		c.eventId === eventId && c.date === date);
 }
 
 export const menu = new MenuTemplate<MyContext>(ctx => {
@@ -24,13 +24,13 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 		return 'Change does not exist anymore';
 	}
 
-	const text = generateChangeText(change);
+	const text = generateChangeText(ctx, change);
 	return {text, parse_mode: 'HTML'};
 });
 
 menu.switchToChat({
 	text: 'Teilen…',
-	query: ctx => generateShortChangeText(getChangeFromContext(ctx)!),
+	query: ctx => generateShortChangeText(ctx, getChangeFromContext(ctx)!),
 	hide(ctx) {
 		const change = getChangeFromContext(ctx);
 		return !change;
@@ -41,7 +41,7 @@ menu.interact('r', {
 	async do(ctx) {
 		const change = getChangeFromContext(ctx);
 		ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
-			o.name !== change?.name || o.date !== change?.date);
+			o.eventId !== change?.eventId || o.date !== change?.date);
 		await ctx.answerCallbackQuery('Änderung wurde entfernt.');
 		return '..';
 	},

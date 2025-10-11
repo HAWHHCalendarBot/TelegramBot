@@ -1,7 +1,7 @@
 import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {formatDateToHumanReadable} from '../../../lib/calendar-helper.ts';
+import {formatDateToHumanReadable, getEventNameFromContext} from '../../../lib/calendar-helper.ts';
 import {backMainButtons} from '../../../lib/inline-menu.ts';
 import type {MyContext} from '../../../lib/types.ts';
 import * as changeAdd from './add/index.ts';
@@ -9,12 +9,12 @@ import * as changeDetails from './details.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(ctx => {
-	const event = ctx.match![1]!.replaceAll(';', '/');
+	const eventId = ctx.match![1]!;
 
 	let text = '';
 	text += format.bold('Veranstaltungsänderungen');
 	text += '\n';
-	text += format.escape(event);
+	text += format.escape(getEventNameFromContext(ctx, eventId));
 	text += '\n\n';
 	text += format.escape(ctx.t('changes-help'));
 
@@ -28,8 +28,8 @@ menu.submenu('a', changeAdd.menu, {text: '➕ Änderung hinzufügen'});
 menu.chooseIntoSubmenu('d', changeDetails.menu, {
 	columns: 1,
 	choices(ctx) {
-		const event = ctx.match![1]!.replaceAll(';', '/');
-		const changes = ctx.userconfig.mine.changes.filter(o => o.name === event);
+		const event = ctx.match![1]!;
+		const changes = ctx.userconfig.mine.changes.filter(o => o.eventId === event);
 		return Object.fromEntries(changes.map(change => [
 			changeDetails.generateChangeAction(change),
 			formatDateToHumanReadable(change.date),

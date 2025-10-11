@@ -1,6 +1,6 @@
 import {Composer} from 'grammy';
 import {getCanteenList} from './lib/mensa-meals.ts';
-import type {EventDetails, MyContext} from './lib/types.ts';
+import type {MyContext} from './lib/types.ts';
 
 export const bot = new Composer<MyContext>();
 
@@ -13,14 +13,20 @@ bot.use(async (ctx, next) => {
 	ctx.userconfig.mine.changes ??= [];
 	ctx.userconfig.mine.events ??= {};
 
+	// Delete events in old format, since there is no practical way to match them to the myHAW ids
 	if (Array.isArray(ctx.userconfig.mine.events)) {
-		const array = ctx.userconfig.mine.events as string[];
-		const map: Record<string, EventDetails> = {};
-		for (const name of array) {
-			map[name] = {};
+		ctx.userconfig.mine.events = {};
+	} else {
+		for (const [maybeEventId, eventDetails] of Object.entries(ctx.userconfig.mine.events)) {
+			if (!('name' in eventDetails)) {
+				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+				delete ctx.userconfig.mine.events[maybeEventId];
+				const changeIndex = ctx.userconfig.mine.changes.findIndex(change => (change as any).name === maybeEventId);
+				if (changeIndex !== -1) {
+					ctx.userconfig.mine.changes.splice(changeIndex, 1);
+				}
+			}
 		}
-
-		ctx.userconfig.mine.events = map;
 	}
 
 	if (
