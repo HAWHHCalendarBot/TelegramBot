@@ -2,15 +2,7 @@ help =
   Dieser Bot hilft dir bei deinem Vorlesungskalender.
   Trage unter /events deine Vorlesungen ein, die du dieses Semester besuchen wirst. Daraus wird ein Kalender für dich generiert, den du mit deinen Geräten abbonieren kannst. Anleitungen für dein Gerät gibts unter /subscribe.
 
-  Wenn Veranstaltungen ausfallen oder sich ändern kannst du diese zur jeweiligen Veranstaltung ebenfalls unter /events eintragen. Diese Änderungen werden dann automatisch mit in deinen Kalender übernommen. Außerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.
-
   Unter /mensa gibts die Hamburger Mensen zur Auswahl, mittels /about findest du Statistiken über diesen Bot und unter /privacy kannst du die über dich gespeicherten Daten einsehen.
-
-changes-help =
-  Wenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen. Dein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.
-  Außerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.
-
-  ⚠️ Du bist in der Lage, unlogische Veranstaltungstermine zu kreieren. Beispielsweise kannst du einen Termin so verändern, dass dieser aufhört bevor er beginnt. Den Bot interessiert das nicht und tut nur genau das, was du sagst. Dein Kalenderprogramm ist damit dann allerdings häufig nicht so glücklich…
 
 website-stalker-help =
   Der website-stalker prüft regelmäßig auf Änderungen an relevanten Webseiten.

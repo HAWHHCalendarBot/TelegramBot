@@ -10,9 +10,7 @@ bot.use(async (ctx, next) => {
 		ctx.userconfig.mine.calendarfileSuffix = String(fromTime);
 	}
 
-	ctx.userconfig.mine.changes ??= [];
 	ctx.userconfig.mine.events ??= {};
-
 	if (Array.isArray(ctx.userconfig.mine.events)) {
 		const array = ctx.userconfig.mine.events as string[];
 		const map: Record<string, EventDetails> = {};
@@ -50,6 +48,7 @@ bot.use(async (ctx, next) => {
 	}
 
 	delete (ctx as any).userconfig.mine.additionalEvents;
+	delete (ctx as any).userconfig.mine.changes;
 	delete (ctx as any).userconfig.mine.mensa.student;
 	delete (ctx as any).userconfig.mine.settings;
 	delete (ctx as any).userconfig.mine.showRemovedEvents;

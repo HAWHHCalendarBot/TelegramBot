@@ -27,17 +27,3 @@ export function formatDateToHumanReadable(isoDateString: string): string {
 		minute: '2-digit',
 	});
 }
-
-export function formatDateToStoredChangeDate(date: Readonly<Date>): string {
-	return date.toISOString().replace(/:\d{2}.\d{3}Z$/, '');
-}
-
-export function parseDateTimeToDate(dateTime: string): Date {
-	if (dateTime.includes('(')) {
-		const unixTime = Number(/(\d+)\+/.exec(dateTime)![1]);
-		const date = new Date(unixTime);
-		return date;
-	}
-
-	return new Date(Date.parse(dateTime));
-}

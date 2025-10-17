@@ -7,7 +7,6 @@ import {Chatconfig} from './lib/chatconfig.ts';
 import type {MyContext, Session} from './lib/types.ts';
 import {bot as menu} from './menu/index.ts';
 import {bot as migrateStuffBot} from './migrate-stuff.ts';
-import * as changesInline from './parts/changes-inline.ts';
 import * as easterEggs from './parts/easter-eggs.ts';
 
 const token = env['BOT_TOKEN'];
@@ -93,7 +92,6 @@ bot.use(chatconfig);
 
 bot.use(migrateStuffBot);
 
-bot.use(changesInline.bot);
 bot.use(easterEggs.bot);
 
 bot.use(menu);

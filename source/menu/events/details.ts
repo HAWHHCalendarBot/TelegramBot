@@ -9,7 +9,6 @@ import {
 import {html as format} from 'telegram-format';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {MyContext} from '../../lib/types.ts';
-import * as changesMenu from './changes/index.ts';
 
 function getNameFromPath(path: string): string {
 	const match = /\/d:([^/]+)\//.exec(path)!;
@@ -17,27 +16,15 @@ function getNameFromPath(path: string): string {
 }
 
 export const bot = new Composer<MyContext>();
-bot.use(changesMenu.bot);
 
 export const menu = new MenuTemplate<MyContext>((ctx, path) => {
 	const name = getNameFromPath(path);
 	const event = ctx.userconfig.mine.events[name]!;
-	const changes = ctx.userconfig.mine.changes.filter(o =>
-		o.name === name).length;
 
 	let text = format.bold('Veranstaltung');
 	text += '\n';
 	text += name;
 	text += '\n';
-
-	if (changes > 0) {
-		text += '\n';
-		text += '✏️';
-		text += 'Änderungen';
-		text += ': ';
-		text += String(changes);
-		text += '\n';
-	}
 
 	if (event.alertMinutesBefore !== undefined) {
 		text += '\n';
@@ -62,11 +49,6 @@ export const menu = new MenuTemplate<MyContext>((ctx, path) => {
 		parse_mode: format.parse_mode,
 		text,
 	};
-});
-
-menu.submenu('c', changesMenu.menu, {
-	text: '✏️ Änderungen',
-	hide: ctx => Object.keys(ctx.userconfig.mine.events).length === 0,
 });
 
 const alertMenu = new MenuTemplate<MyContext>((_, path) => {
@@ -168,10 +150,6 @@ removeMenu.interact('y', {
 		const event = ctx.match![1]!.replaceAll(';', '/');
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		delete ctx.userconfig.mine.events[event];
-
-		// Only keep changes of events the user still has
-		ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
-			Object.keys(ctx.userconfig.mine.events).includes(o.name));
 
 		await ctx.answerCallbackQuery(`${event} wurde aus deinem Kalender entfernt.`);
 		return true;

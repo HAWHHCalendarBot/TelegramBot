@@ -19,7 +19,6 @@ export type Session = {
 	adminuserquicklook?: number; // User ID
 	adminuserquicklookfilter?: string;
 	eventfilter?: string;
-	generateChange?: Partial<Change>;
 	page?: number;
 	privacySection?: 'telegram' | 'persistent' | 'tmp';
 	mensa?: {
@@ -31,7 +30,6 @@ export type Session = {
 export type Userconfig = {
 	readonly admin?: true;
 	calendarfileSuffix: string;
-	changes: Change[];
 	events: Record<string, EventDetails>;
 	mensa: MensaSettings;
 	removedEvents?: RemovedEventsDisplayStyle;
@@ -46,17 +44,6 @@ export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji';
 export type EventDetails = {
 	alertMinutesBefore?: number;
 	notes?: string;
-};
-
-export type Change = {
-	add?: true;
-	name: string;
-	date: string;
-	remove?: true;
-	namesuffix?: string;
-	starttime?: string;
-	endtime?: string;
-	room?: string;
 };
 
 export type MensaPriceClass = 'student' | 'attendant' | 'guest';
