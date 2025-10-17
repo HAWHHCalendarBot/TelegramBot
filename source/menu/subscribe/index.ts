@@ -55,6 +55,7 @@ menu.submenu('freestyle', freestyleMenu, {text: 'Freestyle 😎'});
 menu.submenu('suffix', suffixMenu.menu, {text: '⚙️ URL Privacy'});
 menu.submenu('showRemoved', removedStyleMenu, {
 	text: '⚙️ Anzeigeart entfernter Termine',
+	hide: () => true, // Changes are currently not possible to create
 });
 
 function generateBody(resourceKeySuffix: string): (ctx: MyContext) => Body {
