@@ -6,18 +6,13 @@ help =
 
   Unter /mensa gibts die Hamburger Mensen zur Auswahl, mittels /about findest du Statistiken über diesen Bot und unter /privacy kannst du die über dich gespeicherten Daten einsehen.
 
+  Änderungen auf relevanten Webseiten der HAW waren früher mal Teil dieses Bots und sind nun im eigenen Telegram Kanal @HAWHHWebsiteStalker. Alternativ kannst du die Änderungen auch als RSS-Feed mit deinem Feedreader abonnieren. Abonniere dazu folgende URL: https://github.com/HAWHHCalendarBot/study-website-stalker/commits/main.atom
+
 changes-help =
   Wenn sich eine Änderung an einer Veranstaltung ergibt, die nicht in den offiziellen Veranstaltungsplan eingetragen wird, kannst du diese hier nachtragen. Dein Kalender wird dann automatisch aktualisiert und du hast die Änderung in deinem Kalender.
   Außerdem lassen sich die Änderungen teilen, sodass du auch anderen Leuten diese Änderung bereitstellen kannst.
 
   ⚠️ Du bist in der Lage, unlogische Veranstaltungstermine zu kreieren. Beispielsweise kannst du einen Termin so verändern, dass dieser aufhört bevor er beginnt. Den Bot interessiert das nicht und tut nur genau das, was du sagst. Dein Kalenderprogramm ist damit dann allerdings häufig nicht so glücklich…
-
-website-stalker-help =
-  Der website-stalker prüft regelmäßig auf Änderungen an relevanten Webseiten.
-
-  Hier wird beispielsweise StISys auf Änderungen betrachtet und wenn sich etwas ändert, kannst du direkt benachrichtigt werden. Folge dazu dem Telegram Kanal @HAWHHWebsiteStalker.
-
-  Alternativ kannst du die Änderungen auch als RSS-Feed mit deinem Feedreader abonnieren. Abonniere dazu folgende URL: https://github.com/HAWHHCalendarBot/study-website-stalker/commits/main.atom
 
 privacy-overview =
   Auf dem Server wird geloggt, wenn Aktionen von Nutzern zu einem neu Bauen von Kalendern oder ungewollten Fehlern führen. Diese Logs werden nicht persistent gespeichert und sind nur bis zum Neustart des Servers verfügbar.
