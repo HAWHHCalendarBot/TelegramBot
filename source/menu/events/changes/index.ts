@@ -1,7 +1,6 @@
 import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {formatDateToHumanReadable} from '../../../lib/calendar-helper.ts';
 import {backMainButtons} from '../../../lib/inline-menu.ts';
 import type {MyContext} from '../../../lib/types.ts';
 import * as changeAdd from './add/index.ts';
@@ -29,11 +28,7 @@ menu.chooseIntoSubmenu('d', changeDetails.menu, {
 	columns: 1,
 	choices(ctx) {
 		const event = ctx.match![1]!.replaceAll(';', '/');
-		const changes = ctx.userconfig.mine.changes.filter(o => o.name === event);
-		return Object.fromEntries(changes.map(change => [
-			changeDetails.generateChangeAction(change),
-			formatDateToHumanReadable(change.date),
-		]));
+		return Object.keys(ctx.userconfig.mine.events[event]?.changes ?? {});
 	},
 	getCurrentPage: ctx => ctx.session.page,
 	setPage(ctx, page) {

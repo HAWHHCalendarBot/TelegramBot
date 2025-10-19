@@ -1,14 +1,6 @@
 import {readFile} from 'node:fs/promises';
 import {html as format} from 'telegram-format';
-import {
-	formatDateToHumanReadable,
-	parseDateTimeToDate,
-} from './calendar-helper.ts';
-import type {
-	Change,
-	EventEntryFileContent,
-	EventEntryInternal,
-} from './types.ts';
+import type {Change, EventEntry, NaiveDateTime} from './types.ts';
 
 export function generateChangeDescription(change: Change): string {
 	let text = '';
@@ -35,8 +27,12 @@ export function generateChangeDescription(change: Change): string {
 	return text;
 }
 
-export function generateChangeText(change: Change): string {
-	let text = generateChangeTextHeader(change);
+export function generateChangeText(
+	name: string,
+	date: NaiveDateTime | undefined,
+	change: Change,
+): string {
+	let text = generateChangeTextHeader(name, date);
 
 	if (Object.keys(change).length > 2) {
 		text += '\nÄnderungen:\n';
@@ -46,35 +42,34 @@ export function generateChangeText(change: Change): string {
 	return text;
 }
 
-export function generateChangeTextHeader(change: Change): string {
+export function generateChangeTextHeader(
+	name: string,
+	date: NaiveDateTime | undefined,
+): string {
 	let text = '';
 	text += format.bold('Veranstaltungsänderung');
 	text += '\n';
-	text += format.bold(format.escape(change.name));
-	if (change.date) {
-		text += ` ${formatDateToHumanReadable(change.date)}`;
+	text += format.bold(format.escape(name));
+	if (date) {
+		text += ` ${date}`;
 	}
 
 	text += '\n';
 	return text;
 }
 
-export function generateShortChangeText(change: Change): string {
-	return `${change.name} ${formatDateToHumanReadable(change.date)}`;
+export function generateShortChangeText(
+	name: string,
+	date: NaiveDateTime,
+): string {
+	return `${name} ${date}`;
 }
 
-export async function loadEvents(eventname: string): Promise<EventEntryInternal[]> {
+export async function loadEvents(eventname: string): Promise<EventEntry[]> {
 	try {
 		const filename = eventname.replaceAll('/', '-');
 		const content = await readFile(`eventfiles/${filename}.json`, 'utf8');
-		const array = JSON.parse(content) as EventEntryFileContent[];
-		const parsed = array.map((o): EventEntryInternal => ({
-			...o,
-			StartTime: parseDateTimeToDate(o.StartTime),
-			EndTime: parseDateTimeToDate(o.EndTime),
-		}));
-
-		return parsed;
+		return JSON.parse(content) as EventEntry[];
 	} catch (error) {
 		console.error('ERROR while loading events for change date picker', error);
 		return [];

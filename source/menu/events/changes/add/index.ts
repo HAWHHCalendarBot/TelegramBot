@@ -8,122 +8,101 @@ import {
 	replyMenuToContext,
 } from 'grammy-inline-menu';
 import {
-	formatDateToHumanReadable,
-	formatDateToStoredChangeDate,
-} from '../../../../lib/calendar-helper.ts';
-import {
 	generateChangeText,
 	loadEvents,
 } from '../../../../lib/change-helper.ts';
-import type {Change, MyContext} from '../../../../lib/types.ts';
-import * as changeDetails from '../details.ts';
-import {createDatePickerButtons} from './date-selector.ts';
+import type {
+	Change,
+	MyContext,
+	NaiveDateTime,
+} from '../../../../lib/types.ts';
 import {createTimeSelectionSubmenuButtons} from './time-selector.ts';
-
-function changesOfEvent(ctx: MyContext, name: string) {
-	const allChanges = ctx.userconfig.mine.changes;
-	return allChanges.filter(o => o.name === name);
-}
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(ctx => {
 	ctx.session.generateChange ??= {};
 
 	if (ctx.match) {
-		ctx.session.generateChange.name = ctx.match[1]!.replaceAll(';', '/');
+		ctx.session.generateChangeName = ctx.match[1]!.replaceAll(';', '/');
 	}
 
-	const {name, date, add} = ctx.session.generateChange;
+	if (!ctx.session.generateChangeName) {
+		throw new Error('Something fishy');
+	}
+
+	const name = ctx.session.generateChangeName;
 	let text = '';
 
-	if (!date) {
+	if (!ctx.session.generateChangeDate) {
 		text = 'Zu welchem Termin willst du eine Änderung hinzufügen?';
-		const changes = changesOfEvent(ctx, name!);
-		if (changes.length > 0) {
+		const changeDates = Object.keys(ctx.userconfig.mine.events[name]?.changes ?? {});
+
+		if (changeDates.length > 0) {
 			text
 				+= '\n\nFolgende Termine habe bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.';
 			text += '\n';
 
-			const dates = changes.map(o => o.date);
-			dates.sort();
-			text += dates
-				.map(o => formatDateToHumanReadable(o))
-				.map(o => `- ${o}`)
-				.join('\n');
+			changeDates.sort();
+			text += changeDates.map(o => `- ${o}`).join('\n');
 		}
 	}
 
-	if (date) {
-		text = generateChangeText(ctx.session.generateChange as Change);
-		text += add
-			? '\nSpezifiziere den zusätzlichen Termin.'
-			: '\nWelche Art von Änderung willst du vornehmen?';
+	if (ctx.session.generateChangeName && ctx.session.generateChangeDate) {
+		text = generateChangeText(
+			ctx.session.generateChangeName,
+			ctx.session.generateChangeDate,
+			ctx.session.generateChange as Change,
+		);
+		text += '\nWelche Art von Änderung willst du vornehmen?';
 	}
 
 	return {text, parse_mode: 'HTML'};
 });
 
 function hidePickDateStep(ctx: MyContext): boolean {
-	const {name, date} = ctx.session.generateChange ?? {};
+	const name = ctx.session.generateChangeName;
+	const date = ctx.session.generateChangeDate;
 	return !name || Boolean(date);
 }
 
 function hideGenerateChangeStep(ctx: MyContext): boolean {
-	const {name, date} = ctx.session.generateChange ?? {};
+	const name = ctx.session.generateChangeName;
+	const date = ctx.session.generateChangeDate;
 	return !name || !date;
 }
 
-function hideGenerateAddStep(ctx: MyContext): boolean {
-	const {name, date, add} = ctx.session.generateChange ?? {};
-	return !name || !date || !add;
-}
-
 function generationDataIsValid(ctx: MyContext): boolean {
-	const keys = Object.keys(ctx.session.generateChange ?? []);
-	// Required (2): name and date
-	// There have to be other changes than that in order to do something.
-	return keys.length > 2;
-}
+	const name = ctx.session.generateChangeName;
+	const date = ctx.session.generateChangeDate;
+	if (!name || !date) {
+		return false;
+	}
 
-menu.interact('new-date', {
-	text: '➕ Zusätzlicher Termin',
-	hide: hidePickDateStep,
-	do(ctx) {
-		// Set everything that has to be set to be valid.
-		// When the user dont like the data they can change it but they are not able to create invalid data.
-		ctx.session.generateChange!.add = true;
-		ctx.session.generateChange!.date = formatDateToStoredChangeDate(new Date());
-		ctx.session.generateChange!.starttime = new Date().toLocaleTimeString(
-			'de-DE',
-			{hour12: false, hour: '2-digit', minute: '2-digit'},
-		);
-		ctx.session.generateChange!.endtime = '23:45';
-		return true;
-	},
-});
+	const keys = Object.keys(ctx.session.generateChange ?? []);
+	// There have to some changes than that in order to do something.
+	return keys.length > 0;
+}
 
 menu.choose('date', {
 	columns: 2,
 	hide: hidePickDateStep,
 	async choices(ctx) {
 		const name = ctx.match![1]!.replaceAll(';', '/');
-		const {date} = ctx.session.generateChange ?? {};
-		if (date) {
+		if (ctx.session.generateChangeDate) {
 			// Date already selected
 			return {};
 		}
 
-		const existingChangeDates = new Set(changesOfEvent(ctx, name).map(o => o.date));
+		const existingChangeDates = new Set(Object.keys(ctx.userconfig.mine.events[name]?.changes ?? {}));
 		const events = await loadEvents(name);
 		const dates = events
 			.map(o => o.StartTime)
-			.map(o => formatDateToStoredChangeDate(o))
 			.filter(o => !existingChangeDates.has(o))
 			.filter(arrayFilterUnique());
-		return Object.fromEntries(dates.map(date => [date, formatDateToHumanReadable(date)]));
+		return dates;
 	},
 	do(ctx, key) {
-		ctx.session.generateChange!.date = key;
+		ctx.session.generateChangeDate = key as NaiveDateTime;
 		return true;
 	},
 	getCurrentPage: ctx => ctx.session.page,
@@ -146,8 +125,6 @@ menu.interact('remove', {
 		return Object.keys(ctx.session.generateChange!).length > 2;
 	},
 });
-
-createDatePickerButtons(menu, hideGenerateAddStep);
 
 createTimeSelectionSubmenuButtons(menu, hideGenerateChangeStep);
 
@@ -223,23 +200,14 @@ menu.interact('finish', {
 });
 
 async function finish(ctx: MyContext): Promise<string | boolean> {
+	const name = ctx.match![1]!.replaceAll(';', '/');
+	const date = ctx.session.generateChangeDate!;
 	const change = ctx.session.generateChange!;
-	change.name = ctx.match![1]!.replaceAll(';', '/');
 
-	if (change.add) {
-		const date = new Date(Date.parse(change.date!));
-		const [hour, minute] = change.starttime!.split(':').map(Number);
-		date.setHours(hour!);
-		date.setMinutes(minute!);
-		change.date = formatDateToStoredChangeDate(date);
-		delete change.starttime;
-	}
+	ctx.userconfig.mine.events[name] ??= {};
+	ctx.userconfig.mine.events[name].changes ??= {};
 
-	ctx.userconfig.mine.changes ??= [];
-
-	const {name, date} = change;
-	const alreadyExists = ctx.userconfig.mine.changes.some(o =>
-		o.name === name && o.date === date);
+	const alreadyExists = ctx.userconfig.mine.events[name].changes[date];
 	if (alreadyExists) {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
@@ -248,11 +216,10 @@ async function finish(ctx: MyContext): Promise<string | boolean> {
 		return true;
 	}
 
-	ctx.userconfig.mine.changes.push(change as Change);
+	ctx.userconfig.mine.events[name].changes[date] = change as Change;
 	delete ctx.session.generateChange;
 
-	const actionPart = changeDetails.generateChangeAction(change as Change);
-	return `../d:${actionPart}/`;
+	return `../d:${date}/`;
 }
 
 menu.interact('abort', {

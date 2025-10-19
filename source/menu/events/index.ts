@@ -69,10 +69,6 @@ menu.interact('remove-old', {
 			delete ctx.userconfig.mine.events[name];
 		}
 
-		// Only keep changes of events the user still has
-		ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
-			Object.keys(ctx.userconfig.mine.events).includes(o.name));
-
 		return true;
 	},
 });
@@ -82,13 +78,12 @@ menu.submenu('a', addMenu.menu, {text: '➕ Veranstaltung hinzufügen'});
 menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 	columns: 1,
 	choices(ctx) {
-		const {changes} = ctx.userconfig.mine;
 		const result: Record<string, string> = {};
 
 		for (const [name, details] of Object.entries(ctx.userconfig.mine.events)) {
 			let title = name + ' ';
 
-			if (changes.some(o => o.name === name)) {
+			if (Object.keys(details.changes ?? {}).length > 0) {
 				title += '✏️';
 			}
 

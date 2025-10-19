@@ -7,20 +7,22 @@ import {
 	generateChangeTextHeader,
 	generateShortChangeText,
 } from '../lib/change-helper.ts';
-import type {Change, MyContext} from '../lib/types.ts';
+import type {Change, MyContext, NaiveDateTime} from '../lib/types.ts';
 
 export const bot = new Composer<MyContext>();
 
 function generateInlineQueryResultFromChange(
+	name: string,
+	date: NaiveDateTime,
 	change: Change,
 	from: User,
 ): InlineQueryResultArticle {
-	const id = `${change.name}#${change.date}#${from.id}`;
+	const id = `${name}#${date}#${from.id}`;
 	return {
 		description: generateChangeDescription(change),
 		id,
 		input_message_content: {
-			message_text: generateChangeText(change),
+			message_text: generateChangeText(name, date, change),
 			parse_mode: format.parse_mode,
 		},
 		reply_markup: {
@@ -28,7 +30,7 @@ function generateInlineQueryResultFromChange(
 				[{text: 'zu meinem Kalender hinzufügen', callback_data: 'c:a:' + id}],
 			],
 		},
-		title: generateShortChangeText(change),
+		title: generateShortChangeText(name, date),
 		type: 'article',
 	};
 }
@@ -47,10 +49,19 @@ bot.on('inline_query', async ctx => {
 		'i',
 	);
 
-	const filtered = ctx.userconfig.mine.changes.filter(o =>
-		regex.test(generateShortChangeText(o)));
-	const results = filtered.map(c =>
-		generateInlineQueryResultFromChange(c, ctx.from));
+	const results: InlineQueryResultArticle[] = [];
+
+	for (const [event, details] of Object.entries(ctx.userconfig.mine.events)) {
+		for (const [dateKey, change] of Object.entries(details.changes ?? {})) {
+			const date = dateKey as NaiveDateTime;
+			const isMatched = regex.test(generateShortChangeText(event, date));
+			if (!isMatched) {
+				continue;
+			}
+
+			results.push(generateInlineQueryResultFromChange(event, date, change, ctx.from));
+		}
+	}
 
 	await ctx.answerInlineQuery(results, {
 		cache_time: 20,
@@ -64,14 +75,14 @@ bot.on('inline_query', async ctx => {
 
 type ChangeRelatedInfos = {
 	name: string;
-	date: string;
+	date: NaiveDateTime;
 	fromId: number;
 	change: Change;
 };
 
 async function getChangeFromContextMatch(ctx: MyContext): Promise<ChangeRelatedInfos | undefined> {
 	const name = ctx.match![1]!;
-	const date = ctx.match![2]!;
+	const date = ctx.match![2]! as NaiveDateTime;
 	const fromId = Number(ctx.match![3]!);
 
 	if (!Object.keys(ctx.userconfig.mine.events).includes(name)) {
@@ -81,8 +92,7 @@ async function getChangeFromContextMatch(ctx: MyContext): Promise<ChangeRelatedI
 
 	try {
 		const fromconfig = await ctx.userconfig.loadConfig(fromId);
-		const searchedChange = fromconfig.changes.find(o =>
-			o.name === name && o.date === date);
+		const searchedChange = fromconfig.events[name]?.changes?.[date];
 		if (!searchedChange) {
 			throw new Error('User does not have this change');
 		}
@@ -113,18 +123,15 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async ctx => {
 	}
 
 	// Prüfen ob man bereits eine Änderung mit dem Namen und dem Datum hat.
-	const myChangeToThisEvent = ctx.userconfig.mine.changes.filter(o =>
-		o.name === name && o.date === date);
+	const currentChange = ctx.userconfig.mine.events[name]?.changes?.[date];
 
-	if (myChangeToThisEvent.length > 0) {
+	if (currentChange) {
 		const warning
 			= '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.';
 		await ctx.answerCallbackQuery(warning);
 
-		const currentChange = myChangeToThisEvent[0]!;
-
 		let text = warning + '\n';
-		text += generateChangeTextHeader(currentChange);
+		text += generateChangeTextHeader(name, date);
 
 		text += '\nDiese Veränderung ist bereits in deinem Kalender:';
 		text += '\n' + format.escape(generateChangeDescription(currentChange));
@@ -149,7 +156,8 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async ctx => {
 		return;
 	}
 
-	ctx.userconfig.mine.changes.push(change);
+	ctx.userconfig.mine.events[name]!.changes ??= {};
+	ctx.userconfig.mine.events[name]!.changes[date] = change;
 	await ctx.answerCallbackQuery('Die Änderung wurde hinzugefügt');
 });
 
@@ -166,8 +174,7 @@ bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async ctx => {
 	}
 
 	const {name, date, change} = meta;
-	ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
-		o.name !== name || o.date !== date);
-	ctx.userconfig.mine.changes.push(change);
+	ctx.userconfig.mine.events[name]!.changes ??= {};
+	ctx.userconfig.mine.events[name]!.changes[date] = change;
 	return ctx.editMessageText('Die Änderung wurde hinzugefügt.');
 });

@@ -4,6 +4,10 @@ import type {ContextProperty} from './chatconfig.ts';
 
 export type OtherSendMessage = Parameters<Api['sendMessage']>[2];
 
+export type NaiveDate = `${number}-${number}-${number}`;
+export type NaiveTime = `${number}:${number}:${number}`;
+export type NaiveDateTime = `${NaiveDate}T${NaiveTime}`;
+
 type ContextFlavour = {
 	readonly userconfig: ContextProperty;
 };
@@ -19,6 +23,8 @@ export type Session = {
 	adminuserquicklook?: number; // User ID
 	adminuserquicklookfilter?: string;
 	eventfilter?: string;
+	generateChangeName?: string;
+	generateChangeDate?: NaiveDateTime;
 	generateChange?: Partial<Change>;
 	page?: number;
 	privacySection?: 'telegram' | 'persistent' | 'tmp';
@@ -31,7 +37,6 @@ export type Session = {
 export type Userconfig = {
 	readonly admin?: true;
 	calendarfileSuffix: string;
-	changes: Change[];
 	events: Record<string, EventDetails>;
 	mensa: MensaSettings;
 	removedEvents?: RemovedEventsDisplayStyle;
@@ -41,17 +46,15 @@ export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji';
 
 export type EventDetails = {
 	alertMinutesBefore?: number;
+	changes?: Record<NaiveDateTime, Change>;
 	notes?: string;
 };
 
 export type Change = {
-	add?: true;
-	name: string;
-	date: string;
 	remove?: true;
 	namesuffix?: string;
-	starttime?: string;
-	endtime?: string;
+	starttime?: NaiveTime;
+	endtime?: NaiveTime;
 	room?: string;
 };
 
@@ -79,18 +82,10 @@ export type MensaSettings = MealWishes & {
 	showAdditives?: boolean;
 };
 
-export type EventEntryFileContent = {
+export type EventEntry = {
 	readonly Name: string;
 	readonly Location: string;
 	readonly Description: string;
-	readonly StartTime: string;
-	readonly EndTime: string;
-};
-
-export type EventEntryInternal = {
-	readonly Name: string;
-	readonly Location: string;
-	readonly Description: string;
-	readonly StartTime: Date;
-	readonly EndTime: Date;
+	readonly StartTime: NaiveDateTime;
+	readonly EndTime: NaiveDateTime;
 };

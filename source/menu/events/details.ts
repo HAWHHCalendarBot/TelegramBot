@@ -22,8 +22,7 @@ bot.use(changesMenu.bot);
 export const menu = new MenuTemplate<MyContext>((ctx, path) => {
 	const name = getNameFromPath(path);
 	const event = ctx.userconfig.mine.events[name]!;
-	const changes = ctx.userconfig.mine.changes.filter(o =>
-		o.name === name).length;
+	const changes = Object.keys(event.changes ?? {}).length;
 
 	let text = format.bold('Veranstaltung');
 	text += '\n';
@@ -168,10 +167,6 @@ removeMenu.interact('y', {
 		const event = ctx.match![1]!.replaceAll(';', '/');
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		delete ctx.userconfig.mine.events[event];
-
-		// Only keep changes of events the user still has
-		ctx.userconfig.mine.changes = ctx.userconfig.mine.changes.filter(o =>
-			Object.keys(ctx.userconfig.mine.events).includes(o.name));
 
 		await ctx.answerCallbackQuery(`${event} wurde aus deinem Kalender entfernt.`);
 		return true;

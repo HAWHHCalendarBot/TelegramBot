@@ -183,7 +183,6 @@ export class Chatconfig {
 	private configFromWholeConfig(content: ChatConfigFileContent | undefined): Userconfig {
 		const config: Userconfig = content?.config ?? {
 			calendarfileSuffix: '',
-			changes: [],
 			events: {},
 			mensa: {},
 		};

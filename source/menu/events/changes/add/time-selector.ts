@@ -4,7 +4,7 @@ import {
 	MINUTE_OPTIONS,
 } from '../../../../lib/event-creation-menu-options.ts';
 import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.ts';
-import type {MyContext} from '../../../../lib/types.ts';
+import type {MyContext, NaiveTime} from '../../../../lib/types.ts';
 
 export function createTimeSelectionSubmenuButtons(
 	menu: MenuTemplate<MyContext>,
@@ -62,8 +62,9 @@ function createTimeSelectionSubmenuButton(
 	subMenu.navigate('..', {text: BACK_BUTTON_TEXT});
 }
 
-function formatTime(hour: number | string, minute: number | string): string {
-	return numberToTwoDigit(hour) + ':' + numberToTwoDigit(minute);
+function formatTime(hour: number | string, minute: number | string): NaiveTime {
+	const result = numberToTwoDigit(hour) + ':' + numberToTwoDigit(minute);
+	return (result + ':00') as NaiveTime;
 }
 
 function numberToTwoDigit(number: number | string): string {
