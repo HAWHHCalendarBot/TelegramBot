@@ -7,7 +7,7 @@ async function getAll(): Promise<EventDirectory[]> {
 }
 
 export async function count(): Promise<number> {
-	const allEvents = (await find('', [], []));
+	const allEvents = await find('', [], []);
 	return allEvents.length;
 }
 
