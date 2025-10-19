@@ -1,6 +1,6 @@
 import {Composer} from 'grammy';
 import {getCanteenList} from './lib/mensa-meals.ts';
-import type {EventDetails, MyContext} from './lib/types.ts';
+import type {MyContext} from './lib/types.ts';
 
 export const bot = new Composer<MyContext>();
 
@@ -12,13 +12,7 @@ bot.use(async (ctx, next) => {
 
 	ctx.userconfig.mine.events ??= {};
 	if (Array.isArray(ctx.userconfig.mine.events)) {
-		const array = ctx.userconfig.mine.events as string[];
-		const map: Record<string, EventDetails> = {};
-		for (const name of array) {
-			map[name] = {};
-		}
-
-		ctx.userconfig.mine.events = map;
+		ctx.userconfig.mine.events = {};
 	}
 
 	ctx.userconfig.mine.mensa ??= {};
