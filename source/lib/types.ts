@@ -19,6 +19,7 @@ export type Session = {
 	adminuserquicklook?: number; // User ID
 	adminuserquicklookfilter?: string;
 	eventfilter?: string;
+	eventPath?: number[]; // Path to the selected subdirectory
 	page?: number;
 	privacySection?: 'telegram' | 'persistent' | 'tmp';
 	mensa?: {
@@ -38,6 +39,7 @@ export type Userconfig = {
 export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji';
 
 export type EventDetails = {
+	name: string;
 	alertMinutesBefore?: number;
 	notes?: string;
 };
@@ -64,6 +66,17 @@ export type MensaSettings = MealWishes & {
 	more?: readonly string[];
 	price?: MensaPriceClass;
 	showAdditives?: boolean;
+};
+
+export type EventDirectory = {
+	readonly Name: string;
+	readonly SubDirectories?: EventDirectory[];
+	readonly Events?: EventDirectoryEvent[];
+};
+
+export type EventDirectoryEvent = {
+	readonly Id: string;
+	readonly Name: string;
 };
 
 export type EventEntryFileContent = {

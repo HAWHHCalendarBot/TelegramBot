@@ -9,21 +9,22 @@ import {
 import {html as format} from 'telegram-format';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {MyContext} from '../../lib/types.ts';
+import {getEventNameFromContext} from '../../lib/calendar-helper.ts';
 
-function getNameFromPath(path: string): string {
+function getIdFromPath(path: string): string {
 	const match = /\/d:([^/]+)\//.exec(path)!;
-	return match[1]!.replaceAll(';', '/');
+	return match[1]!;
 }
 
 export const bot = new Composer<MyContext>();
 
 export const menu = new MenuTemplate<MyContext>((ctx, path) => {
-	const name = getNameFromPath(path);
-	const event = ctx.userconfig.mine.events[name]!;
+	const eventId = getIdFromPath(path);
+	const event = ctx.userconfig.mine.events[eventId]!;
 
 	let text = format.bold('Veranstaltung');
 	text += '\n';
-	text += name;
+	text += event.name;
 	text += '\n';
 
 	if (event.alertMinutesBefore !== undefined) {
@@ -51,16 +52,16 @@ export const menu = new MenuTemplate<MyContext>((ctx, path) => {
 	};
 });
 
-const alertMenu = new MenuTemplate<MyContext>((_, path) => {
-	const name = getNameFromPath(path);
+const alertMenu = new MenuTemplate<MyContext>((ctx, path) => {
+	const name = getEventNameFromContext(ctx, getIdFromPath(path));
 	return `Wie lange im vorraus möchtest du an einen Termin der Veranstaltung ${name} erinnert werden?`;
 });
 
 alertMenu.interact('nope', {
 	text: '🔕 Garnicht',
 	do(ctx, path) {
-		const name = getNameFromPath(path);
-		delete ctx.userconfig.mine.events[name]!.alertMinutesBefore;
+		const eventId = getIdFromPath(path);
+		delete ctx.userconfig.mine.events[eventId]!.alertMinutesBefore;
 		return '..';
 	},
 });
@@ -83,9 +84,9 @@ alertMenu.choose('t', {
 			throw new Error('how?');
 		}
 
-		const name = getNameFromPath(ctx.callbackQuery.data);
+		const eventId = getIdFromPath(ctx.callbackQuery.data);
 		const minutes = Number(key);
-		ctx.userconfig.mine.events[name]!.alertMinutesBefore = minutes;
+		ctx.userconfig.mine.events[eventId]!.alertMinutesBefore = minutes;
 		return '..';
 	},
 });
@@ -97,11 +98,11 @@ menu.submenu('alert', alertMenu, {text: '⏰ Erinnerung'});
 const noteQuestion = new StatelessQuestion<MyContext>(
 	'event-notes',
 	async (ctx, path) => {
-		const name = getNameFromPath(path);
+		const eventId = getIdFromPath(path);
 		if (ctx.message.text) {
 			const notes = ctx.message.text;
 
-			ctx.userconfig.mine.events[name]!.notes = notes;
+			ctx.userconfig.mine.events[eventId]!.notes = notes;
 		}
 
 		await replyMenuToContext(menu, ctx, path);
@@ -113,9 +114,9 @@ bot.use(noteQuestion.middleware());
 menu.interact('set-notes', {
 	text: '🗒 Schreibe Notiz',
 	async do(ctx, path) {
-		const name = getNameFromPath(path);
+		const eventId = getIdFromPath(path);
 		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${
-			format.escape(name)
+			format.escape(getEventNameFromContext(ctx, eventId))
 		} stehen haben?`;
 		await noteQuestion.replyWithHTML(ctx, text, getMenuOfPath(path));
 		await deleteMenuFromContext(ctx);
@@ -127,31 +128,32 @@ menu.interact('remove-notes', {
 	text: 'Notiz löschen',
 	joinLastRow: true,
 	hide(ctx, path) {
-		const name = getNameFromPath(path);
-		return !ctx.userconfig.mine.events[name]!.notes;
+		const eventId = getIdFromPath(path);
+		return !ctx.userconfig.mine.events[eventId]!.notes;
 	},
 	do(ctx, path) {
-		const name = getNameFromPath(path);
-		delete ctx.userconfig.mine.events[name]!.notes;
+		const eventId = getIdFromPath(path);
+		delete ctx.userconfig.mine.events[eventId]!.notes;
 		return true;
 	},
 });
 
 const removeMenu = new MenuTemplate<MyContext>(ctx => {
-	const event = ctx.match![1]!.replaceAll(';', '/');
+	const eventId = ctx.match![1]!;
 	return (
-		event
+		getEventNameFromContext(ctx, eventId)
 		+ '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?'
 	);
 });
 removeMenu.interact('y', {
 	text: 'Ja ich will!',
 	async do(ctx) {
-		const event = ctx.match![1]!.replaceAll(';', '/');
+		const eventId = ctx.match![1]!;
+		const eventName = getEventNameFromContext(ctx, eventId);
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-		delete ctx.userconfig.mine.events[event];
+		delete ctx.userconfig.mine.events[eventId];
 
-		await ctx.answerCallbackQuery(`${event} wurde aus deinem Kalender entfernt.`);
+		await ctx.answerCallbackQuery(`${eventName} wurde aus deinem Kalender entfernt.`);
 		return true;
 	},
 });
