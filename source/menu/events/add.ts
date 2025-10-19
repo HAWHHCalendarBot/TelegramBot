@@ -131,7 +131,7 @@ menu.choose('a', {
 			return true;
 		}
 
-		await ctx.answerCallbackQuery('Dieses Verzeichnis ist leer und wird nur aus Gründen der Vollständigkeit dargestellt.');
+		await ctx.answerCallbackQuery('Dieses Verzeichnis ist leer');
 
 		return false;
 	},
