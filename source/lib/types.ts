@@ -83,9 +83,9 @@ export type MensaSettings = MealWishes & {
 };
 
 export type EventEntry = {
-	readonly Name: string;
-	readonly Location: string;
-	readonly Description: string;
-	readonly StartTime: NaiveDateTime;
-	readonly EndTime: NaiveDateTime;
+	readonly name: string;
+	readonly location: string;
+	readonly description: string;
+	readonly startTime: NaiveDateTime;
+	readonly endTime: NaiveDateTime;
 };

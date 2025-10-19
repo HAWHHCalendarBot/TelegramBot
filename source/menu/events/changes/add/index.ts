@@ -96,7 +96,7 @@ menu.choose('date', {
 		const existingChangeDates = new Set(Object.keys(ctx.userconfig.mine.events[name]?.changes ?? {}));
 		const events = await loadEvents(name);
 		const dates = events
-			.map(o => o.StartTime)
+			.map(o => o.startTime)
 			.filter(o => !existingChangeDates.has(o))
 			.filter(arrayFilterUnique());
 		return dates;
