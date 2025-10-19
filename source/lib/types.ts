@@ -70,8 +70,8 @@ export type MensaSettings = MealWishes & {
 
 export type EventDirectory = {
 	readonly Name: string;
-	readonly SubDirectories: EventDirectory[] | undefined;
-	readonly Events: EventDirectoryEvent[] | undefined;
+	readonly SubDirectories?: EventDirectory[];
+	readonly Events?: EventDirectoryEvent[];
 };
 
 export type EventDirectoryEvent = {
