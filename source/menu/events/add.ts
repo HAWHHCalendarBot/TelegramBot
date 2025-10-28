@@ -10,7 +10,7 @@ import {
 import {filterButtonText} from '../../lib/inline-menu-filter.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
 import type {EventDirectory, EventId, MyContext} from '../../lib/types.ts';
-import {getUserEventIdsFromContext} from '../../lib/calendar-helper.js';
+import {typedKeys} from '../../lib/javascript-helper.js';
 
 const MAX_RESULT_ROWS = 10;
 const RESULT_COLUMNS = 1;
@@ -115,7 +115,7 @@ menu.choose('a', {
 		if (key.startsWith('e')) {
 			const eventId = key.slice(1) as EventId;
 			const eventName = getEventName(eventId);
-			const isAlreadyInCalendar = getUserEventIdsFromContext(ctx).includes(eventId);
+			const isAlreadyInCalendar = typedKeys(ctx.userconfig.mine.events).includes(eventId);
 
 			if (eventName === undefined) {
 				await ctx.answerCallbackQuery(`Event mit Id ${eventId} existiert nicht!`);

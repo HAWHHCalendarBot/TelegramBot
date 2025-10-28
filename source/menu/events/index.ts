@@ -5,7 +5,7 @@ import * as allEvents from '../../lib/all-events.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {EventId, MyContext} from '../../lib/types.ts';
 import {getEventName} from '../../lib/all-events.ts';
-import {getUserEventIdsFromContext} from '../../lib/calendar-helper.js';
+import {typedKeys} from '../../lib/javascript-helper.js';
 import * as addMenu from './add.ts';
 import * as detailsMenu from './details.ts';
 
@@ -16,7 +16,7 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 	let text = format.bold('Veranstaltungen');
 	text += '\n\n';
 
-	const eventIds = getUserEventIdsFromContext(ctx);
+	const eventIds = typedKeys(ctx.userconfig.mine.events);
 	if (eventIds.length > 0) {
 		const nonExisting = new Set(allEvents.nonExisting(eventIds));
 		text += 'Du hast folgende Veranstaltungen im Kalender:';
@@ -63,11 +63,11 @@ bot.use(detailsMenu.bot);
 menu.interact('remove-old', {
 	text: '🗑 Entferne nicht mehr Existierende',
 	async hide(ctx) {
-		const nonExisting = allEvents.nonExisting(getUserEventIdsFromContext(ctx));
+		const nonExisting = allEvents.nonExisting(typedKeys(ctx.userconfig.mine.events));
 		return nonExisting.length === 0;
 	},
 	async do(ctx) {
-		const nonExisting = allEvents.nonExisting(getUserEventIdsFromContext(ctx));
+		const nonExisting = allEvents.nonExisting(typedKeys(ctx.userconfig.mine.events));
 		for (const eventId of nonExisting) {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 			delete ctx.userconfig.mine.events[eventId];

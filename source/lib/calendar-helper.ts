@@ -1,4 +1,4 @@
-import type {EventId, MyContext, Userconfig} from './types.ts';
+import type {MyContext, Userconfig} from './types.ts';
 
 export function getUrl(id: number, userconfig: Userconfig): string {
 	let filename = `${id}`;
@@ -13,8 +13,4 @@ export function getUrl(id: number, userconfig: Userconfig): string {
 
 export function getUrlFromContext(ctx: MyContext): string {
 	return getUrl(ctx.from!.id, ctx.userconfig.mine);
-}
-
-export function getUserEventIdsFromContext(ctx: MyContext): EventId[] {
-	return Object.keys(ctx.userconfig.mine.events) as EventId[];
 }
