@@ -12,7 +12,7 @@ import {
 	loadEvents,
 } from '../../../../lib/change-helper.ts';
 import type {
-	Change,
+	Change, EventId,
 	MyContext,
 	NaiveDateTime,
 } from '../../../../lib/types.ts';
@@ -23,23 +23,23 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 	ctx.session.generateChange ??= {};
 
 	if (ctx.match) {
-		ctx.session.generateChangeName = ctx.match[1]!.replaceAll(';', '/');
+		ctx.session.generateChangeEventId = ctx.match[1]! as EventId;
 	}
 
-	if (!ctx.session.generateChangeName) {
+	if (!ctx.session.generateChangeEventId) {
 		throw new Error('Something fishy');
 	}
 
-	const name = ctx.session.generateChangeName;
+	const eventId = ctx.session.generateChangeEventId;
 	let text = '';
 
 	if (!ctx.session.generateChangeDate) {
 		text = 'Zu welchem Termin willst du eine Änderung hinzufügen?';
-		const changeDates = Object.keys(ctx.userconfig.mine.events[name]?.changes ?? {});
+		const changeDates = Object.keys(ctx.userconfig.mine.events[eventId]?.changes ?? {});
 
 		if (changeDates.length > 0) {
 			text
-				+= '\n\nFolgende Termine habe bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.';
+				+= '\n\nFolgende Termine haben bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.';
 			text += '\n';
 
 			changeDates.sort();
@@ -47,9 +47,9 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 		}
 	}
 
-	if (ctx.session.generateChangeName && ctx.session.generateChangeDate) {
+	if (ctx.session.generateChangeEventId && ctx.session.generateChangeDate) {
 		text = generateChangeText(
-			ctx.session.generateChangeName,
+			ctx.session.generateChangeEventId,
 			ctx.session.generateChangeDate,
 			ctx.session.generateChange as Change,
 		);
@@ -60,21 +60,21 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 });
 
 function hidePickDateStep(ctx: MyContext): boolean {
-	const name = ctx.session.generateChangeName;
+	const eventId = ctx.session.generateChangeEventId;
 	const date = ctx.session.generateChangeDate;
-	return !name || Boolean(date);
+	return !eventId || Boolean(date);
 }
 
 function hideGenerateChangeStep(ctx: MyContext): boolean {
-	const name = ctx.session.generateChangeName;
+	const eventId = ctx.session.generateChangeEventId;
 	const date = ctx.session.generateChangeDate;
-	return !name || !date;
+	return !eventId || !date;
 }
 
 function generationDataIsValid(ctx: MyContext): boolean {
-	const name = ctx.session.generateChangeName;
+	const eventId = ctx.session.generateChangeEventId;
 	const date = ctx.session.generateChangeDate;
-	if (!name || !date) {
+	if (!eventId || !date) {
 		return false;
 	}
 
@@ -87,14 +87,14 @@ menu.choose('date', {
 	columns: 2,
 	hide: hidePickDateStep,
 	async choices(ctx) {
-		const name = ctx.match![1]!.replaceAll(';', '/');
+		const eventId = ctx.match![1]! as EventId;
 		if (ctx.session.generateChangeDate) {
 			// Date already selected
 			return {};
 		}
 
-		const existingChangeDates = new Set(Object.keys(ctx.userconfig.mine.events[name]?.changes ?? {}));
-		const events = await loadEvents(name);
+		const existingChangeDates = new Set(Object.keys(ctx.userconfig.mine.events[eventId]?.changes ?? {}));
+		const events = await loadEvents(eventId);
 		const dates = events
 			.map(o => o.startTime)
 			.filter(o => !existingChangeDates.has(o))
@@ -200,14 +200,14 @@ menu.interact('finish', {
 });
 
 async function finish(ctx: MyContext): Promise<string | boolean> {
-	const name = ctx.match![1]!.replaceAll(';', '/');
+	const eventId = ctx.match![1]! as EventId;
 	const date = ctx.session.generateChangeDate!;
 	const change = ctx.session.generateChange!;
 
-	ctx.userconfig.mine.events[name] ??= {};
-	ctx.userconfig.mine.events[name].changes ??= {};
+	ctx.userconfig.mine.events[eventId] ??= {};
+	ctx.userconfig.mine.events[eventId].changes ??= {};
 
-	const alreadyExists = ctx.userconfig.mine.events[name].changes[date];
+	const alreadyExists = ctx.userconfig.mine.events[eventId].changes[date];
 	if (alreadyExists) {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
@@ -216,7 +216,7 @@ async function finish(ctx: MyContext): Promise<string | boolean> {
 		return true;
 	}
 
-	ctx.userconfig.mine.events[name].changes[date] = change as Change;
+	ctx.userconfig.mine.events[eventId].changes[date] = change as Change;
 	delete ctx.session.generateChange;
 
 	return `../d:${date}/`;
