@@ -1,7 +1,5 @@
 import {readFile, watch} from 'node:fs/promises';
-import type {
-	EventDirectory, EventId, Events,
-} from './types.ts';
+import type {EventDirectory, EventId, Events} from './types.ts';
 
 const DIRECTORY_FILE = 'eventfiles/directory.json';
 
@@ -11,8 +9,9 @@ const namesOfEvents: Record<string, string> = await generateMapping();
 async function watchForDirectoryChanges() {
 	const watcher = watch(DIRECTORY_FILE);
 	for await (const event of watcher) {
-		console.log(event);
 		if (event.eventType === 'change') {
+			console.log(new Date(), 'Detected file change. Reloading...');
+
 			await loadDirectory();
 			await generateMapping();
 		}
@@ -24,6 +23,8 @@ async function watchForDirectoryChanges() {
 void watchForDirectoryChanges();
 
 async function loadDirectory(): Promise<Partial<EventDirectory>> {
+	console.log(new Date(), 'Loading directory');
+
 	const directoryString = await readFile(DIRECTORY_FILE);
 	const directory = JSON.parse(directoryString.toString()) as Partial<EventDirectory>;
 	return directory;
