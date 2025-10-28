@@ -28,9 +28,13 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 		const filteredEvents = findEvents(ctx);
 
 		const filter = ctx.session.eventfilter;
-		text += filter === undefined
-			? `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
-			: `Mit deinem Filter konnte ich ${Object.keys(filteredEvents.events).length} passende Veranstaltungen und ${Object.keys(filteredEvents.subDirectories).length} Ordner finden.`;
+		if (filter === undefined) {
+			text += `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`;
+		} else {
+			const eventCount = Object.keys(filteredEvents.events).length;
+
+			text += `Mit deinem Filter konnte ich ${eventCount} passende Veranstaltungen finden.`;
+		}
 	} catch (error) {
 		const errorText = error instanceof Error ? error.message : String(error);
 		text += 'Filter Error: ';
