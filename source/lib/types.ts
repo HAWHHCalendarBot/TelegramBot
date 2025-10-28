@@ -86,11 +86,9 @@ export type MensaSettings = MealWishes & {
 
 export type EventId = `${number}_${number | string}`;
 
-export type Events = Record<EventId, string>;
-
 export type EventDirectory = {
 	readonly subDirectories: Record<string, Partial<EventDirectory>>;
-	readonly events: Events;
+	readonly events: Record<EventId, string>;
 };
 
 export type EventEntry = {

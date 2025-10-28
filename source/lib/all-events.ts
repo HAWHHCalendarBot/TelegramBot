@@ -1,5 +1,5 @@
 import {readFile, watch} from 'node:fs/promises';
-import type {EventDirectory, EventId, Events} from './types.ts';
+import type {EventDirectory, EventId} from './types.ts';
 import {typedEntries} from './javascript-helper.js';
 
 const DIRECTORY_FILE = 'eventfiles/directory.json';
@@ -79,7 +79,7 @@ export function find(
 ): Readonly<EventDirectory> {
 	if (pattern !== undefined) {
 		const regex = new RegExp(pattern, 'i');
-		const accumulator: Events = {};
+		const accumulator: Record<EventId, string> = {};
 
 		function collect(directory: Partial<EventDirectory>) {
 			for (const [eventId, name] of typedEntries(directory.events ?? {})) {
