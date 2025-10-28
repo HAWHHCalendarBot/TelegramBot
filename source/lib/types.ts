@@ -19,12 +19,25 @@ export type MyContext =
 	& ContextFlavour;
 
 export type Session = {
-	adminBroadcast?: number; // Message ID
-	adminuserquicklook?: number; // User ID
+	/** Message ID */
+	adminBroadcast?: number;
+	/** User ID */
+	adminuserquicklook?: number;
 	adminuserquicklookfilter?: string;
 	eventfilter?: string;
-	eventPath?: string[]; // Path to the selected subdirectory
-	eventDirectorySubDirectoryItems?: string[]; // Subdirectory item keys of the directory selected by eventPath
+	/** Path to the currently selected subdirectory on the add events screen.
+	 *
+	 * The entries of this array are the keys of the (sub)directories.
+	 * */
+	eventPath?: string[];
+	/** Subdirectory item keys of the directory selected by eventPath
+	 *
+	 * This array stores the keys of subdirectories in the currently selected directory.
+     * On the event-adding screen these keys are used to navigate into subdirectories.
+     * Telegram callback data restricts allowed characters and length, so we store the
+	 * keys here and use the array index as the callback payload.
+	 */
+	eventDirectorySubDirectoryItems?: string[];
 	generateChangeEventId?: EventId;
 	generateChangeDate?: NaiveDateTime;
 	generateChange?: Partial<Change>;
