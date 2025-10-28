@@ -172,14 +172,12 @@ menu.interact('back', {
 	async do(ctx) {
 		if (ctx.session.eventfilter !== undefined) {
 			delete ctx.session.eventfilter;
-
 			return true;
 		}
 
 		if (ctx.session.eventPath?.length === 0) {
 			delete ctx.session.eventPath;
 			delete ctx.session.eventDirectorySubDirectoryItems;
-
 			return '..';
 		}
 
