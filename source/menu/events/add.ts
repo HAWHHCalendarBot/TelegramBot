@@ -4,7 +4,9 @@ import {
 	deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext,
 } from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {count as allEventsCount, find as allEventsFind, getEventName} from '../../lib/all-events.ts';
+import {
+	count as allEventsCount, directoryExists, find as allEventsFind, getEventName,
+} from '../../lib/all-events.ts';
 import {filterButtonText} from '../../lib/inline-menu-filter.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
 import type {EventDirectory, EventId, MyContext} from '../../lib/types.ts';
@@ -131,9 +133,22 @@ menu.choose('a', {
 		}
 
 		if (key.startsWith('d')) {
-			const chosenSubDirectory = key.slice(1);
-			ctx.session.eventPath?.push(chosenSubDirectory);
-			delete ctx.session.eventDirectorySubDirectoryItems;
+			if (ctx.session.eventDirectorySubDirectoryItems !== undefined) {
+				const chosenSubDirectory = ctx.session.eventDirectorySubDirectoryItems[Number(key.slice(1))];
+				delete ctx.session.eventDirectorySubDirectoryItems;
+
+				if (chosenSubDirectory !== undefined) {
+					ctx.session.eventPath ??= [];
+					ctx.session.eventPath.push(chosenSubDirectory);
+
+					if (directoryExists(ctx.session.eventPath)) {
+						return true;
+					}
+				}
+			}
+
+			await ctx.answerCallbackQuery('Dieses Verzeichnis gibt es nicht mehr.');
+			delete ctx.session.eventPath;
 
 			return true;
 		}
@@ -165,6 +180,11 @@ menu.interact('back', {
 		}
 
 		ctx.session.eventPath?.pop();
+		if (ctx.session.eventPath !== undefined && !directoryExists(ctx.session.eventPath)) {
+			delete ctx.session.eventPath;
+			delete ctx.session.eventDirectorySubDirectoryItems;
+		}
+
 		return true;
 	},
 });

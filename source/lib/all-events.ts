@@ -106,3 +106,13 @@ export function find(
 		events: directory.events ?? {},
 	};
 }
+
+export function directoryExists(path: string[]): boolean {
+	try {
+		resolvePath(path);
+
+		return true;
+	} catch {
+		return false;
+	}
+}
