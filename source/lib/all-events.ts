@@ -1,5 +1,6 @@
 import {readFile, watch} from 'node:fs/promises';
 import type {EventDirectory, EventId, Events} from './types.ts';
+import {typedEntries} from './javascript-helper.js';
 
 const DIRECTORY_FILE = 'eventfiles/directory.json';
 
@@ -81,9 +82,9 @@ export function find(
 		const accumulator: Events = {};
 
 		function collect(directory: Partial<EventDirectory>) {
-			for (const [eventId, name] of Object.entries(directory.events ?? {})) {
+			for (const [eventId, name] of typedEntries(directory.events ?? {})) {
 				if (regex.test(name)) {
-					accumulator[eventId as EventId] = name;
+					accumulator[eventId] = name;
 				}
 			}
 

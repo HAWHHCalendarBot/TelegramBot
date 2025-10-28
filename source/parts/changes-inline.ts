@@ -8,9 +8,9 @@ import {
 	generateShortChangeText,
 } from '../lib/change-helper.ts';
 import type {
-	Change, EventDetails, EventId, MyContext, NaiveDateTime,
+	Change, EventId, MyContext, NaiveDateTime,
 } from '../lib/types.ts';
-import {typedKeys} from '../lib/javascript-helper.js';
+import {typedEntries, typedKeys} from '../lib/javascript-helper.js';
 
 export const bot = new Composer<MyContext>();
 
@@ -54,9 +54,8 @@ bot.on('inline_query', async ctx => {
 
 	const results: InlineQueryResultArticle[] = [];
 
-	for (const [eventId, details] of Object.entries(ctx.userconfig.mine.events) as Array<[EventId, EventDetails]>) {
-		for (const [dateKey, change] of Object.entries(details.changes ?? {})) {
-			const date = dateKey as NaiveDateTime;
+	for (const [eventId, details] of typedEntries(ctx.userconfig.mine.events)) {
+		for (const [date, change] of typedEntries(details.changes ?? {})) {
 			const isMatched = regex.test(generateShortChangeText(eventId, date));
 			if (!isMatched) {
 				continue;

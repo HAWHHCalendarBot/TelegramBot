@@ -3,9 +3,9 @@ import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import * as allEvents from '../../lib/all-events.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
-import type {EventId, MyContext} from '../../lib/types.ts';
+import type {MyContext} from '../../lib/types.ts';
 import {getEventName} from '../../lib/all-events.ts';
-import {typedKeys} from '../../lib/javascript-helper.js';
+import {typedEntries, typedKeys} from '../../lib/javascript-helper.js';
 import * as addMenu from './add.ts';
 import * as detailsMenu from './details.ts';
 
@@ -84,8 +84,8 @@ menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 	choices(ctx) {
 		const result: Record<string, string> = {};
 
-		for (const [eventId, details] of Object.entries(ctx.userconfig.mine.events)) {
-			let title = getEventName(eventId as EventId) + ' ';
+		for (const [eventId, details] of typedEntries(ctx.userconfig.mine.events)) {
+			let title = getEventName(eventId) + ' ';
 
 			if (Object.keys(details.changes ?? {}).length > 0) {
 				title += '✏️';
