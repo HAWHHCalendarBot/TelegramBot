@@ -153,12 +153,10 @@ menu.choose('a', {
 
 			await ctx.answerCallbackQuery('Dieses Verzeichnis gibt es nicht mehr.');
 			delete ctx.session.eventPath;
-
 			return true;
 		}
 
 		await ctx.answerCallbackQuery('Dieses Verzeichnis ist leer.');
-
 		return false;
 	},
 	getCurrentPage: ctx => ctx.session.page,

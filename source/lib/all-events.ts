@@ -12,7 +12,6 @@ async function watchForDirectoryChanges() {
 	for await (const event of watcher) {
 		if (event.eventType === 'change') {
 			console.log(new Date(), 'Detected file change. Reloading...');
-
 			await loadDirectory();
 			await generateMapping();
 		}
@@ -25,7 +24,6 @@ void watchForDirectoryChanges();
 
 async function loadDirectory(): Promise<Partial<EventDirectory>> {
 	console.log(new Date(), 'Loading directory');
-
 	const directoryString = await readFile(DIRECTORY_FILE);
 	const directory = JSON.parse(directoryString.toString()) as Partial<EventDirectory>;
 	return directory;
@@ -43,7 +41,6 @@ async function generateMapping(): Promise<Record<string, string>> {
 	}
 
 	collect(directory);
-
 	return namesOfEvents;
 }
 
@@ -94,7 +91,6 @@ export function find(
 		}
 
 		collect(resolvePath(startAt));
-
 		return {
 			subDirectories: {},
 			events: Object.fromEntries(Object.entries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
@@ -102,7 +98,6 @@ export function find(
 	}
 
 	const directory = resolvePath(startAt);
-
 	return {
 		subDirectories: directory.subDirectories ?? {},
 		events: directory.events ?? {},
@@ -112,7 +107,6 @@ export function find(
 export function directoryExists(path: string[]): boolean {
 	try {
 		resolvePath(path);
-
 		return true;
 	} catch {
 		return false;
