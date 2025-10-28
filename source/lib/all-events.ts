@@ -19,7 +19,9 @@ async function watchForDirectoryChanges() {
 	}
 }
 
-await watchForDirectoryChanges();
+// We do not want to await this Promise, since it will never resolve and would cause the module to hang on load.
+// eslint-disable-next-line unicorn/prefer-top-level-await
+void watchForDirectoryChanges();
 
 async function loadDirectory(): Promise<Partial<EventDirectory>> {
 	const directoryString = await readFile(DIRECTORY_FILE);
