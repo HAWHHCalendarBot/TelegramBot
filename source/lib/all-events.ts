@@ -24,8 +24,8 @@ void watchForDirectoryChanges();
 
 async function loadDirectory(): Promise<Partial<EventDirectory>> {
 	console.log(new Date(), 'Loading directory');
-	const directoryString = await readFile(DIRECTORY_FILE);
-	const directory = JSON.parse(directoryString.toString()) as Partial<EventDirectory>;
+	const directoryString = await readFile(DIRECTORY_FILE, 'utf8');
+	const directory = JSON.parse(directoryString) as Partial<EventDirectory>;
 	return directory;
 }
 
