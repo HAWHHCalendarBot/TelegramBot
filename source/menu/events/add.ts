@@ -18,8 +18,7 @@ const RESULT_COLUMNS = 1;
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async ctx => {
 	const total = allEventsCount();
-	ctx.session.eventAdd ??= {};
-	ctx.session.eventAdd.eventPath ??= [];
+	ctx.session.eventAdd ??= {eventPath: []};
 
 	let text = format.bold('Veranstaltungen');
 	text += '\nWelche Events möchtest du hinzufügen?';
@@ -47,8 +46,7 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 
 function findEvents(ctx: MyContext): Readonly<EventDirectory> {
 	const filter = ctx.session.eventfilter;
-	ctx.session.eventAdd ??= {};
-	return allEventsFind(filter, ctx.session.eventAdd.eventPath);
+	return allEventsFind(filter, ctx.session.eventAdd?.eventPath);
 }
 
 const question = new StatelessQuestion<MyContext>(
@@ -92,10 +90,10 @@ menu.choose('a', {
 	columns: RESULT_COLUMNS,
 	async choices(ctx) {
 		try {
+			ctx.session.eventAdd ??= {eventPath: []};
 			const filteredEvents = findEvents(ctx);
 			const alreadySelected = Object.keys(ctx.userconfig.mine.events);
 
-			ctx.session.eventAdd ??= {};
 			ctx.session.eventAdd.eventDirectorySubDirectoryItems = Object.keys(filteredEvents.subDirectories);
 			const subDirectoryItems = Object.entries(filteredEvents.subDirectories)
 				.map(([name, directory], i) =>
@@ -141,13 +139,16 @@ menu.choose('a', {
 		}
 
 		if (key.startsWith('d')) {
-			ctx.session.eventAdd ??= {};
+			if (ctx.session.eventAdd === undefined) {
+				await ctx.answerCallbackQuery('Interner Zustand ungültig.');
+				return true;
+			}
+
 			if (ctx.session.eventAdd.eventDirectorySubDirectoryItems !== undefined) {
 				const chosenSubDirectory = ctx.session.eventAdd.eventDirectorySubDirectoryItems[Number(key.slice(1))];
 				delete ctx.session.eventAdd.eventDirectorySubDirectoryItems;
 
 				if (chosenSubDirectory !== undefined) {
-					ctx.session.eventAdd.eventPath ??= [];
 					ctx.session.eventAdd.eventPath.push(chosenSubDirectory);
 
 					if (directoryExists(ctx.session.eventAdd.eventPath)) {

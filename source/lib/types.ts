@@ -30,7 +30,7 @@ export type Session = {
 		 *
 		 * The entries of this array are the keys of the (sub)directories.
 		 */
-		eventPath?: string[];
+		eventPath: string[];
 		/** Subdirectory item keys of the directory selected by eventPath
 		 *
 		 * This array stores the keys of subdirectories in the currently selected directory.
