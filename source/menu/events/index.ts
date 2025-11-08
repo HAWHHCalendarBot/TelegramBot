@@ -11,7 +11,7 @@ import * as detailsMenu from './details.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async ctx => {
-	delete ctx.session.eventPath;
+	delete ctx.session.eventAdd;
 
 	let text = format.bold('Veranstaltungen');
 	text += '\n\n';

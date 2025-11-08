@@ -18,7 +18,8 @@ const RESULT_COLUMNS = 1;
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async ctx => {
 	const total = allEventsCount();
-	ctx.session.eventPath ??= [];
+	ctx.session.eventAdd ??= {};
+	ctx.session.eventAdd.eventPath ??= [];
 
 	let text = format.bold('Veranstaltungen');
 	text += '\nWelche Events möchtest du hinzufügen?';
@@ -46,7 +47,8 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 
 function findEvents(ctx: MyContext): Readonly<EventDirectory> {
 	const filter = ctx.session.eventfilter;
-	return allEventsFind(filter, ctx.session.eventPath);
+	ctx.session.eventAdd ??= {};
+	return allEventsFind(filter, ctx.session.eventAdd.eventPath);
 }
 
 const question = new StatelessQuestion<MyContext>(
@@ -93,7 +95,8 @@ menu.choose('a', {
 			const filteredEvents = findEvents(ctx);
 			const alreadySelected = Object.keys(ctx.userconfig.mine.events);
 
-			ctx.session.eventDirectorySubDirectoryItems = Object.keys(filteredEvents.subDirectories);
+			ctx.session.eventAdd ??= {};
+			ctx.session.eventAdd.eventDirectorySubDirectoryItems = Object.keys(filteredEvents.subDirectories);
 			const subDirectoryItems = Object.entries(filteredEvents.subDirectories)
 				.map(([name, directory], i) =>
 					Object.keys(directory.subDirectories ?? {}).length > 0
@@ -138,22 +141,23 @@ menu.choose('a', {
 		}
 
 		if (key.startsWith('d')) {
-			if (ctx.session.eventDirectorySubDirectoryItems !== undefined) {
-				const chosenSubDirectory = ctx.session.eventDirectorySubDirectoryItems[Number(key.slice(1))];
-				delete ctx.session.eventDirectorySubDirectoryItems;
+			ctx.session.eventAdd ??= {};
+			if (ctx.session.eventAdd.eventDirectorySubDirectoryItems !== undefined) {
+				const chosenSubDirectory = ctx.session.eventAdd.eventDirectorySubDirectoryItems[Number(key.slice(1))];
+				delete ctx.session.eventAdd.eventDirectorySubDirectoryItems;
 
 				if (chosenSubDirectory !== undefined) {
-					ctx.session.eventPath ??= [];
-					ctx.session.eventPath.push(chosenSubDirectory);
+					ctx.session.eventAdd.eventPath ??= [];
+					ctx.session.eventAdd.eventPath.push(chosenSubDirectory);
 
-					if (directoryExists(ctx.session.eventPath)) {
+					if (directoryExists(ctx.session.eventAdd.eventPath)) {
 						return true;
 					}
 				}
 			}
 
 			await ctx.answerCallbackQuery('Dieses Verzeichnis gibt es nicht mehr.');
-			delete ctx.session.eventPath;
+			delete ctx.session.eventAdd;
 			return true;
 		}
 
@@ -174,16 +178,15 @@ menu.interact('back', {
 			return true;
 		}
 
-		if (ctx.session.eventPath?.length === 0) {
-			delete ctx.session.eventPath;
-			delete ctx.session.eventDirectorySubDirectoryItems;
+		if (ctx.session.eventAdd?.eventPath === undefined
+			|| ctx.session.eventAdd?.eventPath.length === 0) {
+			delete ctx.session.eventAdd;
 			return '..';
 		}
 
-		ctx.session.eventPath?.pop();
-		if (ctx.session.eventPath !== undefined && !directoryExists(ctx.session.eventPath)) {
-			delete ctx.session.eventPath;
-			delete ctx.session.eventDirectorySubDirectoryItems;
+		ctx.session.eventAdd.eventPath.pop();
+		if (!directoryExists(ctx.session.eventAdd.eventPath)) {
+			delete ctx.session.eventAdd;
 		}
 
 		return true;
