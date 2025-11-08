@@ -28,7 +28,7 @@ export type Session = {
 	/** Path to the currently selected subdirectory on the add events screen.
 	 *
 	 * The entries of this array are the keys of the (sub)directories.
-	 * */
+	 */
 	eventPath?: string[];
 	/** Subdirectory item keys of the directory selected by eventPath
 	 *
