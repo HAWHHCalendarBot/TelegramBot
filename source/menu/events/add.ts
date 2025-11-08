@@ -96,7 +96,8 @@ menu.choose('a', {
 			ctx.session.eventDirectorySubDirectoryItems = Object.keys(filteredEvents.subDirectories);
 			const subDirectoryItems = Object.entries(filteredEvents.subDirectories)
 				.map(([name, directory], i) =>
-					directory.subDirectories !== undefined || directory.events !== undefined
+					Object.keys(directory.subDirectories ?? {}).length > 0
+					|| Object.keys(directory.events ?? {}).length > 0
 						? ['d' + i, '🗂️ ' + name]
 						: ['x' + i, '🚫 ' + name]);
 
