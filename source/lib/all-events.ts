@@ -1,19 +1,20 @@
 import {readFile, watch} from 'node:fs/promises';
 import type {EventDirectory, EventId} from './types.ts';
 import {typedEntries} from './javascript-helper.js';
+import {EVENT_FILES_DIR} from './git-helper.js';
 
-const DIRECTORY_FILE = 'eventfiles/directory.json';
+const DIRECTORY_FILE = `${EVENT_FILES_DIR}/directory.json`;
 
-const directory = await loadDirectory();
-const namesOfEvents: Record<string, string> = await generateMapping();
+let directory = await loadDirectory();
+let namesOfEvents: Record<string, string> = await generateMapping();
 
 async function watchForDirectoryChanges() {
 	const watcher = watch(DIRECTORY_FILE);
 	for await (const event of watcher) {
 		if (event.eventType === 'change') {
 			console.log(new Date(), 'Detected file change. Reloading...');
-			await loadDirectory();
-			await generateMapping();
+			directory = await loadDirectory();
+			namesOfEvents = await generateMapping();
 		}
 	}
 }
