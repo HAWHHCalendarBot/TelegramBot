@@ -1,8 +1,9 @@
 import {readdir, readFile} from 'node:fs/promises';
 import type {Meal} from './meal.ts';
+import {MENSA_DIR} from './git-helper.js';
 
 export async function getCanteenList(): Promise<string[]> {
-	const found = await readdir('mensa-data', {withFileTypes: true});
+	const found = await readdir(MENSA_DIR, {withFileTypes: true});
 	const dirs = found
 		.filter(o => o.isDirectory())
 		.map(o => o.name)
@@ -22,7 +23,7 @@ function getFilename(
 	});
 	const m = month.toLocaleString(undefined, {minimumIntegerDigits: 2});
 	const d = day.toLocaleString(undefined, {minimumIntegerDigits: 2});
-	return `mensa-data/${mensa}/${y}/${m}/${d}.json`;
+	return `${MENSA_DIR}/${mensa}/${y}/${m}/${d}.json`;
 }
 
 export async function getMealsOfDay(
