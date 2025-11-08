@@ -44,15 +44,16 @@ async function generateMapping(): Promise<Record<string, string>> {
 	return namesOfEvents;
 }
 
-function resolvePath(path: string[]): Partial<EventDirectory> {
+function getSubdirectory(path: string[]): Partial<EventDirectory> | undefined {
 	let resolvedDirectory = directory;
 
 	for (const part of path) {
-		if (resolvedDirectory.subDirectories === undefined || !(part in resolvedDirectory.subDirectories)) {
-			throw new Error('Ungültiger Pfad');
+		const subDirectory = resolvedDirectory.subDirectories?.[part];
+		if (subDirectory === undefined) {
+			return undefined;
 		}
 
-		resolvedDirectory = resolvedDirectory.subDirectories[part]!;
+		resolvedDirectory = subDirectory;
 	}
 
 	return resolvedDirectory;
@@ -90,14 +91,14 @@ export function find(
 			}
 		}
 
-		collect(resolvePath(startAt));
+		collect(getSubdirectory(startAt) ?? {});
 		return {
 			subDirectories: {},
 			events: Object.fromEntries(Object.entries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
 		};
 	}
 
-	const directory = resolvePath(startAt);
+	const directory = getSubdirectory(startAt) ?? {};
 	return {
 		subDirectories: directory.subDirectories ?? {},
 		events: directory.events ?? {},
@@ -105,10 +106,5 @@ export function find(
 }
 
 export function directoryExists(path: string[]): boolean {
-	try {
-		resolvePath(path);
-		return true;
-	} catch {
-		return false;
-	}
+	return getSubdirectory(path) !== undefined;
 }
