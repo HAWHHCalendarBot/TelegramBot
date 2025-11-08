@@ -9,12 +9,10 @@ import {
 import type {User} from 'grammy/types';
 import {html as format} from 'telegram-format';
 import {getUrl} from '../../lib/calendar-helper.ts';
-import {
-	DEFAULT_FILTER,
-	filterButtonText,
-} from '../../lib/inline-menu-filter.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {MyContext} from '../../lib/types.ts';
+
+export const DEFAULT_FILTER = '.+';
 
 function nameOfUser({first_name, last_name, username}: User): string {
 	let name = first_name;
@@ -70,7 +68,9 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: filterButtonText(ctx => ctx.session.adminuserquicklookfilter),
+	text: ctx => ctx.session.adminuserquicklookfilter && ctx.session.adminuserquicklookfilter !== '.+'
+		? `🔎 Filter: ${ctx.session.adminuserquicklookfilter}`
+		: '🔎 Filtern',
 	async do(ctx, path) {
 		await question.replyWithHTML(
 			ctx,

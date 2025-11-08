@@ -7,7 +7,6 @@ import {html as format} from 'telegram-format';
 import {
 	count as allEventsCount, directoryExists, find as allEventsFind, getEventName,
 } from '../../lib/all-events.ts';
-import {filterButtonText} from '../../lib/inline-menu-filter.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
 import type {EventDirectory, EventId, MyContext} from '../../lib/types.ts';
 import {typedKeys} from '../../lib/javascript-helper.js';
@@ -63,7 +62,9 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: filterButtonText(ctx => ctx.session.eventfilter),
+	text: ctx => ctx.session.eventfilter && ctx.session.eventfilter !== ''
+		? `🔎 Filter: ${ctx.session.eventfilter}`
+		: '🔎 Ab hier filtern',
 	async do(ctx, path) {
 		await question.replyWithHTML(
 			ctx,
