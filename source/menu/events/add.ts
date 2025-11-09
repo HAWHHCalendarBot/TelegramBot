@@ -10,7 +10,7 @@ import {html as format} from 'telegram-format';
 import {
 	count as allEventsCount,
 	directoryExists,
-	exists,
+	exists as allEventsExists,
 	find as allEventsFind,
 	getEventName,
 } from '../../lib/all-events.ts';
@@ -122,7 +122,7 @@ menu.choose('a', {
 	async do(ctx, key) {
 		if (key.startsWith('e')) {
 			const eventId = key.slice(1) as EventId;
-			if (!exists(eventId)) {
+			if (!allEventsExists(eventId)) {
 				await ctx.answerCallbackQuery(`Event mit Id ${eventId} existiert nicht!`);
 				return true;
 			}
