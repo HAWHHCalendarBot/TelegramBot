@@ -1,11 +1,18 @@
 import {StatelessQuestion} from '@grammyjs/stateless-question';
 import {Composer} from 'grammy';
 import {
-	deleteMenuFromContext, getMenuOfPath, MenuTemplate, replyMenuToContext,
+	deleteMenuFromContext,
+	getMenuOfPath,
+	MenuTemplate,
+	replyMenuToContext,
 } from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import {
-	count as allEventsCount, directoryExists, find as allEventsFind, getEventName,
+	count as allEventsCount,
+	directoryExists,
+	exists,
+	find as allEventsFind,
+	getEventName,
 } from '../../lib/all-events.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
 import {typedEntries, typedKeys} from '../../lib/javascript-helper.js';
@@ -115,14 +122,13 @@ menu.choose('a', {
 	async do(ctx, key) {
 		if (key.startsWith('e')) {
 			const eventId = key.slice(1) as EventId;
-			const eventName = getEventName(eventId);
-			const isAlreadyInCalendar = typedKeys(ctx.userconfig.mine.events).includes(eventId);
-
-			if (eventName === undefined) {
+			if (!exists(eventId)) {
 				await ctx.answerCallbackQuery(`Event mit Id ${eventId} existiert nicht!`);
 				return true;
 			}
 
+			const eventName = getEventName(eventId);
+			const isAlreadyInCalendar = typedKeys(ctx.userconfig.mine.events).includes(eventId);
 			if (isAlreadyInCalendar) {
 				await ctx.answerCallbackQuery(`${eventName} ist bereits in deinem Kalender!`);
 				return true;

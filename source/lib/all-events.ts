@@ -68,6 +68,10 @@ export function count(): number {
 	return Object.keys(namesOfEvents).length;
 }
 
+export function exists(id: EventId): boolean {
+	return id in namesOfEvents;
+}
+
 export function nonExisting(ids: readonly EventId[]): readonly EventId[] {
 	return ids.filter(id => !(id in namesOfEvents));
 }
