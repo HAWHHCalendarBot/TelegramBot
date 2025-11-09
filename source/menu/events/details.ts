@@ -142,8 +142,8 @@ menu.interact('set-notes', {
 });
 
 menu.interact('remove-notes', {
-	text: 'Notiz löschen',
 	joinLastRow: true,
+	text: 'Notiz löschen',
 	hide(ctx, path) {
 		const eventId = getIdFromPath(path);
 		return !ctx.userconfig.mine.events[eventId]!.notes;

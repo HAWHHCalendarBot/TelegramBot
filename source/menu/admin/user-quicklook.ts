@@ -12,8 +12,6 @@ import {getUrl} from '../../lib/calendar-helper.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {MyContext} from '../../lib/types.ts';
 
-export const DEFAULT_FILTER = '.+';
-
 function nameOfUser({first_name, last_name, username}: User): string {
 	let name = first_name;
 	if (last_name) {
@@ -68,7 +66,7 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: ctx => ctx.session.adminuserquicklookfilter && ctx.session.adminuserquicklookfilter !== '.+'
+	text: ctx => ctx.session.adminuserquicklookfilter
 		? `🔎 Filter: ${ctx.session.adminuserquicklookfilter}`
 		: '🔎 Filtern',
 	async do(ctx, path) {
@@ -85,12 +83,7 @@ menu.interact('filter', {
 menu.interact('filter-clear', {
 	joinLastRow: true,
 	text: 'Filter aufheben',
-	hide(ctx) {
-		return (
-			(ctx.session.adminuserquicklookfilter ?? DEFAULT_FILTER)
-			=== DEFAULT_FILTER
-		);
-	},
+	hide: ctx => ctx.session.adminuserquicklookfilter === undefined,
 	do(ctx) {
 		delete ctx.session.adminuserquicklookfilter;
 		delete ctx.session.adminuserquicklook;
@@ -102,7 +95,7 @@ menu.select('u', {
 	maxRows: 5,
 	columns: 2,
 	async choices(ctx) {
-		const filter = ctx.session.adminuserquicklookfilter ?? DEFAULT_FILTER;
+		const filter = ctx.session.adminuserquicklookfilter ?? '.+';
 		const filterRegex = new RegExp(filter, 'i');
 		const allConfigs = await ctx.userconfig.all(config =>
 			filterRegex.test(JSON.stringify(config)));

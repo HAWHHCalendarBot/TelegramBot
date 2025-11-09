@@ -8,8 +8,8 @@ import {
 	count as allEventsCount, directoryExists, find as allEventsFind, getEventName,
 } from '../../lib/all-events.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
-import type {EventDirectory, EventId, MyContext} from '../../lib/types.ts';
 import {typedKeys} from '../../lib/javascript-helper.js';
+import type {EventDirectory, EventId, MyContext} from '../../lib/types.ts';
 
 const MAX_RESULT_ROWS = 10;
 const RESULT_COLUMNS = 1;
@@ -62,7 +62,7 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: ctx => ctx.session.eventfilter && ctx.session.eventfilter !== ''
+	text: ctx => ctx.session.eventfilter
 		? `🔎 Filter: ${ctx.session.eventfilter}`
 		: '🔎 Ab hier filtern',
 	async do(ctx, path) {
@@ -77,8 +77,8 @@ menu.interact('filter', {
 });
 
 menu.interact('filter-clear', {
-	text: 'Filter aufheben',
 	joinLastRow: true,
+	text: 'Filter aufheben',
 	hide: ctx => ctx.session.eventfilter === undefined,
 	do(ctx) {
 		delete ctx.session.eventfilter;
