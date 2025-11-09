@@ -37,7 +37,7 @@ export function generateChangeText(
 ): string {
 	let text = generateChangeTextHeader(eventId, date);
 
-	if (Object.keys(change).length > 2) {
+	if (Object.keys(change).length > 0) {
 		text += '\nÄnderungen:\n';
 		text += format.escape(generateChangeDescription(change));
 	}

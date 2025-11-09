@@ -24,14 +24,11 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 	text += '\n\n';
 
 	try {
-		const filteredEvents = findEvents(ctx);
-
-		const filter = ctx.session.eventfilter;
-		if (filter === undefined) {
+		if (ctx.session.eventfilter === undefined) {
 			text += `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`;
 		} else {
+			const filteredEvents = findEvents(ctx);
 			const eventCount = Object.keys(filteredEvents.events).length;
-
 			text += `Mit deinem Filter konnte ich ${eventCount} passende Veranstaltungen finden.`;
 		}
 	} catch (error) {
@@ -62,9 +59,11 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: ctx => ctx.session.eventfilter
-		? `🔎 Filter: ${ctx.session.eventfilter}`
-		: '🔎 Ab hier filtern',
+	text(ctx) {
+		return ctx.session.eventfilter
+			? `🔎 Filter: ${ctx.session.eventfilter}`
+			: '🔎 Ab hier filtern';
+	},
 	async do(ctx, path) {
 		await question.replyWithHTML(
 			ctx,

@@ -66,9 +66,11 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: ctx => ctx.session.adminuserquicklookfilter
-		? `🔎 Filter: ${ctx.session.adminuserquicklookfilter}`
-		: '🔎 Filtern',
+	text(ctx) {
+		return ctx.session.adminuserquicklookfilter
+			? `🔎 Filter: ${ctx.session.adminuserquicklookfilter}`
+			: '🔎 Filter';
+	},
 	async do(ctx, path) {
 		await question.replyWithHTML(
 			ctx,

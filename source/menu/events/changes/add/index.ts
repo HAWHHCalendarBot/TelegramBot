@@ -13,7 +13,6 @@ import {
 } from '../../../../lib/change-helper.ts';
 import {typedKeys} from '../../../../lib/javascript-helper.ts';
 import type {
-	Change,
 	EventId,
 	MyContext,
 	NaiveDateTime,
@@ -53,7 +52,7 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 		text = generateChangeText(
 			ctx.session.generateChangeEventId,
 			ctx.session.generateChangeDate,
-			ctx.session.generateChange as Change,
+			ctx.session.generateChange,
 		);
 		text += '\nWelche Art von Änderung willst du vornehmen?';
 	}
@@ -123,7 +122,7 @@ menu.interact('remove', {
 			return true;
 		}
 
-		return Object.keys(ctx.session.generateChange!).length > 2;
+		return Object.keys(ctx.session.generateChange!).length > 0;
 	},
 });
 
@@ -217,7 +216,7 @@ async function finish(ctx: MyContext): Promise<string | boolean> {
 		return true;
 	}
 
-	ctx.userconfig.mine.events[eventId].changes[date] = change as Change;
+	ctx.userconfig.mine.events[eventId].changes[date] = change;
 	delete ctx.session.generateChange;
 
 	return `../d:${date}/`;

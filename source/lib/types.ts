@@ -42,7 +42,7 @@ export type Session = {
 	};
 	generateChangeEventId?: EventId;
 	generateChangeDate?: NaiveDateTime;
-	generateChange?: Partial<Change>;
+	generateChange?: Change;
 	page?: number;
 	privacySection?: 'telegram' | 'persistent' | 'tmp';
 	mensa?: {
