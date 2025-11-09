@@ -11,11 +11,7 @@ import {
 	generateChangeText,
 	loadEvents,
 } from '../../../../lib/change-helper.ts';
-import type {
-	Change,
-	MyContext,
-	NaiveDateTime,
-} from '../../../../lib/types.ts';
+import type {MyContext, NaiveDateTime} from '../../../../lib/types.ts';
 import {createTimeSelectionSubmenuButtons} from './time-selector.ts';
 
 export const bot = new Composer<MyContext>();
@@ -51,7 +47,7 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 		text = generateChangeText(
 			ctx.session.generateChangeName,
 			ctx.session.generateChangeDate,
-			ctx.session.generateChange as Change,
+			ctx.session.generateChange,
 		);
 		text += '\nWelche Art von Änderung willst du vornehmen?';
 	}
@@ -122,7 +118,7 @@ menu.interact('remove', {
 			return true;
 		}
 
-		return Object.keys(ctx.session.generateChange!).length > 2;
+		return Object.keys(ctx.session.generateChange!).length > 0;
 	},
 });
 
@@ -216,7 +212,7 @@ async function finish(ctx: MyContext): Promise<string | boolean> {
 		return true;
 	}
 
-	ctx.userconfig.mine.events[name].changes[date] = change as Change;
+	ctx.userconfig.mine.events[name].changes[date] = change;
 	delete ctx.session.generateChange;
 
 	return `../d:${date}/`;
