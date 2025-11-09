@@ -11,8 +11,10 @@ import {
 	generateChangeText,
 	loadEvents,
 } from '../../../../lib/change-helper.ts';
+import {typedKeys} from '../../../../lib/javascript-helper.ts';
 import type {
-	Change, EventId,
+	Change,
+	EventId,
 	MyContext,
 	NaiveDateTime,
 } from '../../../../lib/types.ts';
@@ -35,7 +37,7 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 
 	if (!ctx.session.generateChangeDate) {
 		text = 'Zu welchem Termin willst du eine Änderung hinzufügen?';
-		const changeDates = Object.keys(ctx.userconfig.mine.events[eventId]?.changes ?? {});
+		const changeDates = typedKeys(ctx.userconfig.mine.events[eventId]?.changes ?? {});
 
 		if (changeDates.length > 0) {
 			text
@@ -78,9 +80,8 @@ function generationDataIsValid(ctx: MyContext): boolean {
 		return false;
 	}
 
-	const keys = Object.keys(ctx.session.generateChange ?? []);
 	// There have to some changes than that in order to do something.
-	return keys.length > 0;
+	return Object.keys(ctx.session.generateChange ?? []).length > 0;
 }
 
 menu.choose('date', {
@@ -93,7 +94,7 @@ menu.choose('date', {
 			return {};
 		}
 
-		const existingChangeDates = new Set(Object.keys(ctx.userconfig.mine.events[eventId]?.changes ?? {}));
+		const existingChangeDates = new Set(typedKeys(ctx.userconfig.mine.events[eventId]?.changes ?? {}));
 		const events = await loadEvents(eventId);
 		const dates = events
 			.map(o => o.startTime)

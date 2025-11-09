@@ -8,7 +8,7 @@ import {
 	count as allEventsCount, directoryExists, find as allEventsFind, getEventName,
 } from '../../lib/all-events.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
-import {typedKeys} from '../../lib/javascript-helper.js';
+import {typedEntries, typedKeys} from '../../lib/javascript-helper.js';
 import type {EventDirectory, EventId, MyContext} from '../../lib/types.ts';
 
 const MAX_RESULT_ROWS = 10;
@@ -93,27 +93,22 @@ menu.choose('a', {
 		try {
 			ctx.session.eventAdd ??= {eventPath: []};
 			const filteredEvents = findEvents(ctx);
-			const alreadySelected = Object.keys(ctx.userconfig.mine.events);
+			const alreadySelected = typedKeys(ctx.userconfig.mine.events);
 
-			ctx.session.eventAdd.eventDirectorySubDirectoryItems = Object.keys(filteredEvents.subDirectories);
-			const subDirectoryItems = Object.entries(filteredEvents.subDirectories)
-				.map(([name, directory], i) =>
-					Object.keys(directory.subDirectories ?? {}).length > 0
-					|| Object.keys(directory.events ?? {}).length > 0
-						? ['d' + i, '🗂️ ' + name]
-						: ['x' + i, '🚫 ' + name]);
+			ctx.session.eventAdd.eventDirectorySubDirectoryItems = typedKeys(filteredEvents.subDirectories);
+			const subDirectoryItems = typedEntries(filteredEvents.subDirectories).map(([name, directory], i) =>
+				Object.keys(directory.subDirectories ?? {}).length > 0
+				|| Object.keys(directory.events ?? {}).length > 0
+					? ['d' + i, '🗂️ ' + name]
+					: ['x' + i, '🚫 ' + name]);
 
-			const eventItems = Object.entries(filteredEvents.events)
-				.map(([eventId, name]) =>
-					alreadySelected.includes(eventId)
-						? ['e' + eventId, '✅ ' + name]
-						: ['e' + eventId, '📅 ' + name]);
+			const eventItems = typedEntries(filteredEvents.events).map(([eventId, name]) =>
+				alreadySelected.includes(eventId)
+					? ['e' + eventId, '✅ ' + name]
+					: ['e' + eventId, '📅 ' + name]);
 
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-			return Object.fromEntries([
-				...subDirectoryItems,
-				...eventItems,
-			]);
+			return Object.fromEntries([...subDirectoryItems, ...eventItems]);
 		} catch {
 			return {};
 		}

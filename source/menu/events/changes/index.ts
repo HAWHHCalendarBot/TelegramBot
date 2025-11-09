@@ -1,9 +1,10 @@
 import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {backMainButtons} from '../../../lib/inline-menu.ts';
-import type {EventId, MyContext} from '../../../lib/types.ts';
 import {getEventName} from '../../../lib/all-events.js';
+import {backMainButtons} from '../../../lib/inline-menu.ts';
+import {typedKeys} from '../../../lib/javascript-helper.ts';
+import type {EventId, MyContext} from '../../../lib/types.ts';
 import * as changeAdd from './add/index.ts';
 import * as changeDetails from './details.ts';
 
@@ -29,7 +30,7 @@ menu.chooseIntoSubmenu('d', changeDetails.menu, {
 	columns: 1,
 	choices(ctx) {
 		const eventId = ctx.match![1]! as EventId;
-		return Object.keys(ctx.userconfig.mine.events[eventId]?.changes ?? {});
+		return typedKeys(ctx.userconfig.mine.events[eventId]?.changes ?? {});
 	},
 	getCurrentPage: ctx => ctx.session.page,
 	setPage(ctx, page) {

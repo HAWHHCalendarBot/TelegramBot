@@ -95,7 +95,7 @@ export function find(
 		collect(getSubdirectory(startAt) ?? {});
 		return {
 			subDirectories: {},
-			events: Object.fromEntries(Object.entries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
+			events: Object.fromEntries(typedEntries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
 		};
 	}
 
