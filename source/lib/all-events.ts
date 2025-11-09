@@ -6,7 +6,7 @@ import type {EventDirectory, EventId} from './types.ts';
 const DIRECTORY_FILE = `${EVENT_FILES_DIR}/directory.json`;
 
 let directory = await loadDirectory();
-let namesOfEvents: Record<string, string> = await generateMapping();
+let namesOfEvents: Readonly<Record<EventId, string>> = await generateMapping();
 
 async function watchForDirectoryChanges() {
 	const watcher = watch(DIRECTORY_FILE);
@@ -30,8 +30,8 @@ async function loadDirectory(): Promise<Partial<EventDirectory>> {
 	return directory;
 }
 
-async function generateMapping(): Promise<Record<string, string>> {
-	const namesOfEvents: Record<string, string> = {};
+async function generateMapping(): Promise<Readonly<Record<EventId, string>>> {
+	const namesOfEvents: Record<EventId, string> = {};
 
 	function collect(directory: Partial<EventDirectory>) {
 		for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
