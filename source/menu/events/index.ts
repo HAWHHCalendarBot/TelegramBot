@@ -2,16 +2,16 @@ import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
 import * as allEvents from '../../lib/all-events.ts';
-import {backMainButtons} from '../../lib/inline-menu.ts';
-import type {MyContext} from '../../lib/types.ts';
 import {getEventName} from '../../lib/all-events.ts';
+import * as git from '../../lib/git.js';
+import {backMainButtons} from '../../lib/inline-menu.ts';
 import {typedEntries, typedKeys} from '../../lib/javascript-helper.js';
-import * as gitHelper from '../../lib/git-helper.js';
+import type {MyContext} from '../../lib/types.ts';
 import * as addMenu from './add.ts';
 import * as detailsMenu from './details.ts';
 
-setInterval(async () => gitHelper.pullEventFiles(), 1000 * 60 * 30); // Every 30 minutes
-void gitHelper.pullEventFiles();
+setInterval(async () => git.pullEventFiles(), 1000 * 60 * 30); // Every 30 minutes
+void git.pullEventFiles();
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async ctx => {

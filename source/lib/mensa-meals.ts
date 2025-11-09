@@ -1,6 +1,6 @@
 import {readdir, readFile} from 'node:fs/promises';
 import type {Meal} from './meal.ts';
-import {MENSA_DIR} from './git-helper.js';
+import {MENSA_DIR} from './git.js';
 
 export async function getCanteenList(): Promise<string[]> {
 	const found = await readdir(MENSA_DIR, {withFileTypes: true});
