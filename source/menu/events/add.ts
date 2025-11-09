@@ -12,10 +12,6 @@ import {
 	exists as allEventsExists,
 	find as allEventsFind,
 } from '../../lib/all-events.ts';
-import {
-	DEFAULT_FILTER,
-	filterButtonText,
-} from '../../lib/inline-menu-filter.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {MyContext} from '../../lib/types.ts';
 
@@ -31,12 +27,12 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 	text += '\n\n';
 
 	try {
-		const filteredEvents = await findEvents(ctx);
-
-		const filter = ctx.session.eventfilter ?? DEFAULT_FILTER;
-		text += filter === DEFAULT_FILTER
-			? `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`
-			: `Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`;
+		if (ctx.session.eventfilter === undefined) {
+			text += `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`;
+		} else {
+			const filteredEvents = await findEvents(ctx);
+			text += `Mit deinem Filter konnte ich ${filteredEvents.length} passende Veranstaltungen finden.`;
+		}
 	} catch (error) {
 		const errorText = error instanceof Error ? error.message : String(error);
 		text += 'Filter Error: ';
@@ -47,7 +43,7 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 });
 
 async function findEvents(ctx: MyContext): Promise<readonly string[]> {
-	const filter = ctx.session.eventfilter ?? DEFAULT_FILTER;
+	const filter = ctx.session.eventfilter ?? '.+';
 	const ignore = Object.keys(ctx.userconfig.mine.events);
 	return allEventsFind(filter, ignore);
 }
@@ -66,7 +62,11 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: filterButtonText(ctx => ctx.session.eventfilter),
+	text(ctx) {
+		return ctx.session.eventfilter
+			? `🔎 Filter: ${ctx.session.eventfilter}`
+			: '🔎 Filter';
+	},
 	async do(ctx, path) {
 		await question.replyWithHTML(
 			ctx,
@@ -81,7 +81,7 @@ menu.interact('filter', {
 menu.interact('filter-clear', {
 	text: 'Filter aufheben',
 	joinLastRow: true,
-	hide: ctx => (ctx.session.eventfilter ?? DEFAULT_FILTER) === DEFAULT_FILTER,
+	hide: ctx => ctx.session.eventfilter === undefined,
 	do(ctx) {
 		delete ctx.session.eventfilter;
 		return true;

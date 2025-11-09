@@ -9,10 +9,6 @@ import {
 import type {User} from 'grammy/types';
 import {html as format} from 'telegram-format';
 import {getUrl} from '../../lib/calendar-helper.ts';
-import {
-	DEFAULT_FILTER,
-	filterButtonText,
-} from '../../lib/inline-menu-filter.ts';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {MyContext} from '../../lib/types.ts';
 
@@ -70,7 +66,11 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
-	text: filterButtonText(ctx => ctx.session.adminuserquicklookfilter),
+	text(ctx) {
+		return ctx.session.adminuserquicklookfilter
+			? `🔎 Filter: ${ctx.session.adminuserquicklookfilter}`
+			: '🔎 Filter';
+	},
 	async do(ctx, path) {
 		await question.replyWithHTML(
 			ctx,
@@ -85,12 +85,7 @@ menu.interact('filter', {
 menu.interact('filter-clear', {
 	joinLastRow: true,
 	text: 'Filter aufheben',
-	hide(ctx) {
-		return (
-			(ctx.session.adminuserquicklookfilter ?? DEFAULT_FILTER)
-			=== DEFAULT_FILTER
-		);
-	},
+	hide: ctx => ctx.session.adminuserquicklookfilter === undefined,
 	do(ctx) {
 		delete ctx.session.adminuserquicklookfilter;
 		delete ctx.session.adminuserquicklook;
@@ -102,7 +97,7 @@ menu.select('u', {
 	maxRows: 5,
 	columns: 2,
 	async choices(ctx) {
-		const filter = ctx.session.adminuserquicklookfilter ?? DEFAULT_FILTER;
+		const filter = ctx.session.adminuserquicklookfilter ?? '.+';
 		const filterRegex = new RegExp(filter, 'i');
 		const allConfigs = await ctx.userconfig.all(config =>
 			filterRegex.test(JSON.stringify(config)));
