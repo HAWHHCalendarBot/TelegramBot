@@ -1,7 +1,7 @@
 import {readFile, watch} from 'node:fs/promises';
-import type {EventDirectory, EventId} from './types.ts';
-import {typedEntries} from './javascript-helper.js';
 import {EVENT_FILES_DIR} from './git.js';
+import {typedEntries} from './javascript-helper.js';
+import type {EventDirectory, EventId} from './types.ts';
 
 const DIRECTORY_FILE = `${EVENT_FILES_DIR}/directory.json`;
 
@@ -75,7 +75,7 @@ export function nonExisting(ids: readonly EventId[]): readonly EventId[] {
 export function find(
 	pattern: string | RegExp | undefined,
 	startAt: string[] = [],
-): Readonly<EventDirectory> {
+): EventDirectory {
 	if (pattern !== undefined) {
 		const regex = new RegExp(pattern, 'i');
 		const accumulator: Record<EventId, string> = {};

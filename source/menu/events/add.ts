@@ -43,7 +43,7 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 	return {text, parse_mode: format.parse_mode};
 });
 
-function findEvents(ctx: MyContext): Readonly<EventDirectory> {
+function findEvents(ctx: MyContext): EventDirectory {
 	const filter = ctx.session.eventfilter;
 	return allEventsFind(filter, ctx.session.eventAdd?.eventPath);
 }
