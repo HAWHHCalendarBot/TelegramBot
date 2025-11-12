@@ -4,7 +4,7 @@ import type {
 	Change, EventEntry, EventId, NaiveDateTime,
 } from './types.ts';
 import {getEventName} from './all-events.js';
-import {EVENT_FILES_DIR} from "./git-helper.js";
+import {EVENT_FILES_DIR} from "./git.js";
 
 export function generateChangeDescription(change: Change): string {
 	let text = '';
