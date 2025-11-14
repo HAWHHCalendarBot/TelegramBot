@@ -103,9 +103,9 @@ export type EventId = `${number}_${number | string}`;
 
 export type EventDirectory = {
 	/** Maps the directory name to its content */
-	readonly subDirectories: Readonly<Record<string, Partial<EventDirectory>>>;
+	readonly subDirectories?: Readonly<Record<string, EventDirectory>>;
 	/** Maps `EventId` to the human-readable name */
-	readonly events: Readonly<Record<EventId, string>>;
+	readonly events?: Readonly<Record<EventId, string>>;
 };
 
 export type EventEntry = {

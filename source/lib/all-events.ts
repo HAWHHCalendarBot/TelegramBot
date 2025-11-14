@@ -23,17 +23,17 @@ async function watchForDirectoryChanges() {
 // eslint-disable-next-line unicorn/prefer-top-level-await
 void watchForDirectoryChanges();
 
-async function loadDirectory(): Promise<Partial<EventDirectory>> {
+async function loadDirectory(): Promise<EventDirectory> {
 	console.log(new Date(), 'Loading directory');
 	const directoryString = await readFile(DIRECTORY_FILE, 'utf8');
-	const directory = JSON.parse(directoryString) as Partial<EventDirectory>;
+	const directory = JSON.parse(directoryString) as EventDirectory;
 	return directory;
 }
 
 async function generateMapping(): Promise<Readonly<Record<EventId, string>>> {
 	const namesOfEvents: Record<EventId, string> = {};
 
-	function collect(directory: Partial<EventDirectory>) {
+	function collect(directory: EventDirectory) {
 		for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
 			collect(subDirectory);
 		}
@@ -45,7 +45,7 @@ async function generateMapping(): Promise<Readonly<Record<EventId, string>>> {
 	return namesOfEvents;
 }
 
-function getSubdirectory(path: string[]): Partial<EventDirectory> | undefined {
+function getSubdirectory(path: string[]): EventDirectory | undefined {
 	let resolvedDirectory = directory;
 
 	for (const part of path) {
@@ -84,7 +84,7 @@ export function find(
 		const regex = new RegExp(pattern, 'i');
 		const accumulator: Record<EventId, string> = {};
 
-		function collect(directory: Partial<EventDirectory>) {
+		function collect(directory: EventDirectory) {
 			for (const [eventId, name] of typedEntries(directory.events ?? {})) {
 				if (regex.test(name)) {
 					accumulator[eventId] = name;
@@ -103,11 +103,7 @@ export function find(
 		};
 	}
 
-	const directory = getSubdirectory(startAt) ?? {};
-	return {
-		subDirectories: directory.subDirectories ?? {},
-		events: directory.events ?? {},
-	};
+	return getSubdirectory(startAt) ?? {};
 }
 
 export function directoryExists(path: string[]): boolean {

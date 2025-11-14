@@ -35,7 +35,7 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 			text += `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`;
 		} else {
 			const filteredEvents = findEvents(ctx);
-			const eventCount = Object.keys(filteredEvents.events).length;
+			const eventCount = Object.keys(filteredEvents.events ?? {}).length;
 			text += `Mit deinem Filter konnte ich ${eventCount} passende Veranstaltungen finden.`;
 		}
 	} catch (error) {
@@ -101,14 +101,14 @@ menu.choose('a', {
 			const filteredEvents = findEvents(ctx);
 			const alreadySelected = typedKeys(ctx.userconfig.mine.events);
 
-			ctx.session.eventAdd.eventDirectorySubDirectoryItems = typedKeys(filteredEvents.subDirectories);
-			const subDirectoryItems = typedEntries(filteredEvents.subDirectories).map(([name, directory], i) =>
+			ctx.session.eventAdd.eventDirectorySubDirectoryItems = typedKeys(filteredEvents.subDirectories ?? {});
+			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(([name, directory], i) =>
 				Object.keys(directory.subDirectories ?? {}).length > 0
 				|| Object.keys(directory.events ?? {}).length > 0
 					? ['d' + i, '🗂️ ' + name]
 					: ['x' + i, '🚫 ' + name]);
 
-			const eventItems = typedEntries(filteredEvents.events).map(([eventId, name]) =>
+			const eventItems = typedEntries(filteredEvents.events ?? {}).map(([eventId, name]) =>
 				alreadySelected.includes(eventId)
 					? ['e' + eventId, '✅ ' + name]
 					: ['e' + eventId, '📅 ' + name]);
