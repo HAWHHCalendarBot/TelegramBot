@@ -1,6 +1,10 @@
 import {readFile} from 'node:fs/promises';
 import {html as format} from 'telegram-format';
-import type {Change, EventEntry, NaiveDateTime} from './types.ts';
+import type {
+	Change, EventEntry, EventId, NaiveDateTime,
+} from './types.ts';
+import {getEventName} from './all-events.js';
+import {EVENT_FILES_DIR} from './git.js';
 
 export function generateChangeDescription(change: Change): string {
 	let text = '';
@@ -28,11 +32,11 @@ export function generateChangeDescription(change: Change): string {
 }
 
 export function generateChangeText(
-	name: string,
+	eventId: EventId,
 	date: NaiveDateTime | undefined,
 	change: Change,
 ): string {
-	let text = generateChangeTextHeader(name, date);
+	let text = generateChangeTextHeader(eventId, date);
 
 	if (Object.keys(change).length > 0) {
 		text += '\nÄnderungen:\n';
@@ -43,13 +47,13 @@ export function generateChangeText(
 }
 
 export function generateChangeTextHeader(
-	name: string,
+	eventId: EventId,
 	date: NaiveDateTime | undefined,
 ): string {
 	let text = '';
 	text += format.bold('Veranstaltungsänderung');
 	text += '\n';
-	text += format.bold(format.escape(name));
+	text += format.bold(format.escape(getEventName(eventId)));
 	if (date) {
 		text += ` ${date}`;
 	}
@@ -59,16 +63,15 @@ export function generateChangeTextHeader(
 }
 
 export function generateShortChangeText(
-	name: string,
+	eventId: EventId,
 	date: NaiveDateTime,
 ): string {
-	return `${name} ${date}`;
+	return `${getEventName(eventId)} ${date}`;
 }
 
-export async function loadEvents(eventname: string): Promise<EventEntry[]> {
+export async function loadEvents(eventId: EventId): Promise<EventEntry[]> {
 	try {
-		const filename = eventname.replaceAll('/', '-');
-		const content = await readFile(`eventfiles/${filename}.json`, 'utf8');
+		const content = await readFile(`${EVENT_FILES_DIR}/events/${eventId}.json`, 'utf8');
 		return JSON.parse(content) as EventEntry[];
 	} catch (error) {
 		console.error('ERROR while loading events for change date picker', error);

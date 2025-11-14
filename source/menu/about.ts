@@ -10,7 +10,7 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 
 	const canteens = await getCanteenList();
 	const canteenCount = canteens.length;
-	const eventCount = await allEvents.count();
+	const eventCount = allEvents.count();
 
 	const websiteLink = format.url(
 		'hawhh.de/calendarbot/',

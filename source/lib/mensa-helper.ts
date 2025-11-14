@@ -1,4 +1,5 @@
 import {arrayFilterUnique} from 'array-filter-unique';
+import {typedEntries} from './javascript-helper.ts';
 import type {Meal} from './meal.ts';
 import type {MealWishes, MensaPriceClass, MensaSettings} from './types.ts';
 
@@ -74,7 +75,7 @@ export function mealNameToHtml(
 export function mealAdditivesToHtml(meals: readonly Meal[]): string {
 	return meals
 		.flatMap(meal =>
-			Object.entries(meal.Additives).map(([short, full]) => `${short}: ${full}`))
+			typedEntries(meal.Additives).map(([short, full]) => `${short}: ${full}`))
 		.sort()
 		.filter(arrayFilterUnique())
 		.join('\n');
