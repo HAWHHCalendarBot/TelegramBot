@@ -1,5 +1,5 @@
 import {readdir, readFile} from 'node:fs/promises';
-import {MENSA_DIR, pullMensaData} from './git.js';
+import {MENSA_DIR, pullMensaData} from './git.ts';
 import type {Meal} from './meal.ts';
 
 setInterval(async () => pullMensaData(), 1000 * 60 * 30); // Every 30 minutes

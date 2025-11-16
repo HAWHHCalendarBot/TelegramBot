@@ -5,7 +5,10 @@ import {
 } from '../../../lib/change-helper.ts';
 import {backMainButtons} from '../../../lib/inline-menu.ts';
 import type {
-	Change, EventId, MyContext, NaiveDateTime,
+	Change,
+	EventId,
+	MyContext,
+	NaiveDateTime,
 } from '../../../lib/types.ts';
 
 function getChangeFromContext(ctx: MyContext): [EventId, NaiveDateTime, Change | undefined] {

@@ -3,8 +3,8 @@ import {html as format} from 'telegram-format';
 import type {
 	Change, EventEntry, EventId, NaiveDateTime,
 } from './types.ts';
-import {getEventName} from './all-events.js';
-import {EVENT_FILES_DIR} from './git.js';
+import {getEventName} from './all-events.ts';
+import {EVENT_FILES_DIR} from './git.ts';
 
 export function generateChangeDescription(change: Change): string {
 	let text = '';

@@ -16,7 +16,7 @@ import {
 	getEventName,
 } from '../../lib/all-events.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
-import {typedEntries} from '../../lib/javascript-helper.js';
+import {typedEntries} from '../../lib/javascript-helper.ts';
 import type {EventId, MyContext} from '../../lib/types.ts';
 
 const MAX_RESULT_ROWS = 10;

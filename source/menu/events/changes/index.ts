@@ -1,7 +1,7 @@
 import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
-import {getEventName} from '../../../lib/all-events.js';
+import {getEventName} from '../../../lib/all-events.ts';
 import {backMainButtons} from '../../../lib/inline-menu.ts';
 import {typedKeys} from '../../../lib/javascript-helper.ts';
 import type {EventId, MyContext} from '../../../lib/types.ts';

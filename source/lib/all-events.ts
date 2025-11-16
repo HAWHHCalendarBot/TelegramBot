@@ -1,6 +1,6 @@
 import {readFile} from 'node:fs/promises';
-import {EVENT_FILES_DIR, pullEventFiles} from './git.js';
-import {typedEntries} from './javascript-helper.js';
+import {EVENT_FILES_DIR, pullEventFiles} from './git.ts';
+import {typedEntries} from './javascript-helper.ts';
 import type {EventDirectory, EventId} from './types.ts';
 
 const DIRECTORY_FILE = `${EVENT_FILES_DIR}/directory.json`;

@@ -9,7 +9,7 @@ import {
 import {html as format} from 'telegram-format';
 import {backMainButtons} from '../../lib/inline-menu.ts';
 import type {EventId, MyContext} from '../../lib/types.ts';
-import {getEventName} from '../../lib/all-events.js';
+import {getEventName} from '../../lib/all-events.ts';
 import * as changesMenu from './changes/index.ts';
 
 function getIdFromPath(path: string): EventId {
