@@ -101,7 +101,7 @@ menu.interact('filter-clear', {
 	},
 });
 
-menu.choose('a', {
+menu.choose('list', {
 	maxRows: MAX_RESULT_ROWS,
 	columns: RESULT_COLUMNS,
 	choices(ctx) {
@@ -113,11 +113,16 @@ menu.choose('a', {
 			);
 			const alreadySelected = typedKeys(ctx.userconfig.mine.events);
 
-			ctx.session.eventAdd.subDirectoryItems = typedKeys(filteredEvents.subDirectories ?? {});
-			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(([name, directory], i) =>
-				directoryHasContent(directory)
-					? ['d' + i, '🗂️ ' + name]
-					: ['x' + i, '🚫 ' + name]);
+			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(([name, directory], i) => {
+				if (!directoryHasContent(directory)) {
+					return ['x' + i, '🚫 ' + name];
+				}
+
+				return [
+					'd' + i + ' ' + name.replaceAll('/', '').slice(0, 48),
+					'🗂️ ' + name,
+				];
+			});
 
 			const eventItems = typedEntries(filteredEvents.events ?? {}).map(([eventId, name]) =>
 				alreadySelected.includes(eventId)
@@ -150,32 +155,38 @@ menu.choose('a', {
 			return true;
 		}
 
-		if (key.startsWith('d')) {
-			if (ctx.session.eventAdd === undefined) {
-				await ctx.answerCallbackQuery('Interner Zustand ungültig.');
+		if (key.startsWith('x')) {
+			await ctx.answerCallbackQuery('Dieses Verzeichnis ist leer.');
+			return false;
+		}
+
+		const directoryMatch = /^d(\d+) (.+)$/.exec(key);
+		if (directoryMatch) {
+			const index = Number(directoryMatch[1]);
+			const prefix = directoryMatch[2];
+
+			// Inline-menu choices() ensures that the clicked key still exists. As the name is included in the prefix part of the key this can only fail if an event with exactly the same prefix is placed on the same index. This will prevent clicks on not anymore existing choices like directory.json changed or ctx.session lost after bot restart.
+			if (!ctx.session.eventAdd || !prefix) {
+				// Will never happen as choices() is called first to ensure only existing choices are clicked
 				return true;
 			}
 
-			if (ctx.session.eventAdd.subDirectoryItems !== undefined) {
-				const chosenSubDirectory = ctx.session.eventAdd.subDirectoryItems[Number(key.slice(1))];
-				delete ctx.session.eventAdd.subDirectoryItems;
-
-				if (chosenSubDirectory !== undefined) {
-					ctx.session.eventAdd.path.push(chosenSubDirectory);
-
-					if (directoryExists(ctx.session.eventAdd.path)) {
-						return true;
-					}
-				}
+			const filteredEvents = allEventsFind(
+				ctx.session.eventAdd.filter,
+				ctx.session.eventAdd.path,
+			);
+			const filteredSubDirectories = typedEntries(filteredEvents.subDirectories ?? {});
+			const chosenSubDirectory = filteredSubDirectories[index]?.[0];
+			if (!chosenSubDirectory) {
+				// Will never happen as choices() is called first to ensure only existing choices are clicked
+				return true;
 			}
 
-			await ctx.answerCallbackQuery('Dieses Verzeichnis gibt es nicht mehr.');
-			delete ctx.session.eventAdd;
+			ctx.session.eventAdd.path.push(chosenSubDirectory);
 			return true;
 		}
 
-		await ctx.answerCallbackQuery('Dieses Verzeichnis ist leer.');
-		return false;
+		return true; // Unknown state
 	},
 	getCurrentPage: ctx => ctx.session.page,
 	setPage(ctx, page) {
