@@ -16,7 +16,7 @@ import {
 	getEventName,
 } from '../../lib/all-events.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
-import {typedEntries, typedKeys} from '../../lib/javascript-helper.js';
+import {typedEntries} from '../../lib/javascript-helper.js';
 import type {EventId, MyContext} from '../../lib/types.ts';
 
 const MAX_RESULT_ROWS = 10;
@@ -111,8 +111,6 @@ menu.choose('list', {
 				ctx.session.eventAdd.filter,
 				ctx.session.eventAdd.path,
 			);
-			const alreadySelected = typedKeys(ctx.userconfig.mine.events);
-
 			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(([name, directory], i) => {
 				if (!directoryHasContent(directory)) {
 					return ['x' + i, '🚫 ' + name];
@@ -123,12 +121,10 @@ menu.choose('list', {
 					'🗂️ ' + name,
 				];
 			});
-
 			const eventItems = typedEntries(filteredEvents.events ?? {}).map(([eventId, name]) =>
-				alreadySelected.includes(eventId)
+				eventId in ctx.userconfig.mine.events
 					? ['e' + eventId, '✅ ' + name]
 					: ['e' + eventId, '📅 ' + name]);
-
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return Object.fromEntries([...subDirectoryItems, ...eventItems]);
 		} catch {
@@ -144,8 +140,7 @@ menu.choose('list', {
 			}
 
 			const eventName = getEventName(eventId);
-			const isAlreadyInCalendar = typedKeys(ctx.userconfig.mine.events).includes(eventId);
-			if (isAlreadyInCalendar) {
+			if (eventId in ctx.userconfig.mine.events) {
 				await ctx.answerCallbackQuery(`${eventName} ist bereits in deinem Kalender!`);
 				return true;
 			}

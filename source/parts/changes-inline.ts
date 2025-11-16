@@ -10,7 +10,7 @@ import {
 import type {
 	Change, EventId, MyContext, NaiveDateTime,
 } from '../lib/types.ts';
-import {typedEntries, typedKeys} from '../lib/javascript-helper.js';
+import {typedEntries} from '../lib/javascript-helper.js';
 
 export const bot = new Composer<MyContext>();
 
@@ -87,7 +87,7 @@ async function getChangeFromContextMatch(ctx: MyContext): Promise<ChangeRelatedI
 	const date = ctx.match![2]! as NaiveDateTime;
 	const fromId = Number(ctx.match![3]!);
 
-	if (!typedKeys(ctx.userconfig.mine.events).includes(eventId)) {
+	if (!(eventId in ctx.userconfig.mine.events)) {
 		await ctx.answerCallbackQuery('Du besuchst diese Veranstaltung garnicht. 🤔');
 		return undefined;
 	}
