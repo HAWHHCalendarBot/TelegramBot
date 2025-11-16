@@ -40,8 +40,8 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 	try {
 		if (ctx.session.eventAdd.filter) {
 			const filteredEvents = allEventsFind(
-				ctx.session.eventAdd.filter,
 				ctx.session.eventAdd.path,
+				ctx.session.eventAdd.filter,
 			);
 			const eventCount = Object.keys(filteredEvents.events ?? {}).length;
 			text += `Mit deinem Filter konnte ich ${eventCount} passende Veranstaltungen finden.`;
@@ -108,8 +108,8 @@ menu.choose('list', {
 		try {
 			ctx.session.eventAdd ??= {path: []};
 			const filteredEvents = allEventsFind(
-				ctx.session.eventAdd.filter,
 				ctx.session.eventAdd.path,
+				ctx.session.eventAdd.filter,
 			);
 			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(([name, directory], i) => {
 				if (!directoryHasContent(directory)) {
@@ -167,8 +167,8 @@ menu.choose('list', {
 			}
 
 			const filteredEvents = allEventsFind(
-				ctx.session.eventAdd.filter,
 				ctx.session.eventAdd.path,
+				ctx.session.eventAdd.filter,
 			);
 			const filteredSubDirectories = typedEntries(filteredEvents.subDirectories ?? {});
 			const chosenSubDirectory = filteredSubDirectories[index]?.[0];

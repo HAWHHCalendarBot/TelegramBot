@@ -82,11 +82,11 @@ export function nonExisting(ids: readonly EventId[]): readonly EventId[] {
 }
 
 export function find(
+	path: string[],
 	pattern: string | RegExp | undefined,
-	startAt: string[],
 ): EventDirectory {
 	if (!pattern) {
-		return getSubdirectory(startAt) ?? {};
+		return getSubdirectory(path) ?? {};
 	}
 
 	const regex = new RegExp(pattern, 'i');
@@ -104,7 +104,7 @@ export function find(
 		}
 	}
 
-	collect(getSubdirectory(startAt) ?? {});
+	collect(getSubdirectory(path) ?? {});
 	return {
 		events: Object.fromEntries(typedEntries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
 	};
