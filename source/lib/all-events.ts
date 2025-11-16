@@ -3,8 +3,6 @@ import {EVENT_FILES_DIR, pullEventFiles} from './git.ts';
 import {typedEntries} from './javascript-helper.ts';
 import type {EventDirectory, EventId} from './types.ts';
 
-const DIRECTORY_FILE = `${EVENT_FILES_DIR}/directory.json`;
-
 let directory: EventDirectory = {};
 let namesOfEvents: Readonly<Record<EventId, string>> = {};
 
@@ -14,7 +12,10 @@ console.log(new Date(), 'eventfiles loaded');
 
 async function update() {
 	await pullEventFiles();
-	const directoryString = await readFile(DIRECTORY_FILE, 'utf8');
+	const directoryString = await readFile(
+		`${EVENT_FILES_DIR}/directory.json`,
+		'utf8',
+	);
 	directory = JSON.parse(directoryString) as EventDirectory;
 	namesOfEvents = await generateMapping();
 }

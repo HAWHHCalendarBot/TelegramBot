@@ -71,7 +71,10 @@ export function generateShortChangeText(
 
 export async function loadEvents(eventId: EventId): Promise<EventEntry[]> {
 	try {
-		const content = await readFile(`${EVENT_FILES_DIR}/events/${eventId}.json`, 'utf8');
+		const content = await readFile(
+			`${EVENT_FILES_DIR}/events/${eventId}.json`,
+			'utf8',
+		);
 		return JSON.parse(content) as EventEntry[];
 	} catch (error) {
 		console.error('ERROR while loading events for change date picker', error);

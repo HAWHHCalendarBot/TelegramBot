@@ -19,9 +19,6 @@ import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
 import {typedEntries} from '../../lib/javascript-helper.ts';
 import type {EventId, MyContext} from '../../lib/types.ts';
 
-const MAX_RESULT_ROWS = 10;
-const RESULT_COLUMNS = 1;
-
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(ctx => {
 	ctx.session.eventAdd ??= {path: []};
@@ -102,8 +99,8 @@ menu.interact('filter-clear', {
 });
 
 menu.choose('list', {
-	maxRows: MAX_RESULT_ROWS,
-	columns: RESULT_COLUMNS,
+	maxRows: 10,
+	columns: 1,
 	choices(ctx) {
 		try {
 			ctx.session.eventAdd ??= {path: []};
