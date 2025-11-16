@@ -62,11 +62,11 @@ bot.use(detailsMenu.bot);
 
 menu.interact('remove-old', {
 	text: '🗑 Entferne nicht mehr Existierende',
-	async hide(ctx) {
+	hide(ctx) {
 		const nonExisting = allEvents.nonExisting(typedKeys(ctx.userconfig.mine.events));
 		return nonExisting.length === 0;
 	},
-	async do(ctx) {
+	do(ctx) {
 		const nonExisting = allEvents.nonExisting(typedKeys(ctx.userconfig.mine.events));
 		for (const eventId of nonExisting) {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
