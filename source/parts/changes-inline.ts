@@ -7,13 +7,13 @@ import {
 	generateChangeTextHeader,
 	generateShortChangeText,
 } from '../lib/change-helper.ts';
+import {typedEntries} from '../lib/javascript-helper.ts';
 import type {
 	Change,
 	EventId,
 	MyContext,
 	NaiveDateTime,
 } from '../lib/types.ts';
-import {typedEntries} from '../lib/javascript-helper.ts';
 
 export const bot = new Composer<MyContext>();
 
