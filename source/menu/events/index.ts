@@ -86,27 +86,26 @@ menu.submenu('a', addMenu.menu, {text: '➕ Veranstaltung hinzufügen'});
 menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 	columns: 1,
 	choices(ctx) {
-		const result: Record<string, string> = {};
+		const entries = typedEntries(ctx.userconfig.mine.events)
+			.map(([eventId, details]) => {
+				let title = getEventName(eventId) + ' ';
 
-		for (const [eventId, details] of typedEntries(ctx.userconfig.mine.events)) {
-			let title = getEventName(eventId) + ' ';
+				if (Object.keys(details.changes ?? {}).length > 0) {
+					title += '✏️';
+				}
 
-			if (Object.keys(details.changes ?? {}).length > 0) {
-				title += '✏️';
-			}
+				if (details.alertMinutesBefore !== undefined) {
+					title += '⏰';
+				}
 
-			if (details.alertMinutesBefore !== undefined) {
-				title += '⏰';
-			}
+				if (details.notes) {
+					title += '🗒';
+				}
 
-			if (details.notes) {
-				title += '🗒';
-			}
-
-			result[eventId] = title.trim();
-		}
-
-		return result;
+				return [eventId, title.trim()] as const;
+			})
+			.sort((a, b) => a[1]?.localeCompare(b[1]));
+		return Object.fromEntries(entries);
 	},
 	getCurrentPage: ctx => ctx.session.page,
 	setPage(ctx, page) {
