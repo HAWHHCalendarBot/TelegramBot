@@ -1,5 +1,4 @@
 import {MenuTemplate} from 'grammy-inline-menu';
-import * as git from '../../lib/git.ts';
 import {generateMealText} from '../../lib/mensa-helper.ts';
 import {getMealsOfDay} from '../../lib/mensa-meals.ts';
 import type {MyContext} from '../../lib/types.ts';
@@ -15,9 +14,6 @@ const WEEKDAYS = [
 	'Samstag',
 ] as const;
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
-
-setInterval(async () => git.pullMensaData(), 1000 * 60 * 30); // Every 30 minutes
-void git.pullMensaData();
 
 function getYearMonthDay(date: Readonly<Date>): Readonly<{year: number; month: number; day: number}> {
 	const year = date.getFullYear();

@@ -1,6 +1,10 @@
 import {readdir, readFile} from 'node:fs/promises';
+import {MENSA_DIR, pullMensaData} from './git.js';
 import type {Meal} from './meal.ts';
-import {MENSA_DIR} from './git.js';
+
+setInterval(async () => pullMensaData(), 1000 * 60 * 30); // Every 30 minutes
+await pullMensaData();
+console.log(new Date(), 'mensa-data loaded');
 
 export async function getCanteenList(): Promise<string[]> {
 	const found = await readdir(MENSA_DIR, {withFileTypes: true});

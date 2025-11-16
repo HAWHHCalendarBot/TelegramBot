@@ -1,33 +1,22 @@
-import {readFile, watch} from 'node:fs/promises';
-import {EVENT_FILES_DIR} from './git.js';
+import {readFile} from 'node:fs/promises';
+import {EVENT_FILES_DIR, pullEventFiles} from './git.js';
 import {typedEntries} from './javascript-helper.js';
 import type {EventDirectory, EventId} from './types.ts';
 
 const DIRECTORY_FILE = `${EVENT_FILES_DIR}/directory.json`;
 
-let directory = await loadDirectory();
-let namesOfEvents: Readonly<Record<EventId, string>> = await generateMapping();
+let directory: EventDirectory = {};
+let namesOfEvents: Readonly<Record<EventId, string>> = {};
 
-async function watchForDirectoryChanges() {
-	const watcher = watch(DIRECTORY_FILE);
-	for await (const event of watcher) {
-		if (event.eventType === 'change') {
-			console.log(new Date(), 'Detected file change. Reloading...');
-			directory = await loadDirectory();
-			namesOfEvents = await generateMapping();
-		}
-	}
-}
+setInterval(async () => update(), 1000 * 60 * 30); // Every 30 minutes
+await update();
+console.log(new Date(), 'eventfiles loaded');
 
-// We do not want to await this Promise, since it will never resolve and would cause the module to hang on load.
-// eslint-disable-next-line unicorn/prefer-top-level-await
-void watchForDirectoryChanges();
-
-async function loadDirectory(): Promise<EventDirectory> {
-	console.log(new Date(), 'Loading directory');
+async function update() {
+	await pullEventFiles();
 	const directoryString = await readFile(DIRECTORY_FILE, 'utf8');
-	const directory = JSON.parse(directoryString) as EventDirectory;
-	return directory;
+	directory = JSON.parse(directoryString) as EventDirectory;
+	namesOfEvents = await generateMapping();
 }
 
 async function generateMapping(): Promise<Readonly<Record<EventId, string>>> {
