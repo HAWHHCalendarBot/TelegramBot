@@ -10,33 +10,46 @@ import {html as format} from 'telegram-format';
 import {
 	count as allEventsCount,
 	directoryExists,
+	directoryHasContent,
 	exists as allEventsExists,
 	find as allEventsFind,
 	getEventName,
 } from '../../lib/all-events.ts';
 import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
 import {typedEntries, typedKeys} from '../../lib/javascript-helper.js';
-import type {EventDirectory, EventId, MyContext} from '../../lib/types.ts';
+import type {EventId, MyContext} from '../../lib/types.ts';
 
 const MAX_RESULT_ROWS = 10;
 const RESULT_COLUMNS = 1;
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(async ctx => {
-	const total = allEventsCount();
-	ctx.session.eventAdd ??= {eventPath: []};
+export const menu = new MenuTemplate<MyContext>(ctx => {
+	ctx.session.eventAdd ??= {path: []};
+	while (!directoryExists(ctx.session.eventAdd.path)) {
+		ctx.session.eventAdd.path.pop();
+	}
 
 	let text = format.bold('Veranstaltungen');
-	text += '\nWelche Events möchtest du hinzufügen?';
+	for (const segment of ctx.session.eventAdd.path) {
+		text += '\n🗂️ ' + segment;
+	}
+
+	text += '\n\nWelche Events möchtest du hinzufügen?';
 	text += '\n\n';
 
 	try {
-		if (ctx.session.eventfilter === undefined) {
-			text += `Ich habe ${total} Veranstaltungen. Nutze den Filter um die Auswahl einzugrenzen.`;
-		} else {
-			const filteredEvents = findEvents(ctx);
+		if (ctx.session.eventAdd.filter) {
+			const filteredEvents = allEventsFind(
+				ctx.session.eventAdd.filter,
+				ctx.session.eventAdd.path,
+			);
 			const eventCount = Object.keys(filteredEvents.events ?? {}).length;
 			text += `Mit deinem Filter konnte ich ${eventCount} passende Veranstaltungen finden.`;
+		} else if (ctx.session.eventAdd.path.length === 0) {
+			const total = allEventsCount();
+			text += `Ich habe ${total} Veranstaltungen. Nutze den Filter oder die Ordner um die Auswahl einzugrenzen.`;
+		} else {
+			text += 'Nutze den Filter oder die Ordner um die Auswahl einzugrenzen.';
 		}
 	} catch (error) {
 		const errorText = error instanceof Error ? error.message : String(error);
@@ -47,16 +60,12 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 	return {text, parse_mode: format.parse_mode};
 });
 
-function findEvents(ctx: MyContext): EventDirectory {
-	const filter = ctx.session.eventfilter;
-	return allEventsFind(filter, ctx.session.eventAdd?.eventPath);
-}
-
 const question = new StatelessQuestion<MyContext>(
 	'events-add-filter',
 	async (ctx, path) => {
 		if (ctx.message.text) {
-			ctx.session.eventfilter = ctx.message.text;
+			ctx.session.eventAdd ??= {path: []};
+			ctx.session.eventAdd.filter = ctx.message.text;
 		}
 
 		await replyMenuToContext(menu, ctx, path);
@@ -67,8 +76,8 @@ bot.use(question.middleware());
 
 menu.interact('filter', {
 	text(ctx) {
-		return ctx.session.eventfilter
-			? `🔎 Filter: ${ctx.session.eventfilter}`
+		return ctx.session.eventAdd?.filter
+			? `🔎 Filter: ${ctx.session.eventAdd.filter}`
 			: '🔎 Ab hier filtern';
 	},
 	async do(ctx, path) {
@@ -85,9 +94,9 @@ menu.interact('filter', {
 menu.interact('filter-clear', {
 	joinLastRow: true,
 	text: 'Filter aufheben',
-	hide: ctx => ctx.session.eventfilter === undefined,
+	hide: ctx => ctx.session.eventAdd?.filter === undefined,
 	do(ctx) {
-		delete ctx.session.eventfilter;
+		delete ctx.session.eventAdd?.filter;
 		return true;
 	},
 });
@@ -95,16 +104,18 @@ menu.interact('filter-clear', {
 menu.choose('a', {
 	maxRows: MAX_RESULT_ROWS,
 	columns: RESULT_COLUMNS,
-	async choices(ctx) {
+	choices(ctx) {
 		try {
-			ctx.session.eventAdd ??= {eventPath: []};
-			const filteredEvents = findEvents(ctx);
+			ctx.session.eventAdd ??= {path: []};
+			const filteredEvents = allEventsFind(
+				ctx.session.eventAdd.filter,
+				ctx.session.eventAdd.path,
+			);
 			const alreadySelected = typedKeys(ctx.userconfig.mine.events);
 
-			ctx.session.eventAdd.eventDirectorySubDirectoryItems = typedKeys(filteredEvents.subDirectories ?? {});
+			ctx.session.eventAdd.subDirectoryItems = typedKeys(filteredEvents.subDirectories ?? {});
 			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(([name, directory], i) =>
-				Object.keys(directory.subDirectories ?? {}).length > 0
-				|| Object.keys(directory.events ?? {}).length > 0
+				directoryHasContent(directory)
 					? ['d' + i, '🗂️ ' + name]
 					: ['x' + i, '🚫 ' + name]);
 
@@ -145,14 +156,14 @@ menu.choose('a', {
 				return true;
 			}
 
-			if (ctx.session.eventAdd.eventDirectorySubDirectoryItems !== undefined) {
-				const chosenSubDirectory = ctx.session.eventAdd.eventDirectorySubDirectoryItems[Number(key.slice(1))];
-				delete ctx.session.eventAdd.eventDirectorySubDirectoryItems;
+			if (ctx.session.eventAdd.subDirectoryItems !== undefined) {
+				const chosenSubDirectory = ctx.session.eventAdd.subDirectoryItems[Number(key.slice(1))];
+				delete ctx.session.eventAdd.subDirectoryItems;
 
 				if (chosenSubDirectory !== undefined) {
-					ctx.session.eventAdd.eventPath.push(chosenSubDirectory);
+					ctx.session.eventAdd.path.push(chosenSubDirectory);
 
-					if (directoryExists(ctx.session.eventAdd.eventPath)) {
+					if (directoryExists(ctx.session.eventAdd.path)) {
 						return true;
 					}
 				}
@@ -174,23 +185,22 @@ menu.choose('a', {
 
 menu.interact('back', {
 	text: BACK_BUTTON_TEXT,
-	async do(ctx) {
-		if (ctx.session.eventfilter !== undefined) {
-			delete ctx.session.eventfilter;
-			return true;
-		}
-
-		if (ctx.session.eventAdd?.eventPath === undefined
-			|| ctx.session.eventAdd?.eventPath.length === 0) {
+	do(ctx) {
+		if (!ctx.session.eventAdd || ctx.session.eventAdd.path.length === 0) {
 			delete ctx.session.eventAdd;
 			return '..';
 		}
 
-		ctx.session.eventAdd.eventPath.pop();
-		if (!directoryExists(ctx.session.eventAdd.eventPath)) {
-			delete ctx.session.eventAdd;
-		}
-
+		ctx.session.eventAdd.path.pop();
 		return true;
+	},
+});
+
+menu.interact('top', {
+	joinLastRow: true,
+	text: '🔝 zur Übersicht…',
+	do(ctx) {
+		delete ctx.session.eventAdd;
+		return '..';
 	},
 });

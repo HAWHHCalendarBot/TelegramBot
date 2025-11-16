@@ -60,6 +60,22 @@ function getSubdirectory(path: string[]): EventDirectory | undefined {
 	return resolvedDirectory;
 }
 
+export function directoryHasContent(directory: EventDirectory): boolean {
+	const events = Object.keys(directory.events ?? {}).length;
+	const subDirectories = Object.keys(directory.subDirectories ?? {}).length;
+	return events > 0 || subDirectories > 0;
+}
+
+export function directoryExists(path: string[]): boolean {
+	if (path.length === 0) {
+		// Toplevel always exists
+		return true;
+	}
+
+	const directory = getSubdirectory(path);
+	return Boolean(directory && directoryHasContent(directory));
+}
+
 export function getEventName(id: EventId): string {
 	return namesOfEvents[id] ?? id;
 }
@@ -78,7 +94,7 @@ export function nonExisting(ids: readonly EventId[]): readonly EventId[] {
 
 export function find(
 	pattern: string | RegExp | undefined,
-	startAt: string[] = [],
+	startAt: string[],
 ): EventDirectory {
 	if (pattern !== undefined) {
 		const regex = new RegExp(pattern, 'i');
@@ -104,8 +120,4 @@ export function find(
 	}
 
 	return getSubdirectory(startAt) ?? {};
-}
-
-export function directoryExists(path: string[]): boolean {
-	return getSubdirectory(path) !== undefined;
 }

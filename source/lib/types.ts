@@ -24,13 +24,10 @@ export type Session = {
 	/** User ID */
 	adminuserquicklook?: number;
 	adminuserquicklookfilter?: string;
-	eventfilter?: string;
 	eventAdd?: {
-		/** Path to the currently selected subdirectory on the add events screen.
-		 *
-		 * The entries of this array are the keys of the (sub)directories.
-		 */
-		eventPath: string[];
+		filter?: string;
+		/** Currently selected subdirectory */
+		path: string[];
 		/** Subdirectory item keys of the directory selected by eventPath
 		 *
 		 * This array stores the keys of subdirectories in the currently selected directory.
@@ -38,7 +35,7 @@ export type Session = {
 		 * Telegram callback data restricts allowed characters and length, so we store the
 		 * keys here and use the array index as the callback payload.
 		 */
-		eventDirectorySubDirectoryItems?: string[];
+		subDirectoryItems?: string[];
 	};
 	generateChangeEventId?: EventId;
 	generateChangeDate?: NaiveDateTime;
