@@ -96,28 +96,27 @@ export function find(
 	pattern: string | RegExp | undefined,
 	startAt: string[],
 ): EventDirectory {
-	if (pattern !== undefined) {
-		const regex = new RegExp(pattern, 'i');
-		const accumulator: Record<EventId, string> = {};
+	if (!pattern) {
+		return getSubdirectory(startAt) ?? {};
+	}
 
-		function collect(directory: EventDirectory) {
-			for (const [eventId, name] of typedEntries(directory.events ?? {})) {
-				if (regex.test(name)) {
-					accumulator[eventId] = name;
-				}
-			}
+	const regex = new RegExp(pattern, 'i');
+	const accumulator: Record<EventId, string> = {};
 
-			for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
-				collect(subDirectory);
+	function collect(directory: EventDirectory) {
+		for (const [eventId, name] of typedEntries(directory.events ?? {})) {
+			if (regex.test(name)) {
+				accumulator[eventId] = name;
 			}
 		}
 
-		collect(getSubdirectory(startAt) ?? {});
-		return {
-			subDirectories: {},
-			events: Object.fromEntries(typedEntries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
-		};
+		for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
+			collect(subDirectory);
+		}
 	}
 
-	return getSubdirectory(startAt) ?? {};
+	collect(getSubdirectory(startAt) ?? {});
+	return {
+		events: Object.fromEntries(typedEntries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
+	};
 }
