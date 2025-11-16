@@ -18,13 +18,13 @@ export const menu = new MenuTemplate<MyContext>(async ctx => {
 
 	const eventIds = typedKeys(ctx.userconfig.mine.events);
 	if (eventIds.length > 0) {
-		const nonExisting = new Set(allEvents.nonExisting(eventIds));
+		const nonExisting = new Set(eventIds.filter(eventId => !allEvents.exists(eventId)));
 		text += 'Du hast folgende Veranstaltungen im Kalender:';
 		text += '\n';
 		text += eventIds
 			.map(eventId => {
 				let line = '- ';
-				if (nonExisting.has(eventId)) {
+				if (!allEvents.exists(eventId)) {
 					line += '⚠️ ';
 				}
 
@@ -62,15 +62,15 @@ bot.use(detailsMenu.bot);
 
 menu.interact('remove-old', {
 	text: '🗑 Entferne nicht mehr Existierende',
-	hide(ctx) {
-		const nonExisting = allEvents.nonExisting(typedKeys(ctx.userconfig.mine.events));
-		return nonExisting.length === 0;
-	},
+	hide: ctx =>
+		typedKeys(ctx.userconfig.mine.events).every(eventId =>
+			allEvents.exists(eventId)),
 	do(ctx) {
-		const nonExisting = allEvents.nonExisting(typedKeys(ctx.userconfig.mine.events));
-		for (const eventId of nonExisting) {
-			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete ctx.userconfig.mine.events[eventId];
+		for (const eventId of typedKeys(ctx.userconfig.mine.events)) {
+			if (!allEvents.exists(eventId)) {
+				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+				delete ctx.userconfig.mine.events[eventId];
+			}
 		}
 
 		return true;
