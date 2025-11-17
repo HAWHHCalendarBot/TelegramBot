@@ -1,10 +1,6 @@
-import {readFile} from 'node:fs/promises';
 import {html as format} from 'telegram-format';
-import type {
-	Change, EventEntry, EventId, NaiveDateTime,
-} from './types.ts';
 import {getEventName} from './all-events.ts';
-import {EVENT_FILES_DIR} from './git.ts';
+import type {Change, EventId, NaiveDateTime} from './types.ts';
 
 export function generateChangeDescription(change: Change): string {
 	let text = '';
@@ -67,17 +63,4 @@ export function generateShortChangeText(
 	date: NaiveDateTime,
 ): string {
 	return `${getEventName(eventId)} ${date}`;
-}
-
-export async function loadEvents(eventId: EventId): Promise<EventEntry[]> {
-	try {
-		const content = await readFile(
-			`${EVENT_FILES_DIR}/events/${eventId}.json`,
-			'utf8',
-		);
-		return JSON.parse(content) as EventEntry[];
-	} catch (error) {
-		console.error('ERROR while loading events for change date picker', error);
-		return [];
-	}
 }

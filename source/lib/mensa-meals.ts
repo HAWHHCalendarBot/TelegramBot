@@ -1,13 +1,19 @@
 import {readdir, readFile} from 'node:fs/promises';
-import {MENSA_DIR, pullMensaData} from './git.ts';
+import {pull} from './git.ts';
 import type {Meal} from './meal.ts';
+
+const DIRECTORY = 'mensa-data';
 
 setInterval(async () => pullMensaData(), 1000 * 60 * 30); // Every 30 minutes
 await pullMensaData();
 console.log(new Date(), 'mensa-data loaded');
 
+async function pullMensaData(): Promise<void> {
+	await pull(DIRECTORY, 'https://github.com/HAWHHCalendarBot/mensa-data.git');
+}
+
 export async function getCanteenList(): Promise<string[]> {
-	const found = await readdir(MENSA_DIR, {withFileTypes: true});
+	const found = await readdir(DIRECTORY, {withFileTypes: true});
 	const dirs = found
 		.filter(o => o.isDirectory())
 		.map(o => o.name)
@@ -27,7 +33,7 @@ function getFilename(
 	});
 	const m = month.toLocaleString(undefined, {minimumIntegerDigits: 2});
 	const d = day.toLocaleString(undefined, {minimumIntegerDigits: 2});
-	return `${MENSA_DIR}/${mensa}/${y}/${m}/${d}.json`;
+	return `${DIRECTORY}/${mensa}/${y}/${m}/${d}.json`;
 }
 
 export async function getMealsOfDay(

@@ -1,7 +1,9 @@
 import {readFile} from 'node:fs/promises';
-import {EVENT_FILES_DIR, pullEventFiles} from './git.ts';
+import {pull} from './git.ts';
 import {typedEntries} from './javascript-helper.ts';
-import type {EventDirectory, EventId} from './types.ts';
+import type {EventDirectory, EventEntry, EventId} from './types.ts';
+
+const DIRECTORY = 'eventfiles';
 
 let directory: EventDirectory = {};
 let namesOfEvents: Readonly<Record<EventId, string>> = {};
@@ -11,11 +13,8 @@ await update();
 console.log(new Date(), 'eventfiles loaded');
 
 async function update() {
-	await pullEventFiles();
-	const directoryString = await readFile(
-		`${EVENT_FILES_DIR}/directory.json`,
-		'utf8',
-	);
+	await pull(DIRECTORY, 'https://github.com/HAWHHCalendarBot/eventfiles.git');
+	const directoryString = await readFile(`${DIRECTORY}/directory.json`, 'utf8');
 	directory = JSON.parse(directoryString) as EventDirectory;
 	namesOfEvents = await generateMapping();
 }
@@ -105,4 +104,9 @@ export function find(
 	return {
 		events: Object.fromEntries(typedEntries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
 	};
+}
+
+export async function loadEvents(eventId: EventId): Promise<EventEntry[]> {
+	const content = await readFile(`${DIRECTORY}/events/${eventId}.json`, 'utf8');
+	return JSON.parse(content) as EventEntry[];
 }

@@ -7,10 +7,8 @@ import {
 	MenuTemplate,
 	replyMenuToContext,
 } from 'grammy-inline-menu';
-import {
-	generateChangeText,
-	loadEvents,
-} from '../../../../lib/change-helper.ts';
+import {loadEvents} from '../../../../lib/all-events.ts';
+import {generateChangeText} from '../../../../lib/change-helper.ts';
 import {typedKeys} from '../../../../lib/javascript-helper.ts';
 import type {
 	EventId,
