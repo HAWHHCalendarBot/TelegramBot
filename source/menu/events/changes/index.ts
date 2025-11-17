@@ -1,19 +1,21 @@
 import {Composer} from 'grammy';
 import {MenuTemplate} from 'grammy-inline-menu';
 import {html as format} from 'telegram-format';
+import {getEventName} from '../../../lib/all-events.ts';
 import {backMainButtons} from '../../../lib/inline-menu.ts';
-import type {MyContext} from '../../../lib/types.ts';
+import {typedKeys} from '../../../lib/javascript-helper.ts';
+import type {EventId, MyContext} from '../../../lib/types.ts';
 import * as changeAdd from './add/index.ts';
 import * as changeDetails from './details.ts';
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(ctx => {
-	const event = ctx.match![1]!.replaceAll(';', '/');
+	const eventId = ctx.match![1]! as EventId;
 
 	let text = '';
 	text += format.bold('Veranstaltungsänderungen');
 	text += '\n';
-	text += format.escape(event);
+	text += format.escape(getEventName(eventId));
 	text += '\n\n';
 	text += format.escape(ctx.t('changes-help'));
 
@@ -27,8 +29,8 @@ menu.submenu('a', changeAdd.menu, {text: '➕ Änderung hinzufügen'});
 menu.chooseIntoSubmenu('d', changeDetails.menu, {
 	columns: 1,
 	choices(ctx) {
-		const event = ctx.match![1]!.replaceAll(';', '/');
-		return Object.keys(ctx.userconfig.mine.events[event]?.changes ?? {});
+		const eventId = ctx.match![1]! as EventId;
+		return typedKeys(ctx.userconfig.mine.events[eventId]?.changes ?? {});
 	},
 	getCurrentPage: ctx => ctx.session.page,
 	setPage(ctx, page) {

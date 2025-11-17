@@ -1,40 +1,113 @@
 import {readFile} from 'node:fs/promises';
+import {pull} from './git.ts';
+import {typedEntries} from './javascript-helper.ts';
+import type {EventDirectory, EventEntry, EventId} from './types.ts';
 
-async function getAll(): Promise<string[]> {
-	const data = await readFile('eventfiles/all.txt', 'utf8');
-	const list = data.split('\n').filter(element => element !== '');
-	return list;
+let directory: EventDirectory = {};
+let namesOfEvents: Readonly<Record<EventId, string>> = {};
+
+setInterval(async () => update(), 1000 * 60 * 30); // Every 30 minutes
+await update();
+console.log(new Date(), 'eventfiles loaded');
+
+async function update() {
+	await pull(
+		'eventfiles',
+		'https://github.com/HAWHHCalendarBot/eventfiles.git',
+	);
+	const directoryString = await readFile('eventfiles/directory.json', 'utf8');
+	directory = JSON.parse(directoryString) as EventDirectory;
+	namesOfEvents = await generateMapping();
 }
 
-export async function count(): Promise<number> {
-	const allEvents = await getAll();
-	return allEvents.length;
+async function generateMapping(): Promise<Readonly<Record<EventId, string>>> {
+	const namesOfEvents: Record<EventId, string> = {};
+
+	function collect(directory: EventDirectory) {
+		for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
+			collect(subDirectory);
+		}
+
+		Object.assign(namesOfEvents, directory.events ?? {});
+	}
+
+	collect(directory);
+	return namesOfEvents;
 }
 
-export async function exists(name: string): Promise<boolean> {
-	const allEvents = await getAll();
-	return allEvents.includes(name);
+function getSubdirectory(path: string[]): EventDirectory | undefined {
+	let resolvedDirectory = directory;
+
+	for (const part of path) {
+		const subDirectory = resolvedDirectory.subDirectories?.[part];
+		if (subDirectory === undefined) {
+			return undefined;
+		}
+
+		resolvedDirectory = subDirectory;
+	}
+
+	return resolvedDirectory;
 }
 
-export async function nonExisting(names: readonly string[]): Promise<string[]> {
-	const allEvents = new Set(await getAll());
-	const result: string[] = [];
-	for (const event of names) {
-		if (!allEvents.has(event)) {
-			result.push(event);
+export function directoryHasContent(directory: EventDirectory): boolean {
+	const events = Object.keys(directory.events ?? {}).length;
+	const subDirectories = Object.keys(directory.subDirectories ?? {}).length;
+	return events > 0 || subDirectories > 0;
+}
+
+export function directoryExists(path: string[]): boolean {
+	if (path.length === 0) {
+		// Toplevel always exists
+		return true;
+	}
+
+	const directory = getSubdirectory(path);
+	return Boolean(directory && directoryHasContent(directory));
+}
+
+export function getEventName(id: EventId): string {
+	return namesOfEvents[id] ?? id;
+}
+
+export function count(): number {
+	return Object.keys(namesOfEvents).length;
+}
+
+export function exists(id: EventId): boolean {
+	return id in namesOfEvents;
+}
+
+export function find(
+	path: string[],
+	pattern: string | RegExp | undefined,
+): EventDirectory {
+	if (!pattern) {
+		return getSubdirectory(path) ?? {};
+	}
+
+	const regex = new RegExp(pattern, 'i');
+	const accumulator: Record<EventId, string> = {};
+
+	function collect(directory: EventDirectory) {
+		for (const [eventId, name] of typedEntries(directory.events ?? {})) {
+			if (regex.test(name)) {
+				accumulator[eventId] = name;
+			}
+		}
+
+		for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
+			collect(subDirectory);
 		}
 	}
 
-	return result;
+	collect(getSubdirectory(path) ?? {});
+	return {
+		events: Object.fromEntries(typedEntries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
+	};
 }
 
-export async function find(
-	pattern: string | RegExp,
-	ignore: readonly string[] = [],
-): Promise<readonly string[]> {
-	const allEvents = await getAll();
-	const regex = new RegExp(pattern, 'i');
-	const filtered = allEvents.filter(event =>
-		regex.test(event) && !ignore.includes(event));
-	return filtered;
+export async function loadEvents(eventId: EventId): Promise<EventEntry[]> {
+	const content = await readFile(`eventfiles/events/${eventId}.json`, 'utf8');
+	return JSON.parse(content) as EventEntry[];
 }

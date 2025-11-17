@@ -110,7 +110,7 @@ menu.select('u', {
 		return Object.fromEntries(allChats.map(chat => [chat.id, nameOfUser(chat)]));
 	},
 	isSet: (ctx, selected) => ctx.session.adminuserquicklook === Number(selected),
-	async set(ctx, selected) {
+	set(ctx, selected) {
 		ctx.session.adminuserquicklook = Number(selected);
 		return true;
 	},

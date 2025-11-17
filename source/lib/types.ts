@@ -19,11 +19,17 @@ export type MyContext =
 	& ContextFlavour;
 
 export type Session = {
-	adminBroadcast?: number; // Message ID
-	adminuserquicklook?: number; // User ID
+	/** Message ID */
+	adminBroadcast?: number;
+	/** User ID */
+	adminuserquicklook?: number;
 	adminuserquicklookfilter?: string;
-	eventfilter?: string;
-	generateChangeName?: string;
+	eventAdd?: {
+		filter?: string;
+		/** Currently selected subdirectory */
+		path: string[];
+	};
+	generateChangeEventId?: EventId;
 	generateChangeDate?: NaiveDateTime;
 	generateChange?: Change;
 	page?: number;
@@ -37,7 +43,7 @@ export type Session = {
 export type Userconfig = {
 	readonly admin?: true;
 	calendarfileSuffix: string;
-	events: Record<string, EventDetails>;
+	events: Record<EventId, EventDetails>;
 	mensa: MensaSettings;
 	removedEvents?: RemovedEventsDisplayStyle;
 };
@@ -80,6 +86,15 @@ export type MensaSettings = MealWishes & {
 	more?: readonly string[];
 	price?: MensaPriceClass;
 	showAdditives?: boolean;
+};
+
+export type EventId = `${number}_${number | string}`;
+
+export type EventDirectory = {
+	/** Maps the directory name to its content */
+	readonly subDirectories?: Readonly<Record<string, EventDirectory>>;
+	/** Maps `EventId` to the human-readable name */
+	readonly events?: Readonly<Record<EventId, string>>;
 };
 
 export type EventEntry = {
