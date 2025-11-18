@@ -83,6 +83,7 @@ menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 	columns: 1,
 	choices(ctx) {
 		const entries = typedEntries(ctx.userconfig.mine.events)
+			.filter(([eventId, _details]) => !eventId.includes('/')) // Skip legacy ids with /
 			.map(([eventId, details]) => {
 				let title = getEventName(eventId) + ' ';
 
