@@ -40,15 +40,14 @@ function dateEqual(first: Readonly<Date>, second: Readonly<Date>): boolean {
 
 function getCurrentSettings(ctx: MyContext): Readonly<{mensa?: string; date: Date}> {
 	let date = ctx.session.mensa?.date ?? Date.now();
-	let mensa = ctx.session.mensa?.mensa;
-
-	const now = Date.now();
-	// When that date is more than a day ago, update it
-	if (!mensa || (now - date) > DAY_IN_MS) {
+	const ago = Date.now() - date;
+	// When that date is more than a day ago, forget the session settings
+	if (ago > DAY_IN_MS) {
 		date = Date.now();
-		mensa = ctx.userconfig.mine.mensa.main;
+		delete ctx.session.mensa;
 	}
 
+	const mensa = ctx.session.mensa?.mensa ?? ctx.userconfig.mine.mensa.main;
 	return {mensa, date: new Date(date)};
 }
 
