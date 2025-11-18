@@ -17,8 +17,7 @@ bot.use(async (ctx, next) => {
 
 	ctx.userconfig.mine.mensa ??= {};
 	let more = ctx.userconfig.mine.mensa.more ?? [];
-
-	if (more.length > 0) {
+	if (more.length > 0 || ctx.userconfig.mine.mensa.main) {
 		const allAvailableCanteens = new Set(await getCanteenList());
 		more = [...new Set(more)]
 			// Remove main from more
@@ -26,6 +25,12 @@ bot.use(async (ctx, next) => {
 			// Remove not anymore existing
 			.filter(canteen => allAvailableCanteens.has(canteen))
 			.sort();
+		while (
+			ctx.userconfig.mine.mensa.main
+			&& !allAvailableCanteens.has(ctx.userconfig.mine.mensa.main)
+		) {
+			ctx.userconfig.mine.mensa.main = more.pop();
+		}
 	}
 
 	if (more.length > 0) {
