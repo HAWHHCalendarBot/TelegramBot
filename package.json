@@ -8,12 +8,17 @@
 		"url": "https://github.com/HAWHHCalendarBot/telegrambot.git"
 	},
 	"scripts": {
-		"start": "tsc && node --env-file-if-exists=.env --enable-source-maps dist/hawhh-calendarbot-telegrambot.js",
+		"start": "node --env-file-if-exists=.env --enable-source-maps source/hawhh-calendarbot-telegrambot.ts",
 		"test": "tsc && xo && node --enable-source-maps --test"
 	},
 	"type": "module",
 	"engines": {
-		"node": ">=22"
+		"node": ">=24"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "npm"
+		}
 	},
 	"dependencies": {
 		"@grammyjs/i18n": "^1.1.2",
@@ -26,7 +31,7 @@
 		"telegram-format": "^3.1.0"
 	},
 	"devDependencies": {
-		"@types/node": "^22.17.1",
+		"@types/node": "^24.10.1",
 		"typescript": "^5.9.2",
 		"xo": "^1.2.1"
 	},
