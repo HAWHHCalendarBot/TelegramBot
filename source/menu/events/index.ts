@@ -61,6 +61,7 @@ bot.use(addMenu.bot);
 bot.use(detailsMenu.bot);
 
 menu.interact('remove-old', {
+	style: 'danger',
 	text: '🗑 Entferne nicht mehr Existierende',
 	hide: ctx =>
 		typedKeys(ctx.userconfig.mine.events).every(eventId =>
@@ -77,7 +78,10 @@ menu.interact('remove-old', {
 	},
 });
 
-menu.submenu('a', addMenu.menu, {text: '➕ Veranstaltung hinzufügen'});
+menu.submenu('a', addMenu.menu, {
+	style: 'primary',
+	text: '➕ Veranstaltung hinzufügen',
+});
 
 menu.chooseIntoSubmenu('d', detailsMenu.menu, {
 	columns: 1,

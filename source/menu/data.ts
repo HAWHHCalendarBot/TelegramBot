@@ -93,6 +93,7 @@ const deleteAllQuestion = new StatelessQuestion<MyContext>(
 bot.use(deleteAllQuestion.middleware());
 
 menu.interact('delete-all', {
+	style: 'danger',
 	text: '⚠️ Alles löschen ⚠️',
 	hide: async ctx => !(await getActualUserconfigContent(ctx)),
 	async do(ctx, path) {

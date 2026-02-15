@@ -72,6 +72,7 @@ const question = new StatelessQuestion<MyContext>(
 bot.use(question.middleware());
 
 menu.interact('filter', {
+	style: 'primary',
 	text(ctx) {
 		return ctx.session.eventAdd?.filter
 			? `🔎 Filter: ${ctx.session.eventAdd.filter}`
@@ -90,6 +91,7 @@ menu.interact('filter', {
 
 menu.interact('filter-clear', {
 	joinLastRow: true,
+	style: 'success',
 	text: 'Filter aufheben',
 	hide: ctx => ctx.session.eventAdd?.filter === undefined,
 	do(ctx) {

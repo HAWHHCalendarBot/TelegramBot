@@ -38,6 +38,7 @@ menu.interact('set', {
 });
 
 menu.interact('send', {
+	style: 'danger',
 	text: '📤 Versende Broadcast',
 	hide: ctx => !ctx.session.adminBroadcast,
 	async do(ctx) {

@@ -163,7 +163,8 @@ const removeMenu = new MenuTemplate<MyContext>(ctx => {
 	);
 });
 removeMenu.interact('y', {
-	text: 'Ja ich will!',
+	style: 'danger',
+	text: '🗑 Ja ich will!',
 	async do(ctx) {
 		const eventId = ctx.match![1]! as EventId;
 		const eventName = getEventName(eventId);
@@ -174,8 +175,15 @@ removeMenu.interact('y', {
 		return true;
 	},
 });
-removeMenu.navigate('..', {joinLastRow: true, text: '🛑 Abbrechen'});
+removeMenu.navigate('..', {
+	joinLastRow: true,
+	style: 'success',
+	text: '🛑 Abbrechen',
+});
 
-menu.submenu('r', removeMenu, {text: '🗑 Veranstaltung entfernen'});
+menu.submenu('r', removeMenu, {
+	style: 'danger',
+	text: '🗑 Veranstaltung entfernen',
+});
 
 menu.manualRow(backMainButtons);
