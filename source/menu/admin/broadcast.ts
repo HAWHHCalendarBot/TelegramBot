@@ -54,8 +54,8 @@ async function handleOngoingBroadcast(ctx: MyContext, messageId: number): Promis
 	}
 
 	await ctx.reply(text, {
-		reply_to_message_id: messageId,
 		reply_markup: { remove_keyboard: true },
+		reply_parameters: { message_id: messageId },
 	});
 
 	if (ctx.callbackQuery?.data) {
