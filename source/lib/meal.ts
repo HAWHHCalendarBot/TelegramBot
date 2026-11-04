@@ -21,10 +21,8 @@ export type MealContents = {
 	readonly Vegetarian?: boolean;
 };
 
-export type Meal =
-	& MealContents
-	& MealPrices
-	& {
+export type Meal = MealContents &
+	MealPrices & {
 		readonly Name: string;
 		readonly Category: string;
 		readonly Date: `${number}-${number}-${number}`;

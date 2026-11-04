@@ -1,16 +1,17 @@
-import {StatelessQuestion} from '@grammyjs/stateless-question';
-import {Composer} from 'grammy';
+import { StatelessQuestion } from "@grammyjs/stateless-question";
+import { Composer } from "grammy";
 import {
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
 	replyMenuToContext,
-} from 'grammy-inline-menu';
-import {html as format} from 'telegram-format';
-import {getEventName} from '../../lib/all-events.ts';
-import {backMainButtons} from '../../lib/inline-menu.ts';
-import type {EventId, MyContext} from '../../lib/types.ts';
-import * as changesMenu from './changes/index.ts';
+} from "grammy-inline-menu";
+import { html as format } from "telegram-format";
+
+import { getEventName } from "../../lib/all-events.ts";
+import { backMainButtons } from "../../lib/inline-menu.ts";
+import type { EventId, MyContext } from "../../lib/types.ts";
+import * as changesMenu from "./changes/index.ts";
 
 function getIdFromPath(path: string): EventId {
 	const match = /\/d:([^/]+)\//.exec(path)!;
@@ -25,36 +26,36 @@ export const menu = new MenuTemplate<MyContext>((ctx, path) => {
 	const event = ctx.userconfig.mine.events[eventId]!;
 	const changes = Object.keys(event.changes ?? {}).length;
 
-	let text = format.bold('Veranstaltung');
-	text += '\n';
+	let text = format.bold("Veranstaltung");
+	text += "\n";
 	text += getEventName(eventId);
-	text += '\n';
+	text += "\n";
 
 	if (changes > 0) {
-		text += '\n';
-		text += '✏️';
-		text += 'Änderungen';
-		text += ': ';
+		text += "\n";
+		text += "✏️";
+		text += "Änderungen";
+		text += ": ";
 		text += String(changes);
-		text += '\n';
+		text += "\n";
 	}
 
 	if (event.alertMinutesBefore !== undefined) {
-		text += '\n';
-		text += '⏰';
-		text += 'Erinnerung';
-		text += ': ';
+		text += "\n";
+		text += "⏰";
+		text += "Erinnerung";
+		text += ": ";
 		text += `${event.alertMinutesBefore} Minuten vorher`;
-		text += '\n';
+		text += "\n";
 	}
 
 	if (event.notes) {
-		text += '\n';
-		text += '🗒';
-		text += format.bold('Notizen');
-		text += '\n';
+		text += "\n";
+		text += "🗒";
+		text += format.bold("Notizen");
+		text += "\n";
 		text += format.escape(event.notes);
-		text += '\n\n';
+		text += "\n\n";
 	}
 
 	return {
@@ -64,9 +65,9 @@ export const menu = new MenuTemplate<MyContext>((ctx, path) => {
 	};
 });
 
-menu.submenu('c', changesMenu.menu, {
-	text: '✏️ Änderungen',
-	hide: ctx => Object.keys(ctx.userconfig.mine.events).length === 0,
+menu.submenu("c", changesMenu.menu, {
+	text: "✏️ Änderungen",
+	hide: (ctx) => Object.keys(ctx.userconfig.mine.events).length === 0,
 });
 
 const alertMenu = new MenuTemplate<MyContext>((_, path) => {
@@ -74,76 +75,73 @@ const alertMenu = new MenuTemplate<MyContext>((_, path) => {
 	return `Wie lange im vorraus möchtest du an einen Termin der Veranstaltung ${name} erinnert werden?`;
 });
 
-alertMenu.interact('nope', {
-	text: '🔕 Garnicht',
+alertMenu.interact("nope", {
+	text: "🔕 Garnicht",
 	do(ctx, path) {
 		const eventId = getIdFromPath(path);
 		delete ctx.userconfig.mine.events[eventId]!.alertMinutesBefore;
-		return '..';
+		return "..";
 	},
 });
 
-alertMenu.choose('t', {
+alertMenu.choose("t", {
 	columns: 3,
 	choices: {
-		0: 'Beginn',
-		5: '5 Minuten',
-		10: '10 Minuten',
-		15: '15 Minuten',
-		30: '30 Minuten',
-		45: '45 Minuten',
-		60: '1 Stunde',
-		120: '2 Stunden',
-		1337: '1337 Minuten',
+		0: "Beginn",
+		5: "5 Minuten",
+		10: "10 Minuten",
+		15: "15 Minuten",
+		30: "30 Minuten",
+		45: "45 Minuten",
+		60: "1 Stunde",
+		120: "2 Stunden",
+		1337: "1337 Minuten",
 	},
 	do(ctx, key) {
 		if (!ctx.callbackQuery?.data) {
-			throw new Error('how?');
+			throw new Error("how?");
 		}
 
 		const eventId = getIdFromPath(ctx.callbackQuery.data);
 		const minutes = Number(key);
 		ctx.userconfig.mine.events[eventId]!.alertMinutesBefore = minutes;
-		return '..';
+		return "..";
 	},
 });
 
 alertMenu.manualRow(backMainButtons);
 
-menu.submenu('alert', alertMenu, {text: '⏰ Erinnerung'});
+menu.submenu("alert", alertMenu, { text: "⏰ Erinnerung" });
 
-const noteQuestion = new StatelessQuestion<MyContext>(
-	'event-notes',
-	async (ctx, path) => {
-		const eventId = getIdFromPath(path);
-		if (ctx.message.text) {
-			const notes = ctx.message.text;
+const noteQuestion = new StatelessQuestion<MyContext>("event-notes", async (ctx, path) => {
+	const eventId = getIdFromPath(path);
+	if (ctx.message.text) {
+		const notes = ctx.message.text;
 
-			ctx.userconfig.mine.events[eventId]!.notes = notes;
-		}
+		ctx.userconfig.mine.events[eventId]!.notes = notes;
+	}
 
-		await replyMenuToContext(menu, ctx, path);
-	},
-);
+	await replyMenuToContext(menu, ctx, path);
+});
 
 bot.use(noteQuestion.middleware());
 
-menu.interact('set-notes', {
-	text: '🗒 Schreibe Notiz',
+menu.interact("set-notes", {
+	text: "🗒 Schreibe Notiz",
 	async do(ctx, path) {
 		const eventId = getIdFromPath(path);
-		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${
-			format.escape(getEventName(eventId))
-		} stehen haben?`;
+		const text = `Welche Notizen möchtest du an den Kalendereinträgen von ${format.escape(
+			getEventName(eventId),
+		)} stehen haben?`;
 		await noteQuestion.replyWithHTML(ctx, text, getMenuOfPath(path));
 		await deleteMenuFromContext(ctx);
 		return false;
 	},
 });
 
-menu.interact('remove-notes', {
+menu.interact("remove-notes", {
 	joinLastRow: true,
-	text: 'Notiz löschen',
+	text: "Notiz löschen",
 	hide(ctx, path) {
 		const eventId = getIdFromPath(path);
 		return !ctx.userconfig.mine.events[eventId]!.notes;
@@ -155,16 +153,16 @@ menu.interact('remove-notes', {
 	},
 });
 
-const removeMenu = new MenuTemplate<MyContext>(ctx => {
+const removeMenu = new MenuTemplate<MyContext>((ctx) => {
 	const eventId = ctx.match![1]! as EventId;
 	return (
-		getEventName(eventId)
-		+ '\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?'
+		getEventName(eventId) +
+		"\n\nBist du dir sicher, dass du diese Veranstaltung entfernen möchtest?"
 	);
 });
-removeMenu.interact('y', {
-	style: 'danger',
-	text: '🗑 Ja ich will!',
+removeMenu.interact("y", {
+	style: "danger",
+	text: "🗑 Ja ich will!",
 	async do(ctx) {
 		const eventId = ctx.match![1]! as EventId;
 		const eventName = getEventName(eventId);
@@ -175,15 +173,15 @@ removeMenu.interact('y', {
 		return true;
 	},
 });
-removeMenu.navigate('..', {
+removeMenu.navigate("..", {
 	joinLastRow: true,
-	style: 'success',
-	text: '🛑 Abbrechen',
+	style: "success",
+	text: "🛑 Abbrechen",
 });
 
-menu.submenu('r', removeMenu, {
-	style: 'danger',
-	text: '🗑 Veranstaltung entfernen',
+menu.submenu("r", removeMenu, {
+	style: "danger",
+	text: "🗑 Veranstaltung entfernen",
 });
 
 menu.manualRow(backMainButtons);

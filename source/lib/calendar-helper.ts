@@ -1,8 +1,8 @@
-import type {MyContext, Userconfig} from './types.ts';
+import type { MyContext, Userconfig } from "./types.ts";
 
 export function getUrl(id: number, userconfig: Userconfig): string {
 	let filename = `${id}`;
-	const {calendarfileSuffix} = userconfig;
+	const { calendarfileSuffix } = userconfig;
 	if (calendarfileSuffix) {
 		filename += `-${calendarfileSuffix}`;
 	}

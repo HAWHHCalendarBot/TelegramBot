@@ -13,7 +13,7 @@ export async function sequentialLoop<Argument, Result>(
 }
 
 export async function sleep(ms: number): Promise<void> {
-	await new Promise(resolve => {
+	await new Promise((resolve) => {
 		setTimeout(resolve, ms);
 	});
 }

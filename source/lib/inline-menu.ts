@@ -1,8 +1,5 @@
-import {createBackMainMenuButtons} from 'grammy-inline-menu';
+import { createBackMainMenuButtons } from "grammy-inline-menu";
 
-export const BACK_BUTTON_TEXT = '🔙 zurück…';
+export const BACK_BUTTON_TEXT = "🔙 zurück…";
 
-export const backMainButtons = createBackMainMenuButtons(
-	BACK_BUTTON_TEXT,
-	'🔝 zum Hauptmenü',
-);
+export const backMainButtons = createBackMainMenuButtons(BACK_BUTTON_TEXT, "🔝 zum Hauptmenü");

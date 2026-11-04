@@ -1,6 +1,7 @@
-import type {Api} from 'grammy';
-import {sequentialLoop, sleep} from './async.ts';
-import type {OtherSendMessage} from './types.ts';
+import type { Api } from "grammy";
+
+import { sequentialLoop, sleep } from "./async.ts";
+import type { OtherSendMessage } from "./types.ts";
 
 const SLEEP_MS = 250;
 
@@ -12,16 +13,12 @@ export async function broadcast(
 ): Promise<number[]> {
 	const goneUserIds: number[] = [];
 
-	await sequentialLoop(targetIds, async id => {
+	await sequentialLoop(targetIds, async (id) => {
 		try {
 			await sleep(SLEEP_MS);
 			await telegram.sendMessage(id, text, extra);
 		} catch (error) {
-			console.warn(
-				'broadcast failed. Target:',
-				id,
-				error instanceof Error ? error.message : error,
-			);
+			console.warn("broadcast failed. Target:", id, error instanceof Error ? error.message : error);
 			if (isUserGoneError(error)) {
 				goneUserIds.push(id);
 			}
@@ -39,13 +36,13 @@ export async function forwardBroadcast(
 ): Promise<number[]> {
 	const goneUserIds: number[] = [];
 
-	await sequentialLoop(targetIds, async id => {
+	await sequentialLoop(targetIds, async (id) => {
 		try {
 			await sleep(SLEEP_MS);
 			await telegram.forwardMessage(id, originChat, messageId);
 		} catch (error) {
 			console.warn(
-				'forwardBroadcast failed. Target:',
+				"forwardBroadcast failed. Target:",
 				id,
 				error instanceof Error ? error.message : error,
 			);
@@ -59,11 +56,9 @@ export async function forwardBroadcast(
 }
 
 function isUserGoneError(error: unknown): boolean {
-	const errorDescription = error instanceof Error
-		? error.message
-		: String(error);
+	const errorDescription = error instanceof Error ? error.message : String(error);
 	return (
-		errorDescription.includes('user is deactivated')
-		|| errorDescription.includes('bot was blocked by the user')
+		errorDescription.includes("user is deactivated") ||
+		errorDescription.includes("bot was blocked by the user")
 	);
 }

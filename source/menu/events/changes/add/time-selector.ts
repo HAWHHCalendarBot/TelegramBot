@@ -1,70 +1,68 @@
-import {MenuTemplate} from 'grammy-inline-menu';
-import {
-	HOUR_OPTIONS,
-	MINUTE_OPTIONS,
-} from '../../../../lib/event-creation-menu-options.ts';
-import {BACK_BUTTON_TEXT} from '../../../../lib/inline-menu.ts';
-import type {MyContext, NaiveTime} from '../../../../lib/types.ts';
+import { MenuTemplate } from "grammy-inline-menu";
+
+import { HOUR_OPTIONS, MINUTE_OPTIONS } from "../../../../lib/event-creation-menu-options.ts";
+import { BACK_BUTTON_TEXT } from "../../../../lib/inline-menu.ts";
+import type { MyContext, NaiveTime } from "../../../../lib/types.ts";
 
 export function createTimeSelectionSubmenuButtons(
 	menu: MenuTemplate<MyContext>,
 	hide: (ctx: MyContext) => boolean,
 ): void {
-	createTimeSelectionSubmenuButton(menu, 'starttime', hide);
-	createTimeSelectionSubmenuButton(menu, 'endtime', hide);
+	createTimeSelectionSubmenuButton(menu, "starttime", hide);
+	createTimeSelectionSubmenuButton(menu, "endtime", hide);
 }
 
 function createTimeSelectionSubmenuButton(
 	menu: MenuTemplate<MyContext>,
-	time: 'starttime' | 'endtime',
+	time: "starttime" | "endtime",
 	hide: (ctx: MyContext) => boolean,
 ): void {
-	const subMenu = new MenuTemplate<MyContext>(time === 'starttime'
-		? 'Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?'
-		: 'Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?');
+	const subMenu = new MenuTemplate<MyContext>(
+		time === "starttime"
+			? "Zu welchem Zeitpunkt beginnt diese Veranstaltung stattdessen?"
+			: "Zu welchem Zeitpunkt endet diese Veranstaltung stattdessen?",
+	);
 
 	menu.submenu(time, subMenu, {
-		joinLastRow: time === 'endtime',
+		joinLastRow: time === "endtime",
 		hide,
 		text(ctx) {
-			const prefix = time === 'starttime' ? '▶️ ' : '⏹ ';
+			const prefix = time === "starttime" ? "▶️ " : "⏹ ";
 			const alreadySet = ctx.session.generateChange![time];
-			const fallback = time === 'starttime' ? 'Startzeit' : 'Endzeit';
+			const fallback = time === "starttime" ? "Startzeit" : "Endzeit";
 			return prefix + (alreadySet ?? fallback);
 		},
 	});
 
-	subMenu.select('h', {
+	subMenu.select("h", {
 		columns: 3,
 		choices: HOUR_OPTIONS,
-		isSet: (ctx, key) =>
-			Number(ctx.session.generateChange![time]?.split(':')[0]) === Number(key),
+		isSet: (ctx, key) => Number(ctx.session.generateChange![time]?.split(":")[0]) === Number(key),
 		set(ctx, key) {
-			const {minute} = getCurrent(ctx, time);
+			const { minute } = getCurrent(ctx, time);
 			ctx.session.generateChange![time] = formatTime(key, minute);
 			return true;
 		},
 	});
 
-	subMenu.select('m', {
+	subMenu.select("m", {
 		columns: 4,
 		choices: MINUTE_OPTIONS,
-		buttonText: (_, number) => ':' + numberToTwoDigit(number),
-		isSet: (ctx, key) =>
-			Number(ctx.session.generateChange![time]?.split(':')[1]) === Number(key),
+		buttonText: (_, number) => ":" + numberToTwoDigit(number),
+		isSet: (ctx, key) => Number(ctx.session.generateChange![time]?.split(":")[1]) === Number(key),
 		set(ctx, key) {
-			const {hour} = getCurrent(ctx, time);
+			const { hour } = getCurrent(ctx, time);
 			ctx.session.generateChange![time] = formatTime(hour, key);
 			return true;
 		},
 	});
 
-	subMenu.navigate('..', {text: BACK_BUTTON_TEXT});
+	subMenu.navigate("..", { text: BACK_BUTTON_TEXT });
 }
 
 function formatTime(hour: number | string, minute: number | string): NaiveTime {
-	const result = numberToTwoDigit(hour) + ':' + numberToTwoDigit(minute);
-	return (result + ':00') as NaiveTime;
+	const result = numberToTwoDigit(hour) + ":" + numberToTwoDigit(minute);
+	return (result + ":00") as NaiveTime;
 }
 
 function numberToTwoDigit(number: number | string): string {
@@ -73,10 +71,10 @@ function numberToTwoDigit(number: number | string): string {
 
 function getCurrent(
 	ctx: MyContext,
-	time: 'starttime' | 'endtime',
-): {hour: number; minute: number} {
+	time: "starttime" | "endtime",
+): { hour: number; minute: number } {
 	const current = ctx.session.generateChange![time];
-	const fallback = time === 'starttime' ? '8:00' : '16:00';
-	const [hour, minute] = (current ?? fallback).split(':').map(Number);
-	return {hour: hour!, minute: minute!};
+	const fallback = time === "starttime" ? "8:00" : "16:00";
+	const [hour, minute] = (current ?? fallback).split(":").map(Number);
+	return { hour: hour!, minute: minute! };
 }

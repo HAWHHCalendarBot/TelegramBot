@@ -1,8 +1,9 @@
-import type {I18nFlavor} from '@grammyjs/i18n';
-import type {Api, Context as BaseContext, SessionFlavor} from 'grammy';
-import type {ContextProperty} from './chatconfig.ts';
+import type { I18nFlavor } from "@grammyjs/i18n";
+import type { Api, Context as BaseContext, SessionFlavor } from "grammy";
 
-export type OtherSendMessage = Parameters<Api['sendMessage']>[2];
+import type { ContextProperty } from "./chatconfig.ts";
+
+export type OtherSendMessage = Parameters<Api["sendMessage"]>[2];
 
 export type NaiveDate = `${number}-${number}-${number}`;
 export type NaiveTime = `${number}:${number}:${number}`;
@@ -12,11 +13,7 @@ type ContextFlavour = {
 	readonly userconfig: ContextProperty;
 };
 
-export type MyContext =
-	& BaseContext
-	& I18nFlavor
-	& SessionFlavor<Session>
-	& ContextFlavour;
+export type MyContext = BaseContext & I18nFlavor & SessionFlavor<Session> & ContextFlavour;
 
 export type Session = {
 	/** Message ID */
@@ -33,7 +30,7 @@ export type Session = {
 	generateChangeDate?: NaiveDateTime;
 	generateChange?: Change;
 	page?: number;
-	privacySection?: 'telegram' | 'persistent' | 'tmp';
+	privacySection?: "telegram" | "persistent" | "tmp";
 	mensa?: {
 		mensa?: string;
 		date?: number;
@@ -48,7 +45,7 @@ export type Userconfig = {
 	removedEvents?: RemovedEventsDisplayStyle;
 };
 
-export type RemovedEventsDisplayStyle = 'cancelled' | 'removed' | 'emoji';
+export type RemovedEventsDisplayStyle = "cancelled" | "removed" | "emoji";
 
 export type EventDetails = {
 	alertMinutesBefore?: number;
@@ -64,7 +61,7 @@ export type Change = {
 	room?: string;
 };
 
-export type MensaPriceClass = 'student' | 'attendant' | 'guest';
+export type MensaPriceClass = "student" | "attendant" | "guest";
 
 export type MealWishes = {
 	lactoseFree?: boolean;

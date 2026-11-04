@@ -1,11 +1,12 @@
-import {html as format} from 'telegram-format';
-import {getEventName} from './all-events.ts';
-import type {Change, EventId, NaiveDateTime} from './types.ts';
+import { html as format } from "telegram-format";
+
+import { getEventName } from "./all-events.ts";
+import type { Change, EventId, NaiveDateTime } from "./types.ts";
 
 export function generateChangeDescription(change: Change): string {
-	let text = '';
+	let text = "";
 	if (change.remove) {
-		text += '🚫 Entfällt\n';
+		text += "🚫 Entfällt\n";
 	}
 
 	if (change.namesuffix) {
@@ -35,7 +36,7 @@ export function generateChangeText(
 	let text = generateChangeTextHeader(eventId, date);
 
 	if (Object.keys(change).length > 0) {
-		text += '\nÄnderungen:\n';
+		text += "\nÄnderungen:\n";
 		text += format.escape(generateChangeDescription(change));
 	}
 
@@ -46,21 +47,18 @@ export function generateChangeTextHeader(
 	eventId: EventId,
 	date: NaiveDateTime | undefined,
 ): string {
-	let text = '';
-	text += format.bold('Veranstaltungsänderung');
-	text += '\n';
+	let text = "";
+	text += format.bold("Veranstaltungsänderung");
+	text += "\n";
 	text += format.bold(format.escape(getEventName(eventId)));
 	if (date) {
 		text += ` ${date}`;
 	}
 
-	text += '\n';
+	text += "\n";
 	return text;
 }
 
-export function generateShortChangeText(
-	eventId: EventId,
-	date: NaiveDateTime,
-): string {
+export function generateShortChangeText(eventId: EventId, date: NaiveDateTime): string {
 	return `${getEventName(eventId)} ${date}`;
 }

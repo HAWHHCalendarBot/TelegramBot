@@ -1,0 +1,57 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["import", "node", "oxc", "promise", "typescript", "unicorn"],
+	"categories": {
+		"correctness": "error",
+		"suspicious": "error",
+		"pedantic": "error",
+		"perf": "error"
+	},
+	"env": {
+		"builtin": true
+	},
+	"options": {
+		"reportUnusedDisableDirectives": "allow",
+		"typeAware": true
+	},
+	"rules": {
+		"no-shadow": "allow",
+		"require-await": "allow",
+		"require-unicode-regexp": "allow",
+		"typescript/consistent-return": "allow",
+		"typescript/no-deprecated": "allow",
+		"typescript/no-misused-promises": "allow",
+		"typescript/no-unnecessary-type-conversion": "allow",
+		"typescript/no-unsafe-member-access": "allow",
+		"typescript/require-await": "allow",
+		"typescript/strict-void-return": "allow",
+		"unicorn/no-array-sort": "allow",
+
+		"func-style": ["error", "declaration"],
+		"import/max-dependencies": "allow",
+		"import/no-duplicates": ["error", { "preferInline": true }],
+		"max-lines-per-function": "allow",
+		"no-inline-comments": "allow",
+		"no-warning-comments": "warn",
+		"typescript/array-type": ["error", { "default": "array-simple" }],
+		"typescript/no-import-type-side-effects": "error",
+		"typescript/no-unsafe-type-assertion": "allow",
+		"typescript/prefer-nullish-coalescing": ["error", { "ignorePrimitives": { "string": true } }],
+		"typescript/prefer-readonly-parameter-types": "allow",
+		"typescript/strict-boolean-expressions": [
+			"allow",
+			{
+				"allowNullableBoolean": true,
+				"allowNullableString": true,
+				"allowString": true
+			}
+		],
+		"unicorn/prefer-node-protocol": "error"
+	},
+	"overrides": [
+		{
+			"files": ["**/*.test.*", "**/test.*"],
+			"rules": {}
+		}
+	]
+}

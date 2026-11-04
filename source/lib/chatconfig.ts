@@ -1,12 +1,12 @@
-import {
-	readdir, readFile, unlink, writeFile,
-} from 'node:fs/promises';
-import type {Api, MiddlewareFn} from 'grammy';
-import type {User} from 'grammy/types';
-import stringify from 'json-stable-stringify';
-import {sequentialLoop} from './async.ts';
-import * as telegramBroadcast from './telegram-broadcast.ts';
-import type {MyContext, OtherSendMessage, Userconfig} from './types.ts';
+import { readdir, readFile, unlink, writeFile } from "node:fs/promises";
+
+import type { Api, MiddlewareFn } from "grammy";
+import type { User } from "grammy/types";
+import stringify from "json-stable-stringify";
+
+import { sequentialLoop } from "./async.ts";
+import * as telegramBroadcast from "./telegram-broadcast.ts";
+import type { MyContext, OtherSendMessage, Userconfig } from "./types.ts";
 
 type ChatConfigFileContent = {
 	chat: User;
@@ -46,7 +46,7 @@ export class Chatconfig {
 	middleware(): MiddlewareFn<MyContext> {
 		return async (ctx, next) => {
 			if (!ctx.from) {
-				console.warn(new Date(), 'Chatconfig', 'ctx.from empty', ctx.update);
+				console.warn(new Date(), "Chatconfig", "ctx.from empty", ctx.update);
 				return next();
 			}
 
@@ -54,8 +54,7 @@ export class Chatconfig {
 			const configOfUser = this.configFromWholeConfig(wholeconfig);
 
 			const contextProperty: ContextProperty = {
-				all: async (filter?: (o: ChatConfigFileContent) => boolean) =>
-					this.all(filter),
+				all: async (filter?: (o: ChatConfigFileContent) => boolean) => this.all(filter),
 				allIds: async () => this.allIds(),
 				broadcast: async (
 					text: string,
@@ -78,7 +77,7 @@ export class Chatconfig {
 			const before = stringify(ctx.userconfig.mine);
 			await next();
 			if (!ctx.userconfig.mine) {
-				console.log(new Date(), 'request to delete data', ctx.from);
+				console.log(new Date(), "request to delete data", ctx.from);
 				// Request to remove the userconfig
 				return this.removeConfig(ctx.from.id);
 			}
@@ -95,7 +94,7 @@ export class Chatconfig {
 
 	async load(id: number): Promise<ChatConfigFileContent | undefined> {
 		try {
-			const content = await readFile(this.filenameFromId(id), 'utf8');
+			const content = await readFile(this.filenameFromId(id), "utf8");
 			return JSON.parse(content) as ChatConfigFileContent;
 		} catch {
 			return undefined;
@@ -108,16 +107,9 @@ export class Chatconfig {
 	}
 
 	async saveConfig(from: User, config: Userconfig): Promise<void> {
-		const json: ChatConfigFileContent = {
-			chat: from,
-			config,
-		};
+		const json: ChatConfigFileContent = { chat: from, config };
 
-		await writeFile(
-			this.filenameFromId(from.id),
-			stringify(json, {space: 2}) + '\n',
-			'utf8',
-		);
+		await writeFile(this.filenameFromId(from.id), stringify(json, { space: 2 }) + "\n", "utf8");
 	}
 
 	async removeConfig(id: number): Promise<void> {
@@ -126,18 +118,22 @@ export class Chatconfig {
 
 	async allIds(): Promise<number[]> {
 		const files = await readdir(this.folder);
-		const ids = files.map(s => s.replace('.json', '')).map(Number);
+		const ids = files.map((s) => s.replace(".json", "")).map(Number);
 		return ids;
 	}
 
-	async all(filter: (o: ChatConfigFileContent) => boolean = () => true): Promise<readonly ChatConfigFileContent[]> {
+	async all(
+		filter: (o: ChatConfigFileContent) => boolean = () => true,
+	): Promise<readonly ChatConfigFileContent[]> {
 		const ids = await this.allIds();
 
-		const fileContents = await Promise.all(ids.map(async id => readFile(this.filenameFromId(id), 'utf8')));
+		const fileContents = await Promise.all(
+			ids.map(async (id) => readFile(this.filenameFromId(id), "utf8")),
+		);
 
 		const configs = fileContents
-			.map(o => JSON.parse(o) as ChatConfigFileContent)
-			.filter(o => filter(o));
+			.map((o) => JSON.parse(o) as ChatConfigFileContent)
+			.filter((o) => filter(o));
 
 		return configs;
 	}
@@ -149,14 +145,9 @@ export class Chatconfig {
 		filter: (o: ChatConfigFileContent) => boolean = () => true,
 	): Promise<void> {
 		const allConfigs = await this.all(filter);
-		const allIds = allConfigs.map(config => config.chat.id);
-		const failedIds = await telegramBroadcast.broadcast(
-			telegram,
-			allIds,
-			text,
-			extra,
-		);
-		await sequentialLoop(failedIds, async id => this.removeConfig(id));
+		const allIds = allConfigs.map((config) => config.chat.id);
+		const failedIds = await telegramBroadcast.broadcast(telegram, allIds, text, extra);
+		await sequentialLoop(failedIds, async (id) => this.removeConfig(id));
 	}
 
 	async forwardBroadcast(
@@ -166,14 +157,14 @@ export class Chatconfig {
 		filter: (o: ChatConfigFileContent) => boolean = () => true,
 	): Promise<void> {
 		const allConfigs = await this.all(filter);
-		const allIds = allConfigs.map(config => config.chat.id);
+		const allIds = allConfigs.map((config) => config.chat.id);
 		const failedIds = await telegramBroadcast.forwardBroadcast(
 			telegram,
 			allIds,
 			originChat,
 			messageId,
 		);
-		await sequentialLoop(failedIds, async id => this.removeConfig(id));
+		await sequentialLoop(failedIds, async (id) => this.removeConfig(id));
 	}
 
 	private filenameFromId(id: number): string {
@@ -181,11 +172,7 @@ export class Chatconfig {
 	}
 
 	private configFromWholeConfig(content: ChatConfigFileContent | undefined): Userconfig {
-		const config: Userconfig = content?.config ?? {
-			calendarfileSuffix: '',
-			events: {},
-			mensa: {},
-		};
-		return {...config};
+		const config: Userconfig = content?.config ?? { calendarfileSuffix: "", events: {}, mensa: {} };
+		return { ...config };
 	}
 }

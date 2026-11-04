@@ -1,19 +1,15 @@
-import {Composer} from 'grammy';
-import type {InlineQueryResultArticle, User} from 'grammy/types';
-import {html as format} from 'telegram-format';
+import { Composer } from "grammy";
+import type { InlineQueryResultArticle, User } from "grammy/types";
+import { html as format } from "telegram-format";
+
 import {
 	generateChangeDescription,
 	generateChangeText,
 	generateChangeTextHeader,
 	generateShortChangeText,
-} from '../lib/change-helper.ts';
-import {typedEntries} from '../lib/javascript-helper.ts';
-import type {
-	Change,
-	EventId,
-	MyContext,
-	NaiveDateTime,
-} from '../lib/types.ts';
+} from "../lib/change-helper.ts";
+import { typedEntries } from "../lib/javascript-helper.ts";
+import type { Change, EventId, MyContext, NaiveDateTime } from "../lib/types.ts";
 
 export const bot = new Composer<MyContext>();
 
@@ -32,28 +28,23 @@ function generateInlineQueryResultFromChange(
 			parse_mode: format.parse_mode,
 		},
 		reply_markup: {
-			inline_keyboard: [
-				[{text: 'zu meinem Kalender hinzufügen', callback_data: 'c:a:' + id}],
-			],
+			inline_keyboard: [[{ text: "zu meinem Kalender hinzufügen", callback_data: "c:a:" + id }]],
 		},
 		title: generateShortChangeText(eventId, date),
-		type: 'article',
+		type: "article",
 	};
 }
 
 function escapeRegexSpecificChars(input: string): string {
 	return input
-		.replaceAll('[', String.raw`\[`)
-		.replaceAll(']', String.raw`\]`)
-		.replaceAll('(', String.raw`\(`)
-		.replaceAll(')', String.raw`\)`);
+		.replaceAll("[", String.raw`\[`)
+		.replaceAll("]", String.raw`\]`)
+		.replaceAll("(", String.raw`\(`)
+		.replaceAll(")", String.raw`\)`);
 }
 
-bot.on('inline_query', async ctx => {
-	const regex = new RegExp(
-		escapeRegexSpecificChars(ctx.inlineQuery.query),
-		'i',
-	);
+bot.on("inline_query", async (ctx) => {
+	const regex = new RegExp(escapeRegexSpecificChars(ctx.inlineQuery.query), "i");
 
 	const results: InlineQueryResultArticle[] = [];
 
@@ -72,8 +63,8 @@ bot.on('inline_query', async ctx => {
 		cache_time: 20,
 		is_personal: true,
 		button: {
-			start_parameter: 'changes',
-			text: 'Zum Bot',
+			start_parameter: "changes",
+			text: "Zum Bot",
 		},
 	});
 });
@@ -91,7 +82,7 @@ async function getChangeFromContextMatch(ctx: MyContext): Promise<ChangeRelatedI
 	const fromId = Number(ctx.match![3]!);
 
 	if (!(eventId in ctx.userconfig.mine.events)) {
-		await ctx.answerCallbackQuery('Du besuchst diese Veranstaltung garnicht. 🤔');
+		await ctx.answerCallbackQuery("Du besuchst diese Veranstaltung garnicht. 🤔");
 		return undefined;
 	}
 
@@ -99,7 +90,7 @@ async function getChangeFromContextMatch(ctx: MyContext): Promise<ChangeRelatedI
 		const fromconfig = await ctx.userconfig.loadConfig(fromId);
 		const searchedChange = fromconfig.events[eventId]?.changes?.[date];
 		if (!searchedChange) {
-			throw new Error('User does not have this change');
+			throw new Error("User does not have this change");
 		}
 
 		return {
@@ -109,21 +100,21 @@ async function getChangeFromContextMatch(ctx: MyContext): Promise<ChangeRelatedI
 			change: searchedChange,
 		};
 	} catch {
-		await ctx.editMessageText('Die Veranstaltungsänderung existiert nicht mehr. 😔');
+		await ctx.editMessageText("Die Veranstaltungsänderung existiert nicht mehr. 😔");
 		return undefined;
 	}
 }
 
-bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async ctx => {
+bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async (ctx) => {
 	const meta = await getChangeFromContextMatch(ctx);
 	if (!meta) {
 		return;
 	}
 
-	const {eventId, date, fromId, change} = meta;
+	const { eventId, date, fromId, change } = meta;
 
 	if (ctx.from?.id === Number(fromId)) {
-		await ctx.answerCallbackQuery('Das ist deine eigene Änderung 😉');
+		await ctx.answerCallbackQuery("Das ist deine eigene Änderung 😉");
 		return;
 	}
 
@@ -131,55 +122,48 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async ctx => {
 	const currentChange = ctx.userconfig.mine.events[eventId]?.changes?.[date];
 
 	if (currentChange) {
-		const warning
-			= '⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.';
+		const warning = "⚠️ Du hast bereits eine Änderung zu diesem Termin in deinem Kalender.";
 		await ctx.answerCallbackQuery(warning);
 
-		let text = warning + '\n';
+		let text = warning + "\n";
 		text += generateChangeTextHeader(eventId, date);
 
-		text += '\nDiese Veränderung ist bereits in deinem Kalender:';
-		text += '\n' + format.escape(generateChangeDescription(currentChange));
+		text += "\nDiese Veränderung ist bereits in deinem Kalender:";
+		text += "\n" + format.escape(generateChangeDescription(currentChange));
 
-		text += '\nDiese Veränderung wolltest du hinzufügen:';
-		text += '\n' + format.escape(generateChangeDescription(change));
+		text += "\nDiese Veränderung wolltest du hinzufügen:";
+		text += "\n" + format.escape(generateChangeDescription(change));
 
 		const inline_keyboard = [
 			[
-				{
-					text: 'Überschreiben',
-					callback_data: `c:af:${eventId}#${date}#${fromId}`,
-				},
-				{text: 'Abbrechen', callback_data: 'c:cancel'},
+				{ text: "Überschreiben", callback_data: `c:af:${eventId}#${date}#${fromId}` },
+				{ text: "Abbrechen", callback_data: "c:cancel" },
 			],
 		];
 
 		await ctx.api.sendMessage(ctx.from.id, text, {
 			parse_mode: format.parse_mode,
-			reply_markup: {inline_keyboard},
+			reply_markup: { inline_keyboard },
 		});
 		return;
 	}
 
 	ctx.userconfig.mine.events[eventId]!.changes ??= {};
 	ctx.userconfig.mine.events[eventId]!.changes[date] = change;
-	await ctx.answerCallbackQuery('Die Änderung wurde hinzugefügt');
+	await ctx.answerCallbackQuery("Die Änderung wurde hinzugefügt");
 });
 
-bot.callbackQuery(
-	'c:cancel',
-	async ctx => ctx.editMessageText('Ich habe nichts verändert. 🙂'),
-);
+bot.callbackQuery("c:cancel", async (ctx) => ctx.editMessageText("Ich habe nichts verändert. 🙂"));
 
 // Action: change add force
-bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async ctx => {
+bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async (ctx) => {
 	const meta = await getChangeFromContextMatch(ctx);
 	if (!meta) {
 		return;
 	}
 
-	const {eventId, date, change} = meta;
+	const { eventId, date, change } = meta;
 	ctx.userconfig.mine.events[eventId]!.changes ??= {};
 	ctx.userconfig.mine.events[eventId]!.changes[date] = change;
-	return ctx.editMessageText('Die Änderung wurde hinzugefügt.');
+	return ctx.editMessageText("Die Änderung wurde hinzugefügt.");
 });

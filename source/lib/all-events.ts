@@ -1,21 +1,19 @@
-import {readFile} from 'node:fs/promises';
-import {pull} from './git.ts';
-import {typedEntries} from './javascript-helper.ts';
-import type {EventDirectory, EventEntry, EventId} from './types.ts';
+import { readFile } from "node:fs/promises";
+
+import { pull } from "./git.ts";
+import { typedEntries } from "./javascript-helper.ts";
+import type { EventDirectory, EventEntry, EventId } from "./types.ts";
 
 let directory: EventDirectory = {};
 let namesOfEvents: Readonly<Record<EventId, string>> = {};
 
 setInterval(async () => update(), 1000 * 60 * 30); // Every 30 minutes
 await update();
-console.log(new Date(), 'eventfiles loaded');
+console.log(new Date(), "eventfiles loaded");
 
 async function update() {
-	await pull(
-		'eventfiles',
-		'https://github.com/HAWHHCalendarBot/eventfiles.git',
-	);
-	const directoryString = await readFile('eventfiles/directory.json', 'utf8');
+	await pull("eventfiles", "https://github.com/HAWHHCalendarBot/eventfiles.git");
+	const directoryString = await readFile("eventfiles/directory.json", "utf8");
 	directory = JSON.parse(directoryString) as EventDirectory;
 	namesOfEvents = await generateMapping();
 }
@@ -78,15 +76,12 @@ export function exists(id: EventId): boolean {
 	return id in namesOfEvents;
 }
 
-export function find(
-	path: string[],
-	pattern: string | RegExp | undefined,
-): EventDirectory {
+export function find(path: string[], pattern: string | RegExp | undefined): EventDirectory {
 	if (!pattern) {
 		return getSubdirectory(path) ?? {};
 	}
 
-	const regex = new RegExp(pattern, 'i');
+	const regex = new RegExp(pattern, "i");
 	const accumulator: Record<EventId, string> = {};
 
 	function collect(directory: EventDirectory) {
@@ -108,6 +103,6 @@ export function find(
 }
 
 export async function loadEvents(eventId: EventId): Promise<EventEntry[]> {
-	const content = await readFile(`eventfiles/events/${eventId}.json`, 'utf8');
+	const content = await readFile(`eventfiles/events/${eventId}.json`, "utf8");
 	return JSON.parse(content) as EventEntry[];
 }

@@ -1,29 +1,30 @@
-import {StatelessQuestion} from '@grammyjs/stateless-question';
-import {Composer} from 'grammy';
+import { StatelessQuestion } from "@grammyjs/stateless-question";
+import { Composer } from "grammy";
 import {
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
 	replyMenuToContext,
-} from 'grammy-inline-menu';
-import {getUrlFromContext} from '../../lib/calendar-helper.ts';
-import {backMainButtons} from '../../lib/inline-menu.ts';
-import type {MyContext} from '../../lib/types.ts';
+} from "grammy-inline-menu";
+
+import { getUrlFromContext } from "../../lib/calendar-helper.ts";
+import { backMainButtons } from "../../lib/inline-menu.ts";
+import type { MyContext } from "../../lib/types.ts";
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(ctx => {
-	const {calendarfileSuffix} = ctx.userconfig.mine;
+export const menu = new MenuTemplate<MyContext>((ctx) => {
+	const { calendarfileSuffix } = ctx.userconfig.mine;
 	return {
-		parse_mode: 'HTML',
+		parse_mode: "HTML",
 		text: ctx
-			.t('subscribe-suffix', {
+			.t("subscribe-suffix", {
 				calendarfileSuffix,
 				url: getUrlFromContext(ctx),
 				userId: ctx.from!.id.toString(),
 			})
 			// Remove Isolate Characters which are inserted automatically by Fluent.
 			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
-			.replaceAll(/[\u2068\u2069]+/g, ''),
+			.replaceAll(/[\u2068\u2069]+/g, ""),
 	};
 });
 
@@ -32,7 +33,7 @@ const SUFFIX_MIN_LENGTH = 3;
 
 async function setSuffix(ctx: MyContext, value: string): Promise<void> {
 	value = String(value)
-		.replaceAll(/[^\w\d]/g, '')
+		.replaceAll(/[^\w\d]/g, "")
 		.slice(0, SUFFIX_MAX_LENGTH);
 	if (value.length < SUFFIX_MIN_LENGTH) {
 		return;
@@ -43,27 +44,27 @@ async function setSuffix(ctx: MyContext, value: string): Promise<void> {
 }
 
 async function sendHintText(ctx: MyContext): Promise<void> {
-	const hintText = '⚠️ Hinweis: Dein Kalender muss nun neu abonniert werden!';
+	const hintText = "⚠️ Hinweis: Dein Kalender muss nun neu abonniert werden!";
 	if (ctx.callbackQuery) {
-		await ctx.answerCallbackQuery({text: hintText, show_alert: true});
+		await ctx.answerCallbackQuery({ text: hintText, show_alert: true });
 		return;
 	}
 
 	await ctx.reply(hintText);
 }
 
-menu.interact('g', {
-	text: 'Generieren…',
+menu.interact("g", {
+	text: "Generieren…",
 	async do(ctx) {
 		// 10^8 -> 10 ** 8
-		const fromTime = Date.now() % (10 ** 8);
+		const fromTime = Date.now() % 10 ** 8;
 		await setSuffix(ctx, String(fromTime));
 		return true;
 	},
 });
 
 const manualSuffixQuestion = new StatelessQuestion<MyContext>(
-	'subscribe-suffix-manual',
+	"subscribe-suffix-manual",
 	async (ctx, path) => {
 		if (ctx.message.text) {
 			await setSuffix(ctx, ctx.message.text);
@@ -75,8 +76,8 @@ const manualSuffixQuestion = new StatelessQuestion<MyContext>(
 
 bot.use(manualSuffixQuestion.middleware());
 
-menu.interact('s', {
-	text: 'Manuell setzen…',
+menu.interact("s", {
+	text: "Manuell setzen…",
 	async do(ctx, path) {
 		await manualSuffixQuestion.replyWithHTML(
 			ctx,

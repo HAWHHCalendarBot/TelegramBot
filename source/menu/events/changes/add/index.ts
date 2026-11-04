@@ -1,24 +1,21 @@
-import {StatelessQuestion} from '@grammyjs/stateless-question';
-import {arrayFilterUnique} from 'array-filter-unique';
-import {Composer} from 'grammy';
+import { StatelessQuestion } from "@grammyjs/stateless-question";
+import { arrayFilterUnique } from "array-filter-unique";
+import { Composer } from "grammy";
 import {
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
 	replyMenuToContext,
-} from 'grammy-inline-menu';
-import {loadEvents} from '../../../../lib/all-events.ts';
-import {generateChangeText} from '../../../../lib/change-helper.ts';
-import {typedKeys} from '../../../../lib/javascript-helper.ts';
-import type {
-	EventId,
-	MyContext,
-	NaiveDateTime,
-} from '../../../../lib/types.ts';
-import {createTimeSelectionSubmenuButtons} from './time-selector.ts';
+} from "grammy-inline-menu";
+
+import { loadEvents } from "../../../../lib/all-events.ts";
+import { generateChangeText } from "../../../../lib/change-helper.ts";
+import { typedKeys } from "../../../../lib/javascript-helper.ts";
+import type { EventId, MyContext, NaiveDateTime } from "../../../../lib/types.ts";
+import { createTimeSelectionSubmenuButtons } from "./time-selector.ts";
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(ctx => {
+export const menu = new MenuTemplate<MyContext>((ctx) => {
 	ctx.session.generateChange ??= {};
 
 	if (ctx.match) {
@@ -26,23 +23,23 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 	}
 
 	if (!ctx.session.generateChangeEventId) {
-		throw new Error('Something fishy');
+		throw new Error("Something fishy");
 	}
 
 	const eventId = ctx.session.generateChangeEventId;
-	let text = '';
+	let text = "";
 
 	if (!ctx.session.generateChangeDate) {
-		text = 'Zu welchem Termin willst du eine Änderung hinzufügen?';
+		text = "Zu welchem Termin willst du eine Änderung hinzufügen?";
 		const changeDates = typedKeys(ctx.userconfig.mine.events[eventId]?.changes ?? {});
 
 		if (changeDates.length > 0) {
-			text
-				+= '\n\nFolgende Termine haben bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.';
-			text += '\n';
+			text +=
+				"\n\nFolgende Termine haben bereits eine Veränderung. Entferne die Veränderung zuerst, bevor du eine neue erstellen kannst.";
+			text += "\n";
 
 			changeDates.sort();
-			text += changeDates.map(o => `- ${o}`).join('\n');
+			text += changeDates.map((o) => `- ${o}`).join("\n");
 		}
 	}
 
@@ -52,10 +49,10 @@ export const menu = new MenuTemplate<MyContext>(ctx => {
 			ctx.session.generateChangeDate,
 			ctx.session.generateChange,
 		);
-		text += '\nWelche Art von Änderung willst du vornehmen?';
+		text += "\nWelche Art von Änderung willst du vornehmen?";
 	}
 
-	return {text, parse_mode: 'HTML'};
+	return { text, parse_mode: "HTML" };
 });
 
 function hidePickDateStep(ctx: MyContext): boolean {
@@ -81,7 +78,7 @@ function generationDataIsValid(ctx: MyContext): boolean {
 	return Object.keys(ctx.session.generateChange ?? []).length > 0;
 }
 
-menu.choose('date', {
+menu.choose("date", {
 	columns: 2,
 	hide: hidePickDateStep,
 	async choices(ctx) {
@@ -91,11 +88,13 @@ menu.choose('date', {
 			return {};
 		}
 
-		const existingChangeDates = new Set(typedKeys(ctx.userconfig.mine.events[eventId]?.changes ?? {}));
+		const existingChangeDates = new Set(
+			typedKeys(ctx.userconfig.mine.events[eventId]?.changes ?? {}),
+		);
 		const events = await loadEvents(eventId);
 		const dates = events
-			.map(o => o.startTime)
-			.filter(o => !existingChangeDates.has(o))
+			.map((o) => o.startTime)
+			.filter((o) => !existingChangeDates.has(o))
 			.filter(arrayFilterUnique());
 		return dates;
 	},
@@ -103,14 +102,14 @@ menu.choose('date', {
 		ctx.session.generateChangeDate = key as NaiveDateTime;
 		return true;
 	},
-	getCurrentPage: ctx => ctx.session.page,
+	getCurrentPage: (ctx) => ctx.session.page,
 	setPage(ctx, page) {
 		ctx.session.page = page;
 	},
 });
 
-menu.interact('remove', {
-	text: '🚫 Entfällt',
+menu.interact("remove", {
+	text: "🚫 Entfällt",
 	async do(ctx) {
 		ctx.session.generateChange!.remove = true;
 		return finish(ctx);
@@ -127,7 +126,7 @@ menu.interact('remove', {
 createTimeSelectionSubmenuButtons(menu, hideGenerateChangeStep);
 
 const namesuffixQuestion = new StatelessQuestion<MyContext>(
-	'change-add-suffix',
+	"change-add-suffix",
 	async (ctx, path) => {
 		if (ctx.message.text) {
 			ctx.session.generateChange!.namesuffix = ctx.message.text;
@@ -137,34 +136,31 @@ const namesuffixQuestion = new StatelessQuestion<MyContext>(
 	},
 );
 
-const roomQuestion = new StatelessQuestion<MyContext>(
-	'change-add-room',
-	async (ctx, path) => {
-		if (ctx.message.text) {
-			ctx.session.generateChange!.room = ctx.message.text;
-		}
+const roomQuestion = new StatelessQuestion<MyContext>("change-add-room", async (ctx, path) => {
+	if (ctx.message.text) {
+		ctx.session.generateChange!.room = ctx.message.text;
+	}
 
-		await replyMenuToContext(menu, ctx, path);
-	},
-);
+	await replyMenuToContext(menu, ctx, path);
+});
 
 bot.use(namesuffixQuestion.middleware());
 bot.use(roomQuestion.middleware());
 
 function questionButtonText(
-	property: 'namesuffix' | 'room',
+	property: "namesuffix" | "room",
 	emoji: string,
 	fallback: string,
 ): (ctx: MyContext) => string {
-	return ctx => {
+	return (ctx) => {
 		const value = ctx.session.generateChange![property];
 		const text = value ?? fallback;
-		return emoji + ' ' + text;
+		return emoji + " " + text;
 	};
 }
 
-menu.interact('namesuffix', {
-	text: questionButtonText('namesuffix', '🗯', 'Namenszusatz'),
+menu.interact("namesuffix", {
+	text: questionButtonText("namesuffix", "🗯", "Namenszusatz"),
 	hide: hideGenerateChangeStep,
 	async do(ctx, path) {
 		await namesuffixQuestion.replyWithHTML(
@@ -177,13 +173,13 @@ menu.interact('namesuffix', {
 	},
 });
 
-menu.interact('room', {
-	text: questionButtonText('room', '📍', 'Raum'),
+menu.interact("room", {
+	text: questionButtonText("room", "📍", "Raum"),
 	hide: hideGenerateChangeStep,
 	async do(ctx, path) {
 		await roomQuestion.replyWithHTML(
 			ctx,
-			'In welchen Raum wurde der Termin verschoben?',
+			"In welchen Raum wurde der Termin verschoben?",
 			getMenuOfPath(path),
 		);
 		await deleteMenuFromContext(ctx);
@@ -191,10 +187,10 @@ menu.interact('room', {
 	},
 });
 
-menu.interact('finish', {
-	text: '✅ Fertig stellen',
+menu.interact("finish", {
+	text: "✅ Fertig stellen",
 	do: finish,
-	hide: ctx => !generationDataIsValid(ctx),
+	hide: (ctx) => !generationDataIsValid(ctx),
 });
 
 async function finish(ctx: MyContext): Promise<string | boolean> {
@@ -210,7 +206,7 @@ async function finish(ctx: MyContext): Promise<string | boolean> {
 		// Dont do something when there is already a change for the date
 		// This shouldn't occour but it can when the user adds a shared change
 		// Also the user can add an additional date that they already have 'used'
-		await ctx.answerCallbackQuery('Du hast bereits eine Veranstaltungsänderung für diesen Termin.');
+		await ctx.answerCallbackQuery("Du hast bereits eine Veranstaltungsänderung für diesen Termin.");
 		return true;
 	}
 
@@ -220,11 +216,11 @@ async function finish(ctx: MyContext): Promise<string | boolean> {
 	return `../d:${date}/`;
 }
 
-menu.interact('abort', {
+menu.interact("abort", {
 	joinLastRow: true,
-	text: '🛑 Abbrechen',
+	text: "🛑 Abbrechen",
 	do(ctx) {
 		delete ctx.session.generateChange;
-		return '..';
+		return "..";
 	},
 });

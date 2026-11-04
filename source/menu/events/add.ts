@@ -1,12 +1,13 @@
-import {StatelessQuestion} from '@grammyjs/stateless-question';
-import {Composer} from 'grammy';
+import { StatelessQuestion } from "@grammyjs/stateless-question";
+import { Composer } from "grammy";
 import {
 	deleteMenuFromContext,
 	getMenuOfPath,
 	MenuTemplate,
 	replyMenuToContext,
-} from 'grammy-inline-menu';
-import {html as format} from 'telegram-format';
+} from "grammy-inline-menu";
+import { html as format } from "telegram-format";
+
 import {
 	count as allEventsCount,
 	directoryExists,
@@ -14,74 +15,68 @@ import {
 	exists as allEventsExists,
 	find as allEventsFind,
 	getEventName,
-} from '../../lib/all-events.ts';
-import {BACK_BUTTON_TEXT} from '../../lib/inline-menu.ts';
-import {typedEntries} from '../../lib/javascript-helper.ts';
-import type {EventId, MyContext} from '../../lib/types.ts';
+} from "../../lib/all-events.ts";
+import { BACK_BUTTON_TEXT } from "../../lib/inline-menu.ts";
+import { typedEntries } from "../../lib/javascript-helper.ts";
+import type { EventId, MyContext } from "../../lib/types.ts";
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(ctx => {
-	ctx.session.eventAdd ??= {path: []};
+export const menu = new MenuTemplate<MyContext>((ctx) => {
+	ctx.session.eventAdd ??= { path: [] };
 	while (!directoryExists(ctx.session.eventAdd.path)) {
 		ctx.session.eventAdd.path.pop();
 	}
 
-	let text = format.bold('Veranstaltungen');
+	let text = format.bold("Veranstaltungen");
 	for (const segment of ctx.session.eventAdd.path) {
-		text += '\n🗂️ ' + segment;
+		text += "\n🗂️ " + segment;
 	}
 
-	text += '\n\nWelche Events möchtest du hinzufügen?';
-	text += '\n\n';
+	text += "\n\nWelche Events möchtest du hinzufügen?";
+	text += "\n\n";
 
 	try {
 		if (ctx.session.eventAdd.filter) {
-			const filteredEvents = allEventsFind(
-				ctx.session.eventAdd.path,
-				ctx.session.eventAdd.filter,
-			);
+			const filteredEvents = allEventsFind(ctx.session.eventAdd.path, ctx.session.eventAdd.filter);
 			const eventCount = Object.keys(filteredEvents.events ?? {}).length;
 			text += `Mit deinem Filter konnte ich ${eventCount} passende Veranstaltungen finden.`;
 		} else if (ctx.session.eventAdd.path.length === 0) {
 			const total = allEventsCount();
 			text += `Ich habe ${total} Veranstaltungen. Nutze den Filter oder die Ordner um die Auswahl einzugrenzen.`;
 		} else {
-			text += 'Nutze den Filter oder die Ordner um die Auswahl einzugrenzen.';
+			text += "Nutze den Filter oder die Ordner um die Auswahl einzugrenzen.";
 		}
 	} catch (error) {
 		const errorText = error instanceof Error ? error.message : String(error);
-		text += 'Filter Error: ';
+		text += "Filter Error: ";
 		text += format.monospace(errorText);
 	}
 
-	return {text, parse_mode: format.parse_mode};
+	return { text, parse_mode: format.parse_mode };
 });
 
-const question = new StatelessQuestion<MyContext>(
-	'events-add-filter',
-	async (ctx, path) => {
-		if (ctx.message.text) {
-			ctx.session.eventAdd ??= {path: []};
-			ctx.session.eventAdd.filter = ctx.message.text;
-		}
+const question = new StatelessQuestion<MyContext>("events-add-filter", async (ctx, path) => {
+	if (ctx.message.text) {
+		ctx.session.eventAdd ??= { path: [] };
+		ctx.session.eventAdd.filter = ctx.message.text;
+	}
 
-		await replyMenuToContext(menu, ctx, path);
-	},
-);
+	await replyMenuToContext(menu, ctx, path);
+});
 
 bot.use(question.middleware());
 
-menu.interact('filter', {
-	style: 'primary',
+menu.interact("filter", {
+	style: "primary",
 	text(ctx) {
 		return ctx.session.eventAdd?.filter
 			? `🔎 Filter: ${ctx.session.eventAdd.filter}`
-			: '🔎 Ab hier filtern';
+			: "🔎 Ab hier filtern";
 	},
 	async do(ctx, path) {
 		await question.replyWithHTML(
 			ctx,
-			'Wonach möchtest du die Veranstaltungen in diesem Verzeichnis filtern?',
+			"Wonach möchtest du die Veranstaltungen in diesem Verzeichnis filtern?",
 			getMenuOfPath(path),
 		);
 		await deleteMenuFromContext(ctx);
@@ -89,41 +84,38 @@ menu.interact('filter', {
 	},
 });
 
-menu.interact('filter-clear', {
+menu.interact("filter-clear", {
 	joinLastRow: true,
-	style: 'success',
-	text: 'Filter aufheben',
-	hide: ctx => ctx.session.eventAdd?.filter === undefined,
+	style: "success",
+	text: "Filter aufheben",
+	hide: (ctx) => ctx.session.eventAdd?.filter === undefined,
 	do(ctx) {
 		delete ctx.session.eventAdd?.filter;
 		return true;
 	},
 });
 
-menu.choose('list', {
+menu.choose("list", {
 	maxRows: 10,
 	columns: 1,
 	choices(ctx) {
 		try {
-			ctx.session.eventAdd ??= {path: []};
-			const filteredEvents = allEventsFind(
-				ctx.session.eventAdd.path,
-				ctx.session.eventAdd.filter,
-			);
-			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(([name, directory], i) => {
-				if (!directoryHasContent(directory)) {
-					return ['x' + i, '🚫 ' + name];
-				}
+			ctx.session.eventAdd ??= { path: [] };
+			const filteredEvents = allEventsFind(ctx.session.eventAdd.path, ctx.session.eventAdd.filter);
+			const subDirectoryItems = typedEntries(filteredEvents.subDirectories ?? {}).map(
+				([name, directory], i) => {
+					if (!directoryHasContent(directory)) {
+						return ["x" + i, "🚫 " + name];
+					}
 
-				return [
-					'd' + i + ' ' + name.replaceAll('/', '').slice(0, 48),
-					'🗂️ ' + name,
-				];
-			});
+					return ["d" + i + " " + name.replaceAll("/", "").slice(0, 48), "🗂️ " + name];
+				},
+			);
 			const eventItems = typedEntries(filteredEvents.events ?? {}).map(([eventId, name]) =>
 				eventId in ctx.userconfig.mine.events
-					? ['e' + eventId, '✅ ' + name]
-					: ['e' + eventId, '📅 ' + name]);
+					? ["e" + eventId, "✅ " + name]
+					: ["e" + eventId, "📅 " + name],
+			);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 			return Object.fromEntries([...subDirectoryItems, ...eventItems]);
 		} catch {
@@ -131,7 +123,7 @@ menu.choose('list', {
 		}
 	},
 	async do(ctx, key) {
-		if (key.startsWith('e')) {
+		if (key.startsWith("e")) {
 			const eventId = key.slice(1) as EventId;
 			if (!allEventsExists(eventId)) {
 				await ctx.answerCallbackQuery(`Event mit Id ${eventId} existiert nicht!`);
@@ -149,8 +141,8 @@ menu.choose('list', {
 			return true;
 		}
 
-		if (key.startsWith('x')) {
-			await ctx.answerCallbackQuery('Dieses Verzeichnis ist leer.');
+		if (key.startsWith("x")) {
+			await ctx.answerCallbackQuery("Dieses Verzeichnis ist leer.");
 			return false;
 		}
 
@@ -165,10 +157,7 @@ menu.choose('list', {
 				return true;
 			}
 
-			const filteredEvents = allEventsFind(
-				ctx.session.eventAdd.path,
-				ctx.session.eventAdd.filter,
-			);
+			const filteredEvents = allEventsFind(ctx.session.eventAdd.path, ctx.session.eventAdd.filter);
 			const filteredSubDirectories = typedEntries(filteredEvents.subDirectories ?? {});
 			const chosenSubDirectory = filteredSubDirectories[index]?.[0];
 			if (!chosenSubDirectory) {
@@ -182,18 +171,18 @@ menu.choose('list', {
 
 		return true; // Unknown state
 	},
-	getCurrentPage: ctx => ctx.session.page,
+	getCurrentPage: (ctx) => ctx.session.page,
 	setPage(ctx, page) {
 		ctx.session.page = page;
 	},
 });
 
-menu.interact('back', {
+menu.interact("back", {
 	text: BACK_BUTTON_TEXT,
 	do(ctx) {
 		if (!ctx.session.eventAdd || ctx.session.eventAdd.path.length === 0) {
 			delete ctx.session.eventAdd;
-			return '..';
+			return "..";
 		}
 
 		ctx.session.eventAdd.path.pop();
@@ -201,11 +190,11 @@ menu.interact('back', {
 	},
 });
 
-menu.interact('top', {
+menu.interact("top", {
 	joinLastRow: true,
-	text: '🔝 zur Übersicht…',
+	text: "🔝 zur Übersicht…",
 	do(ctx) {
 		delete ctx.session.eventAdd;
-		return '..';
+		return "..";
 	},
 });
