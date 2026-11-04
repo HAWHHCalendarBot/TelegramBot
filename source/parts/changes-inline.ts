@@ -113,7 +113,7 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async (ctx) => {
 
 	const { eventId, date, fromId, change } = meta;
 
-	if (ctx.from?.id === Number(fromId)) {
+	if (ctx.from?.id === fromId) {
 		await ctx.answerCallbackQuery("Das ist deine eigene Änderung 😉");
 		return;
 	}

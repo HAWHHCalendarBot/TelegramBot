@@ -32,9 +32,7 @@ const SUFFIX_MAX_LENGTH = 15;
 const SUFFIX_MIN_LENGTH = 3;
 
 async function setSuffix(ctx: MyContext, value: string): Promise<void> {
-	value = String(value)
-		.replaceAll(/[^\w\d]/g, "")
-		.slice(0, SUFFIX_MAX_LENGTH);
+	value = value.replaceAll(/[^\w\d]/g, "").slice(0, SUFFIX_MAX_LENGTH);
 	if (value.length < SUFFIX_MIN_LENGTH) {
 		return;
 	}

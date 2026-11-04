@@ -18,7 +18,6 @@
 		"no-shadow": "allow",
 		"require-unicode-regexp": "allow",
 		"typescript/no-deprecated": "allow",
-		"typescript/no-unnecessary-type-conversion": "allow",
 		"typescript/no-unsafe-member-access": "allow",
 
 		"func-style": ["error", "declaration"],
