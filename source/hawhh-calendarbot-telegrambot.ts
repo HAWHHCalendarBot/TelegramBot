@@ -31,6 +31,7 @@ const bot = baseBot.errorBoundary(async ({ error, ctx }) => {
 		return;
 	}
 
+	// oxlint-disable-next-line typescript/no-unsafe-member-access
 	console.error("try to send error to user", ctx.update, error, (error as any)?.on?.payload);
 	let text = `🔥 Da ist wohl ein Fehler aufgetreten…
 

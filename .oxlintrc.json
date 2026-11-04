@@ -16,7 +16,6 @@
 	},
 	"rules": {
 		"no-shadow": "allow",
-		"typescript/no-unsafe-member-access": "allow",
 
 		"func-style": ["error", "declaration"],
 		"import/max-dependencies": "allow",

@@ -1,3 +1,5 @@
+// oxlint-disable typescript/no-unsafe-member-access
+
 import { Composer } from "grammy";
 
 import { getCanteenList } from "./lib/mensa-meals.ts";
