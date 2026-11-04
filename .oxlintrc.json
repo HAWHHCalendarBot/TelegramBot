@@ -17,7 +17,6 @@
 	"rules": {
 		"no-shadow": "allow",
 		"require-unicode-regexp": "allow",
-		"typescript/consistent-return": "allow",
 		"typescript/no-deprecated": "allow",
 		"typescript/no-unnecessary-type-conversion": "allow",
 		"typescript/no-unsafe-member-access": "allow",

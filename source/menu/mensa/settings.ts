@@ -171,6 +171,7 @@ menu.submenu("s", specialWishMenu, {
 	hide: (ctx) => !ctx.userconfig.mine.mensa.main,
 });
 
+// oxlint-disable-next-line typescript/consistent-return
 function showWishAsOption(ctx: MyContext, wish: MealWish): boolean {
 	const wishes = ctx.userconfig.mine.mensa;
 	switch (wish) {
