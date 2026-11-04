@@ -16,7 +16,6 @@
 	},
 	"rules": {
 		"no-shadow": "allow",
-		"require-unicode-regexp": "allow",
 		"typescript/no-deprecated": "allow",
 		"typescript/no-unsafe-member-access": "allow",
 

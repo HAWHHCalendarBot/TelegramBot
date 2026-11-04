@@ -98,7 +98,7 @@ menu.select("u", {
 	columns: 2,
 	async choices(ctx) {
 		const filter = ctx.session.adminuserquicklookfilter ?? ".+";
-		const filterRegex = new RegExp(filter, "i");
+		const filterRegex = new RegExp(filter, "iu");
 		const allConfigs = await ctx.userconfig.all((config) =>
 			filterRegex.test(JSON.stringify(config)),
 		);

@@ -69,13 +69,13 @@ await test("generate-meal-test has meal", () => {
 
 await test("generate-meal-test even amount of bold markers without showAdditives", () => {
 	const result = generateMealText([example], { showAdditives: false });
-	const occurrences = result.match(/<\/?b>/g)?.length;
+	const occurrences = result.match(/<\/?b>/gu)?.length;
 	strictEqual(occurrences, 2);
 });
 
 await test("generate-meal-test even amount of bold markers with showAdditives", () => {
 	const result = generateMealText([example], { showAdditives: true });
-	const occurrences = result.match(/<\/?b>/g)?.length;
+	const occurrences = result.match(/<\/?b>/gu)?.length;
 	strictEqual(occurrences, 4);
 });
 

@@ -14,7 +14,7 @@ import type { EventId, MyContext } from "../../lib/types.ts";
 import * as changesMenu from "./changes/index.ts";
 
 function getIdFromPath(path: string): EventId {
-	const match = /\/d:([^/]+)\//.exec(path)!;
+	const match = /\/d:([^/]+)\//u.exec(path)!;
 	return match[1]! as EventId;
 }
 

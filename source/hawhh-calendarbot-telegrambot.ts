@@ -87,7 +87,7 @@ bot.use(easterEggs.bot);
 bot.use(menu);
 
 // Fallback for the old main menu
-bot.callbackQuery(/^\//, async (ctx) => {
+bot.callbackQuery(/^\//u, async (ctx) => {
 	await ctx.answerCallbackQuery();
 	await startMessage(ctx);
 });

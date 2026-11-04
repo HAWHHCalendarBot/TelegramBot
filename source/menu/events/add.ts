@@ -146,7 +146,7 @@ menu.choose("list", {
 			return false;
 		}
 
-		const directoryMatch = /^d(\d+) (.+)$/.exec(key);
+		const directoryMatch = /^d(\d+) (.+)$/u.exec(key);
 		if (directoryMatch) {
 			const index = Number(directoryMatch[1]);
 			const prefix = directoryMatch[2];

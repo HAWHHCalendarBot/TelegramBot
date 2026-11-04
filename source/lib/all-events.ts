@@ -83,7 +83,7 @@ export function find(path: string[], pattern: string | RegExp | undefined): Even
 		return getSubdirectory(path) ?? {};
 	}
 
-	const regex = new RegExp(pattern, "i");
+	const regex = new RegExp(pattern, "iu");
 	const accumulator: Record<EventId, string> = {};
 
 	function collect(directory: EventDirectory) {

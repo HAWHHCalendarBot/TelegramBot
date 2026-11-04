@@ -24,7 +24,7 @@ export const menu = new MenuTemplate<MyContext>((ctx) => {
 			})
 			// Remove Isolate Characters which are inserted automatically by Fluent.
 			// They are useful to prevent the variables from inserting annoying stuff but here they destroy the url
-			.replaceAll(/[\u2068\u2069]+/g, ""),
+			.replaceAll(/[\u2068\u2069]+/gu, ""),
 	};
 });
 
@@ -32,7 +32,7 @@ const SUFFIX_MAX_LENGTH = 15;
 const SUFFIX_MIN_LENGTH = 3;
 
 async function setSuffix(ctx: MyContext, value: string): Promise<void> {
-	value = value.replaceAll(/[^\w\d]/g, "").slice(0, SUFFIX_MAX_LENGTH);
+	value = value.replaceAll(/[^\w\d]/gu, "").slice(0, SUFFIX_MAX_LENGTH);
 	if (value.length < SUFFIX_MIN_LENGTH) {
 		return;
 	}

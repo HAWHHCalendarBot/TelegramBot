@@ -61,9 +61,9 @@ export function generateMealText(
 export function mealNameToHtml(name: string, showAdditives: boolean | undefined): string {
 	const parsedName = name
 		// Remove / un-bold additives at the end
-		.replaceAll(/ \(([\d\w, ]+)\)$/g, showAdditives ? "</b> ($1)<b>" : "")
+		.replaceAll(/ \(([\d\w, ]+)\)$/gu, showAdditives ? "</b> ($1)<b>" : "")
 		// Remove / un-bold additives within the name
-		.replaceAll(/ \(([\d\w, ]+)\), /g, showAdditives ? "</b> ($1), <b>" : ", ");
+		.replaceAll(/ \(([\d\w, ]+)\), /gu, showAdditives ? "</b> ($1), <b>" : ", ");
 
 	const fullName = `<b>${parsedName}</b>`;
 	return fullName.replaceAll("<b></b>", "");

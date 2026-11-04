@@ -44,7 +44,7 @@ function escapeRegexSpecificChars(input: string): string {
 }
 
 bot.on("inline_query", async (ctx) => {
-	const regex = new RegExp(escapeRegexSpecificChars(ctx.inlineQuery.query), "i");
+	const regex = new RegExp(escapeRegexSpecificChars(ctx.inlineQuery.query), "iu");
 
 	const results: InlineQueryResultArticle[] = [];
 
@@ -105,7 +105,7 @@ async function getChangeFromContextMatch(ctx: MyContext): Promise<ChangeRelatedI
 	}
 }
 
-bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async (ctx) => {
+bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/u, async (ctx) => {
 	const meta = await getChangeFromContextMatch(ctx);
 	if (!meta) {
 		return;
@@ -156,7 +156,7 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async (ctx) => {
 bot.callbackQuery("c:cancel", (ctx) => ctx.editMessageText("Ich habe nichts verändert. 🙂"));
 
 // Action: change add force
-bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async (ctx) => {
+bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/u, async (ctx) => {
 	const meta = await getChangeFromContextMatch(ctx);
 	if (!meta) {
 		return;
