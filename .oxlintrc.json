@@ -15,8 +15,6 @@
 		"typeAware": true
 	},
 	"rules": {
-		"no-shadow": "allow",
-
 		"func-style": ["error", "declaration"],
 		"import/max-dependencies": "allow",
 		"import/no-duplicates": ["error", { "preferInline": true }],

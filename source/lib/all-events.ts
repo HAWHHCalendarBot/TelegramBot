@@ -20,8 +20,10 @@ async function update() {
 }
 
 function generateMapping(): Readonly<Record<EventId, string>> {
+	// oxlint-disable-next-line no-shadow
 	const namesOfEvents: Record<EventId, string> = {};
 
+	// oxlint-disable-next-line no-shadow
 	function collect(directory: EventDirectory) {
 		for (const subDirectory of Object.values(directory.subDirectories ?? {})) {
 			collect(subDirectory);
@@ -49,6 +51,7 @@ function getSubdirectory(path: string[]): EventDirectory | undefined {
 	return resolvedDirectory;
 }
 
+// oxlint-disable-next-line no-shadow
 export function directoryHasContent(directory: EventDirectory): boolean {
 	const events = Object.keys(directory.events ?? {}).length;
 	const subDirectories = Object.keys(directory.subDirectories ?? {}).length;
@@ -61,8 +64,8 @@ export function directoryExists(path: string[]): boolean {
 		return true;
 	}
 
-	const directory = getSubdirectory(path);
-	return Boolean(directory && directoryHasContent(directory));
+	const subdir = getSubdirectory(path);
+	return Boolean(subdir && directoryHasContent(subdir));
 }
 
 export function getEventName(id: EventId): string {
@@ -86,6 +89,7 @@ export function find(path: string[], pattern: string | RegExp | undefined): Even
 	const regex = new RegExp(pattern, "iu");
 	const accumulator: Record<EventId, string> = {};
 
+	// oxlint-disable-next-line no-shadow
 	function collect(directory: EventDirectory) {
 		for (const [eventId, name] of typedEntries(directory.events ?? {})) {
 			if (regex.test(name)) {
