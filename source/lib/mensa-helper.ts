@@ -72,7 +72,7 @@ export function mealNameToHtml(name: string, showAdditives: boolean | undefined)
 export function mealAdditivesToHtml(meals: readonly Meal[]): string {
 	return meals
 		.flatMap((meal) => typedEntries(meal.Additives).map(([short, full]) => `${short}: ${full}`))
-		.sort()
+		.toSorted()
 		.filter(arrayFilterUnique())
 		.join("\n");
 }

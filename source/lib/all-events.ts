@@ -100,7 +100,9 @@ export function find(path: string[], pattern: string | RegExp | undefined): Even
 
 	collect(getSubdirectory(path) ?? {});
 	return {
-		events: Object.fromEntries(typedEntries(accumulator).sort((a, b) => a[1].localeCompare(b[1]))),
+		events: Object.fromEntries(
+			typedEntries(accumulator).toSorted((a, b) => a[1].localeCompare(b[1])),
+		),
 	};
 }
 

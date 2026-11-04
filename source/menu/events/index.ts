@@ -32,7 +32,7 @@ export const menu = new MenuTemplate<MyContext>((ctx) => {
 				line += format.escape(getEventName(eventId));
 				return line;
 			})
-			.sort((a, b) => a.localeCompare(b))
+			.toSorted((a, b) => a.localeCompare(b))
 			.join("\n");
 
 		if (nonExisting.size > 0) {
@@ -103,7 +103,7 @@ menu.chooseIntoSubmenu("d", detailsMenu.menu, {
 
 				return [eventId, title.trim()] as const;
 			})
-			.sort((a, b) => a[1]?.localeCompare(b[1]));
+			.toSorted((a, b) => a[1]?.localeCompare(b[1]));
 		return Object.fromEntries(entries);
 	},
 	getCurrentPage: (ctx) => ctx.session.page,

@@ -32,7 +32,7 @@ async function updateMore(ctx: MyContext, set: ReadonlySet<string>) {
 		.filter((canteen) => allAvailableCanteens.has(canteen));
 
 	if (more.length > 0) {
-		ctx.userconfig.mine.mensa.more = more.sort();
+		ctx.userconfig.mine.mensa.more = more.toSorted();
 	} else {
 		delete ctx.userconfig.mine.mensa.more;
 	}

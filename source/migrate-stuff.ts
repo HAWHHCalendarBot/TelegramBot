@@ -25,7 +25,7 @@ bot.use(async (ctx, next) => {
 			.filter((canteen) => canteen !== ctx.userconfig.mine.mensa.main)
 			// Remove not anymore existing
 			.filter((canteen) => allAvailableCanteens.has(canteen))
-			.sort();
+			.toSorted();
 		while (
 			ctx.userconfig.mine.mensa.main &&
 			!allAvailableCanteens.has(ctx.userconfig.mine.mensa.main)
