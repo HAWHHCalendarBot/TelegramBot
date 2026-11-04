@@ -54,20 +54,20 @@ export class Chatconfig {
 			const configOfUser = this.configFromWholeConfig(wholeconfig);
 
 			const contextProperty: ContextProperty = {
-				all: async (filter?: (o: ChatConfigFileContent) => boolean) => this.all(filter),
-				allIds: async () => this.allIds(),
-				broadcast: async (
+				all: (filter?: (o: ChatConfigFileContent) => boolean) => this.all(filter),
+				allIds: () => this.allIds(),
+				broadcast: (
 					text: string,
 					extra: OtherSendMessage,
 					filter?: (o: ChatConfigFileContent) => boolean,
 				) => this.broadcast(ctx.api, text, extra, filter),
-				forwardBroadcast: async (
+				forwardBroadcast: (
 					originChat: string | number,
 					messageId: number,
 					filter?: (o: ChatConfigFileContent) => boolean,
 				) => this.forwardBroadcast(ctx.api, originChat, messageId, filter),
-				load: async (id: number) => this.load(id),
-				loadConfig: async (id: number) => this.loadConfig(id),
+				load: (id: number) => this.load(id),
+				loadConfig: (id: number) => this.loadConfig(id),
 				mine: configOfUser,
 			};
 
@@ -129,7 +129,7 @@ export class Chatconfig {
 		const ids = await this.allIds();
 
 		const fileContents = await Promise.all(
-			ids.map(async (id) => readFile(this.filenameFromId(id), "utf8")),
+			ids.map((id) => readFile(this.filenameFromId(id), "utf8")),
 		);
 
 		const configs = fileContents
@@ -148,7 +148,7 @@ export class Chatconfig {
 		const allConfigs = await this.all(filter);
 		const allIds = allConfigs.map((config) => config.chat.id);
 		const failedIds = await telegramBroadcast.broadcast(telegram, allIds, text, extra);
-		await sequentialLoop(failedIds, async (id) => this.removeConfig(id));
+		await sequentialLoop(failedIds, (id) => this.removeConfig(id));
 	}
 
 	async forwardBroadcast(
@@ -165,7 +165,7 @@ export class Chatconfig {
 			originChat,
 			messageId,
 		);
-		await sequentialLoop(failedIds, async (id) => this.removeConfig(id));
+		await sequentialLoop(failedIds, (id) => this.removeConfig(id));
 	}
 
 	private filenameFromId(id: number): string {

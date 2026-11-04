@@ -110,7 +110,7 @@ menu.choose("date", {
 
 menu.interact("remove", {
 	text: "🚫 Entfällt",
-	async do(ctx) {
+	do(ctx) {
 		ctx.session.generateChange!.remove = true;
 		return finish(ctx);
 	},

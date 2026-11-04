@@ -7,7 +7,7 @@ import type { EventDirectory, EventEntry, EventId } from "./types.ts";
 let directory: EventDirectory = {};
 let namesOfEvents: Readonly<Record<EventId, string>> = {};
 
-setInterval(async () => update(), 1000 * 60 * 30); // Every 30 minutes
+setInterval(() => update(), 1000 * 60 * 30); // Every 30 minutes
 await update();
 console.log(new Date(), "eventfiles loaded");
 
@@ -15,10 +15,10 @@ async function update() {
 	await pull("eventfiles", "https://github.com/HAWHHCalendarBot/eventfiles.git");
 	const directoryString = await readFile("eventfiles/directory.json", "utf8");
 	directory = JSON.parse(directoryString) as EventDirectory;
-	namesOfEvents = await generateMapping();
+	namesOfEvents = generateMapping();
 }
 
-async function generateMapping(): Promise<Readonly<Record<EventId, string>>> {
+function generateMapping(): Readonly<Record<EventId, string>> {
 	const namesOfEvents: Record<EventId, string> = {};
 
 	function collect(directory: EventDirectory) {

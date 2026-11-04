@@ -23,7 +23,7 @@ const PRIVACY_SECTIONS = {
 type PrivacySection = keyof typeof PRIVACY_SECTIONS;
 
 export const bot = new Composer<MyContext>();
-export const menu = new MenuTemplate<MyContext>(async (ctx) => {
+export const menu = new MenuTemplate<MyContext>((ctx) => {
 	const part = privacyInfoPart(ctx, ctx.session.privacySection ?? "persistent");
 
 	let text = ctx.t("privacy-overview");

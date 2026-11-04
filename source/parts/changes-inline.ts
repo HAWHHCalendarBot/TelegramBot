@@ -153,7 +153,7 @@ bot.callbackQuery(/^c:a:(.+)#(.+)#(.+)$/, async (ctx) => {
 	await ctx.answerCallbackQuery("Die Änderung wurde hinzugefügt");
 });
 
-bot.callbackQuery("c:cancel", async (ctx) => ctx.editMessageText("Ich habe nichts verändert. 🙂"));
+bot.callbackQuery("c:cancel", (ctx) => ctx.editMessageText("Ich habe nichts verändert. 🙂"));
 
 // Action: change add force
 bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async (ctx) => {
@@ -165,5 +165,5 @@ bot.callbackQuery(/^c:af:(.+)#(.+)#(.+)$/, async (ctx) => {
 	const { eventId, date, change } = meta;
 	ctx.userconfig.mine.events[eventId]!.changes ??= {};
 	ctx.userconfig.mine.events[eventId]!.changes[date] = change;
-	return ctx.editMessageText("Die Änderung wurde hinzugefügt.");
+	await ctx.editMessageText("Die Änderung wurde hinzugefügt.");
 });

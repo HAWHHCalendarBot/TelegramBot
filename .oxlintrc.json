@@ -16,14 +16,12 @@
 	},
 	"rules": {
 		"no-shadow": "allow",
-		"require-await": "allow",
 		"require-unicode-regexp": "allow",
 		"typescript/consistent-return": "allow",
 		"typescript/no-deprecated": "allow",
 		"typescript/no-misused-promises": "allow",
 		"typescript/no-unnecessary-type-conversion": "allow",
 		"typescript/no-unsafe-member-access": "allow",
-		"typescript/require-await": "allow",
 		"typescript/strict-void-return": "allow",
 		"unicorn/no-array-sort": "allow",
 

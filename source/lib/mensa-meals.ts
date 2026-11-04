@@ -3,7 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { pull } from "./git.ts";
 import type { Meal } from "./meal.ts";
 
-setInterval(async () => pullMensaData(), 1000 * 60 * 30); // Every 30 minutes
+setInterval(() => pullMensaData(), 1000 * 60 * 30); // Every 30 minutes
 await pullMensaData();
 console.log(new Date(), "mensa-data loaded");
 

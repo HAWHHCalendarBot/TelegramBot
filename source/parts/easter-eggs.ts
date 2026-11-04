@@ -4,7 +4,7 @@ import type { MyContext } from "../lib/types.ts";
 
 export const bot = new Composer<MyContext>();
 
-bot.on("edited_message", async (ctx) =>
+bot.on("edited_message", (ctx) =>
 	ctx.reply(
 		"Hui, jetzt wirds stressig. 😨\n\nIch kann doch nicht auch noch auf vergangene Nachrichten aufpassen!",
 		{ reply_to_message_id: ctx.editedMessage.message_id },
