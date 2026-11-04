@@ -28,6 +28,7 @@ function nameOfUser({ first_name, last_name, username }: User): string {
 
 export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>(async (ctx) => {
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	if (!ctx.session.adminuserquicklook) {
 		return "Wähle einen Nutzer…";
 	}
@@ -44,6 +45,7 @@ export const menu = new MenuTemplate<MyContext>(async (ctx) => {
 });
 
 menu.url({
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	hide: (ctx) => !ctx.session.adminuserquicklook,
 	text: "Kalender",
 	async url(ctx) {

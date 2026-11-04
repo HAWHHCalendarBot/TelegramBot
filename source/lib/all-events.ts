@@ -77,6 +77,7 @@ export function exists(id: EventId): boolean {
 }
 
 export function find(path: string[], pattern: string | RegExp | undefined): EventDirectory {
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	if (!pattern) {
 		return getSubdirectory(path) ?? {};
 	}

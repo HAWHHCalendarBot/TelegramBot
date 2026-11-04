@@ -16,9 +16,8 @@ const broadcastQuestion = new StatelessQuestion<MyContext>("admin-broadcast", as
 bot.use(broadcastQuestion.middleware());
 
 menu.interact("set", {
-	text(ctx) {
-		return ctx.session.adminBroadcast ? "✏️ Ändere Nachricht…" : "✏️ Setze Nachricht…";
-	},
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
+	text: (ctx) => (ctx.session.adminBroadcast ? "✏️ Ändere Nachricht…" : "✏️ Setze Nachricht…"),
 	async do(ctx, path) {
 		await broadcastQuestion.replyWithHTML(
 			ctx,
@@ -32,6 +31,7 @@ menu.interact("set", {
 menu.interact("send", {
 	style: "danger",
 	text: "📤 Versende Broadcast",
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	hide: (ctx) => !ctx.session.adminBroadcast,
 	async do(ctx) {
 		// eslint-disable-next-line @typescript-eslint/no-floating-promises

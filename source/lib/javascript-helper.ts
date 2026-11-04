@@ -5,6 +5,7 @@ export function typedKeys<K extends keyof any>(record: Readonly<Partial<Record<K
 export function typedEntries<K extends keyof any, V>(
 	record: Readonly<Partial<Record<K, V>>>,
 ): Array<[K, V]> {
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	if (!record) {
 		return [];
 	}

@@ -76,6 +76,7 @@ export class Chatconfig {
 
 			const before = stringify(ctx.userconfig.mine);
 			await next();
+			// oxlint-disable-next-line typescript/strict-boolean-expressions
 			if (!ctx.userconfig.mine) {
 				console.log(new Date(), "request to delete data", ctx.from);
 				// Request to remove the userconfig

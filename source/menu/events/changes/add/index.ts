@@ -18,8 +18,8 @@ export const bot = new Composer<MyContext>();
 export const menu = new MenuTemplate<MyContext>((ctx) => {
 	ctx.session.generateChange ??= {};
 
-	if (ctx.match) {
-		ctx.session.generateChangeEventId = ctx.match[1]! as EventId;
+	if (ctx.match?.[1]) {
+		ctx.session.generateChangeEventId = ctx.match[1] as EventId;
 	}
 
 	if (!ctx.session.generateChangeEventId) {

@@ -26,6 +26,7 @@ function getYearMonthDay(
 }
 
 function stringifyEqual(first: unknown, second: unknown): boolean {
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	if (!first || !second) {
 		return false;
 	}

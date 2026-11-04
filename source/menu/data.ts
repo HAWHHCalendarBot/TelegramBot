@@ -6,6 +6,7 @@ import { html as format } from "telegram-format";
 import type { MyContext, Userconfig } from "../lib/types.ts";
 
 async function getActualUserconfigContent(ctx: MyContext): Promise<Userconfig | undefined> {
+	// oxlint-disable-next-line typescript/strict-boolean-expressions
 	if (!ctx.userconfig.mine) {
 		return undefined;
 	}

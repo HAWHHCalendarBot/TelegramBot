@@ -39,7 +39,7 @@
 		"typescript/prefer-nullish-coalescing": ["error", { "ignorePrimitives": { "string": true } }],
 		"typescript/prefer-readonly-parameter-types": "allow",
 		"typescript/strict-boolean-expressions": [
-			"allow",
+			"error",
 			{
 				"allowNullableBoolean": true,
 				"allowNullableString": true,
