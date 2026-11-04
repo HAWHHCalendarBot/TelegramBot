@@ -22,7 +22,6 @@ bot.use(eventMiddleware);
 
 const subscribeMiddleware = new MenuMiddleware("subscribe/", subscribe.menu);
 bot.command("subscribe", async (ctx) => {
-	// eslint-disable-next-line unicorn/prefer-ternary
 	if (Object.keys(ctx.userconfig.mine.events).length === 0) {
 		await ctx.reply(ctx.t("subscribe-empty"));
 	} else {
@@ -46,6 +45,4 @@ const adminMiddleware = new MenuMiddleware("admin/", admin.menu);
 adminComposer.command("admin", async (ctx) => adminMiddleware.replyToContext(ctx));
 adminComposer.use(admin.bot);
 adminComposer.use(adminMiddleware);
-// False positive
-// eslint-disable-next-line unicorn/no-array-method-this-argument
 bot.filter((ctx) => Boolean(ctx.userconfig.mine.admin), adminComposer);

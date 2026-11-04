@@ -166,7 +166,6 @@ removeMenu.interact("y", {
 	async do(ctx) {
 		const eventId = ctx.match![1]! as EventId;
 		const eventName = getEventName(eventId);
-		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		delete ctx.userconfig.mine.events[eventId];
 
 		await ctx.answerCallbackQuery(`${eventName} wurde aus deinem Kalender entfernt.`);

@@ -210,7 +210,6 @@ specialWishMenu.select("w", {
 		if (newState) {
 			ctx.userconfig.mine.mensa[wish as MealWish] = true;
 		} else {
-			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 			delete ctx.userconfig.mine.mensa[wish as MealWish];
 		}
 

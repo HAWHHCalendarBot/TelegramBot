@@ -68,7 +68,6 @@ menu.interact("remove-old", {
 	do(ctx) {
 		for (const eventId of typedKeys(ctx.userconfig.mine.events)) {
 			if (!allEvents.exists(eventId)) {
-				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 				delete ctx.userconfig.mine.events[eventId];
 			}
 		}

@@ -11,7 +11,7 @@
 		"builtin": true
 	},
 	"options": {
-		"reportUnusedDisableDirectives": "allow",
+		"reportUnusedDisableDirectives": "error",
 		"typeAware": true
 	},
 	"rules": {
