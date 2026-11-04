@@ -19,10 +19,8 @@
 		"require-unicode-regexp": "allow",
 		"typescript/consistent-return": "allow",
 		"typescript/no-deprecated": "allow",
-		"typescript/no-misused-promises": "allow",
 		"typescript/no-unnecessary-type-conversion": "allow",
 		"typescript/no-unsafe-member-access": "allow",
-		"typescript/strict-void-return": "allow",
 		"unicorn/no-array-sort": "allow",
 
 		"func-style": ["error", "declaration"],

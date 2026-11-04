@@ -3,6 +3,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { pull } from "./git.ts";
 import type { Meal } from "./meal.ts";
 
+// oxlint-disable-next-line typescript/strict-void-return, typescript/no-misused-promises
 setInterval(() => pullMensaData(), 1000 * 60 * 30); // Every 30 minutes
 await pullMensaData();
 console.log(new Date(), "mensa-data loaded");

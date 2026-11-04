@@ -2,6 +2,7 @@ import { exec } from "node:child_process";
 import { existsSync } from "node:fs";
 import { promisify } from "node:util";
 
+// oxlint-disable-next-line typescript/strict-void-return
 const run = promisify(exec);
 
 export async function pull(directory: string, remoteUrl: string): Promise<void> {

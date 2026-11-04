@@ -7,6 +7,7 @@ import type { EventDirectory, EventEntry, EventId } from "./types.ts";
 let directory: EventDirectory = {};
 let namesOfEvents: Readonly<Record<EventId, string>> = {};
 
+// oxlint-disable-next-line typescript/strict-void-return, typescript/no-misused-promises
 setInterval(() => update(), 1000 * 60 * 30); // Every 30 minutes
 await update();
 console.log(new Date(), "eventfiles loaded");
